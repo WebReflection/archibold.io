@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Using archibold require script [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate)
 
 It is possible to write _Bash_ scripts capable of requiring modules, utilities, and software at runtime.
@@ -23,3 +24,7 @@ Please note **install** scripts are independent and can be used directly via
 ```
 bash <(curl -s https://archibold.io/install/pakku)
 ```
+=======
+# archibold.io
+archibold.io
+>>>>>>> b9c9c21... Initial commit
