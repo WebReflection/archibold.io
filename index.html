@@ -1,52 +1,400 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Archibold.io : archibold.io">
-
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
-
-    <title>Archibold.io</title>
+    <title>archibold</title>
+    <meta http-equiv="content-language" content="en-US">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimal-ui">
+    <style>
+    html, body {
+      font-family: monospace;
+      background-color: #2A2A2A;
+      color: #C5C5C5;
+      padding: 0;
+      margin: 0;
+    }
+    body, #logo {
+      text-align: center;
+    }
+    body > div {
+      text-align: left;
+      padding: 8px;
+    }
+    body > div, #logo > pre {
+      display: inline-block;
+      margin: auto;
+    }
+    #logo {
+      cursor: default;
+    }
+    pre:nth-child(n+2) {
+      padding: 8px;
+      background-color: #C5C5C5;
+      color: #2A2A2A;
+    }
+    p > code, li > code {
+      background-color: #C5C5C5;
+      color: #2A2A2A;
+      padding: 0 2px;
+    }
+    section {
+      margin-top: 48px;
+    }
+    strong {
+      color: #EEE;
+    }
+    body {
+      font-size: 1em;
+    }
+    h1 {
+      font-size: 1.6em;
+    }
+    h2 {
+      font-size: 1.4em;
+      margin-top: 24px;
+    }
+    h1:before {
+      content: '# ';
+    }
+    h2:before {
+      content: '## ';
+    }
+    a, h1:before, h2:before {
+      color: #FFF;
+    }
+    a {
+      text-decoration: none;
+      border-bottom: 1px solid #2A2A2A;
+      transition: all .3s ease-in;
+    }
+    a:hover {
+      color: #EEE;
+      border-bottom: 1px solid #666;
+    }
+    </style>
   </head>
-
   <body>
+    <div>
+      <section id="logo"><pre>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/WebReflection/archibold.io">View on GitHub</a>
+                             _|        _|  _|                  _|        _|
+  _|_|_|  _|  _|_|   _|_|_|  _|_|_|        _|_|_|      _|_|    _|    _|_|_|
+_|    _|  _|_|     _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+_|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+  _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
 
-          <h1 id="project_title">Archibold.io</h1>
-          <h2 id="project_tagline">archibold.io</h2>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/WebReflection/archibold.io/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/WebReflection/archibold.io/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.1.0
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
+      </pre></section>
+      <section id="about">
+        <h1><a href="#about">About</a></h1>
+        <p>
+          The aim of this project is to install a complete
+          and Open Source Linux Desktop environment.
+        </p>
+        <p>
+          Based on <a href="https://www.archlinux.org/">ArchLinux</a>
+          and latest <a href="http://www.gnome.org/">GNOME</a>,
+          <em>archibold</em> has been successfully installed in many platforms.
+        </p>
+        <p>
+          These could be old or modern PCs, and even developer boards, as long as drivers are supported.<br/>
+          Following an example of successful installations:
+        </p>
+        <ul>
+          <li>Netbook with Intel® Celeron(R) CPU 847 @ 1.10GHz x 2</li>
+          <li>NUC with Intel® Atom™ CPU E3815 @ 1.46GHz</li>
+          <li><a href="http://www.minnowboard.org/meet-minnowboard-max/">MinnowBoard MAX</a> with Intel® Atom™ CPU E3825 @ 1.33GHz x 2</li>
+          <li>Laptop (mine) with Intel® Processor 5Y70 CPU @ 1.10GHz × 4</li>
+        </ul>
+      </section>
+      <section id="supported-platform">
+        <h1><a href="#supported-platform">Supported Platforms</a></h1>
+        <p>
+          Currently, <a href="http://www.intel.com/">Intel®</a> Hardware is the most supported one
+          thanks to its drivers availability.
+        </p>
+        <p>
+          Main limitations for ARM platforms are indeed GPU drivers,
+          most of the time closed source.<br/>
+          If your ARM device is so cool that has HW Accelerated drivers, please let me know!<br/>
+          I'll do my best to support it seamlessly as any other Intel® device.
+        </p>
+        <h2 id="requirements">
+          <a href="#requirements">Requirements</a>
+        </h2>
+        <p>
+          Platform a part, an <strong>Internet connection</strong> and at least <strong>8GB of disk space</strong> are <strong>necessary</strong>.
+        </p>
+      </section>
+      <section id="warning">
+        <h1><a href="#warning">Warning</a></h1>
+        <p>
+          This project comes with <strong>no warranty</strong> and is <strong>not responsible</strong> for any damage caused to any machine.<br/>
+          This software might compromise an entire disk if used improperly.<br/>
+          Please be sure to understand each step before confirming anything during installation.<br/>
+          Feel free to search in <a href="https://bbs.archlinux.org/">ArchLinux forum</a> in case of doubts, usually all answers are already there.
+        </p>
+      </section>
+      <section id="how-to">
+        <h1><a href="#how-to">How To</a></h1>
+        <p>
+          As very first step, we need a bootable version of <a href="https://www.archlinux.org/download/">ArchLinux iso</a> through USB stick or DVD.<br/>
+          We can learn how to burn it in the <a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media#BIOS_and_UEFI_Bootable_USB">dedicated page</a>.<br/>
+          Following the Linux/Mac summary where <code>/dev/sdX</code> is the USB path.
+        </p>
+        <pre><code># just bs=4M in Linux, older OSX has no M option
+dd if=~/Downloads/archlinux-2015.02.01-dual.iso of=/dev/sdX bs=4194304</code></pre>
+        <p>
+          Please note it might take 5 minutes or more to complete above operation, be patient.
+        </p>
+        <p>
+          Once <code>dd</code> has finished, we can use the USB stick from any USB port of the target machine.<br/>
+          Some target might require some extra step and it depends on the <strong>bios</strong>.<br/>
+          Usually keeping pressed <strong>Esc</strong>, <strong>F2</strong>, or <strong>F10</strong>
+          during boot should help reaching the boot menu.
+        </p>
+        <p>
+          The boot option we are interested about is the <strong>UEFI ArchLinux</strong> one.<br/>
+          If everything goes OK, we should bootstrap into a terminal/console.
+        </p>
+        <p>
+          As <strong>extra requirement</strong> the target machine will need to be <strong>connected to the Internet</strong>.<br/>
+          The preferred connection type is via <strong>network cable</strong>, but we could use WiFi too.<br/>
+          However, WiFi initial configuration is a bit more advanced, I can give a hint thought:
+        </p>
+        <pre><code># verify wifi path
+iw dev # or ip addr
+
+# wifi path will look similar to wlp2s0
+# use such name after wifi-menu
+wifi-menu wlp2s0
+
+# choose your WiFi network and enter password
+
+# verify you are connected
+ping 8.8.8.8
+
+# PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+# 64 bytes from 8.8.8.8: icmp_seq=1 ttl=53 time=8.15 ms
+# 64 bytes from 8.8.8.8: icmp_seq=2 ttl=53 time=9.36 ms
+# 64 bytes from 8.8.8.8: icmp_seq=3 ttl=53 time=7.92 ms
+# ...
+# press Ctrl+C to stop the ping
+
+# if not, try to start the service manually
+netctl start wlp2s0-YourWiFi-NAME</code></pre>
+        <p>
+          Once we have a usable network, we can download <strong>archibold.sh</strong> installer.
+        </p>
+        <pre><code>curl -O http://archibold.io/sh/archibold.sh</code></pre>
+        <p>
+          The file <code>archibold.sh</code> should be in the folder now.<br/>
+          Use <code>ls</code> to verify it's in the list.<br/>
+          However, before launching it, we need to understand how to configure it.
+        </p>
+        <h2 id="configuring-the-installer">
+          <a href="#configuring-the-installer">Configuring the installer</a>
+        </h2>
+        <p>
+          There are few options so far for this installer, all listed here:
+        </p>
+        <ul>
+          <li>
+            <strong>USER</strong>, mandatory user name. It must be lowercase!<br/>
+            Pick your twitter handler if you don't know which one to use.
+          </li>
+          <li>
+            <strong>DISK</strong>, mandatory destination path.<br/>
+            It must be the driver letter where <em>archibold</em> is going to be installed.<br/>
+            Please note <strong>this disk will be completely erased</strong> so be sure it's the right one.<br/>
+            In order to know which is the right target we can use <code>fdisk -l</code>.<br/>
+            Be careful, the current booting ArchLinux will be listed too.
+          </li>
+          <li>
+            <strong>SWAP</strong>, optional amount, by default <code>2G</code>.<br/>
+            To avoid creation of a swap partition use <code>SWAP=0</code>.
+          </li>
+          <li>
+            <strong>LABEL</strong>, optional boot name, by default <strong>archibold</strong>.<br/>
+            It might be completely ignored by your system, I wouldn't bother much ;-)
+          </li>
+        </ul>
+        <p>
+          Once we understand the meaning of these variables, we can simply launch the installer as such:
+        </p>
+        <pre><code>DISK=/dev/sdX USER=archibold sh archibold.sh</code></pre>
+        <p>
+          From now on, we can simply follow instructions. Here a summary of what we'll need to do:
+        </p>
+        <ul>
+          <li>
+            confirm we sure provided details are those we meant, and press <strong>y</strong>
+          </li>
+          <li>
+            once asked, provide the <strong>root password</strong> and confirm it twice
+          </li>
+          <li>
+            after that, provide the <strong>chosen user password</strong> and confirm it twice
+          </li>
+          <li>
+            wait until everything has been installed, reaching <strong>CONGRATULATIONS</strong>.<br/>
+            Type at this point the following in console: <code>shutdown -h now</code> and remove the USB after.<br/>
+            We can reboot the device without any USB stick now, <strong>archibold</strong> has been installed!
+          </li>
+        </ul>
+      </section>
+      <section id="first-boot">
+        <h1><a href="#first-boot">First boot</a></h1>
+        <p>
+          If everything worked smoothly, the first screen should show the <code>USER</code> name.<br/>
+          Clicking on it, will reveal the input to put the password asked during installation.<br/>
+          Write it down and reach the Desktop.
+        </p>
+        <p>
+          <strong>Settings</strong> are reachable through the top right corner.<br/>
+          One click and few essential options will show up already.
+        </p>
+        <p>
+          <strong>Programs</strong> are reachable trough the top left corner, or using the Window/Start button.<br/>
+          We can simply start typing a program name, and this will be listed on the screen.
+        </p>
+        <h2 id="suggested-settings">
+          <a href="#suggested-settings">Suggested Settings</a>
+        </h2>
+        <p>
+          Clicking the settings icon, here a suggested list of possible actions to take:
+        </p>
+        <ul>
+          <li>
+            <strong>touchpad settings</strong>, in case on laptop, click on Mouse &amp; Touchpad and switch everything on.
+          </li>
+          <li>
+            <strong>automatic date and time</strong>, click on the Date icon and switch them ON
+          </li>
+          <li>
+            <strong>automatic login</strong>, actually not suggested, but easy to reach via Users.<br/>
+            We need to unlock the ON/OFF button and put the USER password. Lock again once done.
+          </li>
+        </ul>
+        <h2 id="suggested-tweaks">
+          <a href="#suggested-tweaks">Suggested Tweaks</a>
+        </h2>
+        <p>
+          <em>archibold</em> comes with <strong>gnome-tweak</strong> tool by default.<br/>
+          Use the Window/Start button or reach the top left corner and type <strong>tweak</strong>.<br/>
+          Click on the Tweak Tool icon and check at least these:
+        </p>
+        <ul>
+          <li>
+            <strong>Appearance</strong>, the Globl Dark Theme is gorgeous!
+          </li>
+          <li>
+            <strong>Desktop</strong>, Icons on Desktop, if you like them
+          </li>
+          <li>
+            <strong>Extensions</strong>, Applications Menu to discover all you have installed
+          </li>
+          <li>
+            <strong>Top Bar</strong>, Show date too, not just the time
+          </li>
+          <li>
+            <strong>Dark Terminal</strong>, actually out of Tweak. Launch the Terminal then:<br/>
+            Edit &gt; Preferences &gt; Use dark theme variant, check!
+          </li>
+        </ul>
+      </section>
+      <section id="browser">
+        <h1><a href="#browser">Browser</a></h1>
+        <p>
+          The default browser that works out of the box is Epiphany, also known as GNOME Web browser.<br/>
+          This is both a very beautiful and deadly simple to use browser.<br/>
+          It's also so sleek it has been used in <a href="http://www.raspbian.org/">Raspbian</a> as default browser for the <a href="http://www.raspberrypi.org/web-browser-released/">Raspberry Pi</a>.
+        </p>
+        <p>
+          However, many web developers do not test their sites in this browser.<br/>
+          As result, those sites might provide an annoying, and broken, experience.
+        </p>
+        <p>
+          If your favorite sites work already there's no need to change browser.<br/>
+          In all other cases, please follow these instructions.
+        </p>
+        <p>
+          The best external browser, with also a good HiDPI support, is <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>.<br/>
+          You hear me right, Firefox, not Chrome or Chromium: Firefox!<br/>
+          To install it, launch the terminal and write the following:
+        </p>
+        <pre><code>sudo pacman -S --needed firefox
+# first time will ask the USER password with a warning
+# all other times will simply ask the password only</code></pre>
+        <p>
+          Accept dependencies that need to be installed and after that, type <code>firefox</code> and press enter.
+        </p>
+        <h2 id="hidpi-firefox">
+          <a href="#hidpi-firefox">HiDPI Firefox</a>
+        </h2>
+        <p>
+          If your device uses a HiDPi/retina like display, you might see everything too small.<br/>
+          Just type in the Firefox URL bar, as if it was a website, the following: <code>about:config</code>
+        </p>
+        <p>
+          Please <strong>be careful</strong>, there's a lot to configure here!
+        </p>
+        <p>
+          Search <em>pixel</em> and change the value of <code>layout.css.devPixelPerPx</code> to <strong>2</strong>.<br/>
+          Apply and eventually restart Firefox.
+        </p>
+        <h2 id="flash-player">
+          <a href="#flash-player">Flash Player</a>
+        </h2>
+        <p>
+          This is year 2015, nobody needs it anymore but feel free to search online how to install it.<br/>
+          All I can say is that it's possible to install it, but I am not responsible for that.
+        </p>
+      </section>
+      <section id="problem-solving">
         <h1>
-<a id="archiboldio" class="anchor" href="#archiboldio" aria-hidden="true"><span class="octicon octicon-link"></span></a>archibold.io</h1>
+          <a href="#problem-solving">Problem Solving</a>
+        </h1>
+        <p>
+          Following a list of known gotchas that could make <em>archibold</em> journey not so nice.
+        </p>
+        <ul>
+          <li>
+            <strong>Broadcom WiFi</strong> problems. The hybrid driver works quite OK if patched.<br/>
+            This is <a href="https://aur.archlinux.org/packages/broadcom-wl-dkms/">the suggested AUR</a> package to install for these kind of WiFi cards.<br/>
+            In order to know which one you have, write this on the terminal: <code>lspci -nn</code><br/>
+            You should have a list of devices, one of them called Wireless Network/Adapter.
+          </li>
+          <li>
+            <strong>how to install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
+            A <i>way-too-quick</i> introduction would be the following, to be typed via the Terminal:
+            <pre><code># to update everything in the system
+sudo pacman -Syu
 
-<p>archibold.io</p>
+# to search a specific package online
+sudo pacman -Ss <i>package-name</i>
+
+# to install a specific package
+sudo pacman -S <i>package-name</i>
+
+# to install a specific package
+# without reinstalling its dependencies
+sudo pacman -S --needed <i>package-name</i>
+
+# to know if a package is installed or search one locally
+sudo pacman -Qs <i>package-name</i>
+
+# to remove a package and its dependencies
+sudo pacman -Rsc <i>package-name</i>
+
+# to clean old packages cache
+sudo pacman -Sc
+            </code></pre>
+          </li>
+        </ul>
       </section>
     </div>
-
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">Archibold.io maintained by <a href="https://github.com/WebReflection">WebReflection</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
   </body>
 </html>
