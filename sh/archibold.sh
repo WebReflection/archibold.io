@@ -302,7 +302,7 @@ cp -r /usr/lib/syslinux/$UEFI/* /boot/EFI/syslinux
 
 efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
 
-  echo 'TIMEOUT 0
+echo 'TIMEOUT 0
 PROMPT 0
 DEFAULT arch
 
