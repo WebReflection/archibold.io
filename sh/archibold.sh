@@ -137,7 +137,7 @@ echo "  installing archibld $ARCHIBOLD"
 echo "  with label $LABEL"
 echo "  for user $USER"
 echo "  on disk $DISK"
-echo "  with Syslinux $UEFI"
+echo "  using syslinux/$UEFI"
 if [ "$SWAP" = "0" ]; then
   echo "  without swap"
 else
