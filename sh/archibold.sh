@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.1.0             #
+# archibold 0.1.1             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -19,18 +19,24 @@
 #
 # DISK    where to install archibold
 # USER    the main user name, lower case
+#
 # SWAP    default 2G, a swap partition
 #         SWAP=0 to not use any SWAP
+#
 # LABEL   default archibold
 #         the EFI label name
 #
+# GNOME   if GNOME=0 will not install GNOME
+#
+# UEFI    either efi64 or efi32
+#         by default is based on uname -m
 #
 # basic usage example
 # DISK=/dev/sdb USER=archibold sh archibold.sh
 #
 ###############################
 
-ARCHIBOLD='0.1.0'
+ARCHIBOLD='0.1.1'
 
 echo ''
 echo "SAY
@@ -99,6 +105,22 @@ if [ "$(verifyuser $USER root)" != "" ]; then
   exit 1
 fi
 
+# UEFI architecture check
+if [ "$UEFI" != "" ]; then
+  if [ "$UEFI" != "efi64" ]; then
+    if [ "$UEFI" != "efi32" ]; then
+      echo "valid UEFI are efi64 or efi32, not $UEFI"
+      exit 1
+    fi
+  fi
+else
+  if [ "$(uname -m)" = "x86_64" ]; then
+    UEFI=efi64
+  else
+    UEFI=efi32
+  fi
+fi
+
 # Technology check
 if [ "$(verifyTechnology)" != "" ]; then
   exit 1
@@ -115,10 +137,14 @@ echo "  installing archibld $ARCHIBOLD"
 echo "  with label $LABEL"
 echo "  for user $USER"
 echo "  on disk $DISK"
+echo "  with Syslinux $UEFI"
 if [ "$SWAP" = "0" ]; then
   echo "  without swap"
 else
   echo "  with $SWAP of swap"
+fi
+if [ "$GNOME" = "0" ]; then
+  echo "  without GNOME"
 fi
 echo ' - - - - - - - - - - - - - - '
 
@@ -271,11 +297,8 @@ systemctl enable NetworkManager.service
 syslinux-install_update -ia
 
 mkdir -p /boot/EFI/syslinux
-if [ '$(uname -m)' = 'x86_64' ]; then
-  cp -r /usr/lib/syslinux/efi64/* /boot/EFI/syslinux
-else
-  cp -r /usr/lib/syslinux/efi32/* /boot/EFI/syslinux
-fi
+
+cp -r /usr/lib/syslinux/$UEFI/* /boot/EFI/syslinux
 
 efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
 
@@ -312,17 +335,21 @@ rm /archibold
 
 sleep 3
 
-pacman -S --needed --noconfirm \
-  xf86-video-intel libva-intel-driver \
-  libva-mesa-driver mesa-vdpau \
-  xf86-input-synaptics \
-  xorg-server xorg-xinit \
-  gnome gnome-extra gnome-tweak-tool \
-  gstreamer-vaapi gst-libav \
-  alsa-utils \
-  hunspell-en
+if [ '$GNOME' != '0' ]; then
 
-systemctl enable gdm.service
+  pacman -S --needed --noconfirm \
+    xf86-video-intel libva-intel-driver \
+    libva-mesa-driver mesa-vdpau \
+    xf86-input-synaptics \
+    xorg-server xorg-xinit \
+    gnome gnome-extra gnome-tweak-tool \
+    gstreamer-vaapi gst-libav \
+    alsa-utils \
+    hunspell-en
+
+  systemctl enable gdm.service
+
+fi
 
 exit
 ">archibold.bash
