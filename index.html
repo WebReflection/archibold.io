@@ -408,6 +408,13 @@ sudo pacman -Sc</code></pre>
 mkdir -p gtk-3.0
 touch gtk-3.0/settings.ini</code></pre>
           </li>
+          <li>
+            minimal dependencies from <strong>arch bootstrap</strong>:
+            <pre><code>pacman-key --init
+pacman-key --populate archlinux
+pacman -Syu --needed \
+  curl dosfstools grep parted sed sudo vi</code></pre>
+          </li>
         </ul>
       </section>
       <section id="credits">

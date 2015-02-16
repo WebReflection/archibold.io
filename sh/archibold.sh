@@ -155,7 +155,6 @@ if [[ $? -ne 0 ]] ; then
   exit 1
 fi
 
-
 for CHOICE in $(ls ${DISK}*); do
   if [ "$CHOICE" != "$DISK" ]; then
     if [ "$(df | grep $CHOICE)" != "" ]; then
@@ -298,7 +297,12 @@ syslinux-install_update -ia
 
 mkdir -p /boot/EFI/syslinux
 
-cp -r /usr/lib/syslinux/$UEFI/* /boot/EFI/syslinux
+if [ '$(uname -m)' = 'x86_64' ]; then
+  cp -r /usr/lib/syslinux/efi64/* /boot/EFI/syslinux
+else
+  cp -r /usr/lib/syslinux/efi32/* /boot/EFI/syslinux
+fi
+cp -r /usr/lib/syslinux/$UEFI/syslinux.efi /boot/EFI/syslinux
 
 efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
 
