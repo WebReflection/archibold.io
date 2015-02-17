@@ -345,7 +345,7 @@ if [ '$GNOME' != '0' ]; then
     xf86-video-intel libva-intel-driver \
     libva-mesa-driver mesa-vdpau \
     xf86-input-synaptics \
-    xorg-server xorg-xinit \
+    xorg-server xorg-xinit xorg-server-xwayland \
     gnome gnome-extra gnome-tweak-tool \
     gstreamer-vaapi gst-libav \
     alsa-utils \
