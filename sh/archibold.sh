@@ -363,8 +363,8 @@ rm /archibold
 sleep 3
 
 if [ '$GNOME' != '0' ]; then
-
-  pacman -S --needed --noconfirm \
+  sync
+  pacman -Syu --needed --noconfirm \
     $GPU_DRIVERS \
     libva-mesa-driver mesa-vdpau \
     xf86-input-synaptics \
