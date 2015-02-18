@@ -7,8 +7,8 @@ commonProcedure() {
   curl -O "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
   tar -xzf "${name}.tar.gz"
   cd "${name}"
-  makepkg -Asc
-  sudo pacman -U --needed --noconfirm "${name}*.xz"
+  makepkg -Asc --needed --noconfirm
+  sudo pacman -U --needed --noconfirm "${name}*.pkg.tar.xz"
   cd ..
   rm -rf "${name}"
   rm "${name}.tar.gz"
