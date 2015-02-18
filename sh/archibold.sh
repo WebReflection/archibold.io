@@ -84,7 +84,7 @@ if [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep Intel)" != "" ]; then
   GPU_DRIVERS='xf86-video-intel libva-intel-driver'
 elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep NVIDIA)" != "" ]; then
   GPU='nVidia'
-  GPU_DRIVERS='nvidia xf86-video-nouveau'
+  GPU_DRIVERS='xf86-video-nouveau mesa-libgl'
 fi
 
 # disk checks
