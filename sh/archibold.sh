@@ -347,6 +347,9 @@ LABEL arch
 
 ' > /boot/EFI/syslinux/syslinux.cfg
 
+pacman-db-upgrade
+sync
+
 mkinitcpio -p linux
 mv /boot/{vmlinuz-linux,*.img} /boot/EFI
 sync
