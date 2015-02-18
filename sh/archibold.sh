@@ -210,6 +210,8 @@ else
   sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100%
 fi
 
+sync
+
 TMP=
 EFI=
 ROOT=
@@ -239,6 +241,8 @@ if [ "$SWAP" != "0" ]; then
   sudo mkswap $SWAP
   sudo swapon $SWAP
 fi
+
+sync
 
 sudo mkfs.vfat $EFI
 yes | sudo mkfs.ext4 $ROOT
