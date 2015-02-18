@@ -1,10 +1,10 @@
 #!/usr/bin/bash
 
 commonProcedure() {
-  local $type=$1
-  local $name=$2
+  local type=$1
+  local name=$2
   cd ~/Downloads
-  curl -O "https://aur.archlinux.org/packages/${type}/${name}.tar.gz"
+  curl -O "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
   tar -xzf "${name}.tar.gz"
   cd "${name}"
   makepkg -Asc
