@@ -138,6 +138,9 @@ if [ "$LABEL" = "" ]; then
   LABEL="archibold"
 fi
 
+pacman -Sy --noconfirm
+pacman-db-upgrade
+
 # print summary
 echo ' - - - - - - - - - - - - - - '
 echo ' SUMMARY '
@@ -283,7 +286,8 @@ Include = /etc/pacman.d/mirrorlist' >> /etc/pacman.conf
   sync
 fi
 
-pacman -Syu
+pacman -Syu --noconfirm
+pacman-db-upgrade
 
 echo '###############
 ##   root    ##
