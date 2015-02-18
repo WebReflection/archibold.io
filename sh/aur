@@ -1,0 +1,41 @@
+#!/usr/bin/bash
+
+commonProcedure() {
+  local $type=$1
+  local $name=$2
+  cd ~/Downloads
+  curl -O "https://aur.archlinux.org/packages/${type}/${name}.tar.gz"
+  tar -xzf "${name}.tar.gz"
+  cd "${name}"
+  makepkg -Asc
+  sudo pacman -U --needed --noconfirm "${name}*.xz"
+  cd ..
+  rm -rf "${name}"
+  rm "${name}.tar.gz"
+}
+
+installation() {
+  case $1 in
+    spotify)
+      commonProcedure 'li' 'libgcrypt15'
+      commonProcedure 'sp' 'spotify'
+      ;;
+    sublime-text-nightly)
+      commonProcedure 'su' 'sublime-text-nightly'
+      ;;
+    *)
+      echo '
+ - - - - - - -
+| aur  v0.0.1 |
+ - - - - - - -
+ list of programs:
+
+   aur spotify
+   aur sublime-text-nightly
+
+'
+      ;;
+  esac
+}
+
+installation $1
