@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.1.1             #
+# archibold 0.1.2             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.1.1'
+ARCHIBOLD='0.1.2'
 
 echo ''
 echo "SAY
@@ -77,6 +77,15 @@ verifyTechnology() {
       ;;
   esac
 }
+
+# video card checks
+if [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep Intel)" != "" ]; then
+  GPU='Intel'
+  GPU_DRIVERS='xf86-video-intel libva-intel-driver'
+elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep NVIDIA)" != "" ]; then
+  GPU='nVidia'
+  GPU_DRIVERS='nvidia xf86-video-nouveau'
+fi
 
 # disk checks
 if [ "$DISK" = "" ]; then
@@ -145,6 +154,8 @@ else
 fi
 if [ "$GNOME" = "0" ]; then
   echo "  without GNOME"
+else
+  echo "  with GPU $GPU"
 fi
 echo ' - - - - - - - - - - - - - - '
 
@@ -342,7 +353,7 @@ sleep 3
 if [ '$GNOME' != '0' ]; then
 
   pacman -S --needed --noconfirm \
-    xf86-video-intel libva-intel-driver \
+    $GPU_DRIVERS \
     libva-mesa-driver mesa-vdpau \
     xf86-input-synaptics \
     xorg-server xorg-xinit xorg-server-xwayland \
