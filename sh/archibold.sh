@@ -280,9 +280,10 @@ if [ '$(uname -m)' = 'x86_64' ]; then
   echo '
 [multilib]
 Include = /etc/pacman.d/mirrorlist' >> /etc/pacman.conf
+  sync
 fi
 
-pacman -Syyu
+pacman -Syu
 
 echo '###############
 ##   root    ##
