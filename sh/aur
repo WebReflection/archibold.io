@@ -17,6 +17,17 @@ commonProcedure() {
 
 installation() {
   case $1 in
+    install)
+      installation $2
+      ;;
+    remove)
+      sudo pacman -Rsc $2
+      ;;
+    broadcom-wl-dkms)
+      sudo pacman -Syu --needed linux-headers dkms
+      sudo systemctl enable dkms.service
+      commonProcedure 'br' 'broadcom-wl-dkms'
+      ;;
     google-chrome-dev)
       commonProcedure 'go' 'google-chrome-dev'
       ;;
@@ -30,17 +41,25 @@ installation() {
     *)
       echo '
  - - - - - - -
-| aur  v0.0.1 |
+| aur  v0.0.2 |
  - - - - - - -
+
+ usage:
+
+  aur [install|remove] program-name
+  aur program-name # implicit install
+
+
  list of programs:
 
-   aur google-chrome-dev
-   aur spotify
-   aur sublime-text-nightly
+  broadcom-wl-dkms        # broadcom wifi
+  google-chrome-dev       # dev channel
+  spotify                 # music baby!
+  sublime-text-nightly    # sublime 3
 
 '
       ;;
   esac
 }
 
-installation $1
+installation $1 $2
