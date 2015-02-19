@@ -372,7 +372,8 @@ if [ '$GNOME' != '0' ]; then
     gnome gnome-extra gnome-tweak-tool \
     gstreamer-vaapi gst-libav \
     alsa-utils \
-    hunspell-en
+    hunspell-en \
+    ttf-liberation
 
   systemctl enable gdm.service
 

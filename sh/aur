@@ -3,6 +3,7 @@
 commonProcedure() {
   local type=$1
   local name=$2
+  sudo pacman -S --needed --noconfirm base-devel git
   cd ~/Downloads
   curl -O "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
   tar -xzf "${name}.tar.gz"
@@ -16,6 +17,9 @@ commonProcedure() {
 
 installation() {
   case $1 in
+    google-chrome-dev)
+      commonProcedure 'go' 'google-chrome-dev'
+      ;;
     spotify)
       commonProcedure 'li' 'libgcrypt15'
       commonProcedure 'sp' 'spotify'
@@ -30,6 +34,7 @@ installation() {
  - - - - - - -
  list of programs:
 
+   aur google-chrome-dev
    aur spotify
    aur sublime-text-nightly
 
