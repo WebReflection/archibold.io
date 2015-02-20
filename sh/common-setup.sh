@@ -51,3 +51,5 @@ sudo pacman -S --needed --noconfirm qt
 
 sudo pacman -S --needed --noconfirm skype
 
+sudo pacman -S --needed --noconfirm mariadb
+
