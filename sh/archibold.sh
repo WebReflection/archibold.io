@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.1.3             #
+# archibold 0.2.0             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.1.3'
+ARCHIBOLD='0.2.0'
 
 echo ''
 echo "SAY
@@ -158,7 +158,13 @@ fi
 if [ "$GNOME" = "0" ]; then
   echo "  without GNOME"
 else
+  pacman -S --needed fbset
+  if [ "$WIDTH" = "" ]; then
+    WIDTH=$(fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
+    HEIGHT=$(fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
+  fi
   echo "  with GPU $GPU"
+  echo "  and resolution $WIDTHx$HEIGHT"
 fi
 echo ' - - - - - - - - - - - - - - '
 
@@ -328,7 +334,74 @@ cp -r /usr/lib/syslinux/$UEFI/syslinux.efi /boot/EFI/syslinux
 
 efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
 
-echo 'TIMEOUT 0
+if [ '$GNOME' != '0' ]; then
+  sync
+  pacman -Syu --needed --noconfirm \
+    $GPU_DRIVERS \
+    libva-mesa-driver mesa-vdpau \
+    xf86-input-synaptics \
+    xorg-server xorg-xinit xorg-server-xwayland \
+    gnome gnome-extra gnome-tweak-tool \
+    gstreamer-vaapi gst-libav \
+    alsa-utils \
+    hunspell-en \
+    ttf-liberation
+
+  echo 'UI /syslinux/vesamenu.c32
+
+TIMEOUT 20
+PROMPT 0
+DEFAULT arch
+
+MENU TITLE archibold
+MENU RESOLUTION $WIDTH $HEIGHT
+MENU BACKGROUND /archibold.jpg
+
+MENU COLOR screen 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR border 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR title 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR unsel 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR hotkey 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR sel 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR hotsel 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR disabled 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR scrollbar 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR tabmsg 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR cmdmark 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR cmdline 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR pwdborder 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR pwdheader 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR pwdentry 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR timeout_msg 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR timeout 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR help 24;25;27;30;40 #00000000 #00000000 none
+MENU COLOR msg07 24;25;27;30;40 #00000000 #00000000 none
+MENU MSGCOLOR #00000000 #00000000 none
+MENU TABMSG ""
+MENU CLEAR
+
+LABEL arch
+      LINUX /vmlinuz-linux
+      INITRD /intel-ucode.img,/initramfs-linux.img
+      APPEND root=$ROOT rw quiet loglevel=0
+
+' > /boot/EFI/syslinux/syslinux.cfg
+
+  curl -O http://archibold.io/archibold.svg
+  curl -O http://archibold.io/archibold.svg
+  inkscape \
+    --export-png=archibold.png \
+    --export-width=$WIDTH \
+    --export-height=$HEIGHT \
+    archibold.svg
+  convert archibold.png archibold.jpg
+  mv archibold.jpg /boot/EFI
+  rm archibold.{png,svg}
+
+  systemctl enable gdm.service
+
+else
+  echo 'TIMEOUT 0
 PROMPT 0
 DEFAULT arch
 
@@ -353,6 +426,7 @@ LABEL arch
       APPEND root=$ROOT rw quiet loglevel=0
 
 ' > /boot/EFI/syslinux/syslinux.cfg
+fi
 
 pacman-db-upgrade
 sync
@@ -363,23 +437,6 @@ sync
 rm /archibold
 
 sleep 3
-
-if [ '$GNOME' != '0' ]; then
-  sync
-  pacman -Syu --needed --noconfirm \
-    $GPU_DRIVERS \
-    libva-mesa-driver mesa-vdpau \
-    xf86-input-synaptics \
-    xorg-server xorg-xinit xorg-server-xwayland \
-    gnome gnome-extra gnome-tweak-tool \
-    gstreamer-vaapi gst-libav \
-    alsa-utils \
-    hunspell-en \
-    ttf-liberation
-
-  systemctl enable gdm.service
-
-fi
 
 cd /home/$USER
 sudo -u $USER curl -O http://archibold.io/sh/aur
