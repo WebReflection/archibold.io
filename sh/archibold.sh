@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.1.2             #
+# archibold 0.1.3             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.1.2'
+ARCHIBOLD='0.1.3'
 
 echo ''
 echo "SAY
@@ -378,6 +378,12 @@ if [ '$GNOME' != '0' ]; then
   systemctl enable gdm.service
 
 fi
+
+cd /home/$USER
+sudo -u $USER curl -O http://archibold.io/sh/aur
+sudo -u $USER curl -O http://archibold.io/sh/aur
+chmod +x aur
+mv aur /usr/bin
 
 exit
 ">archibold.bash
