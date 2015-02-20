@@ -28,9 +28,10 @@ sudo modprobe vboxnetadp
 sudo modprobe vboxnetflt
 sudo modprobe vboxpci
 
-sudo pacman -S --needed openssh xclip
 git config --global user.name "$GIT_USER"
 git config --global user.email "$GIT_EMAIL"
+git config --global push.default simple
+sudo pacman -S --needed openssh xclip
 ssh-keygen -t rsa -C "$GIT_EMAIL"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
