@@ -265,7 +265,7 @@ genfstab -U -p archibold >> archibold.fstab
 cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
 sudo mv etc.fstab archibold/etc/fstab
 rm archibold.fstab
-cat archibold/etc/fstab
+  cat archibold/etc/fstab
 sync
 
 echo "#!/usr/bin/env bash
