@@ -490,7 +490,14 @@ echo "
 CONGRATULATIONS!
 
 archibold is ready to go!
-please reboot directly through $DISK
+
+- - - - - - - - - - - - -
+
+please write the following in the console:
+
+shutdown -h now
+
+and remove the CD/USB stick after
 
 bye bye
 "
