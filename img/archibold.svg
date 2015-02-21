@@ -89,7 +89,7 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.91432927"
-     inkscape:cx="703.88485"
+     inkscape:cx="775.52206"
      inkscape:cy="485.8804"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -309,16 +309,28 @@
     </g>
     <text
        xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:287.37414551px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="176.63606"
-       y="463.72388"
+       style="font-style:normal;font-weight:normal;font-size:234.39814758px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="321.04529"
+       y="464.5715"
        id="text3621"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3623"
-         x="176.63606"
-         y="463.72388"
+         x="321.04529"
+         y="464.5715"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Nimbus Mono';-inkscape-font-specification:'Nimbus Mono';fill:#ffffff">archibold</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#646480;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;"
+       x="841.47461"
+       y="648.56958"
+       id="text3391"
+       sodipodi:linespacing="125%"><tspan
+         sodipodi:role="line"
+         id="tspan3393"
+         x="841.47461"
+         y="648.56958"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'DejaVu Sans';-inkscape-font-specification:'DejaVu Sans';fill:#646480;fill-opacity:1;">powered by</tspan></text>
   </g>
   <g
      inkscape:groupmode="layer"
