@@ -485,12 +485,6 @@ rm archibold.header
 
 sudo arch-chroot archibold /archibold
 
-sudo umount $EFI $ROOT
-
-sync
-
-rm -r archibold
-
 echo "
 
 CONGRATULATIONS!
