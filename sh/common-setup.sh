@@ -7,7 +7,7 @@ if [ "$GIT_EMAIL" = "" ]; then
   exit 1
 fi
 
-sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat
+sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
 
 sudo pacman -S --needed --noconfirm firefox lynx
 

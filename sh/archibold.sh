@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.2.0             #
+# archibold 0.2.1             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.2.0'
+ARCHIBOLD='0.2.1'
 
 echo ''
 echo "SAY
@@ -403,6 +403,22 @@ LABEL arch
   rm archibold.{png,svg}
 
   systemctl enable gdm.service
+
+  sudo -u $USER mkdir -p /home/$USER/.config/gtk-3.0
+  sudo -u $USER touch /home/$USER/.config/gtk-3.0/settings.ini
+  sudo -u $USER echo '[Settings]
+gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
+
+  gsettings set org.gnome.desktop.background picture-uri '/usr/share/backgrounds/gnome/Sandstone.jpg'
+  gsettings set org.gnome.desktop.screensaver picture-uri '/usr/share/backgrounds/gnome/Whispy_Tails.jpg'
+  gsettings set org.gnome.desktop.datetime automatic-timezone true
+  gsettings set org.gnome.desktop.interface clock-show-date true
+  gsettings set org.gnome.desktop.background show-desktop-icons true
+  gsettings set org.gnome.Terminal.Legacy.Settings dark-theme true
+
+
+  sudo -u $USER echo '# new tabs, same dir
+[[ -s /etc/profile.d/vte.sh ]] && . /etc/profile.d/vte.sh' >> /home/$USER/.bashrc
 
 else
   echo 'TIMEOUT 0

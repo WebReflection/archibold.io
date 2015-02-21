@@ -5,6 +5,17 @@
     <meta http-equiv="content-language" content="en-US">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimal-ui">
+    <meta property="og:site_name" content="archibold">
+    <meta property="og:url" content="http://archibold.io">
+    <meta property="og:title" content="archibold, by Andrea Giammarchi">
+    <meta property="og:image" content="http://archibold.io/img/archibold.png">
+    <meta name="twitter:image" content="http://archibold.io/img/archibold.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="http://archibold.io">
+    <meta name="twitter:title" content="archibold">
+    <meta name="twitter:description" content="archibold, by Andrea Giammarchi">
+    <meta name="twitter:site" content="@WebReflection">
+    <meta name="twitter:creator" content="@WebReflection">
     <style>
     html, body {
       font-family: monospace;
@@ -94,14 +105,13 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
   _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
 
 
-  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.2.0
+  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.2.1
 
       </pre></section>
       <section id="about">
         <h1><a href="#about">About</a></h1>
         <p>
-          The aim of this project is to install a complete
-          and Open Source Linux Desktop environment.
+          <strong>archibold</strong> is a zero hassle OS installer
         </p>
         <p>
           Based on <a href="https://www.archlinux.org/">ArchLinux</a>
@@ -137,14 +147,17 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
           <a href="#requirements">Requirements</a>
         </h2>
         <p>
-          Platform a part, an <strong>Internet connection</strong> and at least <strong>8GB of disk space</strong> are <strong>necessary</strong>.
+          Platform a part, an <strong>Internet connection</strong> is mandatory and there are few options.<br/>
+          Avoiding GNOME and SWAP, archibold fits into <strong>2GB</strong>.<br/>
+          Setting <code>SWAP=0<code> and keeing GNOME, <strong>4GB</strong> are more than enough.<br/>
+          For a fully functional Desktop environment, <strong>8GB of disk space</strong> would be enough.<br/>
+          Any extra space will be available and most common external Hard Drives are supported too.
         </p>
       </section>
       <section id="warning">
         <h1><a href="#warning">Warning</a></h1>
         <p>
-          This project comes with <strong>no warranty</strong> and is <strong>not responsible</strong> for any damage caused to any machine.<br/>
-          This software might compromise an entire disk if used improperly.<br/>
+          This installer might compromise an entire disk, if used improperly, so it comes with <strong>no warranty</strong>.<br/>
           Please be sure to understand each step before confirming anything during installation.<br/>
           Feel free to search in <a href="https://bbs.archlinux.org/">ArchLinux forum</a> in case of doubts, usually all answers are already there.
         </p>
@@ -196,15 +209,16 @@ ping 8.8.8.8
 # press Ctrl+C to stop the ping
 
 # if not, try to start the service manually
-netctl start wlp2s0-YourWiFi-NAME</code></pre>
+#&gt; netctl start wlp2s0-YourWiFi-NAME</code></pre>
         <p>
           Once we have a usable network, we can download <strong>archibold.sh</strong> installer.
         </p>
         <pre><code>curl -O http://archibold.io/sh/archibold.sh</code></pre>
         <p>
           The file <code>archibold.sh</code> should be in the folder now.<br/>
-          Use <code>ls</code> to verify it's in the list.<br/>
-          However, before launching it, we need to understand how to configure it.
+          Sometimes you need this operation twice (fancy DNS redirects).<br/>
+          Use <code>ls</code> to verify it's in the list or run pevious command again.<br/>
+          Before launching it, we need to understand how to configure it.
         </p>
         <h2 id="configuring-the-installer">
           <a href="#configuring-the-installer">Configuring the installer</a>
@@ -229,11 +243,11 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
             To avoid creation of a swap partition use <code>SWAP=0</code>.
           </li>
           <li>
-            <strong>LABEL</strong>, optional boot name, by default <strong>archibold</strong>.<br/>
-            It might be completely ignored by your system, I wouldn't bother much ;-)
+            <strong>GNOME</strong>, optional, if <code>GNOME=0</code> will skip the Desktop environment.
           </li>
           <li>
-            <strong>GNOME</strong>, optional, if <code>GNOME=0</code> will skip the Desktop environment.
+            <strong>LABEL</strong>, optional boot name, by default <strong>archibold</strong>.<br/>
+            It might be completely ignored by your system, I wouldn't bother much ;-)
           </li>
         </ul>
         <p>
@@ -288,10 +302,7 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
             <strong>touchpad settings</strong>, in case on laptop, click on Mouse &amp; Touchpad and switch everything on.
           </li>
           <li>
-            <strong>automatic date and time</strong>, click on the Date icon and switch them ON
-          </li>
-          <li>
-            <strong>automatic login</strong>, actually not suggested, but easy to reach via Users.<br/>
+            <strong>automatic login</strong>, actually not recommended, but easy to reach via Users.<br/>
             We need to unlock the ON/OFF button and put the USER password. Lock again once done.
           </li>
         </ul>
@@ -305,20 +316,21 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
         </p>
         <ul>
           <li>
-            <strong>Appearance</strong>, the Globl Dark Theme is gorgeous!
+            <strong>Appearance</strong>, the Globl Dark Theme is gorgeous and it's ON by default.
           </li>
           <li>
-            <strong>Desktop</strong>, Icons on Desktop, if you like them
+            <strong>Desktop</strong>, Icons on Desktop, ON by default.
           </li>
           <li>
-            <strong>Extensions</strong>, Applications Menu to discover all you have installed
+            <strong>Extensions</strong>, Applications Menu to discover all you have installed.<br/>
+            This might slow down boot time hence it's OFF by default.
           </li>
           <li>
-            <strong>Top Bar</strong>, Show date too, not just the time
+            <strong>Top Bar</strong>, Show date too, not just the time, ON by default.
           </li>
           <li>
             <strong>Dark Terminal</strong>, actually out of Tweak. Launch the Terminal then:<br/>
-            Edit &gt; Preferences &gt; Use dark theme variant, check!
+            Edit &gt; Preferences &gt; Use dark theme variant, which is ON by default.
           </li>
         </ul>
       </section>
@@ -332,7 +344,7 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
         </p>
         <p>
           However, many web developers do not test their sites in this browser.<br/>
-          As result, those sites might provide an annoying, and broken, experience.
+          As result, those sites might provide an annoying, or broken, experience.
         </p>
         <p>
           If your favorite sites work already there's no need to change browser.<br/>
@@ -357,7 +369,7 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
           Just type in the Firefox URL bar, as if it was a website, the following: <code>about:config</code>
         </p>
         <p>
-          Please <strong>be careful</strong>, there's a lot to configure here!
+          Please <strong>be careful</strong>, there's a lot to configure here but we need to change only one value!
         </p>
         <p>
           Search <em>pixel</em> and change the value of <code>layout.css.devPixelPerPx</code> to <strong>2</strong>.<br/>
@@ -368,12 +380,13 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
         </h2>
         <p>
           This is year 2015, nobody needs it anymore but feel free to search online how to install it.<br/>
-          All I can say is that it's possible to install it, but I am not responsible for that.
+          However, if the site you are visiting requires it, you might try to install it via:
+          <pre><code></code>pacman -S --needed flashplugin</pre>
         </p>
       </section>
       <section id="problem-solving">
         <h1>
-          <a href="#problem-solving">Problem Solving</a>
+          <a href="#problem-solving">Problem Solving &amp; Setup</a>
         </h1>
         <p>
           Following a list of known gotchas that could make <em>archibold</em> journey not so nice.
@@ -383,7 +396,8 @@ netctl start wlp2s0-YourWiFi-NAME</code></pre>
             <strong>Broadcom WiFi</strong> problems. The hybrid driver works quite OK if patched.<br/>
             This is <a href="https://aur.archlinux.org/packages/broadcom-wl-dkms/">the suggested AUR</a> package to install for these kind of WiFi cards.<br/>
             In order to know which one you have, write this on the terminal: <code>lspci -nn</code><br/>
-            You should have a list of devices, one of them called Wireless Network/Adapter.
+            You should have a list of devices, one of them called Wireless Network/Adapter.<br/>
+            If you are sure you need such driver, you can simply type: <code>aur broadcom-wl-dkms</code> in the terminal.
           </li>
           <li>
             <strong>how to install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
@@ -411,13 +425,6 @@ sudo pacman -Rsc <i>package-name</i>
 sudo pacman -Sc</code></pre>
           </li>
           <li>
-            <strong>Unable to switch to Dark Theme</strong>, is hopefully a very temporary problem.<br/>
-            Easy to solve via the following command in the terminal:
-            <pre><code>cd ~/.config
-mkdir -p gtk-3.0
-touch gtk-3.0/settings.ini</code></pre>
-          </li>
-          <li>
             minimal dependencies from <strong>arch bootstrap</strong>:
             <pre><code>pacman-key --init
 pacman-key --populate archlinux
@@ -425,16 +432,42 @@ pacman -Syu --needed \
   awk curl dosfstools grep parted sed sudo vi</code></pre>
           </li>
           <li>
-            common <strong>AUR packages</strong> for developers can be installed as such:
-            <pre><code>curl -O http://archibold.io/sh/aur
-sudo chmod +x aur
+            common <strong>AUR packages</strong> for developers can be installed via aur:
+            <pre><code>$ aur
 
-# type ./aur to see full list, i.e.
+ - - - - - - -
+| aur  v0.0.2 |
+ - - - - - - -
 
-aur google-chrome-dev
-aur spotify
-aur sublime-text-nightly
+ usage:
+
+  aur [install|remove] program-name
+  aur program-name # implicit install
+
+
+ list of programs:
+
+  broadcom-wl-dkms        # broadcom wifi
+  google-chrome-dev       # dev channel
+  spotify                 # music baby!
+  sublime-text-nightly    # sublime 3
 </code></pre>
+          </li>
+          <li>
+            the <strong>common developer setup</strong> script aim is to bootstrap a developer environment with:<ul>
+              <li>qt, git with setup and nodejs with npm setup for develpment</li>
+              <li>exfat-utils, fuse-exfat, and dosfstools for common disks operations</li>
+              <li>firefox and lynx for web surfing</li>
+              <li>virtualbox with automatic modprobe configuration</li>
+              <li>sublime-text-nightly and filezilla for common web development tasks</li>
+              <li>inkscape and gimp for graphic operations</li>
+              <li>skype and spotify for chats and music</li>
+              <li>mariadb as common development database</li>
+            </ul>
+            In order to install everything listed <pre><code>curl -O http://archibold.io/sh/common-setup.sh
+sh common-setup.sh
+rm common-setup.sh</code></pre>
+            Please follow instructions.
           </li>
         </ul>
       </section>
