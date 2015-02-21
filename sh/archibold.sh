@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.2.2             #
+# archibold 0.2.3             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.2.2'
+ARCHIBOLD='0.2.3'
 
 echo ''
 echo "SAY
@@ -118,6 +118,22 @@ if [ "$(verifyuser $USER root)" != "" ]; then
   exit 1
 fi
 
+# password checks
+if [ "$PWD" = "" ]; then
+  if [ "$UPWD" = "" ]; then
+    PWD=root
+  else
+    PWD="$UPWD"
+  fi
+else
+  if [ "$UPWD" = "" ]; then
+    UPWD="$PWD"
+  fi
+fi
+if [ "$UPWD" = "" ]; then
+  UPWD="$USER"
+fi
+
 # UEFI architecture check
 if [ "$UEFI" != "" ]; then
   if [ "$UEFI" != "efi64" ]; then
@@ -161,10 +177,12 @@ echo ' - - - - - - - - - - - - - - '
 echo ' SUMMARY '
 echo ' - - - - - - - - - - - - - - '
 echo "  installing archibld $ARCHIBOLD"
-echo "  with label $LABEL"
-echo "  for user $USER"
+echo "  for users/passwords"
+echo "    root/${PWD}"
+echo "    ${USER}/${UPWD}"
 echo "  on disk $DISK"
 echo "  using syslinux/$UEFI"
+echo "  with label $LABEL"
 if [ "$SWAP" = "0" ]; then
   echo "  without swap"
 else
@@ -310,13 +328,15 @@ pacman-db-upgrade
 echo '###############
 ##   root    ##
 ###############'
-passwd
+echo -e '$PWD
+$PWD' | passwd
 
 useradd -m -g users -G wheel,storage,power -s /bin/bash $USER
 echo '##################
 ## $USER ##
 ##################'
-passwd $USER
+echo -e '$UPWD
+$UPWD' | passwd $USER
 
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 
