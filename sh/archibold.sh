@@ -342,8 +342,6 @@ else
 fi
 cp -r /usr/lib/syslinux/$UEFI/syslinux.efi /boot/EFI/syslinux
 
-efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
-
 if [ '$GNOME' != '0' ]; then
   sync
   pacman -Syu --needed --noconfirm \
@@ -461,6 +459,11 @@ fi
 
 pacman-db-upgrade
 sync
+
+efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+sync
+
+sleep 3
 
 mkinitcpio -p linux
 mv /boot/{vmlinuz-linux,*.img} /boot/EFI
