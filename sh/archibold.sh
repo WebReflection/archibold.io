@@ -78,6 +78,10 @@ verifyTechnology() {
   esac
 }
 
+# adjust local time
+ntpdate pool.ntp.org
+timedatectl set-local-rtc 1
+
 # video card checks
 if [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep Intel)" != "" ]; then
   GPU='Intel'
