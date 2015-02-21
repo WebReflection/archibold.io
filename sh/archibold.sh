@@ -204,6 +204,9 @@ if [[ $? -ne 0 ]] ; then
   exit 1
 fi
 
+clear
+cat archibold.header
+
 for CHOICE in $(ls ${DISK}*); do
   if [ "$CHOICE" != "$DISK" ]; then
     if [ "$(df | grep $CHOICE)" != "" ]; then
