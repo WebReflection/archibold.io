@@ -18,8 +18,8 @@
    inkscape:version="0.91 r13725"
    sodipodi:docname="archibold.svg"
    inkscape:export-filename="/home/webreflection/Documents/archibold.png"
-   inkscape:export-xdpi="150"
-   inkscape:export-ydpi="150">
+   inkscape:export-xdpi="90.017982"
+   inkscape:export-ydpi="90.017982">
   <defs
      id="defs4">
     <linearGradient
@@ -84,12 +84,12 @@
   <sodipodi:namedview
      id="base"
      pagecolor="#000000"
-     bordercolor="#666666"
-     borderopacity="1.0"
+     bordercolor="#000000"
+     borderopacity="0"
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="0.91432927"
-     inkscape:cx="775.52206"
+     inkscape:cx="706.07224"
      inkscape:cy="485.8804"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
@@ -100,7 +100,9 @@
      inkscape:window-x="0"
      inkscape:window-y="55"
      inkscape:window-maximized="1"
-     showguides="false" />
+     showguides="false"
+     inkscape:showpageshadow="true"
+     borderlayer="false" />
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -109,7 +111,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -121,7 +123,9 @@
     <g
        id="g4433"
        transform="translate(-182.36779,0)"
-       style="fill:#b4b4c8;fill-opacity:1">
+       style="fill:#b4b4c8;fill-opacity:1"
+       inkscape:export-xdpi="90.017982"
+       inkscape:export-ydpi="90.017982">
       <g
          transform="matrix(0.58539019,0,0,0.58539019,760.96409,669.19864)"
          id="layer1-7"
@@ -313,7 +317,9 @@
        x="321.04529"
        y="464.5715"
        id="text3621"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-xdpi="90.017982"
+       inkscape:export-ydpi="90.017982"><tspan
          sodipodi:role="line"
          id="tspan3623"
          x="321.04529"
@@ -325,7 +331,9 @@
        x="841.47461"
        y="648.56958"
        id="text3391"
-       sodipodi:linespacing="125%"><tspan
+       sodipodi:linespacing="125%"
+       inkscape:export-xdpi="90.017982"
+       inkscape:export-ydpi="90.017982"><tspan
          sodipodi:role="line"
          id="tspan3393"
          x="841.47461"
