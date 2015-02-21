@@ -119,19 +119,19 @@ if [ "$(verifyuser $USER root)" != "" ]; then
 fi
 
 # password checks
-if [ "$PWD" = "" ]; then
-  if [ "$UPWD" = "" ]; then
-    PWD=root
+if [ "$PASSWD" = "" ]; then
+  if [ "$UPASSWD" = "" ]; then
+    PASSWD=root
   else
-    PWD="$UPWD"
+    PASSWD="$UPASSWD"
   fi
 else
-  if [ "$UPWD" = "" ]; then
-    UPWD="$PWD"
+  if [ "$UPASSWD" = "" ]; then
+    UPASSWD="$PASSWD"
   fi
 fi
-if [ "$UPWD" = "" ]; then
-  UPWD="$USER"
+if [ "$UPASSWD" = "" ]; then
+  UPASSWD="$USER"
 fi
 
 # UEFI architecture check
@@ -179,8 +179,8 @@ echo ' SUMMARY '
 echo ' - - - - - - - - - - - - - - '
 echo "  installing archibld $ARCHIBOLD"
 echo "  for users/passwords"
-echo "    root/${PWD}"
-echo "    ${USER}/${UPWD}"
+echo "    root/${PASSWD}"
+echo "    ${USER}/${UPASSWD}"
 echo "  on disk $DISK"
 echo "  using syslinux/$UEFI"
 echo "  with label $LABEL"
@@ -329,15 +329,15 @@ pacman-db-upgrade
 echo '###############
 ##   root    ##
 ###############'
-echo -e '$PWD
-$PWD' | passwd
+echo -e '$PASSWD
+$PASSWD' | passwd
 
 useradd -m -g users -G wheel,storage,power -s /bin/bash $USER
 echo '##################
 ## $USER ##
 ##################'
-echo -e '$UPWD
-$UPWD' | passwd $USER
+echo -e '$UPASSWD
+$UPASSWD' | passwd $USER
 
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
 
