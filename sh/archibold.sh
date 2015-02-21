@@ -390,8 +390,9 @@ LABEL arch
 
 ' > /boot/EFI/syslinux/syslinux.cfg
 
-  curl -O http://archibold.io/archibold.svg
-  curl -O http://archibold.io/archibold.svg
+  pacman -Syu --needed --noconfirm inkscape
+  curl -O http://archibold.io/img/archibold.svg
+  curl -O http://archibold.io/img/archibold.svg
   inkscape \
     --export-png=archibold.png \
     --export-width=$WIDTH \
