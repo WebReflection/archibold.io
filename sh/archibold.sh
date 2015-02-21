@@ -465,7 +465,6 @@ sync
 mkinitcpio -p linux
 mv /boot/{vmlinuz-linux,*.img} /boot/EFI
 sync
-rm /archibold
 
 sleep 3
 
@@ -475,6 +474,10 @@ sudo -u $USER curl -O http://archibold.io/sh/aur
 chmod +x aur
 mv aur /usr/bin
 sync
+
+rm /archibold
+
+sleep 3
 
 exit
 ">archibold.bash
