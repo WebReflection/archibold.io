@@ -432,7 +432,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
 
 else
-  echo 'TIMEOUT 0
+  echo 'TIMEOUT 20
 PROMPT 0
 DEFAULT arch
 
