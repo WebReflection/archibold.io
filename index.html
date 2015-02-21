@@ -454,20 +454,33 @@ pacman -Syu --needed \
 </code></pre>
           </li>
           <li>
+            the <strong>common home setup</strong> script aim is to bootstrap a user environment with:<ul>
+              <li>libreoffice, for office like needs</li>
+              <li>exfat-utils, fuse-exfat, and dosfstools for common disks operations</li>
+              <li>firefox and flashplugin for web surfing</li>
+              <li>inkscape and gimp for graphic operations</li>
+              <li>skype and spotify for chats and music</li>
+              <li><a href="http://kodi.tv/about/">kodi</a> as multimedia center for pictures, audio, movies and more</li>
+            </ul>
+            In order to install home-setup, write this on the terminal:<pre><code>curl -O http://archibold.io/sh/home-setup.sh
+sh home-setup.sh
+rm home-setup.sh</code></pre>
+          </li>
+          <li>
             the <strong>common developer setup</strong> script aim is to bootstrap a developer environment with:<ul>
               <li>qt, git with setup and nodejs with npm setup for develpment</li>
               <li>exfat-utils, fuse-exfat, and dosfstools for common disks operations</li>
               <li>firefox and lynx for web surfing</li>
               <li>virtualbox with automatic modprobe configuration</li>
-              <li>sublime-text-nightly and filezilla for common web development tasks</li>
+              <li>sublime-text-nightly and filezilla for common web development tasks (it needs a valid license)</li>
               <li>inkscape and gimp for graphic operations</li>
               <li>skype and spotify for chats and music</li>
               <li>mariadb as common development database</li>
             </ul>
-            In order to install everything listed <pre><code>curl -O http://archibold.io/sh/common-setup.sh
-sh common-setup.sh
-rm common-setup.sh</code></pre>
-            Please follow instructions.
+            In order to install dev-setup, write this on the terminal:<pre><code>curl -O http://archibold.io/sh/dev-setup.sh
+sh dev-setup.sh
+rm dev-setup.sh</code></pre>
+            Please follow instructions, when asked (GitHub add key and npm).
           </li>
         </ul>
       </section>
