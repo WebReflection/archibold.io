@@ -144,6 +144,9 @@ fi
 
 pacman -Sy --noconfirm
 pacman-db-upgrade
+pacman-key --init
+pacman-key --populate archlinux
+
 pacman -S --needed --noconfirm fbset
 if [ "$WIDTH" = "" ]; then
   WIDTH=$(fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
