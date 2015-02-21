@@ -140,6 +140,14 @@ fi
 
 pacman -Sy --noconfirm
 pacman-db-upgrade
+pacman -S --needed --noconfirm fbset
+if [ "$WIDTH" = "" ]; then
+  WIDTH=$(fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
+fi
+if [ "$HEIGHT" = "" ]; then
+  HEIGHT=$(fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
+fi
+
 
 # print summary
 echo ' - - - - - - - - - - - - - - '
@@ -158,13 +166,8 @@ fi
 if [ "$GNOME" = "0" ]; then
   echo "  without GNOME"
 else
-  pacman -S --needed fbset
-  if [ "$WIDTH" = "" ]; then
-    WIDTH=$(fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
-    HEIGHT=$(fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
-  fi
   echo "  with GPU $GPU"
-  echo "  and resolution $WIDTHx$HEIGHT"
+  echo "  and resolution ${WIDTH}x${HEIGHT}"
 fi
 echo ' - - - - - - - - - - - - - - '
 
