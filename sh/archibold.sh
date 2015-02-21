@@ -172,6 +172,7 @@ if [ "$HEIGHT" = "" ]; then
 fi
 
 clear
+cat archibold.header
 # print summary
 echo ' - - - - - - - - - - - - - - '
 echo ' SUMMARY '
