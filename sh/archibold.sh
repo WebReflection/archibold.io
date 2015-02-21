@@ -171,7 +171,7 @@ if [ "$HEIGHT" = "" ]; then
   HEIGHT=$(fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
 fi
 
-
+clear
 # print summary
 echo ' - - - - - - - - - - - - - - '
 echo ' SUMMARY '
