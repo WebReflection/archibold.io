@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.2.4             #
+# archibold 0.2.5             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.2.4'
+ARCHIBOLD='0.2.5'
 
 echo ''
 echo "SAY
@@ -204,9 +204,6 @@ if [[ $? -ne 0 ]] ; then
   exit 1
 fi
 
-clear
-cat archibold.header
-
 for CHOICE in $(ls ${DISK}*); do
   if [ "$CHOICE" != "$DISK" ]; then
     if [ "$(df | grep $CHOICE)" != "" ]; then
@@ -221,9 +218,9 @@ for CHOICE in $(ls ${DISK}*); do
   fi
 done
 
-echo "WARNING: I am going to erase $DISK"
-echo "is that OK? There is NO coming back!"
-read -n1 -r -p "press y to confirm:" CHOICE
+echo "Please read carefully above info."
+echo "WARNING: disk $DISK will be completely erased."
+read -n1 -r -p "Is it OK to proceed? [y/n]" CHOICE
 
 if [[ $? -ne 0 ]] ; then
   echo ''
@@ -236,6 +233,9 @@ if [ "$CHOICE" != "y" ]; then
   echo 'nothing to do then, bye bye'
   exit 1
 fi
+
+clear
+cat archibold.header
 
 echo ''
 sudo dd if=/dev/zero of=$DISK bs=1 count=2048
@@ -487,6 +487,13 @@ mv aur /usr/bin
 sync
 
 rm /archibold
+
+if [ '$SETUP' != '' ]; then
+  curl -O http://archibold.io/sh/$SETUP-setup.sh
+  curl -O http://archibold.io/sh/$SETUP-setup.sh
+  sh setup.sh
+  rm setup.sh
+fi
 
 sleep 3
 
