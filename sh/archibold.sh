@@ -415,7 +415,7 @@ MENU CLEAR
 LABEL arch
       LINUX /vmlinuz-linux
       INITRD /intel-ucode.img,/initramfs-linux.img
-      APPEND root=$ROOT rw quiet loglevel=0
+      APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
 
 ' > /boot/EFI/syslinux/syslinux.cfg
 
@@ -476,7 +476,7 @@ SAY
 LABEL arch
       LINUX /vmlinuz-linux
       INITRD /intel-ucode.img,/initramfs-linux.img
-      APPEND root=$ROOT rw quiet loglevel=0
+      APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
 
 ' > /boot/EFI/syslinux/syslinux.cfg
 fi
