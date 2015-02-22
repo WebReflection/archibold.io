@@ -354,8 +354,7 @@ sync
 free -h
 
 systemctl enable NetworkManager.service
-
-hostname archibold
+hostnamectl set-hostname archibold
 
 syslinux-install_update -ia
 
