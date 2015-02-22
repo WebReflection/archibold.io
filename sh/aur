@@ -50,6 +50,9 @@ installation() {
       sudo systemctl enable dkms.service
       commonProcedure 'br' 'broadcom-wl-dkms'
       ;;
+    dropbox)
+      commonProcedure 'dr' 'dropbox'
+      ;;
     google-chrome-dev)
       commonProcedure 'go' 'google-chrome-dev'
       ;;
@@ -63,7 +66,7 @@ installation() {
     *)
       echo '
  - - - - - - -
-| aur  v0.1.0 |
+| aur  v0.1.1 |
  - - - - - - -
 
  usage:
@@ -76,6 +79,7 @@ installation() {
 
   acroread                # Adobe Acrobat Reader
   broadcom-wl-dkms        # Broadcom wifi
+  dropbox                 # Dropbox client
   google-chrome-dev       # Chrome dev channel
   spotify                 # music baby!
   sublime-text-nightly    # Sublime 3 (requires a valid license)
