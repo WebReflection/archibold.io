@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.2.3             #
+# archibold 0.2.4             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.2.3'
+ARCHIBOLD='0.2.4'
 
 echo ''
 echo "SAY
@@ -503,6 +503,8 @@ mv aur /usr/bin
 sync
 
 rm /archibold
+
+hostname archibold
 
 sleep 3
 
