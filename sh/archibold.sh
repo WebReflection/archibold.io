@@ -409,7 +409,7 @@ LABEL arch
     --export-width=$WIDTH \
     --export-height=$HEIGHT \
     archibold.svg
-  convert archibold.png archibold.jpg
+  convert archibold.png -quality 100% archibold.jpg
   mv archibold.jpg /boot/EFI
   rm archibold.{png,svg}
   pacman -Rsc --noconfirm inkscape
