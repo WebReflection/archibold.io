@@ -355,6 +355,8 @@ free -h
 
 systemctl enable NetworkManager.service
 
+hostname archibold
+
 syslinux-install_update -ia
 
 mkdir -p /boot/EFI/syslinux
@@ -410,6 +412,7 @@ LABEL arch
   convert archibold.png archibold.jpg
   mv archibold.jpg /boot/EFI
   rm archibold.{png,svg}
+  pacman -Rsc --noconfirm inkscape
 
   systemctl enable gdm.service
 
@@ -483,8 +486,6 @@ mv aur /usr/bin
 sync
 
 rm /archibold
-
-hostname archibold
 
 sleep 3
 
