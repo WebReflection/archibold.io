@@ -1,18 +1,30 @@
 #!/usr/bin/bash
 
-commonProcedure() {
+downloadArchive() {
   local type=$1
   local name=$2
   sudo pacman -S --needed --noconfirm base-devel git
   cd ~/Downloads
   curl -O "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
   tar -xzf "${name}.tar.gz"
+}
+
+removeArchive() {
+  local name=$1
+  cd ~/Downloads
+  rm -rf "${name}"
+  rm "${name}.tar.gz"
+}
+
+commonProcedure() {
+  local type=$1
+  local name=$2
+  downloadArchive $type $name
+  cd ~/Downloads
   cd "${name}"
   makepkg -Asc --needed --noconfirm
   sudo pacman -U --needed --noconfirm ${name}*.pkg.tar.xz
-  cd ..
-  rm -rf "${name}"
-  rm "${name}.tar.gz"
+  removeArchive $name
 }
 
 installation() {
@@ -22,6 +34,16 @@ installation() {
       ;;
     remove)
       sudo pacman -Rsc $2
+      ;;
+    acroread)
+      sudo pacman -S --needed --noconfirm pangox-compat
+      downloadArchive 'ac' 'acroread'
+      cd ~/Downloads/acroread
+      sed 's/pangox-compat/libcanberra/' <PKGBUILD >PKGBUILD.patched
+      mv PKGBUILD.patched PKGBUILD
+      makepkg -Asc --needed --noconfirm
+      sudo pacman -U --needed --noconfirm acroread*.pkg.tar.xz
+      removeArchive acroread
       ;;
     broadcom-wl-dkms)
       sudo pacman -Syu --needed linux-headers dkms
@@ -41,7 +63,7 @@ installation() {
     *)
       echo '
  - - - - - - -
-| aur  v0.0.2 |
+| aur  v0.1.0 |
  - - - - - - -
 
  usage:
@@ -52,10 +74,11 @@ installation() {
 
  list of programs:
 
-  broadcom-wl-dkms        # broadcom wifi
-  google-chrome-dev       # dev channel
+  acroread                # Adobe Acrobat Reader
+  broadcom-wl-dkms        # Broadcom wifi
+  google-chrome-dev       # Chrome dev channel
   spotify                 # music baby!
-  sublime-text-nightly    # sublime 3
+  sublime-text-nightly    # Sublime 3 (requires a valid license)
 
 '
       ;;
