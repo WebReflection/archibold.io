@@ -51,6 +51,7 @@ installation() {
       commonProcedure 'br' 'broadcom-wl-dkms'
       ;;
     dropbox)
+      sudo pacman -Syu --needed ufw-extras perl-file-mimeinfo
       commonProcedure 'dr' 'dropbox'
       ;;
     google-chrome-dev)
