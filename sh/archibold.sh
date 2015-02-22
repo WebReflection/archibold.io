@@ -397,6 +397,7 @@ LABEL arch
       LINUX /vmlinuz-linux
       INITRD /intel-ucode.img,/initramfs-linux.img
       APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
+      MENU CLEAR
 
 ' > /boot/EFI/syslinux/syslinux.cfg
 
