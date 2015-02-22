@@ -479,6 +479,7 @@ sync
 sleep 3
 
 cd /home/$USER
+sudo -u $USER touch /home/$USER/.hushlogin
 sudo -u $USER curl -O http://archibold.io/sh/aur
 sudo -u $USER curl -O http://archibold.io/sh/aur
 chmod +x aur
