@@ -1,0 +1,155 @@
+#!/usr/bin/bash
+
+#                                _|        _|  _|                  _|        _|
+#     _|_|_|  _|  _|_|   _|_|_|  _|_|_|        _|_|_|      _|_|    _|    _|_|_|
+#   _|    _|  _|_|     _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+#   _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+#     _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
+#
+#
+#     by Andrea Giammarchi - @WebReflection - http://archibold.io/
+
+installation() {
+  local name=$1
+  local AUR
+  case $name in
+    acroread)
+      sudo pacman -S --needed --noconfirm pangox-compat
+      downloadArchive 'acroread'
+      cd ~/Downloads/acroread
+      sed 's/pangox-compat/libcanberra/' <PKGBUILD >PKGBUILD.patched
+      mv PKGBUILD.patched PKGBUILD
+      makepkg -Asc --needed --noconfirm
+      sudo pacman -U --needed --noconfirm acroread*.pkg.tar.xz
+      removeArchive acroread
+      ;;
+    broadcom-wl-dkms)
+      sudo pacman -Syu --needed linux-headers dkms
+      sudo systemctl enable dkms.service
+      commonProcedure 'broadcom-wl-dkms'
+      ;;
+    dropbox)
+      sudo pacman -Syu --needed ufw-extras perl-file-mimeinfo
+      commonProcedure 'dropbox'
+      ;;
+    google-chrome-dev)
+      commonProcedure 'google-chrome-dev'
+      ;;
+    spotify)
+      commonProcedure 'libgcrypt15'
+      commonProcedure 'spotify'
+      ;;
+    sublime-text-nightly)
+      commonProcedure 'sublime-text-nightly'
+      ;;
+    *)
+      if [ "$(pacman -Qs $name)" = "" ]; then
+        AUR=curl -s -I $(getAURPackageNameAsURL $name) | grep '404'
+        if [ "$AUR" = "" ]; then
+          echo -e "${RED}[WARNING]${RESET} package ${BOLD}${1}${RESET} not found";
+          exit 1
+        else
+          echo "Found a non supported AUR ${BOLD}${1}${RESET}"
+          read -n1 -r -p "Are you sure you would like to install it? [y/N]" AUR
+          if [ "$AUR" = "Y" ]; then
+            AUR="y"
+          fi
+          if [ "$AUR" = "y" ]; then
+            commonProcedure $name
+          fi
+        fi
+      else
+        sudo pacman -S --needed --noconfirm $name
+      fi
+      ;;
+  esac
+}
+
+getAURPackageNameAsURL() {
+  local name=$1
+  local type=${name:0:2}
+  echo "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
+}
+
+downloadArchive() {
+  local name=$1
+  sudo pacman -S --needed --noconfirm base-devel git
+  cd ~/Downloads
+  curl -O $(getAURPackageNameAsURL $name)
+  tar -xzf "${name}.tar.gz"
+}
+
+removeArchive() {
+  local name=$1
+  cd ~/Downloads
+  rm -rf "${name}"
+  rm "${name}.tar.gz"
+}
+
+commonProcedure() {
+  local name=$1
+  downloadArchive $name
+  cd ~/Downloads
+  cd "${name}"
+  makepkg -Asc --needed --noconfirm
+  sudo pacman -U --needed --noconfirm ${name}*.pkg.tar.xz
+  removeArchive $name
+}
+
+archibold() {
+  local RESET="\033[0m"
+  local RED="\033[0;31m"
+  local GREEN="\033[0;32m"
+  local BOLD="\033[1m"
+  case $1 in
+    update)
+      sudo pacman -Sy
+      ;;
+    upgrade)
+      mkdir -p ~/Downloads
+      sudo curl -s -o ~/Downloads/archibold http://archibold.io/sh/archibold
+      sudo curl -s -o ~/Downloads/archibold http://archibold.io/sh/archibold
+      sudo chmod +x ~/Downloads/archibold
+      sudo mv ~/Downloads/archibold $0
+      sudo pacman -Syu --noconfirm
+      ;;
+    clean)
+      sudo pacman -Sc --noconfirm
+      ;;
+    search)
+      sudo pacman -Qs $2
+      ;;
+    install)
+      installation $2
+      ;;
+    remove)
+      sudo pacman -Rsc $2
+      ;;
+    *)
+      echo -e "
+${BOLD} __________________
+|                  |
+| archibold v0.1.0 |
+|__________________|${RESET}
+
+ ${BOLD}usage${RESET}:
+
+  archibold [clean|update|upgrade]
+  archibold [install|remove|search] package-name
+
+
+ ${BOLD}list of included AUR packages${RESET}:
+
+  acroread                # Adobe Acrobat Reader
+  broadcom-wl-dkms        # Broadcom wifi
+  dropbox                 # Dropbox client
+  google-chrome-dev       # Chrome dev channel
+  spotify                 # music baby!
+  sublime-text-nightly    # Sublime 3 (requires a valid license)
+
+"
+      ;;
+  esac
+}
+
+archibold "$@"
