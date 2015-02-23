@@ -53,7 +53,7 @@ installation() {
           echo -e "${RED}[WARNING]${RESET} package ${BOLD}${1}${RESET} not found";
           exit 1
         else
-          echo "Found an unknown AUR ${BOLD}${1}${RESET} package."
+          echo -e "Found an unknown AUR ${BOLD}${1}${RESET} package."
           read -n1 -r -p "Are you sure you would like to install it? [y/N]" AUR
           if [ "$AUR" = "Y" ]; then
             AUR="y"
@@ -128,9 +128,9 @@ archibold() {
       if [ "$(sudo pacman -Qs $2)" = "" ]; then
         AUR=curl -s -I $(getAURPackageNameAsURL $name) | grep '404'
         if [ "$AUR" = "" ]; then
-          echo "${BOLD}${2}${RESET} available only via ${BOLD}AUR${RESET}"
+          echo -e "${BOLD}${2}${RESET} available only via ${BOLD}AUR${RESET}"
         else
-          echo "Unable to find ${BOLD}${2}${RESET} package."
+          echo -e "Unable to find ${BOLD}${2}${RESET} package."
         fi
       fi
       ;;
