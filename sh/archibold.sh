@@ -445,6 +445,13 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
 
+  echo '
+#lockDialogGroup {
+  background: #2e3436 url(/usr/share/backgrounds/gnome/Whispy_Tails.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}' >> /usr/share/gnome-shell/theme/gnome-shell.css 
+
 else
   echo 'TIMEOUT 20
 PROMPT 0
