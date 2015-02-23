@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-US">
   <head>
     <title>archibold</title>
-    <meta http-equiv="content-language" content="en-US">
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimal-ui">
     <meta property="og:site_name" content="archibold">
@@ -37,6 +36,9 @@
     }
     #logo {
       cursor: default;
+    }
+    #logo > h2 {
+      display: none;
     }
     pre:nth-child(n+2) {
       padding: 8px;
@@ -96,7 +98,7 @@
   </head>
   <body>
     <div>
-      <section id="logo"><pre>
+      <section id="logo"><h2>archibold</h2><pre>
 
                              _|        _|  _|                  _|        _|
   _|_|_|  _|  _|_|   _|_|_|  _|_|_|        _|_|_|      _|_|    _|    _|_|_|
@@ -131,7 +133,7 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
           <li>Mac Mini Mid 2010 with Intel® Core™2 Duo CPU P8600 @ 2.40GHz x 2 (via nVidia neuveau)</li>
         </ul>
       </section>
-      <img src="img/disk-utils.png"/>
+      <img src="img/disk-utils.png" alt="showcase disk utility"/>
       <section id="supported-platform">
         <h1><a href="#supported-platform">Supported Platforms</a></h1>
         <p>
@@ -284,7 +286,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
           </li>
         </ul>
       </section>
-      <img src="img/activity-launcher.png"/>
+      <img src="img/activity-launcher.png" alt="showcase activity launcher"/>
       <section id="first-boot">
         <h1><a href="#first-boot">First boot</a></h1>
         <p>
@@ -296,7 +298,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
           <strong>Settings</strong> are reachable through the top right corner.<br/>
           One click and few essential options will show up already.
         </p>
-        <img src="img/top-right.png" style="max-width:320px;"/>
+        <img src="img/top-right.png" style="max-width:320px;" alt="settings preview"/>
         <p>
           <strong>Programs</strong> are reachable trough the top left corner, or using the Window/Start button.<br/>
           We can simply start typing a program name, and this will be listed on the screen.
@@ -306,7 +308,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
         </h2>
         <p>
           In order to keep updated, install, or remove software, type <code>archibold</code> once in the terminal:
-          <pre><code>$ archibold
+        </p><pre><code>$ archibold
 
  __________________
 |                  |
@@ -329,7 +331,6 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
   sublime-text-nightly    # Sublime 3 (requires a valid license)
 
 </code></pre>
-        </p>
         <h2 id="suggested-settings">
           <a href="#suggested-settings">Suggested Settings</a>
         </h2>
@@ -373,7 +374,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
           </li>
         </ul>
       </section>
-      <img src="img/dark-theme.png"/>
+      <img src="img/dark-theme.png" alt="showcase dark theme"/>
       <section id="browser">
         <h1><a href="#browser">Browser</a></h1>
         <p>
@@ -525,7 +526,7 @@ rm dev-setup.sh</code></pre>
           Best Regards, Andrea Giammarchi.
         </p>
       </section>
-      <footer><img src="img/archibold.png"/></footer>
+      <footer><img src="img/archibold.png" alt="splash screen"/></footer>
     </div>
   </body>
 </html>
