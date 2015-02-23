@@ -132,15 +132,13 @@ archibold() {
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.1.0 |
+| archibold v0.3.0 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
 
   archibold [clean|update|upgrade]
   archibold [install|remove|search] package-name
-
-  archibold archibold # to update only this file
 
 
  ${BOLD}list of included AUR packages${RESET}:

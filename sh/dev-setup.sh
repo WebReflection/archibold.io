@@ -32,9 +32,9 @@ sudo pacman -S --needed --noconfirm skype
 sudo pacman -S --needed --noconfirm mariadb
 
 sudo pacman -S --needed --noconfirm ffmpeg-compat
-aur spotify
+archibold install spotify
 
-aur sublime-text-nightly
+archibold install sublime-text-nightly
 cd /home/$USER/.config/sublime-text-3/Packages
 git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
 

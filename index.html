@@ -397,7 +397,7 @@ ping 8.8.8.8
             This is <a href="https://aur.archlinux.org/packages/broadcom-wl-dkms/">the suggested AUR</a> package to install for these kind of WiFi cards.<br/>
             In order to know which one you have, write this on the terminal: <code>lspci -nn</code><br/>
             You should have a list of devices, one of them called Wireless Network/Adapter.<br/>
-            If you are sure you need such driver, you can simply type: <code>aur broadcom-wl-dkms</code> in the terminal.
+            If you are sure you need such driver, you can simply type: <code>archibold install broadcom-wl-dkms</code> in the terminal.
           </li>
           <li>
             <strong>how to install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
@@ -432,25 +432,29 @@ pacman -Syu --needed \
   awk curl dosfstools grep parted sed sudo vi</code></pre>
           </li>
           <li>
-            common <strong>AUR packages</strong> for developers can be installed via aur:
-            <pre><code>$ aur
+            common <strong>AUR packages</strong> for developers can be installed via archibold:
+            <pre><code>$ archibold
 
- - - - - - - -
-| aur  v0.0.2 |
- - - - - - - -
+ __________________
+|                  |
+| archibold v0.3.0 |
+|__________________|
 
  usage:
 
-  aur [install|remove] program-name
-  aur program-name # implicit install
+  archibold [clean|update|upgrade]
+  archibold [install|remove|search] package-name
 
 
- list of programs:
+ list of included AUR packages:
 
-  broadcom-wl-dkms        # broadcom wifi
-  google-chrome-dev       # dev channel
+  acroread                # Adobe Acrobat Reader
+  broadcom-wl-dkms        # Broadcom wifi
+  dropbox                 # Dropbox client
+  google-chrome-dev       # Chrome dev channel
   spotify                 # music baby!
-  sublime-text-nightly    # sublime 3
+  sublime-text-nightly    # Sublime 3 (requires a valid license)
+
 </code></pre>
           </li>
           <li>

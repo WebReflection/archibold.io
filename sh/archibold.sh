@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.2.5             #
+# archibold 0.3.0             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -36,7 +36,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.2.5'
+ARCHIBOLD='0.3.0'
 
 echo ''
 echo "SAY
@@ -480,10 +480,10 @@ sleep 3
 
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
-sudo -u $USER curl -O http://archibold.io/sh/aur
-sudo -u $USER curl -O http://archibold.io/sh/aur
-chmod +x aur
-mv aur /usr/bin
+sudo -u $USER curl -s -O http://archibold.io/sh/archibold
+sudo -u $USER curl -O http://archibold.io/sh/archibold
+chmod +x archibold
+mv archibold /usr/bin
 sync
 
 rm /archibold
