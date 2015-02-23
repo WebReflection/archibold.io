@@ -47,7 +47,7 @@ installation() {
       commonProcedure 'sublime-text-nightly'
       ;;
     *)
-      if [ "$(sudo pacman -Qs $name)" = "" ]; then
+      if [ "$(sudo pacman -Ss $name)" = "" ]; then
         AUR=$(curl -s -I $(getAURPackageNameAsURL $name) | grep '404')
         if [ "$AUR" = "" ]; then
           echo -e "Found an unknown AUR ${BOLD}${1}${RESET} package."
@@ -125,7 +125,7 @@ archibold() {
       sudo pacman -Sc --noconfirm
       ;;
     search)
-      AUR=$(sudo pacman -Qs $2)
+      AUR=$(sudo pacman -Ss $2)
       if [ "$AUR" = "" ]; then
         AUR=$(curl -s -I $(getAURPackageNameAsURL $2) | grep '404')
         if [ "$AUR" = "" ]; then
