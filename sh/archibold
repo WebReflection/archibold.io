@@ -75,7 +75,7 @@ downloadArchive() {
   local name=$1
   sudo pacman -S --needed --noconfirm base-devel git
   cd ~/Downloads
-  curl -O $(getAURPackageNameAsURL $name)
+  curl -L -O $(getAURPackageNameAsURL $name)
   tar -xzf "${name}.tar.gz"
 }
 

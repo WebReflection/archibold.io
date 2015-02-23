@@ -5,7 +5,7 @@ downloadArchive() {
   local name=$2
   sudo pacman -S --needed --noconfirm base-devel git
   cd ~/Downloads
-  curl -O "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
+  curl -L -O "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
   tar -xzf "${name}.tar.gz"
 }
 

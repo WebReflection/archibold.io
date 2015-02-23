@@ -402,8 +402,7 @@ LABEL arch
 ' > /boot/EFI/syslinux/syslinux.cfg
 
   pacman -Syu --needed --noconfirm inkscape
-  curl -O http://archibold.io/img/archibold.svg
-  curl -O http://archibold.io/img/archibold.svg
+  curl -L -O http://archibold.io/img/archibold.svg
   inkscape \
     --export-png=archibold.png \
     --export-width=$WIDTH \
@@ -480,8 +479,7 @@ sleep 3
 
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
-sudo -u $USER curl -s -O http://archibold.io/sh/archibold
-sudo -u $USER curl -O http://archibold.io/sh/archibold
+sudo -u $USER curl -L -O http://archibold.io/sh/archibold
 chmod +x archibold
 mv archibold /usr/bin
 sync
@@ -489,8 +487,7 @@ sync
 rm /archibold
 
 if [ '$SETUP' != '' ]; then
-  curl -O http://archibold.io/sh/$SETUP-setup.sh
-  curl -O http://archibold.io/sh/$SETUP-setup.sh
+  curl -L -O http://archibold.io/sh/$SETUP-setup.sh
   sh setup.sh
   rm setup.sh
 fi
