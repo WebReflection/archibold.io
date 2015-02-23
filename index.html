@@ -291,6 +291,35 @@ ping 8.8.8.8
           <strong>Programs</strong> are reachable trough the top left corner, or using the Window/Start button.<br/>
           We can simply start typing a program name, and this will be listed on the screen.
         </p>
+        <h2 id="maintenance">
+          <a href="#maintenance">Basic maintenance</a>
+        </h2>
+        <p>
+          In order to keep updated, install, or remove software, type <code>archibold</code> once in the terminal:
+          <pre><code>$ archibold
+
+ __________________
+|                  |
+| archibold v0.3.0 |
+|__________________|
+
+ usage:
+
+  archibold [clean|update|upgrade]
+  archibold [install|remove|search] package-name
+
+
+ list of included AUR packages:
+
+  acroread                # Adobe Acrobat Reader
+  broadcom-wl-dkms        # Broadcom wifi
+  dropbox                 # Dropbox client
+  google-chrome-dev       # Chrome dev channel
+  spotify                 # music baby!
+  sublime-text-nightly    # Sublime 3 (requires a valid license)
+
+</code></pre>
+        </p>
         <h2 id="suggested-settings">
           <a href="#suggested-settings">Suggested Settings</a>
         </h2>
@@ -394,13 +423,12 @@ ping 8.8.8.8
         <ul>
           <li>
             <strong>Broadcom WiFi</strong> problems. The hybrid driver works quite OK if patched.<br/>
-            This is <a href="https://aur.archlinux.org/packages/broadcom-wl-dkms/">the suggested AUR</a> package to install for these kind of WiFi cards.<br/>
             In order to know which one you have, write this on the terminal: <code>lspci -nn</code><br/>
             You should have a list of devices, one of them called Wireless Network/Adapter.<br/>
-            If you are sure you need such driver, you can simply type: <code>archibold install broadcom-wl-dkms</code> in the terminal.
+            If you are sure you need such driver, you can simply type: <code>archibold install broadcom-wl-dkms</code> in the terminal, which is <a href="https://aur.archlinux.org/packages/broadcom-wl-dkms/">the suggested AUR</a> package to use for these kind of WiFi cards.
           </li>
           <li>
-            <strong>how to install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
+            <strong>how to manually install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
             A <i>way-too-quick</i> introduction would be the following, to be typed via the Terminal:
             <pre><code># to update everything in the system
 sudo pacman -Syu
@@ -432,30 +460,8 @@ pacman -Syu --needed \
   awk curl dosfstools grep parted sed sudo vi</code></pre>
           </li>
           <li>
-            common <strong>AUR packages</strong> for developers can be installed via archibold:
-            <pre><code>$ archibold
-
- __________________
-|                  |
-| archibold v0.3.0 |
-|__________________|
-
- usage:
-
-  archibold [clean|update|upgrade]
-  archibold [install|remove|search] package-name
-
-
- list of included AUR packages:
-
-  acroread                # Adobe Acrobat Reader
-  broadcom-wl-dkms        # Broadcom wifi
-  dropbox                 # Dropbox client
-  google-chrome-dev       # Chrome dev channel
-  spotify                 # music baby!
-  sublime-text-nightly    # Sublime 3 (requires a valid license)
-
-</code></pre>
+            common <strong>AUR packages</strong> for developers can be installed via <a href="#maintenance">archibold</a><br/>
+            If there's is nothing special to do, it is possible to use <code>archibold</code> to install other <a href="https://aur.archlinux.org/">AUR packages</a> too.
           </li>
           <li>
             the <strong>common home user setup</strong> script aim is to bootstrap a user environment with:<ul>
