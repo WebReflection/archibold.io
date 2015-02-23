@@ -102,15 +102,18 @@ archibold() {
   local GREEN="\033[0;32m"
   local BOLD="\033[1m"
   case $1 in
-    update)
-      sudo pacman -Sy
-      ;;
-    upgrade)
+    archibold)
       mkdir -p ~/Downloads
       sudo curl -s -o ~/Downloads/archibold http://archibold.io/sh/archibold
       sudo curl -s -o ~/Downloads/archibold http://archibold.io/sh/archibold
       sudo chmod +x ~/Downloads/archibold
       sudo mv ~/Downloads/archibold $0
+      ;;
+    update)
+      sudo pacman -Sy
+      ;;
+    upgrade)
+      $(archibold 'archibold')
       sudo pacman -Syu --noconfirm
       ;;
     clean)
@@ -136,6 +139,8 @@ ${BOLD} __________________
 
   archibold [clean|update|upgrade]
   archibold [install|remove|search] package-name
+
+  archibold archibold # to update only this file
 
 
  ${BOLD}list of included AUR packages${RESET}:
