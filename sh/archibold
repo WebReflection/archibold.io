@@ -11,6 +11,10 @@
 
 installation() {
   local name=$1
+  local RESET="\033[0m"
+  local RED="\033[0;31m"
+  local GREEN="\033[0;32m"
+  local BOLD="\033[1m"
   local AUR
   case $name in
     acroread)
@@ -43,13 +47,13 @@ installation() {
       commonProcedure 'sublime-text-nightly'
       ;;
     *)
-      if [ "$(pacman -Qs $name)" = "" ]; then
+      if [ "$(sudo pacman -Qs $name)" = "" ]; then
         AUR=curl -s -I $(getAURPackageNameAsURL $name) | grep '404'
         if [ "$AUR" = "" ]; then
           echo -e "${RED}[WARNING]${RESET} package ${BOLD}${1}${RESET} not found";
           exit 1
         else
-          echo "Found a non supported AUR ${BOLD}${1}${RESET}"
+          echo "Found an unknown AUR ${BOLD}${1}${RESET} package."
           read -n1 -r -p "Are you sure you would like to install it? [y/N]" AUR
           if [ "$AUR" = "Y" ]; then
             AUR="y"
@@ -101,6 +105,7 @@ archibold() {
   local RED="\033[0;31m"
   local GREEN="\033[0;32m"
   local BOLD="\033[1m"
+  local AUR
   case $1 in
     archibold)
       mkdir -p ~/Downloads
@@ -120,7 +125,14 @@ archibold() {
       sudo pacman -Sc --noconfirm
       ;;
     search)
-      sudo pacman -Qs $2
+      if [ "$(sudo pacman -Qs $2)" = "" ]; then
+        AUR=curl -s -I $(getAURPackageNameAsURL $name) | grep '404'
+        if [ "$AUR" = "" ]; then
+          echo "${BOLD}${2}${RESET} available only via ${BOLD}AUR${RESET}"
+        else
+          echo "Unable to find ${BOLD}${2}${RESET} package."
+        fi
+      fi
       ;;
     install)
       installation $2
