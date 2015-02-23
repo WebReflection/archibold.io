@@ -125,13 +125,16 @@ archibold() {
       sudo pacman -Sc --noconfirm
       ;;
     search)
-      if [ "$(sudo pacman -Qs $2)" = "" ]; then
+      AUR=$(sudo pacman -Qs $2)
+      if [ "$AUR" = "" ]; then
         AUR=$(curl -s -I $(getAURPackageNameAsURL $2) | grep '404')
         if [ "$AUR" = "" ]; then
           echo -e "${BOLD}${2}${RESET} available only via ${BOLD}AUR${RESET}"
         else
           echo -e "Unable to find ${BOLD}${2}${RESET} package."
         fi
+      else
+        echo "$AUR"
       fi
       ;;
     install)
