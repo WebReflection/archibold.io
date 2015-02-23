@@ -243,6 +243,21 @@ ping 8.8.8.8
             To avoid creation of a swap partition use <code>SWAP=0</code>.
           </li>
           <li>
+            <strong>PASSWD</strong> and <strong>UPASSWD</strong>, optional passwords to use for <em>root</em> or the chosen <code>USER</code>. If any of these two are specified, both root and user will have that password.<br/>
+            If none of these is specified, default password will be <code>root</code> and chosen <code>$USER</code>.<br/>
+            Examples:<pre><code># the root user will have root password
+# the archibold user will have archibold password
+DISK=/dev/sda USER=archibold sh archibold.sh
+
+# both root and user will have 12345 password
+DISK=/dev/sda USER=archibold PASSWD=12345 sh archibold.sh
+
+# root will have r00t password
+# archibold will have archib0ld password
+DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
+</code></pre>
+          </li>
+          <li>
             <strong>GNOME</strong>, optional, if <code>GNOME=0</code> will skip the Desktop environment.
           </li>
           <li>
@@ -260,12 +275,6 @@ ping 8.8.8.8
         <ul>
           <li>
             confirm provided details are those we meant, and press <strong>y</strong>
-          </li>
-          <li>
-            once asked, provide the <strong>root password</strong> and confirm it twice
-          </li>
-          <li>
-            after that, provide the <strong>chosen user password</strong> and confirm it twice
           </li>
           <li>
             wait until everything has been installed, reaching <strong>CONGRATULATIONS</strong>.<br/>

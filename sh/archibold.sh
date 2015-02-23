@@ -23,16 +23,26 @@
 # SWAP    default 2G, a swap partition
 #         SWAP=0 to not use any SWAP
 #
-# LABEL   default archibold
-#         the EFI label name
+# PASSWD  root password, by default root
+# UPASSWD user password, by default this is
+#         the chosen $USER variable
+# if either only PASSWD or UPASSWD are specified
+# this will be set as both root and user password
+#
 #
 # GNOME   if GNOME=0 will not install GNOME
+#
+# LABEL   default archibold
+#         the EFI label name
 #
 # UEFI    either efi64 or efi32
 #         by default is based on uname -m
 #
-# basic usage example
+# basic usage example (root:root archiboold:archiboold)
 # DISK=/dev/sdb USER=archibold sh archibold.sh
+#
+# basic usage with pass example (root:mypwd archiboold:mypwd)
+# DISK=/dev/sdb USER=archibold PASSWD=myppwd sh archibold.sh
 #
 ###############################
 
