@@ -388,7 +388,7 @@ if [ '$GNOME' != '0' ]; then
     gstreamer-vaapi gst-libav \
     alsa-utils \
     hunspell-en \
-    ttf-liberation
+    ttf-liberation ttf-symbola
 
   echo 'UI /syslinux/vesamenu.c32
 
