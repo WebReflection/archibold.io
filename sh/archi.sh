@@ -207,7 +207,7 @@ if [ "$UEFI" = "NO" ]; then
   SYSLINUX_ROOT='/boot'
   echo "  without EFI"
 else
-  SYSLINUX_BOOT='/'
+  SYSLINUX_BOOT=''
   SYSLINUX_ROOT='/boot/EFI'
   echo "  using syslinux/$UEFI"
   echo "  with label $LABEL"
@@ -457,7 +457,7 @@ if [ '$GNOME' != 'NO' ]; then
     hunspell-en \
     ttf-liberation ttf-symbola
 
-  echo 'UI /syslinux/vesamenu.c32
+  echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
 
 TIMEOUT 20
 PROMPT 0
@@ -465,7 +465,7 @@ DEFAULT arch
 
 MENU TITLE archibold
 MENU RESOLUTION $WIDTH $HEIGHT
-MENU BACKGROUND /archibold.jpg
+MENU BACKGROUND $SYSLINUX_BOOT/archibold.jpg
 MENU HIDDEN
 MENU COLOR timeout_msg 37;40 #00000000 #00000000 none
 MENU COLOR timeout 37;40 #00000000 #00000000 none
