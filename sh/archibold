@@ -106,6 +106,8 @@ archibold() {
   local GREEN="\033[0;32m"
   local BOLD="\033[1m"
   local AUR
+  local WIDTH=$2
+  local HEIGHT=$3
   case $1 in
     archibold)
       mkdir -p ~/Downloads
@@ -123,6 +125,44 @@ archibold() {
       ;;
     clean)
       sudo pacman -Sc --noconfirm
+      ;;
+    resplash)
+      cd ~/Downloads
+      AUR=$(sudo pacman -Qs fbset)
+      if [ "$AUR" = "" ]; then
+        pacman -S --needed --noconfirm fbset
+      fi
+      if [ "$WIDTH" = "" ]; then
+        WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
+      fi
+      if [ "$HEIGHT" = "" ]; then
+        HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
+      fi
+      if [ "$AUR" = "" ]; then
+        pacman -Rsc --noconfirm fbset
+      fi
+      AUR=$(sudo pacman -Qs inkscape)
+      if [ "$AUR" = "" ]; then
+        sudo pacman -S --needed --noconfirm inkscape
+      fi
+      curl -L -O http://archibold.io/img/archibold.svg
+      inkscape \
+        --export-png=archibold.png \
+        --export-width=$WIDTH \
+        --export-height=$HEIGHT \
+        archibold.svg
+      convert archibold.png -quality 100% archibold.jpg
+      if [ -d "/boot/EFI/syslinux" ]; then
+        echo "moving new ${WIDTH}x${HEIGHT} splash into /boot/EFI"
+        sudo cp archibold.jpg /boot/EFI
+      else
+        echo "moving new ${WIDTH}x${HEIGHT} splash into /boot"
+        sudo mv archibold.jpg /boot
+      fi
+      rm archibold.{jpg,png,svg}
+      if [ "$AUR" = "" ]; then
+        pacman -Rsc --noconfirm inkscape
+      fi
       ;;
     search)
       AUR=$(sudo pacman -Ss $2)
@@ -147,14 +187,13 @@ archibold() {
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.0 |
+| archibold v0.3.1 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
 
-  archibold [clean|update|upgrade]
+  archibold [clean|update|upgrade|resplash]
   archibold [install|remove|search] package-name
-
 
  ${BOLD}list of included AUR packages${RESET}:
 
