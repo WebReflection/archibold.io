@@ -114,6 +114,7 @@ fi
 
 # USER checks
 if [ "$(verifyuser $USER root)" != "" ]; then
+  echo 'please specify a USER name in lower case (i.e. archibold)'
   exit 1
 fi
 if [ "$USER" = "" ]; then
@@ -125,6 +126,7 @@ if [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
   exit 1
 fi
 if [ "$(verifyuser $USER root)" != "" ]; then
+  echo 'please specify a USER name in lower case (i.e. archibold)'
   exit 1
 fi
 
@@ -271,7 +273,7 @@ fi
 
 sync
 
-TMP=`
+TMP=
 EFI=
 ROOT=
 for CHOICE in $(ls ${DISK}*); do
