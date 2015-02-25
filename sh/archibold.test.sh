@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.3.0             #
+# archibold 0.3.1             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -30,7 +30,8 @@
 # this will be set as both root and user password
 #
 #
-# GNOME   if GNOME=0 will not install GNOME
+# GNOME   if GNOME is 0 or NO
+#         it will not be installed
 #
 # LABEL   default archibold
 #         the EFI label name
@@ -46,7 +47,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.3.0'
+ARCHIBOLD='0.3.1'
 
 echo ''
 echo "SAY
@@ -202,14 +203,17 @@ if [ "$UEFI" != "NO" ]; then
 else
   EFI_PATH='/boot'
   echo "  using syslinux without EFI"
+  echo "  with label $LABEL"
 fi
-echo "  with label $LABEL"
 if [ "$SWAP" = "0" ]; then
   echo "  without swap"
 else
   echo "  with $SWAP of swap"
 fi
 if [ "$GNOME" = "0" ]; then
+  GNOME=NO
+fi
+if [ "$GNOME" = "NO" ]; then
   echo "  without GNOME"
 else
   echo "  with GPU $GPU"
@@ -315,7 +319,11 @@ sudo mkdir -p "archibold$EFI_PATH"
 sudo mount $EFI "archibold$EFI_PATH"
 sync
 
-sudo pacstrap archibold base sudo intel-ucode networkmanager syslinux gptfdisk efibootmgr
+if [ "$UEFI" != "NO" ]; then
+  sudo pacstrap archibold base sudo networkmanager syslinux gptfdisk intel-ucode efibootmgr
+else
+  sudo pacstrap archibold base sudo networkmanager syslinux gptfdisk intel-ucode
+fi
 sync
 
 cat archibold/etc/fstab > archibold.fstab
@@ -389,7 +397,7 @@ if [ '$UEFI' != 'NO' ]; then
 fi
 
 
-if [ '$GNOME' != '0' ]; then
+if [ '$GNOME' != 'NO' ]; then
   sync
   pacman -Syu --needed --noconfirm \
     $GPU_DRIVERS \
