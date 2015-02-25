@@ -311,8 +311,8 @@ yes | sudo mkfs.ext4 $ROOT
 sync
 mkdir -p archibold
 sudo mount $ROOT archibold
-sudo mkdir -p archibold/boot/EFI
-sudo mount $EFI archibold/boot/EFI
+sudo mkdir -p "archibold$EFI_PATH"
+sudo mount $EFI "archibold$EFI_PATH"
 sync
 
 sudo pacstrap archibold base sudo intel-ucode networkmanager syslinux gptfdisk efibootmgr
