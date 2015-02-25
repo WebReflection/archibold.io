@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.3.0             #
+# archibold 0.3.1             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -30,12 +30,13 @@
 # this will be set as both root and user password
 #
 #
-# GNOME   if GNOME=0 will not install GNOME
+# GNOME   if GNOME is 0 or NO
+#         it will not be installed
 #
 # LABEL   default archibold
 #         the EFI label name
 #
-# UEFI    either efi64 or efi32
+# UEFI    either efi64 or efi32 or NO
 #         by default is based on uname -m
 #
 # basic usage example (root:root archiboold:archiboold)
@@ -46,7 +47,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.3.0'
+ARCHIBOLD='0.3.1'
 
 echo ''
 echo "SAY
@@ -114,6 +115,7 @@ fi
 
 # USER checks
 if [ "$(verifyuser $USER root)" != "" ]; then
+  echo 'please specify a USER name in lower case (i.e. archibold)'
   exit 1
 fi
 if [ "$USER" = "" ]; then
@@ -125,6 +127,7 @@ if [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
   exit 1
 fi
 if [ "$(verifyuser $USER root)" != "" ]; then
+  echo 'please specify a USER name in lower case (i.e. archibold)'
   exit 1
 fi
 
@@ -146,10 +149,12 @@ fi
 
 # UEFI architecture check
 if [ "$UEFI" != "" ]; then
-  if [ "$UEFI" != "efi64" ]; then
-    if [ "$UEFI" != "efi32" ]; then
-      echo "valid UEFI are efi64 or efi32, not $UEFI"
-      exit 1
+  if [ "$UEFI" != "NO" ]; then
+    if [ "$UEFI" != "efi64" ]; then
+      if [ "$UEFI" != "efi32" ]; then
+        echo "valid UEFI are efi64 or efi32, not $UEFI"
+        exit 1
+      fi
     fi
   fi
 else
@@ -192,14 +197,25 @@ echo "  for users/passwords"
 echo "    root/${PASSWD}"
 echo "    ${USER}/${UPASSWD}"
 echo "  on disk $DISK"
-echo "  using syslinux/$UEFI"
-echo "  with label $LABEL"
 if [ "$SWAP" = "0" ]; then
   echo "  without swap"
 else
   echo "  with $SWAP of swap"
 fi
+if [ "$UEFI" = "NO" ]; then
+  SYSLINUX_BOOT='/boot'
+  SYSLINUX_ROOT='/boot'
+  echo "  without EFI"
+else
+  SYSLINUX_BOOT=''
+  SYSLINUX_ROOT='/boot/EFI'
+  echo "  using syslinux/$UEFI"
+  echo "  with label $LABEL"
+fi
 if [ "$GNOME" = "0" ]; then
+  GNOME="NO"
+fi
+if [ "$GNOME" = "NO" ]; then
   echo "  without GNOME"
 else
   echo "  with GPU $GPU"
@@ -250,27 +266,30 @@ cat archibold.header
 echo ''
 sudo dd if=/dev/zero of=$DISK bs=1 count=2048
 
-sudo parted --script $DISK mklabel gpt
-sudo parted --script --align optimal $DISK mkpart primary fat16 2048s 64M
-sudo parted $DISK set 1 boot on
+if [ "$UEFI" = "NO" ]; then
+  PARTED_START_AT="2048s"
+  sudo parted --script $DISK mklabel msdos
+else
+  PARTED_START_AT="64M"
+  sudo parted --script $DISK mklabel gpt
+  sudo parted --script --align optimal $DISK mkpart primary fat16 2048s 64M
+  sudo parted $DISK set 1 boot on
+fi
 
 if [ "$SWAP" = "0" ]; then
-  sudo parted --script --align optimal $DISK mkpart primary ext4 64M 100%
+  sudo parted --script --align optimal $DISK mkpart primary ext4 $PARTED_START_AT 100%
 else
-  sudo parted --script --align optimal $DISK mkpart primary linux-swap 64M $SWAP
+  sudo parted --script --align optimal $DISK mkpart primary linux-swap $PARTED_START_AT $SWAP
   sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100%
 fi
 
 sync
 
 TMP=
-EFI=
 ROOT=
-for CHOICE in $(ls ${DISK}*); do
-  if [ "$CHOICE" != "$DISK" ]; then
-    if [ "$EFI" = "" ]; then
-      EFI="$CHOICE"
-    else
+if [ "$UEFI" = "NO" ]; then
+  for CHOICE in $(ls ${DISK}*); do
+    if [ "$CHOICE" != "$DISK" ]; then
       if [ "$SWAP" = "0" ]; then
         ROOT="$CHOICE"
       else
@@ -282,30 +301,73 @@ for CHOICE in $(ls ${DISK}*); do
         fi
       fi
     fi
-  fi
-done
+  done
+else
+  EFI=
+  for CHOICE in $(ls ${DISK}*); do
+    if [ "$CHOICE" != "$DISK" ]; then
+      if [ "$EFI" = "" ]; then
+        EFI="$CHOICE"
+      else
+        if [ "$SWAP" = "0" ]; then
+          ROOT="$CHOICE"
+        else
+          if [ "$TMP" = "" ]; then
+            SWAP="$CHOICE"
+            TMP="$SWAP"
+          else
+            ROOT="$CHOICE"
+          fi
+        fi
+      fi
+    fi
+  done
 
-echo "EFI boot loader:  $EFI"
-echo "ROOT:             $ROOT"
+  echo "EFI boot loader:  $EFI"
+fi
+
 if [ "$SWAP" != "0" ]; then
   echo "SWAP:             $SWAP"
+fi
+echo "ROOT:             $ROOT"
+
+if [ "$SWAP" != "0" ]; then
   sudo mkswap $SWAP
   sudo swapon $SWAP
 fi
 
 sync
 
-sudo mkfs.vfat $EFI
+if [ "$DEBUG" = "YES" ]; then
+  read -n1 -r -p "[ partitions ]" TMP
+fi
+
+if [ "$UEFI" != "NO" ]; then
+  sudo mkfs.vfat $EFI
+fi
 yes | sudo mkfs.ext4 $ROOT
 
 sync
 mkdir -p archibold
 sudo mount $ROOT archibold
-sudo mkdir -p archibold/boot/EFI
-sudo mount $EFI archibold/boot/EFI
+if [ "$UEFI" != "NO" ]; then
+  sudo mkdir -p "archibold$SYSLINUX_ROOT"
+  sudo mount $EFI "archibold$SYSLINUX_ROOT"
+fi
 sync
 
-sudo pacstrap archibold base sudo intel-ucode networkmanager syslinux gptfdisk efibootmgr
+TOPACKSTRAP="base sudo networkmanager syslinux gptfdisk intel-ucode"
+if [ "$UEFI" != "NO" ]; then
+  TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
+fi
+
+
+if [ "$DEBUG" = "YES" ]; then
+  echo $TOPACKSTRAP
+  read -n1 -r -p "[ pacstrapping ]" TMP
+fi
+
+sudo pacstrap archibold $TOPACKSTRAP
 sync
 
 cat archibold/etc/fstab > archibold.fstab
@@ -313,8 +375,12 @@ genfstab -U -p archibold >> archibold.fstab
 cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
 sudo mv etc.fstab archibold/etc/fstab
 rm archibold.fstab
-  cat archibold/etc/fstab
+cat archibold/etc/fstab
 sync
+
+if [ "$DEBUG" = "YES" ]; then
+  read -n1 -r -p "[ fstab ]" TMP
+fi
 
 echo "#!/usr/bin/env bash
 
@@ -364,20 +430,24 @@ sync
 free -h
 
 systemctl enable NetworkManager.service
-hostnamectl set-hostname archibold
 
 syslinux-install_update -ia
 
-mkdir -p /boot/EFI/syslinux
-
-if [ '$(uname -m)' = 'x86_64' ]; then
-  cp -r /usr/lib/syslinux/efi64/* /boot/EFI/syslinux
-else
-  cp -r /usr/lib/syslinux/efi32/* /boot/EFI/syslinux
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ syslinux ]' TMP
 fi
-cp -r /usr/lib/syslinux/$UEFI/syslinux.efi /boot/EFI/syslinux
 
-if [ '$GNOME' != '0' ]; then
+if [ '$UEFI' != 'NO' ]; then
+  mkdir -p $SYSLINUX_ROOT/syslinux
+  if [ '$(uname -m)' = 'x86_64' ]; then
+    cp -r /usr/lib/syslinux/efi64/* $SYSLINUX_ROOT/syslinux
+  else
+    cp -r /usr/lib/syslinux/efi32/* $SYSLINUX_ROOT/syslinux
+  fi
+  cp -r /usr/lib/syslinux/$UEFI/syslinux.efi $SYSLINUX_ROOT/syslinux
+fi
+
+if [ '$GNOME' != 'NO' ]; then
   sync
   pacman -Syu --needed --noconfirm \
     $GPU_DRIVERS \
@@ -390,7 +460,7 @@ if [ '$GNOME' != '0' ]; then
     hunspell-en \
     ttf-liberation ttf-symbola
 
-  echo 'UI /syslinux/vesamenu.c32
+  echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
 
 TIMEOUT 20
 PROMPT 0
@@ -398,18 +468,18 @@ DEFAULT arch
 
 MENU TITLE archibold
 MENU RESOLUTION $WIDTH $HEIGHT
-MENU BACKGROUND /archibold.jpg
+MENU BACKGROUND $SYSLINUX_BOOT/archibold.jpg
 MENU HIDDEN
 MENU COLOR timeout_msg 37;40 #00000000 #00000000 none
 MENU COLOR timeout 37;40 #00000000 #00000000 none
 
 LABEL arch
-      LINUX /vmlinuz-linux
-      INITRD /intel-ucode.img,/initramfs-linux.img
+      LINUX $SYSLINUX_BOOT/vmlinuz-linux
+      INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
       APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
       MENU CLEAR
 
-' > /boot/EFI/syslinux/syslinux.cfg
+' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 
   pacman -Syu --needed --noconfirm inkscape
   curl -L -O http://archibold.io/img/archibold.svg
@@ -419,8 +489,13 @@ LABEL arch
     --export-height=$HEIGHT \
     archibold.svg
   convert archibold.png -quality 100% archibold.jpg
-  mv archibold.jpg /boot/EFI
+  mv archibold.jpg $SYSLINUX_ROOT
   rm archibold.{png,svg}
+
+  if [ '$DEBUG' = 'YES' ]; then
+    read -n1 -r -p '[ splash screen ]' TMP
+  fi
+
   pacman -Rsc --noconfirm inkscape
 
   systemctl enable gdm.service
@@ -450,7 +525,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   background: #2e3436 url(/usr/share/backgrounds/gnome/adwaita-night.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-}' >> /usr/share/gnome-shell/theme/gnome-shell.css 
+}' >> /usr/share/gnome-shell/theme/gnome-shell.css
 
 else
   echo 'TIMEOUT 20
@@ -473,26 +548,39 @@ SAY
 SAY
 
 LABEL arch
-      LINUX /vmlinuz-linux
-      INITRD /intel-ucode.img,/initramfs-linux.img
+      LINUX $SYSLINUX_BOOT/vmlinuz-linux
+      INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
       APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
 
-' > /boot/EFI/syslinux/syslinux.cfg
+' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 fi
 
 pacman-db-upgrade
 sync
 
-efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
-sync
+if [ '$UEFI' != 'NO' ]; then
+  efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+  sync
+fi
 
 sleep 3
+
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after syslinux ]' TMP
+fi
 
 mkinitcpio -p linux
-mv /boot/{vmlinuz-linux,*.img} /boot/EFI
+
+if [ '$UEFI' != 'NO' ]; then
+  mv /boot/{vmlinuz-linux,*.img} $SYSLINUX_ROOT
+fi
+
 sync
 
 sleep 3
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after mkinitcpio ]' TMP
+fi
 
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
@@ -502,6 +590,9 @@ mv archibold /usr/bin
 sync
 
 rm /archibold
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after cleanup ]' TMP
+fi
 
 if [ '$SETUP' != '' ]; then
   curl -L -O http://archibold.io/sh/$SETUP-setup.sh
@@ -510,6 +601,8 @@ if [ '$SETUP' != '' ]; then
 fi
 
 sleep 3
+
+hostnamectl set-hostname archibold
 
 exit
 ">archibold.bash

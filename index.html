@@ -130,6 +130,7 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
           Following an example of successful installations:
         </p>
         <ul>
+          <li>ASUS Chromebox with Intel® Celeron(R) 2955U @ 1.40GHz x 2 (without UEFI)</li>
           <li>NUC with Intel® Atom™ CPU E3815 @ 1.46GHz</li>
           <li><a href="http://www.minnowboard.org/meet-minnowboard-max/">MinnowBoard MAX</a> with Intel® Atom™ CPU E3825 @ 1.33GHz x 2</li>
           <li>ASUS Netbook with Intel® Celeron(R) CPU 847 @ 1.10GHz x 2</li>
@@ -266,11 +267,17 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
 </code></pre>
           </li>
           <li>
-            <strong>GNOME</strong>, optional, if <code>GNOME=0</code> will skip the Desktop environment.
+            <strong>GNOME</strong>, optional, if <code>GNOME=NO</code> or <code>GNOME=0</code> will skip the Desktop environment.
           </li>
           <li>
             <strong>LABEL</strong>, optional boot name, by default <strong>archibold</strong>.<br/>
             It might be completely ignored by your system, I wouldn't bother much ;-)
+          </li>
+          <li>
+            <strong>UEFI</strong>, optional, if <code>UEFI=NO</code> will not use EFI partition.<br/>
+            This option is usually needed for a Chromebook or a Chromebox.<br/>
+            If needed, it could be forced as <code>UEFI=efi32</code> or <code>UEFI=efi64</code>,
+            otherwise it will be recognized automatically.
           </li>
         </ul>
         <p>
@@ -317,7 +324,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
 
  __________________
 |                  |
-| archibold v0.3.0 |
+| archibold v0.3.1 |
 |__________________|
 
  usage:

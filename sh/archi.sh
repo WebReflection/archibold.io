@@ -326,9 +326,12 @@ else
   echo "EFI boot loader:  $EFI"
 fi
 
-echo "ROOT:             $ROOT"
 if [ "$SWAP" != "0" ]; then
   echo "SWAP:             $SWAP"
+fi
+echo "ROOT:             $ROOT"
+
+if [ "$SWAP" != "0" ]; then
   sudo mkswap $SWAP
   sudo swapon $SWAP
 fi
