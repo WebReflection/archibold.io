@@ -602,7 +602,7 @@ fi
 
 sleep 3
 
-hostnamectl set-hostname archibold
+echo '$LABEL' >> /etc/hostname
 
 exit
 ">archibold.bash
