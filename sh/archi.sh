@@ -36,7 +36,7 @@
 # LABEL   default archibold
 #         the EFI label name
 #
-# UEFI    either efi64, efi32 or NO
+# UEFI    either efi64 or efi32 or NO
 #         by default is based on uname -m
 #
 # basic usage example (root:root archiboold:archiboold)
@@ -197,12 +197,14 @@ echo "  for users/passwords"
 echo "    root/${PASSWD}"
 echo "    ${USER}/${UPASSWD}"
 echo "  on disk $DISK"
-if [ "$UEFI" != "NO" ]; then
-  EFI_PATH='/boot/EFI'
-  echo "  using syslinux/$UEFI"
+if [ "$UEFI" = "NO" ]; then
+  SYSLINUX_BOOT='/boot'
+  SYSLINUX_ROOT='/boot'
+  echo "  without EFI"
 else
-  EFI_PATH='/boot'
-  echo "  using syslinux without EFI"
+  SYSLINUX_BOOT='/'
+  SYSLINUX_ROOT='/boot/EFI'
+  echo "  using syslinux/$UEFI"
   echo "  with label $LABEL"
 fi
 if [ "$SWAP" = "0" ]; then
@@ -211,7 +213,7 @@ else
   echo "  with $SWAP of swap"
 fi
 if [ "$GNOME" = "0" ]; then
-  GNOME=NO
+  GNOME="NO"
 fi
 if [ "$GNOME" = "NO" ]; then
   echo "  without GNOME"
@@ -264,37 +266,30 @@ cat archibold.header
 echo ''
 sudo dd if=/dev/zero of=$DISK bs=1 count=2048
 
-if [ "$UEFI" != "NO" ]; then
+if [ "$UEFI" = "NO" ]; then
+  PARTED_START_AT="2048s"
+  sudo parted --script $DISK mklabel msdos
+else
+  PARTED_START_AT="64M"
   sudo parted --script $DISK mklabel gpt
   sudo parted --script --align optimal $DISK mkpart primary fat16 2048s 64M
   sudo parted $DISK set 1 boot on
-else
-  sudo parted --script $DISK mklabel msdos
-fi
-
-if [ "$UEFI" != "NO" ]; then
-  BOOT_SIZE="64M"
-else
-  BOOT_SIZE="2048s"
 fi
 
 if [ "$SWAP" = "0" ]; then
-  sudo parted --script --align optimal $DISK mkpart primary ext4 $BOOT_SIZE 100%
+  sudo parted --script --align optimal $DISK mkpart primary ext4 $PARTED_START_AT 100%
 else
-  sudo parted --script --align optimal $DISK mkpart primary linux-swap $BOOT_SIZE $SWAP
+  sudo parted --script --align optimal $DISK mkpart primary linux-swap $PARTED_START_AT $SWAP
   sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100%
 fi
 
 sync
 
 TMP=
-EFI=
 ROOT=
-for CHOICE in $(ls ${DISK}*); do
-  if [ "$CHOICE" != "$DISK" ]; then
-    if [ "$EFI" = "" ]; then
-      EFI="$CHOICE"
-    else
+if [ "$UEFI" = "NO" ]; then
+  for CHOICE in $(ls ${DISK}*); do
+    if [ "$CHOICE" != "$DISK" ]; then
       if [ "$SWAP" = "0" ]; then
         ROOT="$CHOICE"
       else
@@ -306,10 +301,31 @@ for CHOICE in $(ls ${DISK}*); do
         fi
       fi
     fi
-  fi
-done
+  done
+else
+  EFI=
+  for CHOICE in $(ls ${DISK}*); do
+    if [ "$CHOICE" != "$DISK" ]; then
+      if [ "$EFI" = "" ]; then
+        EFI="$CHOICE"
+      else
+        if [ "$SWAP" = "0" ]; then
+          ROOT="$CHOICE"
+        else
+          if [ "$TMP" = "" ]; then
+            SWAP="$CHOICE"
+            TMP="$SWAP"
+          else
+            ROOT="$CHOICE"
+          fi
+        fi
+      fi
+    fi
+  done
 
-echo "EFI boot loader:  $EFI"
+  echo "EFI boot loader:  $EFI"
+fi
+
 echo "ROOT:             $ROOT"
 if [ "$SWAP" != "0" ]; then
   echo "SWAP:             $SWAP"
@@ -319,21 +335,26 @@ fi
 
 sync
 
-sudo mkfs.vfat $EFI
+if [ "$UEFI" != "NO" ]; then
+  sudo mkfs.vfat $EFI
+fi
 yes | sudo mkfs.ext4 $ROOT
 
 sync
 mkdir -p archibold
 sudo mount $ROOT archibold
-sudo mkdir -p "archibold$EFI_PATH"
-sudo mount $EFI "archibold$EFI_PATH"
+if [ "$UEFI" != "NO" ]; then
+  sudo mkdir -p "archibold$SYSLINUX_ROOT"
+  sudo mount $EFI "archibold$SYSLINUX_ROOT"
+fi
 sync
 
+TOPACKSTRAP="base sudo networkmanager syslinux gptfdisk intel-ucode"
 if [ "$UEFI" != "NO" ]; then
-  sudo pacstrap archibold base sudo networkmanager syslinux gptfdisk intel-ucode efibootmgr
-else
-  sudo pacstrap archibold base sudo networkmanager syslinux gptfdisk intel-ucode
+  TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
 fi
+
+sudo pacstrap archibold $TOPACKSTRAP
 sync
 
 cat archibold/etc/fstab > archibold.fstab
@@ -392,20 +413,18 @@ sync
 free -h
 
 systemctl enable NetworkManager.service
-hostnamectl set-hostname archibold
 
 syslinux-install_update -ia
 
 if [ '$UEFI' != 'NO' ]; then
-  mkdir -p /boot/EFI/syslinux
+  mkdir -p $SYSLINUX_ROOT/syslinux
   if [ '$(uname -m)' = 'x86_64' ]; then
-    cp -r /usr/lib/syslinux/efi64/* /boot/EFI/syslinux
+    cp -r /usr/lib/syslinux/efi64/* $SYSLINUX_ROOT/syslinux
   else
-    cp -r /usr/lib/syslinux/efi32/* /boot/EFI/syslinux
+    cp -r /usr/lib/syslinux/efi32/* $SYSLINUX_ROOT/syslinux
   fi
-  cp -r /usr/lib/syslinux/$UEFI/syslinux.efi /boot/EFI/syslinux
+  cp -r /usr/lib/syslinux/$UEFI/syslinux.efi $SYSLINUX_ROOT/syslinux
 fi
-
 
 if [ '$GNOME' != 'NO' ]; then
   sync
@@ -434,12 +453,12 @@ MENU COLOR timeout_msg 37;40 #00000000 #00000000 none
 MENU COLOR timeout 37;40 #00000000 #00000000 none
 
 LABEL arch
-      LINUX /vmlinuz-linux
-      INITRD /intel-ucode.img,/initramfs-linux.img
+      LINUX $SYSLINUX_BOOT/vmlinuz-linux
+      INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
       APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
       MENU CLEAR
 
-' > $EFI_PATH/syslinux/syslinux.cfg
+' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 
   pacman -Syu --needed --noconfirm inkscape
   curl -L -O http://archibold.io/img/archibold.svg
@@ -449,7 +468,7 @@ LABEL arch
     --export-height=$HEIGHT \
     archibold.svg
   convert archibold.png -quality 100% archibold.jpg
-  mv archibold.jpg /boot/EFI
+  mv archibold.jpg $SYSLINUX_ROOT
   rm archibold.{png,svg}
   pacman -Rsc --noconfirm inkscape
 
@@ -503,29 +522,30 @@ SAY
 SAY
 
 LABEL arch
-      LINUX /vmlinuz-linux
-      INITRD /intel-ucode.img,/initramfs-linux.img
+      LINUX $SYSLINUX_BOOT/vmlinuz-linux
+      INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
       APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
 
-' > $EFI_PATH/syslinux/syslinux.cfg
+' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 fi
 
 pacman-db-upgrade
 sync
 
-if [ '$UEFI' != 'NO' ]; then
-  efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
-  sync
-fi
+efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+sync
+
+hostnamectl set-hostname archibold
 
 sleep 3
 
 mkinitcpio -p linux
 
 if [ '$UEFI' != 'NO' ]; then
-  mv /boot/{vmlinuz-linux,*.img} /boot/EFI
-  sync
+  mv /boot/{vmlinuz-linux,*.img} $SYSLINUX_ROOT
 fi
+
+sync
 
 sleep 3
 
