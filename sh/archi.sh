@@ -335,6 +335,10 @@ fi
 
 sync
 
+if [ "$DEBUG" = "YES" ]; then
+  read -n1 -r -p "[ partitions ]" TMP
+fi
+
 if [ "$UEFI" != "NO" ]; then
   sudo mkfs.vfat $EFI
 fi
@@ -354,6 +358,12 @@ if [ "$UEFI" != "NO" ]; then
   TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
 fi
 
+
+if [ "$DEBUG" = "YES" ]; then
+  echo $TOPACKSTRAP
+  read -n1 -r -p "[ pacstrapping ]" TMP
+fi
+
 sudo pacstrap archibold $TOPACKSTRAP
 sync
 
@@ -362,8 +372,12 @@ genfstab -U -p archibold >> archibold.fstab
 cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
 sudo mv etc.fstab archibold/etc/fstab
 rm archibold.fstab
-  cat archibold/etc/fstab
+cat archibold/etc/fstab
 sync
+
+if [ "$DEBUG" = "YES" ]; then
+  read -n1 -r -p "[ fstab ]" TMP
+fi
 
 echo "#!/usr/bin/env bash
 
@@ -415,6 +429,10 @@ free -h
 systemctl enable NetworkManager.service
 
 syslinux-install_update -ia
+
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ syslinux ]' TMP
+fi
 
 if [ '$UEFI' != 'NO' ]; then
   mkdir -p $SYSLINUX_ROOT/syslinux
@@ -470,6 +488,11 @@ LABEL arch
   convert archibold.png -quality 100% archibold.jpg
   mv archibold.jpg $SYSLINUX_ROOT
   rm archibold.{png,svg}
+
+  if [ '$DEBUG' = 'YES' ]; then
+    read -n1 -r -p '[ splash screen ]' TMP
+  fi
+
   pacman -Rsc --noconfirm inkscape
 
   systemctl enable gdm.service
@@ -499,7 +522,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   background: #2e3436 url(/usr/share/backgrounds/gnome/adwaita-night.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-}' >> /usr/share/gnome-shell/theme/gnome-shell.css 
+}' >> /usr/share/gnome-shell/theme/gnome-shell.css
 
 else
   echo 'TIMEOUT 20
@@ -532,12 +555,18 @@ fi
 pacman-db-upgrade
 sync
 
-efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
-sync
+if [ '$UEFI' != 'NO' ]; then
+  efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+  sync
+fi
 
 hostnamectl set-hostname archibold
 
 sleep 3
+
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after syslinux ]' TMP
+fi
 
 mkinitcpio -p linux
 
@@ -548,6 +577,9 @@ fi
 sync
 
 sleep 3
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after mkinitcpio ]' TMP
+fi
 
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
@@ -557,6 +589,9 @@ mv archibold /usr/bin
 sync
 
 rm /archibold
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after cleanup ]' TMP
+fi
 
 if [ '$SETUP' != '' ]; then
   curl -L -O http://archibold.io/sh/$SETUP-setup.sh
