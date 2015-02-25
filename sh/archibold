@@ -130,7 +130,7 @@ archibold() {
       cd ~/Downloads
       AUR=$(sudo pacman -Qs fbset)
       if [ "$AUR" = "" ]; then
-        pacman -S --needed --noconfirm fbset
+        sudo pacman -S --needed --noconfirm fbset
       fi
       if [ "$WIDTH" = "" ]; then
         WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
@@ -139,7 +139,7 @@ archibold() {
         HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
       fi
       if [ "$AUR" = "" ]; then
-        pacman -Rsc --noconfirm fbset
+        sudo pacman -Rsc --noconfirm fbset
       fi
       AUR=$(sudo pacman -Qs inkscape)
       if [ "$AUR" = "" ]; then
@@ -157,11 +157,11 @@ archibold() {
         sudo cp archibold.jpg /boot/EFI
       else
         echo "moving new ${WIDTH}x${HEIGHT} splash into /boot"
-        sudo mv archibold.jpg /boot
+        sudo cp archibold.jpg /boot
       fi
       rm archibold.{jpg,png,svg}
       if [ "$AUR" = "" ]; then
-        pacman -Rsc --noconfirm inkscape
+        sudo pacman -Rsc --noconfirm inkscape
       fi
       ;;
     search)
