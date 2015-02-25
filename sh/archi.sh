@@ -560,8 +560,6 @@ if [ '$UEFI' != 'NO' ]; then
   sync
 fi
 
-hostnamectl set-hostname archibold
-
 sleep 3
 
 if [ '$DEBUG' = 'YES' ]; then
@@ -600,6 +598,8 @@ if [ '$SETUP' != '' ]; then
 fi
 
 sleep 3
+
+hostnamectl set-hostname archibold
 
 exit
 ">archibold.bash
