@@ -197,6 +197,11 @@ echo "  for users/passwords"
 echo "    root/${PASSWD}"
 echo "    ${USER}/${UPASSWD}"
 echo "  on disk $DISK"
+if [ "$SWAP" = "0" ]; then
+  echo "  without swap"
+else
+  echo "  with $SWAP of swap"
+fi
 if [ "$UEFI" = "NO" ]; then
   SYSLINUX_BOOT='/boot'
   SYSLINUX_ROOT='/boot'
@@ -206,11 +211,6 @@ else
   SYSLINUX_ROOT='/boot/EFI'
   echo "  using syslinux/$UEFI"
   echo "  with label $LABEL"
-fi
-if [ "$SWAP" = "0" ]; then
-  echo "  without swap"
-else
-  echo "  with $SWAP of swap"
 fi
 if [ "$GNOME" = "0" ]; then
   GNOME="NO"
