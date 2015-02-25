@@ -180,6 +180,9 @@ archibold() {
     install)
       installation $2
       ;;
+    uninstall)
+      archibold remove $2
+      ;;
     remove)
       sudo pacman -Rsc $2
       ;;
@@ -187,7 +190,7 @@ archibold() {
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.1 |
+| archibold v0.3.2 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
