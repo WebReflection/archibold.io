@@ -15,7 +15,8 @@ sudo pacman -S --needed --noconfirm virtualbox
 echo 'vboxdrv
 vboxnetadp
 vboxnetflt
-vboxpci'>/etc/modules-load.d/virtualbox.conf
+vboxpci'>~/virtualbox.conf
+sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
 sudo modprobe vboxdrv
 sudo modprobe vboxnetadp
 sudo modprobe vboxnetflt

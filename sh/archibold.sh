@@ -345,7 +345,7 @@ echo '###############
 echo -e '$PASSWD
 $PASSWD' | passwd
 
-useradd -m -g users -G wheel,storage,power -s /bin/bash $USER
+useradd -m -g users -G wheel,storage,power,video -s /bin/bash $USER
 echo '##################
 ## $USER ##
 ##################'
