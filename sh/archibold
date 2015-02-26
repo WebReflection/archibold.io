@@ -45,6 +45,10 @@ installation() {
       ;;
     sublime-text-nightly)
       commonProcedure 'sublime-text-nightly'
+      if [ ! -d "/home/$USER/.config/sublime-text-3/Packages/Theme - Soda" ]; then
+        cd /home/$USER/.config/sublime-text-3/Packages
+        git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
+      fi
       ;;
     *)
       if [ "$(sudo pacman -Ss $name)" = "" ]; then
@@ -126,6 +130,54 @@ archibold() {
     clean)
       sudo pacman -Sc --noconfirm
       ;;
+    ab-fs-extra)
+      sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
+      ;;
+    ab-git)
+      if [ "$GIT_USER" != "" ]; then
+        if [ "$GIT_USER" != "" ]; then
+          git config --global user.name "$GIT_USER"
+          git config --global user.email "$GIT_EMAIL"
+          git config --global push.default simple
+          sudo pacman -S --needed --noconfirm openssh xclip
+          ssh-keygen -t rsa -C "$GIT_EMAIL"
+          eval "$(ssh-agent -s)"
+          ssh-add ~/.ssh/id_rsa
+          echo '
+          Time to add your key in GitHub.'
+          read -n1 -r -p "Press any key to copy to clipboard" key
+          cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
+        fi
+      else
+        echo 'Please specify a GIT_USER and a GIT_EMAIL'
+        exit 1
+      fi
+      ;;
+    ab-fs-extra)
+      sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
+      ;;
+    ab-virtualbox)
+      sudo pacman -S --needed --noconfirm virtualbox
+      echo 'vboxdrv
+      vboxnetadp
+      vboxnetflt
+      vboxpci'>~/virtualbox.conf
+      sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
+      sudo modprobe vboxdrv
+      sudo modprobe vboxnetadp
+      sudo modprobe vboxnetflt
+      sudo modprobe vboxpci
+      ;;
+    ab-nodejs)
+      sudo pacman -S --needed --noconfirm nodejs
+      echo ''
+      echo 'Please add your npm info (if any)'
+      echo ''
+      npm adduser
+      ;;
+    ab-fs-extra)
+      sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
+      ;;
     resplash)
       cd ~/Downloads
       AUR=$(sudo pacman -Qs fbset)
@@ -190,7 +242,7 @@ archibold() {
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.2 |
+| archibold v0.3.3 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
@@ -206,6 +258,13 @@ ${BOLD} __________________
   google-chrome-dev       # Chrome dev channel
   spotify                 # music baby!
   sublime-text-nightly    # Sublime 3 (requires a valid license)
+
+ ${BOLD}list of simplified installations${RESET}:
+
+  ab-fs-extra             # (ex)fat utilities
+  ab-git                  # git + ssh key configuration
+  ab-nodejs               # nodejs + npm configuration
+  ab-virtualbox           # virtualbox + configuration
 
 "
       ;;
