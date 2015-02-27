@@ -9,7 +9,7 @@ fi
 
 sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
 
-sudo pacman -S --needed --noconfirm firefox lynx
+sudo pacman -S --needed --noconfirm opera lynx
 
 sudo pacman -S --needed --noconfirm virtualbox
 echo 'vboxdrv
