@@ -396,7 +396,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
       <img src="img/dark-theme.png" alt="showcase dark theme"/>
       <section id="browser">
         <h1><a href="#browser">Browser</a></h1>
-        <p>
+        <p id="epiphany">
           The default browser that works out of the box is Epiphany, also known as GNOME Web browser.<br/>
           This is both a very beautiful and deadly simple to use browser.<br/>
           It's also so sleek it has been used in <a href="http://www.raspbian.org/">Raspbian</a> as default browser for the <a href="http://www.raspberrypi.org/web-browser-released/">Raspberry Pi</a>.
@@ -409,16 +409,14 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
           If your favorite sites work already there's no need to change browser.<br/>
           In all other cases, please follow these instructions.
         </p>
-        <p>
-          The best external browser, with also a good HiDPI support, is <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>.<br/>
-          You hear me right, Firefox, not Chrome or Chromium: Firefox!<br/>
-          To install it, launch the terminal and write the following:
+        <p id="opera">
+          The best external browser with out of the box HiDPI support is <a href="http://www.opera.com">Opera</a>.<br/>
+          Right now is the only Chrome based browser that really works on retina and is rock stable reliable.<br/>
+          Simply write <code>archibold install opera</code> on the terminal and enjoy.
         </p>
-        <pre><code>sudo pacman -S --needed firefox
-# first time will ask the USER password with a warning
-# all other times will simply ask the password only</code></pre>
-        <p>
-          Accept dependencies that need to be installed and after that, type <code>firefox</code> and press enter.
+        <p id="firefox">
+          As alternative, and with also a decent HiDPI support, is <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>.<br/>
+          To install it, launch the terminal and write <code>archibold install firefox</code>.
         </p>
         <h2 id="hidpi-firefox">
           <a href="#hidpi-firefox">HiDPI Firefox</a>
@@ -440,7 +438,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
         <p>
           It's embarrassing in 2015 there are still websites requiring Flash player.<br/>
           However, if this is the case, you might try to install it for Firefox via:
-        </p><pre><code></code>pacman -S --needed flashplugin</pre>
+        </p><pre><code></code>archibold install flashplugin</pre>
       </section>
       <section id="problem-solving">
         <h1>
