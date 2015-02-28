@@ -39,6 +39,9 @@ installation() {
     google-chrome-dev)
       commonProcedure 'google-chrome-dev'
       ;;
+    iojs-bin)
+      commonProcedure 'iojs-bin'
+      ;;
     iojs)
       commonProcedure 'iojs'
       ;;
@@ -259,7 +262,7 @@ ${BOLD} __________________
   broadcom-wl-dkms        # Broadcom wifi
   dropbox                 # Dropbox client
   google-chrome-dev       # Chrome dev channel
-  iojs                    # an updated community fork of nodejs
+  iojs-bin | iojs         # an updated community fork of nodejs
   spotify                 # music baby!
   sublime-text-nightly    # Sublime 3 (requires a valid license)
 
