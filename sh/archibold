@@ -136,6 +136,33 @@ archibold() {
     clean)
       sudo pacman -Sc --noconfirm
       ;;
+    ab-android)
+      sudo pacman -S --needed --noconfirm jdk8-openjdk android-udev android-tools apache-ant
+      # sudo pacman -S --needed --noconfirm gcc git gnupg flex bison gperf sdl wxgtk squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip libxslt python2-virtualenv bc
+      commonProcedure 'android-sdk'
+      commonProcedure 'android-sdk-platform-tools'
+      commonProcedure 'android-sdk-build-tools'
+      commonProcedure 'android-platform'
+      sudo groupadd sdkusers
+      sudo gpasswd -a $USER sdkusers
+      export ANDROID_HOME=/opt/android-sdk
+      echo '
+# needed by PhoneGap
+ANDROID_HOME=/opt/android-sdk
+PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
+      sudo chown -R :sdkusers /opt/android-sdk/
+      sudo chmod -R g+w /opt/android-sdk/
+      echo '
+SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
+'>>51-android.rules
+      sudo mv 51-android.rules /etc/udev/rules.d/
+      sudo udevadm control --reload-rules
+      echo ''
+      echo 'unplug and re-plug your device, if any'
+      echo ''
+      ;;
     ab-fs-extra)
       sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
       ;;
@@ -268,6 +295,7 @@ ${BOLD} __________________
 
  ${BOLD}list of simplified installations${RESET}:
 
+  ab-android              # android-sdk and development
   ab-fs-extra             # (ex)fat utilities
   ab-git                  # git + ssh key configuration
   ab-nodejs               # nodejs + npm configuration
