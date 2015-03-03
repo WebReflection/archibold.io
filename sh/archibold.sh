@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.3.3             #
+# archibold 0.3.4             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -47,7 +47,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.3.3'
+ARCHIBOLD='0.3.4'
 
 echo ''
 echo "SAY
@@ -519,6 +519,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad disable-while-typing true
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
+  sudo -u $USER xdg-mime default org.gnome.Nautilus.desktop inode/directory
 
   echo '
 #lockDialogGroup {
