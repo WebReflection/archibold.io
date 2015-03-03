@@ -136,81 +136,6 @@ archibold() {
     clean)
       sudo pacman -Sc --noconfirm
       ;;
-    ab-android)
-      sudo pacman -S --needed --noconfirm jdk8-openjdk android-udev android-tools apache-ant
-      # sudo pacman -S --needed --noconfirm gcc git gnupg flex bison gperf sdl wxgtk squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip libxslt python2-virtualenv bc
-      commonProcedure 'android-sdk'
-      commonProcedure 'android-sdk-platform-tools'
-      commonProcedure 'android-sdk-build-tools'
-      commonProcedure 'android-platform'
-      sudo groupadd sdkusers
-      sudo gpasswd -a $USER sdkusers
-      export ANDROID_HOME=/opt/android-sdk
-      echo '
-# needed by PhoneGap
-ANDROID_HOME=/opt/android-sdk
-PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
-      sudo chown -R :sdkusers /opt/android-sdk/
-      sudo chmod -R g+w /opt/android-sdk/
-      echo '
-SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
-SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
-SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
-'>>51-android.rules
-      sudo mv 51-android.rules /etc/udev/rules.d/
-      sudo udevadm control --reload-rules
-      echo ''
-      echo 'unplug and re-plug your device, if any'
-      echo ''
-      ;;
-    ab-fs-extra)
-      sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
-      ;;
-    ab-git)
-      if [ "$GIT_USER" != "" ]; then
-        if [ "$GIT_USER" != "" ]; then
-          git config --global user.name "$GIT_USER"
-          git config --global user.email "$GIT_EMAIL"
-          git config --global push.default simple
-          sudo pacman -S --needed --noconfirm openssh xclip
-          ssh-keygen -t rsa -C "$GIT_EMAIL"
-          eval "$(ssh-agent -s)"
-          ssh-add ~/.ssh/id_rsa
-          echo '
-          Time to add your key in GitHub.'
-          read -n1 -r -p "Press any key to copy to clipboard" key
-          cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
-        fi
-      else
-        echo 'Please specify a GIT_USER and a GIT_EMAIL'
-        exit 1
-      fi
-      ;;
-    ab-fs-extra)
-      sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
-      ;;
-    ab-virtualbox)
-      sudo pacman -S --needed --noconfirm virtualbox
-      echo 'vboxdrv
-      vboxnetadp
-      vboxnetflt
-      vboxpci'>~/virtualbox.conf
-      sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
-      sudo modprobe vboxdrv
-      sudo modprobe vboxnetadp
-      sudo modprobe vboxnetflt
-      sudo modprobe vboxpci
-      ;;
-    ab-nodejs)
-      sudo pacman -S --needed --noconfirm nodejs
-      echo ''
-      echo 'Please add your npm info (if any)'
-      echo ''
-      npm adduser
-      ;;
-    ab-fs-extra)
-      sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
-      ;;
     resplash)
       cd ~/Downloads
       AUR=$(sudo pacman -Qs fbset)
@@ -263,7 +188,80 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
       fi
       ;;
     install)
-      installation $2
+      case $2 in
+        ab-android)
+          sudo pacman -S --needed --noconfirm jdk8-openjdk android-udev android-tools apache-ant
+          # sudo pacman -S --needed --noconfirm gcc git gnupg flex bison gperf sdl wxgtk squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip libxslt python2-virtualenv bc
+          commonProcedure 'android-sdk'
+          commonProcedure 'android-sdk-platform-tools'
+          commonProcedure 'android-sdk-build-tools'
+          commonProcedure 'android-platform'
+          sudo groupadd sdkusers
+          sudo gpasswd -a $USER sdkusers
+          export ANDROID_HOME=/opt/android-sdk
+          echo '
+    # needed by PhoneGap
+    ANDROID_HOME=/opt/android-sdk
+    PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
+          sudo chown -R :sdkusers /opt/android-sdk/
+          sudo chmod -R g+w /opt/android-sdk/
+          echo '
+    SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
+    SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
+    SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
+    '>>51-android.rules
+          sudo mv 51-android.rules /etc/udev/rules.d/
+          sudo udevadm control --reload-rules
+          echo ''
+          echo 'unplug and re-plug your device, if any'
+          echo ''
+          ;;
+        ab-fs-extra)
+          sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
+          ;;
+        ab-git)
+          if [ "$GIT_USER" != "" ]; then
+            if [ "$GIT_USER" != "" ]; then
+              git config --global user.name "$GIT_USER"
+              git config --global user.email "$GIT_EMAIL"
+              git config --global push.default simple
+              sudo pacman -S --needed --noconfirm openssh xclip
+              ssh-keygen -t rsa -C "$GIT_EMAIL"
+              eval "$(ssh-agent -s)"
+              ssh-add ~/.ssh/id_rsa
+              echo '
+              Time to add your key in GitHub.'
+              read -n1 -r -p "Press any key to copy to clipboard" key
+              cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
+            fi
+          else
+            echo 'Please specify a GIT_USER and a GIT_EMAIL'
+            exit 1
+          fi
+          ;;
+        ab-virtualbox)
+          sudo pacman -S --needed --noconfirm virtualbox
+          echo 'vboxdrv
+          vboxnetadp
+          vboxnetflt
+          vboxpci'>~/virtualbox.conf
+          sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
+          sudo modprobe vboxdrv
+          sudo modprobe vboxnetadp
+          sudo modprobe vboxnetflt
+          sudo modprobe vboxpci
+          ;;
+        ab-nodejs)
+          sudo pacman -S --needed --noconfirm nodejs
+          echo ''
+          echo 'Please add your npm info (if any)'
+          echo ''
+          npm adduser
+          ;;
+        *)
+          installation $2
+          ;;
+      esac
       ;;
     uninstall)
       archibold remove $2
