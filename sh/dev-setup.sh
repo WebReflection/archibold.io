@@ -30,8 +30,6 @@ sudo pacman -S --needed --noconfirm qt
 
 sudo pacman -S --needed --noconfirm skype
 
-sudo pacman -S --needed --noconfirm mariadb
-
 sudo pacman -S --needed --noconfirm ffmpeg-compat
 archibold install spotify
 
@@ -56,3 +54,8 @@ sudo pacman -S --needed --noconfirm nodejs
 echo '
 Please add your npm info (if any)'
 npm adduser
+
+sudo pacman -S --needed --noconfirm mariadb
+sudo systemctl enable mysqld.service
+sudo systemctl start mysqld.service
+mysql_secure_installation
