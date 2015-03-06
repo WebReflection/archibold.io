@@ -216,6 +216,9 @@ archibold() {
           echo 'unplug and re-plug your device, if any'
           echo ''
           ;;
+        ab-pad)
+          sudo pacman -S --needed --noconfirm dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
+          ;;
         ab-fs-extra)
           sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
           ;;
@@ -297,6 +300,7 @@ ${BOLD} __________________
   ab-fs-extra             # (ex)fat utilities
   ab-git                  # git + ssh key configuration
   ab-nodejs               # nodejs + npm configuration
+  ab-pad                  # recognizes external devices
   ab-virtualbox           # virtualbox + configuration
 
 "
