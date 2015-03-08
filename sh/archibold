@@ -14,6 +14,7 @@ installation() {
   local RESET="\033[0m"
   local RED="\033[0;31m"
   local GREEN="\033[0;32m"
+  local YELLOW="\033[1;33m"
   local BOLD="\033[1m"
   local AUR
   case $name in
@@ -39,6 +40,12 @@ installation() {
     google-chrome-dev)
       commonProcedure 'google-chrome-dev'
       ;;
+    hal)
+      commonProcedure 'hal-info'
+      commonProcedure 'hal'
+      sudo systemctl enable hal.service
+      sudo systemctl start hal.service
+      ;;
     iojs-bin)
       commonProcedure 'iojs-bin'
       ;;
@@ -57,10 +64,10 @@ installation() {
       fi
       ;;
     *)
-      if [ "$(sudo pacman -Ss $name)" = "" ]; then
+      if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
         AUR=$(curl -s -I $(getAURPackageNameAsURL $name) | grep '404')
         if [ "$AUR" = "" ]; then
-          echo -e "Found an unknown AUR ${BOLD}${1}${RESET} package."
+          echo -e "Found an ${YELLOW}unknown${RESET} AUR ${BOLD}${1}${RESET} package."
           read -n1 -r -p "Are you sure you would like to install it? [y/N]" AUR
           if [ "$AUR" = "Y" ]; then
             AUR="y"
@@ -114,6 +121,7 @@ archibold() {
   local RESET="\033[0m"
   local RED="\033[0;31m"
   local GREEN="\033[0;32m"
+  local YELLOW="\033[1;33m"
   local BOLD="\033[1m"
   local AUR
   local WIDTH=$2
@@ -175,16 +183,20 @@ archibold() {
       fi
       ;;
     search)
-      AUR=$(sudo pacman -Ss $2)
-      if [ "$AUR" = "" ]; then
-        AUR=$(curl -s -I $(getAURPackageNameAsURL $2) | grep '404')
-        if [ "$AUR" = "" ]; then
-          echo -e "${BOLD}${2}${RESET} available only via ${BOLD}AUR${RESET}"
-        else
-          echo -e "Unable to find ${BOLD}${2}${RESET} package."
-        fi
+      AUR=$(sudo pacman -Ssq $2 | grep $2)
+      if [ "$AUR" != "" ]; then
+        echo -e " ${GREEN}✔${RESET} Official ${BOLD}${2}${RESET} package available"
       else
-        echo "$AUR"
+        if [ "$(curl -s -I $(getAURPackageNameAsURL $2) | grep '404')" = "" ]; then
+          echo -e " ${YELLOW}✓${RESET} ${BOLD}${2}${RESET} available via ${BOLD}AUR${RESET}"
+        else
+          AUR=$(sudo pacman -Ss $2)
+          if [ "$AUR" = "" ]; then
+            echo -e " ${RED}!${RESET} Unable to find ${BOLD}${2}${RESET} package."
+          else
+            echo "$AUR"
+          fi
+        fi
       fi
       ;;
     install)
@@ -276,7 +288,7 @@ archibold() {
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.4 |
+| archibold v0.3.5 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
@@ -290,6 +302,7 @@ ${BOLD} __________________
   broadcom-wl-dkms        # Broadcom wifi
   dropbox                 # Dropbox client
   google-chrome-dev       # Chrome dev channel
+  hal                     # Flash DRM content for Google Play
   iojs-bin | iojs         # an updated community fork of nodejs
   spotify                 # music baby!
   sublime-text-nightly    # Sublime 3 (requires a valid license)
