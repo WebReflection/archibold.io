@@ -58,6 +58,7 @@ installation() {
       ;;
     sublime-text-nightly)
       commonProcedure 'sublime-text-nightly'
+      mkdir -p /home/$USER/.config/sublime-text-3/Packages
       if [ ! -d "/home/$USER/.config/sublime-text-3/Packages/Theme - Soda" ]; then
         cd /home/$USER/.config/sublime-text-3/Packages
         git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
