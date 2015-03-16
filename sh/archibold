@@ -256,7 +256,7 @@ archibold() {
           fi
           ;;
         ab-virtualbox)
-          sudo pacman -S --needed --noconfirm virtualbox
+          sudo pacman -S --needed --noconfirm virtualbox qt4
           echo 'vboxdrv
           vboxnetadp
           vboxnetflt
