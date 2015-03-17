@@ -108,7 +108,7 @@ elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep NVIDIA)" != "" ]; t
   GPU_DRIVERS='xf86-video-nouveau mesa-libgl'
 elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
   GPU='Radeon'
-  GPU_DRIVERS='xf86-video-ati mesa-vdpau libva-mesa-driver'
+  GPU_DRIVERS='xf86-video-ati libva-mesa-driver'
 fi
 
 # disk checks
