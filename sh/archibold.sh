@@ -477,7 +477,7 @@ if [ '$GNOME' != 'NO' ]; then
     libva-mesa-driver mesa-vdpau \
     xf86-input-synaptics \
     xorg-server xorg-xinit xorg-server-xwayland \
-    gnome gnome-extra gnome-tweak-tool \
+    gnome gnome-extra gnome-tweak-tool gdm \
     gstreamer-vaapi gst-libav \
     alsa-utils \
     hunspell-en \
