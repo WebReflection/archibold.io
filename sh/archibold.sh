@@ -118,6 +118,10 @@ if [ "$SWAP" = "" ]; then
   SWAP=2G
 fi
 
+if [ "$EDD" = "NO" ]; then
+  EDD=off
+fi
+
 # USER checks
 if [ "$(verifyuser $USER root)" != "" ]; then
   echo 'please specify a USER name in lower case (i.e. archibold)'
@@ -387,6 +391,11 @@ sync
 
 if [ "$DEBUG" = "YES" ]; then
   read -n1 -r -p "[ fstab ]" TMP
+fi
+
+APPEND="APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2"
+if [ "$EDD" != "" ]; then
+  APPEND="$APPEND edd=off"
 fi
 
 echo "#!/usr/bin/env bash

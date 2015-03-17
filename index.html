@@ -285,6 +285,11 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
             If needed, it could be forced as <code>UEFI=efi32</code> or <code>UEFI=efi64</code>,
             otherwise it will be recognized automatically.
           </li>
+          <li>
+            <strong>EDD</strong>, optional, if specified, it will set <code>edd=$EDD</code> at boot time.<br/>
+            This option is usually needed for Gizmo 2 BIOS, together with the <code>UEFI=NO</code> directive.<br/>
+            In this board case, <code>EDD=NO</code> or <code>EDD=off</code> is needed.
+          </li>
         </ul>
         <p>
           Once we understand the meaning of these variables, we can simply launch the installer as such:
