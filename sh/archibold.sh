@@ -39,6 +39,10 @@
 # UEFI    either efi64 or efi32 or NO
 #         by default is based on uname -m
 #
+# EDD     either NO or off, by default is not used.
+#         edd=$EDD is a boot argument specially useful
+#         for the Gizmo2 board and its BIOS
+#
 # basic usage example (root:root archiboold:archiboold)
 # DISK=/dev/sdb USER=archibold sh archibold.sh
 #
