@@ -289,7 +289,7 @@ archibold() {
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.5 |
+| archibold v0.3.6 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
