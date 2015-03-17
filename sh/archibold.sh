@@ -49,6 +49,8 @@
 
 ARCHIBOLD='0.3.5'
 
+clear
+
 echo ''
 echo "SAY
 SAY                                _|        _|  _|                  _|        _|
@@ -268,6 +270,8 @@ cat archibold.header
 
 echo ''
 sudo dd if=/dev/zero of=$DISK bs=1 count=2048
+sync
+sleep 2
 
 if [ "$UEFI" = "NO" ]; then
   PARTED_START_AT="2048s"
