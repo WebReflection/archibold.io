@@ -234,6 +234,9 @@ else
   echo "  with GPU $GPU"
   echo "  and resolution ${WIDTH}x${HEIGHT}"
 fi
+if [ "$EDD" != "" ]; then
+  echo "  with EDD $EDD"
+fi
 echo ' - - - - - - - - - - - - - - '
 
 echo "verifying $DISK"
