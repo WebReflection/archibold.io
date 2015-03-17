@@ -503,8 +503,6 @@ LABEL arch
     read -n1 -r -p '[ splash screen ]' TMP
   fi
 
-  pacman -Rsc --noconfirm inkscape
-
   systemctl enable gdm.service
 
   sudo -u $USER mkdir -p /home/$USER/.config/gtk-3.0
