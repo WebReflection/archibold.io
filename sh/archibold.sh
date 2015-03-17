@@ -395,7 +395,7 @@ fi
 
 APPEND="APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2"
 if [ "$EDD" != "" ]; then
-  APPEND="$APPEND edd=off"
+  APPEND="$APPEND edd=$EDD"
 fi
 
 echo "#!/usr/bin/env bash
@@ -492,7 +492,7 @@ MENU COLOR timeout 37;40 #00000000 #00000000 none
 LABEL arch
       LINUX $SYSLINUX_BOOT/vmlinuz-linux
       INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
-      APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
+      $APPEND
       MENU CLEAR
 
 ' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
@@ -565,7 +565,7 @@ SAY
 LABEL arch
       LINUX $SYSLINUX_BOOT/vmlinuz-linux
       INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
-      APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2
+      $APPEND
 
 ' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 fi
