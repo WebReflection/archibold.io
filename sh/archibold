@@ -141,6 +141,12 @@ archibold() {
     upgrade)
       $(archibold 'archibold')
       sudo pacman -Syu --noconfirm
+      if [ -f "/boot/vmlinuz-linux" ]; then
+        if [ -d "/boot/EFI" ]; then
+          echo 'Linux upgraded, moving files ...'
+          sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
+        fi
+      fi
       ;;
     clean)
       sudo pacman -Sc --noconfirm
