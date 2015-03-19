@@ -477,9 +477,9 @@ if [ '$GNOME' != 'NO' ]; then
     libva-mesa-driver mesa-vdpau \
     xf86-input-synaptics \
     xorg-server xorg-xinit xorg-server-xwayland \
-    gnome gnome-extra gnome-tweak-tool gdm \
+    gnome gnome-tweak-tool \
     gstreamer-vaapi gst-libav \
-    alsa-utils \
+    alsa-utils xdg-utils \
     hunspell-en \
     ttf-liberation ttf-symbola
 
@@ -527,6 +527,8 @@ LABEL arch
 gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
 
   sync
+
+  pacman -Syu --needed --noconfirm gnome-extra
 
   sudo -u $USER echo '# new tabs, same dir
 [[ -s /etc/profile.d/vte.sh ]] && . /etc/profile.d/vte.sh' >> /home/$USER/.bashrc
