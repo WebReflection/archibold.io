@@ -295,7 +295,7 @@ archibold() {
         sudo swapoff /swap
         sudo rm -f /swap
       fi
-      echo "Creating $2 /swap ..."
+      echo "Creating $2MB of /swap ..."
       sudo dd if=/dev/zero of=/swap bs=1M count=$2
       sudo chmod 600 /swap
       sudo mkswap /swap
