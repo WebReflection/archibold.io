@@ -141,8 +141,8 @@ archibold() {
     upgrade)
       $(archibold 'archibold')
       sudo pacman -Syu --noconfirm
-      if [ -f "/boot/vmlinuz-linux" ]; then
-        if [ -d "/boot/EFI" ]; then
+      if [ -d "/boot/EFI" ]; then
+        if [ -f "/boot/vmlinuz-linux" ]; then
           echo 'Linux upgraded, moving files ...'
           sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
         fi
@@ -219,16 +219,16 @@ archibold() {
           sudo gpasswd -a $USER sdkusers
           export ANDROID_HOME=/opt/android-sdk
           echo '
-    # needed by PhoneGap
-    ANDROID_HOME=/opt/android-sdk
-    PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
+# needed by PhoneGap
+ANDROID_HOME=/opt/android-sdk
+PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
           sudo chown -R :sdkusers /opt/android-sdk/
           sudo chmod -R g+w /opt/android-sdk/
           echo '
-    SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
-    SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
-    SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
-    '>>51-android.rules
+SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
+'>>51-android.rules
           sudo mv 51-android.rules /etc/udev/rules.d/
           sudo udevadm control --reload-rules
           echo ''
@@ -252,7 +252,7 @@ archibold() {
               eval "$(ssh-agent -s)"
               ssh-add ~/.ssh/id_rsa
               echo '
-              Time to add your key in GitHub.'
+Time to add your key in GitHub.'
               read -n1 -r -p "Press any key to copy to clipboard" key
               cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
             fi
@@ -264,9 +264,9 @@ archibold() {
         ab-virtualbox)
           sudo pacman -S --needed --noconfirm virtualbox qt4
           echo 'vboxdrv
-          vboxnetadp
-          vboxnetflt
-          vboxpci'>~/virtualbox.conf
+vboxnetadp
+vboxnetflt
+vboxpci'>~/virtualbox.conf
           sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
           sudo modprobe vboxdrv
           sudo modprobe vboxnetadp
