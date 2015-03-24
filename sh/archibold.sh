@@ -626,6 +626,7 @@ fi
 
 sleep 3
 
+# hostnamectl set-hostname '$LABEL'
 echo '$LABEL' >> /etc/hostname
 
 exit
