@@ -626,8 +626,11 @@ fi
 
 sleep 3
 
-# hostnamectl set-hostname '$LABEL'
-echo '$LABEL' >> /etc/hostname
+# echo '$LABEL' >> /etc/hostname
+hostnamectl set-hostname '$LABEL'
+echo '[keyfile]
+hostname=$LABEL
+'>>/etc/NetworkManager/NetworkManager.conf
 
 exit
 ">archibold.bash
