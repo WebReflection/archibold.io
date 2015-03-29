@@ -130,10 +130,10 @@ archibold() {
   case $1 in
     archibold)
       mkdir -p ~/Downloads
-      sudo curl -s -o ~/Downloads/archibold http://archibold.io/sh/archibold
-      sudo curl -s -o ~/Downloads/archibold http://archibold.io/sh/archibold
-      sudo chmod +x ~/Downloads/archibold
-      sudo mv ~/Downloads/archibold $0
+      cd ~/Downloads
+      sudo curl -s -L -O https://webreflection.github.io/archibold.io/sh/archibold
+      sudo chmod +x archibold
+      sudo mv archibold $0
       ;;
     update)
       sudo pacman -Sy
@@ -170,7 +170,7 @@ archibold() {
       if [ "$AUR" = "" ]; then
         sudo pacman -S --needed --noconfirm inkscape
       fi
-      curl -L -O http://archibold.io/img/archibold.svg
+      curl -L -O https://webreflection.github.io/archibold.io/img/archibold.svg
       inkscape \
         --export-png=archibold.png \
         --export-width=$WIDTH \
