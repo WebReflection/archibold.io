@@ -191,7 +191,7 @@ archibold() {
       ;;
     search)
       AUR=$(sudo pacman -Ssq $2 | grep ^$2$)
-      if [ "$AUR" = "$2" ]; then
+      if [ "$AUR" != "" ]; then
         echo -e " ${GREEN}✔${RESET} Official ${BOLD}${2}${RESET} package available"
       else
         if [ "$(curl -s -I $(getAURPackageNameAsURL $2) | grep '404')" = "" ]; then
