@@ -190,7 +190,7 @@ archibold() {
       fi
       ;;
     search)
-      AUR=$(sudo pacman -Ssq $2 | grep $2)
+      AUR=$(sudo pacman -Ssq $2 | grep ^$2$)
       if [ "$AUR" = "$2" ]; then
         echo -e " ${GREEN}✔${RESET} Official ${BOLD}${2}${RESET} package available"
       else
