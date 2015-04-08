@@ -118,6 +118,21 @@ commonProcedure() {
   removeArchive $name
 }
 
+updateArchibold() {
+  mkdir -p ~/Downloads
+  cd ~/Downloads
+  sudo curl -s -L -O https://webreflection.github.io/archibold.io/sh/archibold
+  sudo chmod +x archibold
+  sudo mv archibold $1
+}
+
+updateOSInfo() {
+  updateArchibold $1
+  sudo pacman-key -u
+  sudo pacman -Sy --noconfirm
+  sudo pacman-db-upgrade
+}
+
 archibold() {
   local RESET="\033[0m"
   local RED="\033[0;31m"
@@ -129,20 +144,13 @@ archibold() {
   local HEIGHT=$3
   case $1 in
     archibold)
-      mkdir -p ~/Downloads
-      cd ~/Downloads
-      sudo curl -s -L -O https://webreflection.github.io/archibold.io/sh/archibold
-      sudo chmod +x archibold
-      sudo mv archibold $0
+      updateArchibold $0
       ;;
     update)
-      sudo pacman-key -u
-      sudo pacman -Sy --noconfirm
-      sudo pacman-db-upgrade
+      updateOSInfo $0
       ;;
     upgrade)
-      $(archibold 'archibold')
-      $(archibold 'update')
+      updateOSInfo $0
       sudo pacman -Syu --noconfirm
       if [ -d "/boot/EFI" ]; then
         if [ -f "/boot/vmlinuz-linux" ]; then
