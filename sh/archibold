@@ -136,7 +136,9 @@ archibold() {
       sudo mv archibold $0
       ;;
     update)
-      sudo pacman -Sy
+      sudo pacman-key -u
+      sudo pacman -Sy --noconfirm
+      sudo pacman-db-upgrade
       ;;
     upgrade)
       $(archibold 'archibold')
