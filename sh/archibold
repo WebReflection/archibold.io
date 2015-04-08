@@ -142,6 +142,7 @@ archibold() {
       ;;
     upgrade)
       $(archibold 'archibold')
+      $(archibold 'update')
       sudo pacman -Syu --noconfirm
       if [ -d "/boot/EFI" ]; then
         if [ -f "/boot/vmlinuz-linux" ]; then
