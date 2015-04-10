@@ -125,8 +125,8 @@ updateArchibold() {
   cd ~/Downloads
   sudo curl -s -L -O https://webreflection.github.io/archibold.io/sh/archibold
   sudo chmod +x ./archibold
-  original=$(echo -n "$1" | openssl dgst -sha256 -binary | base64)
-  replacement=$(echo -n "./archibold" | openssl dgst -sha256 -binary | base64)
+  original=$(cat "$1" | openssl dgst -sha256 -binary | base64)
+  replacement=$(cat "./archibold" | openssl dgst -sha256 -binary | base64)
   if [ "$original" = "$replacement" ]; then
     sudo rm  archibold
     echo "0"
