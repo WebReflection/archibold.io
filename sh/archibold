@@ -168,6 +168,9 @@ archibold() {
     upgrade)
       if [ "$(updateArchibold $0)" = "1" ]; then
         echo -e "$UPDATED"
+        echo ''
+        echo ' ... restarting upgrade'
+        echo ''
         archibold "$@"
       else
         updateOSInfo $0
