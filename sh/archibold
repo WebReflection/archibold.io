@@ -119,15 +119,25 @@ commonProcedure() {
 }
 
 updateArchibold() {
+  local original
+  local replacement
   mkdir -p ~/Downloads
   cd ~/Downloads
   sudo curl -s -L -O https://webreflection.github.io/archibold.io/sh/archibold
-  sudo chmod +x archibold
-  sudo mv archibold $1
+  sudo chmod +x ./archibold
+  original=$(echo -n "$1" | openssl dgst -sha256 -binary | base64)
+  replacement=$(echo -n "./archibold" | openssl dgst -sha256 -binary | base64)
+  if [ "$original" = "$replacement" ]; then
+    sudo rm  archibold
+    echo "0"
+  else
+    sudo mv archibold $1
+    sync
+    echo "1"
+  fi
 }
 
 updateOSInfo() {
-  updateArchibold $1
   sudo pacman-key -u
   sudo pacman -Sy --noconfirm
   sudo pacman-db-upgrade
@@ -139,23 +149,34 @@ archibold() {
   local GREEN="\033[0;32m"
   local YELLOW="\033[1;33m"
   local BOLD="\033[1m"
+  local UPDATED=" ${GREEN}✔${RESET} ${BOLD}archibold${RESET} successfully updated"
   local AUR
   local WIDTH=$2
   local HEIGHT=$3
   case $1 in
     archibold)
-      updateArchibold $0
+      if [ "$(updateArchibold $0)" = "1" ]; then
+        echo -e "$UPDATED"
+      fi
       ;;
     update)
+      if [ "$(updateArchibold $0)" = "1" ]; then
+        echo -e "$UPDATED"
+      fi
       updateOSInfo $0
       ;;
     upgrade)
-      updateOSInfo $0
-      sudo pacman -Syu --noconfirm
-      if [ -d "/boot/EFI" ]; then
-        if [ -f "/boot/vmlinuz-linux" ]; then
-          echo 'Linux upgraded, moving files ...'
-          sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
+      if [ "$(updateArchibold $0)" = "1" ]; then
+        echo -e "$UPDATED"
+        archibold "$@"
+      else
+        updateOSInfo $0
+        sudo pacman -Syu --noconfirm
+        if [ -d "/boot/EFI" ]; then
+          if [ -f "/boot/vmlinuz-linux" ]; then
+            echo 'Linux upgraded, moving files ...'
+            sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
+          fi
         fi
       fi
       ;;
