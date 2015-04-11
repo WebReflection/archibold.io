@@ -123,7 +123,7 @@ updateArchibold() {
   local replacement
   mkdir -p ~/Downloads
   cd ~/Downloads
-  sudo curl -s -L -O https://webreflection.github.io/archibold.io/sh/archibold
+  sudo curl -s -k -L -O https://webreflection.github.io/archibold.io/sh/archibold
   sudo chmod +x ./archibold
   original=$(cat "$1" | openssl dgst -sha256 -binary | base64)
   replacement=$(cat "./archibold" | openssl dgst -sha256 -binary | base64)
