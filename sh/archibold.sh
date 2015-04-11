@@ -542,6 +542,10 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad disable-while-typing true
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
   sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
+  sudo -u $USER dbus-launch gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
+  sudo -u $USER dbus-launch gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
+  sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webaudio true
+  sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webgl true
   sudo -u $USER xdg-mime default org.gnome.Nautilus.desktop inode/directory
 
   echo '
@@ -549,7 +553,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   background: #2e3436 url(/usr/share/backgrounds/gnome/adwaita-night.jpg);
   background-size: cover;
   background-repeat: no-repeat;
-}' >> /usr/share/gnome-shell/theme/gnome-shell.css
+}' >> /usr/share/gnome-shell/theme/gnome-classic.css
 
 else
   echo 'TIMEOUT 20
