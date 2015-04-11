@@ -173,6 +173,14 @@ archibold() {
         echo ''
         archibold "$@"
       else
+        if [ -f "/usr/bin/gnome-shell" ]; then
+          AUR=$(gnome-shell --version)
+          if [ "$AUR" != "$(echo $AUR | sed -e 's/3\.14//g')" ]; then
+            AUR="1"
+          else
+            AUR="0"
+          fi
+        fi
         updateOSInfo $0
         sudo pacman -Syu --noconfirm
         if [ -d "/boot/EFI" ]; then
@@ -180,6 +188,13 @@ archibold() {
             echo 'Linux upgraded, moving files ...'
             sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
           fi
+        fi
+        if [ "$AUR" = "1" ]; then
+          echo 'GNOME 3.14 upgraded, tweaking info ...'
+          dbus-launch gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
+          dbus-launch gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
+          dbus-launch gsettings set org.gnome.Epiphany.web enable-webaudio true
+          dbus-launch gsettings set org.gnome.Epiphany.web enable-webgl true
         fi
       fi
       ;;
