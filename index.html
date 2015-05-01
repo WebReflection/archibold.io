@@ -118,13 +118,13 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
   _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
 
 
-  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.3.6
+  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.3.7
 
       </pre></section>
       <section id="about">
         <h1><a href="#about">About</a></h1>
         <p>
-          <strong>archibold</strong> is a zero hassle OS installer
+          <strong>archibold</strong> is a zero hassle OS installer and a simplified helper to install, search, update or maintain packages in Arch Linux.
         </p>
         <p>
           Based on <a href="https://www.archlinux.org/">ArchLinux</a>
@@ -336,12 +336,12 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
 
  <strong>__________________
 |                  |
-| archibold v0.3.6 |
+| archibold v0.3.7 |
 |__________________|</strong>
 
  <strong>usage:</strong>
 
-  archibold [clean|update|upgrade]
+  archibold [clean|update|upgrade|reset-keys|resplash]
   archibold [install|remove|search] package-name
 
  <strong>list of included AUR packages:</strong>
@@ -365,6 +365,32 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
   ab-virtualbox           # virtualbox + configuration
 
 </code></pre>
+        <h2 id="archibold-cli">
+          <a href="#archibold-cli">archibold CLI</a>
+        </h2>
+        <p>
+          The CLI file is installed by default but it's also possible to simply grab <code>./archibold</code> cli only following these instructions.
+        </p><pre><code>curl -L -O http://archibold.io/sh/archibold
+chmod +x archibold
+sudo mv archibold /usr/bin
+        </code></pre>
+        <p>
+          Following the explanation of current CLI commands
+        </p>
+        <ul>
+          <li><strong>archibold upgrade</strong> tries to upgrade all installed packages, excluding those installed via AUR. If for some reason it fails, and it could happen if you haven't updated for a while, we can try to <code>archibold reset-keys</code> first and then upgrade again.</li>
+          <li><strong>archibold update</strong> simply checks if there are new version of <code>archibold</code> CLI and upgrades it. It updates also packages info.</li>
+          <li><strong>archibold clean</strong> removes all cached old downloaded archives, freeing some space on the disk. It's suggested after successful upgrades, but not mandatory.</li>
+          <li><strong>archibold reset-keys</strong> forces a clean up and regeneration of all packages keys and signatures. If <code>update</code> or <code>upgrade</code> fails, running the upfront should resolve the problem.</li>
+          <li><strong>archibold resplash</strong> creates again the initial boot splash screen in case you changed monitor or screen resolution.</li>
+          <li><strong>archibold search <i>package-name</i></strong> is a way to look for <i>package-name</i> in both regular repositories and AUR.</li>
+          <li><strong>archibold install <i>package-name</i></strong> tries to install <i>package-name</i> from official repositories, falling back to AUR. In latter case you need to confirm you want to install from aur via <code>y</code></li>
+          <li><strong>archibold remove <i>package-name</i></strong> will remove and clean up the package.</li>
+          <li><strong>archibold install ab-<i>package-name</i></strong> will perform few operations needed to install packages that requires extra steps and all at once.</li>
+        </ul>
+        <p>
+          Finally, if a package is white listed from AUR, such <i>acroread</i>, <i>dropbox</i>, or <i>spotify</i>, no confirmation would be required.
+        </p>
         <h2 id="suggested-settings">
           <a href="#suggested-settings">Suggested Settings</a>
         </h2>

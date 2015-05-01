@@ -138,8 +138,15 @@ updateArchibold() {
   fi
 }
 
-updateOSInfo() {
+resetKeys() {
+  sudo dirmngr </dev/null
+  sudo pacman -Sy --noconfirm
   sudo pacman-key -u
+  sudo pacman-key --populate archlinux
+  sudo pacman-key --refresh-keys
+}
+
+updateOSInfo() {
   sudo pacman -Sy --noconfirm
   sudo pacman-db-upgrade
 }
@@ -165,6 +172,9 @@ archibold() {
         echo -e "$UPDATED"
       fi
       updateOSInfo $0
+      ;;
+    reset-keys)
+      resetKeys $0
       ;;
     upgrade)
       if [ "$(updateArchibold $0)" = "1" ]; then
@@ -364,12 +374,12 @@ vboxpci'>~/virtualbox.conf
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.6 |
+| archibold v0.3.7 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
 
-  archibold [clean|update|upgrade|resplash]
+  archibold [clean|update|upgrade|reset-keys|resplash]
   archibold [install|remove|search] package-name
 
  ${BOLD}list of included AUR packages${RESET}:
