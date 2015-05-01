@@ -193,7 +193,7 @@ archibold() {
           fi
         fi
         updateOSInfo $0
-        sudo pacman -Syu --noconfirm
+        sudo pacman -Su --noconfirm
         if [ -d "/boot/EFI" ]; then
           if [ -f "/boot/vmlinuz-linux" ]; then
             echo 'Linux upgraded, moving files ...'
