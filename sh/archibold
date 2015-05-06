@@ -100,8 +100,8 @@ updateLoginBackground() {
   if [ "$IMAGE" = "" ]; then
     IMAGE=$(
       dbus-launch gsettings get org.gnome.desktop.screensaver picture-uri |
-      sed -e "s/^'file:\/\///g" |
-      sed -e "s/'$//g"
+      sed -e "s/'//g" |
+      sed -e "s/^file:\/\///g"
     )
   fi
   if [ ! -f $IMAGE ]; then
