@@ -114,6 +114,7 @@ fi
 # disk checks
 if [ "$DISK" = "" ]; then
   echo 'please specify a DISK target (i.e. DISK=/dev/sdb)'
+  echo '(use lsblk or fdisk -l to know which one could be OK)'
   exit 1
 fi
 
