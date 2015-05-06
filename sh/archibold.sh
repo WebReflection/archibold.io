@@ -638,7 +638,7 @@ hostname=$LABEL
 '>>/etc/NetworkManager/NetworkManager.conf
 
 if [ '$GNOME' != 'NO' ]; then
-  archibold login-background
+  archibold login-background /usr/share/backgrounds/gnome/adwaita-night.jpg
 fi
 
 exit
