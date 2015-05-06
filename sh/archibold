@@ -64,6 +64,9 @@ installation() {
         git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
       fi
       ;;
+    telegram)
+      commonProcedure 'telegram'
+      ;;
     *)
       if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
         AUR=$(curl -s -I $(getAURPackageNameAsURL $name) | grep '404')
@@ -454,6 +457,7 @@ ${BOLD} __________________
   iojs-bin | iojs         # an updated community fork of nodejs
   spotify                 # music baby!
   sublime-text-nightly    # Sublime 3 (requires a valid license)
+  telegram                # the best messanger in town (telegram.org)
 
  ${BOLD}list of simplified installations${RESET}:
 
