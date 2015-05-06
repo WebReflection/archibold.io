@@ -636,6 +636,10 @@ echo '[keyfile]
 hostname=$LABEL
 '>>/etc/NetworkManager/NetworkManager.conf
 
+if [ '$GNOME' != 'NO' ]; then
+  archibold login-background
+fi
+
 exit
 ">archibold.bash
 
