@@ -120,11 +120,13 @@ updateLoginBackground() {
   done
   cd theme
   cp "$IMAGE" ./
+  sync
+  IMAGE=$(basename $IMAGE)
   echo "
 #lockDialogGroup {
-  background: #2e3436 url(resource:///org/gnome/shell/theme/$(basename $IMAGE));
-  background-size: cover;
+  background: #2e3436 url(resource:///org/gnome/shell/theme/${IMAGE});
   background-repeat: no-repeat;
+  background-size: cover;
 }" >>gnome-shell.css
 
   echo '<?xml version="1.0" encoding="UTF-8"?>
@@ -135,7 +137,7 @@ updateLoginBackground() {
   done
   echo '  </gresource>
 </gresources>' >>"${GSTRES}.xml"
-
+  sync
   glib-compile-resources "${GSTRES}.xml"
 
   sudo mv "/usr/share/gnome-shell/$GSTRES" "/usr/share/gnome-shell/${GSTRES}.backup"
