@@ -52,6 +52,24 @@ installation() {
     iojs)
       commonProcedure 'iojs'
       ;;
+    silverlight)
+      if [ "$(uname -m)" = "x86_64" ]; then
+        yes y | sudo pacman -S gcc-multilib
+      fi
+      commonProcedure 'wine-silverlight'
+      sudo pacman -S --needed --noconfirm mesa-demos wine-mono wine_gecko
+      commonProcedure 'ttf-ms-fonts'
+      commonProcedure 'pipelight'
+      if [ "$(uname -m)" = "x86_64" ]; then
+        yes y | sudo pacman -S gcc
+      fi
+      echo 'Please download Firefox for Windows in your language.'
+      echo 'You can write the following in the console, once downloaded:'
+      echo '  wine ~/Downloads/Firefox*.exe'
+      echo 'And follow instructions'
+      sleep 5
+      epiphany https://www.mozilla.org/en-US/firefox/all
+      ;;
     spotify)
       commonProcedure 'libgcrypt15'
       commonProcedure 'spotify'
@@ -114,7 +132,7 @@ updateLoginBackground() {
   fi
   mkdir -p $WORKDIR
   cd $WORKDIR
-  mkdir theme
+  mkdir -p theme
   for r in `gresource list $GST`; do
     gresource extract $GST $r >$WORKDIR$(echo $r | sed -e 's/^\/org\/gnome\/shell\//\//g')
   done
@@ -122,12 +140,17 @@ updateLoginBackground() {
   cp "$IMAGE" ./
   sync
   IMAGE=$(basename $IMAGE)
+
+  cat gnome-shell.css | sed -e 's/#lockDialogGroup/#lockDialogGroup-ignore/g' >gnome-shell.tmp
+
   echo "
 #lockDialogGroup {
   background: #2e3436 url(resource:///org/gnome/shell/theme/${IMAGE});
   background-repeat: no-repeat;
-  background-size: cover;
-}" >>gnome-shell.css
+  background-size: cover; }" >>gnome-shell.tmp
+
+  sync
+  mv gnome-shell.tmp gnome-shell.css
 
   echo '<?xml version="1.0" encoding="UTF-8"?>
 <gresources>
