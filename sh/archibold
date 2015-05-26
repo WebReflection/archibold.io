@@ -467,7 +467,7 @@ vboxpci'>~/virtualbox.conf
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.3.8 |
+| archibold v0.3.9 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
