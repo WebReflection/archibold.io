@@ -279,7 +279,11 @@ archibold() {
           fi
         fi
         updateOSInfo $0
-        sudo pacman -Su --noconfirm
+        if [ "$WIDTH" = "--force" ]; then
+          sudo pacman -Su --force --noconfirm
+        else
+          sudo pacman -Su --noconfirm
+        fi
         if [ -d "/boot/EFI" ]; then
           if [ -f "/boot/vmlinuz-linux" ]; then
             echo 'Linux upgraded, moving files ...'
