@@ -266,9 +266,9 @@ archibold() {
       if [ "$(updateArchibold $0)" = "1" ]; then
         echo -e "$UPDATED"
         echo ''
-        echo ' ... restarting upgrade'
+        echo '  please restart the upgrade'
         echo ''
-        archibold "$@"
+        exit 0
       else
         if [ -f "/usr/bin/gnome-shell" ]; then
           AUR=$(gnome-shell --version)
