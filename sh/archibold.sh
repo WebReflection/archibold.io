@@ -380,6 +380,11 @@ if [ "$UEFI" != "NO" ]; then
   TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
 fi
 
+if [ "$GNOME" != "NO" ]; then
+  TOPACKSTRAP="$TOPACKSTRAP networkmanager"
+else
+  TOPACKSTRAP="$TOPACKSTRAP dialog wpa_supplicant iw"
+if
 
 if [ "$DEBUG" = "YES" ]; then
   echo $TOPACKSTRAP
