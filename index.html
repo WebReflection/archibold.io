@@ -314,6 +314,12 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
       <section id="first-boot">
         <h1><a href="#first-boot">First boot</a></h1>
         <p>
+          Accordingly you choose GNOME or console, please follow these basic instructions.
+        </p>
+        <h2 id="first-boot-gnome">
+          <a href="#first-boot-gnome">GNOME</a>
+        </h2>
+        <p>
           If everything worked smoothly, the first screen should show the <code>USER</code> name.<br/>
           Clicking on it, will reveal the input to put the password asked during installation.<br/>
           Write it down and reach the Desktop.
@@ -326,6 +332,34 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
         <p>
           <strong>Programs</strong> are reachable trough the top left corner, or using the Window/Start button.<br/>
           We can simply start typing a program name, and this will be listed on the screen.
+        </p>
+        <h2 id="first-boot-console">
+          <a href="#first-boot-console">Non GNOME</a>
+        </h2>
+        <p>
+          In non-GNOME situation the main setup might be about wifi connection.
+          There are few steps to follow, quite well documented on ArchLinux wiki, and summarized in here.
+        </p>
+        <pre><code># read list of network interfaces
+ip addr
+
+# wifi usually starts with w, i.e.: wlp2s0
+# the following command will try to connect
+sudo wifi-menu wlp2s0
+
+# it might warn if it's the first time you use sudo
+
+# chose your network, set a password, and answer YES at the end
+# you now have a wlp2s0-YourWiFiSSID profile
+# we can use that any time we boot
+sudo netctl enable wlp2s0-YourWiFiSSID
+
+# if you are not sure about the name
+sudo netctl list
+
+</code></pre>
+        <p>
+          At this point every boot should try to reconnect to the chosen WiFi network.
         </p>
         <h2 id="maintenance">
           <a href="#maintenance">Basic maintenance</a>
