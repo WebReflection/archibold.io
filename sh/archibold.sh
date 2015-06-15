@@ -487,7 +487,7 @@ if [ '$GNOME' != 'NO' ]; then
     gstreamer-vaapi gst-libav \
     alsa-utils xdg-utils \
     hunspell-en \
-    ttf-liberation ttf-symbola
+    ttf-liberation ttf-symbola ttf-droid
 
   echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
 
