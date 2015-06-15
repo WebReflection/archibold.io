@@ -425,7 +425,7 @@ vboxpci'>~/virtualbox.conf
           sudo modprobe vboxpci
           ;;
         ab-nodejs)
-          sudo pacman -S --needed --noconfirm nodejs
+          sudo pacman -S --needed --noconfirm nodejs npm
           echo ''
           echo 'Please add your npm info (if any)'
           echo ''
