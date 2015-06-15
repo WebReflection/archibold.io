@@ -83,7 +83,7 @@ installation() {
       fi
       ;;
     telegram)
-      commonProcedure 'telegram'
+      commonProcedure 'telegram-desktop'
       ;;
     *)
       if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
