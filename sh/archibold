@@ -425,7 +425,14 @@ vboxpci'>~/virtualbox.conf
           sudo modprobe vboxpci
           ;;
         ab-nodejs)
-          sudo pacman -S --needed --noconfirm nodejs npm
+          sudo pacman -S --needed --noconfirm npm nodejs
+          mkdir -p ~/.npm-packages/bin
+          npm config set prefix '~/.npm-packages'
+          echo '
+# npm and nodejs global modules
+export PATH="$PATH:$HOME/.npm-packages/bin"
+export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+'>>~/.bashrc
           echo ''
           echo 'Please add your npm info (if any)'
           echo ''
