@@ -386,8 +386,13 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
           echo 'unplug and re-plug your device, if any'
           echo ''
           ;;
-        ab-pad)
-          sudo pacman -S --needed --noconfirm dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
+        ab-espruino-pico)
+          sudo groupadd plugdev
+          sudo gpasswd -a $USER plugdev
+          echo '# To go in /etc/udev/rules.d/
+# Makes Espruino s serial port accessible to non-SU users, and stops the Modem Manager trying to enumerate it
+ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1", MODE="0666", GROUP="plugdev"'>~/Downloads/45-espruino.rules
+          sudo mv ~/Downloads/45-espruino.rules /etc/udev/rules.d/
           ;;
         ab-fs-extra)
           sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
@@ -411,6 +416,9 @@ Time to add your key in GitHub.'
             echo 'Please specify a GIT_USER and a GIT_EMAIL'
             exit 1
           fi
+          ;;
+        ab-pad)
+          sudo pacman -S --needed --noconfirm dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
           ;;
         ab-virtualbox)
           sudo pacman -S --needed --noconfirm virtualbox qt4
@@ -498,6 +506,7 @@ ${BOLD} __________________
  ${BOLD}list of simplified installations${RESET}:
 
   ab-android              # android-sdk and development
+  ab-espruino-pico        # configure group and rules for pico
   ab-fs-extra             # (ex)fat utilities
   ab-git                  # git + ssh key configuration
   ab-nodejs               # nodejs + npm configuration
