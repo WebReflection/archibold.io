@@ -187,12 +187,22 @@ removeArchive() {
 
 commonProcedure() {
   local name=$1
+  local RESET="\033[0m"
+  local RED="\033[0;31m"
+  local GREEN="\033[0;32m"
+  local BOLD="\033[1m"
   downloadArchive $name
   cd ~/Downloads
   cd "${name}"
   makepkg -Asc --needed --noconfirm
   sudo pacman -U --needed --noconfirm ${name}*.pkg.tar.xz
-  removeArchive $name
+  if [[ $? -ne 0 ]] ; then
+    echo " ${RED}!${RESET} the package ${BOLD}${name}${RESET} was ${BOLD}not installed${RESET}"
+    exit 1
+  else
+    removeArchive $name
+    echo " ${GREEN}✔${RESET} ${BOLD}${name}${RESET} successfully installed"
+  fi
 }
 
 updateArchibold() {
