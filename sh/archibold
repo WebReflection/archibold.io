@@ -197,11 +197,11 @@ commonProcedure() {
   makepkg -Asc --needed --noconfirm
   sudo pacman -U --needed --noconfirm ${name}*.pkg.tar.xz
   if [[ $? -ne 0 ]] ; then
-    echo " ${RED}!${RESET} the package ${BOLD}${name}${RESET} was ${BOLD}not installed${RESET}"
+    echo " ! the package ${name} was not installed"
     exit 1
   else
     removeArchive $name
-    echo " ${GREEN}✔${RESET} ${BOLD}${name}${RESET} successfully installed"
+    echo " ✔ ${name} successfully installed"
   fi
 }
 
