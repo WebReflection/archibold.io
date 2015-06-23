@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.3.9             #
+# archibold 0.4.0             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -51,7 +51,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.3.9'
+ARCHIBOLD='0.4.0'
 
 clear
 
@@ -448,6 +448,10 @@ echo -e '$UPASSWD
 $UPASSWD' | passwd $USER
 
 echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+echo '
+# password once asked never expires
+Defaults env_reset, timestamp_timeout=-1
+' >> /etc/sudoers
 
 mkdir -p /etc/systemd/system/getty@tty1.service.d
 echo '[Service]
