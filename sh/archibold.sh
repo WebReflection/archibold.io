@@ -384,7 +384,7 @@ if [ "$GNOME" != "NO" ]; then
   TOPACKSTRAP="$TOPACKSTRAP networkmanager"
 else
   TOPACKSTRAP="$TOPACKSTRAP dialog wpa_supplicant iw"
-if
+fi
 
 if [ "$DEBUG" = "YES" ]; then
   echo $TOPACKSTRAP
