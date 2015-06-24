@@ -75,6 +75,7 @@ installation() {
       ;;
     telegram)
       commonProcedure 'telegram-desktop'
+      /opt/telegram/Telegram
       ;;
     *)
       if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
@@ -412,6 +413,7 @@ ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1",
 Time to add your key in GitHub.'
               read -n1 -r -p "Press any key to copy to clipboard" key
               cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
+              echo 'You can now add your key in https://github.com/settings/ssh'
             fi
           else
             echo 'Please specify a GIT_USER and a GIT_EMAIL'
