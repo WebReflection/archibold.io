@@ -37,12 +37,12 @@ installation() {
       sudo pacman -Syu --needed ufw-extras perl-file-mimeinfo
       commonProcedure 'dropbox'
       ;;
-    hal)
-      commonProcedure 'hal-info'
-      commonProcedure 'hal'
-      sudo systemctl enable hal.service
-      sudo systemctl start hal.service
-      ;;
+    #hal)
+    #  commonProcedure 'hal-info'
+    #  commonProcedure 'hal'
+    #  sudo systemctl enable hal.service
+    #  sudo systemctl start hal.service
+    #  ;;
     silverlight)
       if [ "$(uname -m)" = "x86_64" ]; then
         yes y | sudo pacman -S gcc-multilib
@@ -506,7 +506,6 @@ ${BOLD} __________________
   acroread                # Adobe Acrobat Reader
   broadcom-wl-dkms        # Broadcom wifi
   dropbox                 # Dropbox client
-  hal                     # Flash DRM content for Google Play
   spotify                 # music baby!
   sublime3                # Sublime 3 (requires a valid license)
   telegram                # the best messanger in town (telegram.org)
