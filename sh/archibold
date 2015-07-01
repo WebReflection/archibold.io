@@ -388,6 +388,11 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
           echo 'unplug and re-plug your device, if any'
           echo ''
           ;;
+        ab-chromium)
+          sudo pacman -S --needed --noconfirm chromium
+          commonProcedure 'chromium-pepper-flash'
+          commonProcedure 'chromium-widevine'
+          ;;
         ab-espruino-pico)
           sudo groupadd plugdev
           sudo gpasswd -a $USER plugdev
@@ -513,6 +518,7 @@ ${BOLD} __________________
  ${BOLD}list of simplified installations${RESET}:
 
   ab-android              # android-sdk and development
+  ab-chromium             # Chromium with pepper-flash and DRM
   ab-espruino-pico        # configure group and rules for pico
   ab-fs-extra             # (ex)fat utilities
   ab-git                  # git + ssh key configuration
