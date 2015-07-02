@@ -406,7 +406,8 @@ ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1",
           ;;
         ab-git)
           if [ "$GIT_USER" != "" ]; then
-            if [ "$GIT_USER" != "" ]; then
+            if [ "$GIT_EMAIL" != "" ]; then
+              sudo pacman -S --needed --noconfirm git
               git config --global user.name "$GIT_USER"
               git config --global user.email "$GIT_EMAIL"
               git config --global push.default simple
@@ -419,11 +420,11 @@ Time to add your key in GitHub.'
               read -n1 -r -p "Press any key to copy to clipboard" key
               cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
               echo 'You can now add your key in https://github.com/settings/ssh'
+              exit 1
             fi
-          else
-            echo 'Please specify a GIT_USER and a GIT_EMAIL'
-            exit 1
           fi
+          echo 'Please specify a GIT_USER and a GIT_EMAIL'
+          exit 1
           ;;
         ab-heroku)
           sudo pacman -S --needed --noconfirm ruby
