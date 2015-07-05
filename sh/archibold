@@ -257,51 +257,55 @@ updateArchibold() {
   local replacement=
   local dropafter=
   local dest=/home/$USER/Downloads/archibold
-  if [ ! -d /home/$USER ]; then
-    dropafter='user'
+  if [ "$2" = "--skip-update" ]; then
+    echo "0"
   else
-    if [ ! -d /home/$USER/Downloads ]; then
-      dropafter='dl'
-    fi
-  fi
-  /usr/bin/mkdir -p /home/$USER/Downloads
-  /usr/bin/sudo /usr/bin/curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>$dest
-  /usr/bin/sync
-
-  if [ ! -f $dest ]; then
-    exit 1
-  fi
-  if [ "$(/usr/bin/sudo /usr/bin/wc -c $dest)" = "0 $dest" ]; then
-    exit 1
-  fi
-
-  /usr/bin/sudo /usr/bin/chmod +x $dest
-
-  original=$(/usr/bin/cat "$1" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
-  replacement=$(/usr/bin/cat "$dest" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
-  if [ "$original" = "$replacement" ]; then
-    /usr/bin/sudo /usr/bin/rm  $dest
-    if [ "$dropafter" = "dl" ]; then
-      /usr/bin/rm -rf /home/$USER/Downloads
+    if [ ! -d /home/$USER ]; then
+      dropafter='user'
     else
-      if [ "$dropafter" = "user" ]; then
-        /usr/bin/rm -rf /home/$USER
+      if [ ! -d /home/$USER/Downloads ]; then
+        dropafter='dl'
       fi
     fi
-    sync
-    /usr/bin/echo "0"
-  else
-    /usr/bin/sudo /usr/bin/mv $dest $1
+    /usr/bin/mkdir -p /home/$USER/Downloads
+    /usr/bin/sudo /usr/bin/curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>$dest
     /usr/bin/sync
-    if [ "$dropafter" = "dl" ];  then
-      /usr/bin/rm -rf /home/$USER/Downloads
-    else
-      if [ "$dropafter" = "user" ];  then
-        /usr/bin/rm -rf /home/$USER
-      fi
+
+    if [ ! -f $dest ]; then
+      exit 1
     fi
-    /usr/bin/sync
-    /usr/bin/echo "1"
+    if [ "$(/usr/bin/sudo /usr/bin/wc -c $dest)" = "0 $dest" ]; then
+      exit 1
+    fi
+
+    /usr/bin/sudo /usr/bin/chmod +x $dest
+
+    original=$(/usr/bin/cat "$1" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
+    replacement=$(/usr/bin/cat "$dest" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
+    if [ "$original" = "$replacement" ]; then
+      /usr/bin/sudo /usr/bin/rm  $dest
+      if [ "$dropafter" = "dl" ]; then
+        /usr/bin/rm -rf /home/$USER/Downloads
+      else
+        if [ "$dropafter" = "user" ]; then
+          /usr/bin/rm -rf /home/$USER
+        fi
+      fi
+      sync
+      /usr/bin/echo "0"
+    else
+      /usr/bin/sudo /usr/bin/mv $dest $1
+      /usr/bin/sync
+      if [ "$dropafter" = "dl" ];  then
+        /usr/bin/rm -rf /home/$USER/Downloads
+      else
+        if [ "$dropafter" = "user" ];  then
+          /usr/bin/rm -rf /home/$USER
+        fi
+      fi
+      /usr/bin/sync
+      /usr/bin/echo "1"
+    fi
   fi
 }
 
@@ -363,7 +367,7 @@ archibold() {
       upgradeAURPackaged 'all'
       ;;
     upgrade)
-      if [ "$(updateArchibold $0)" = "1" ]; then
+      if [ "$(updateArchibold $0 $2)" = "1" ]; then
         /usr/bin/echo -e "$UPDATED"
         /usr/bin/echo ''
         /usr/bin/echo '  please restart the upgrade'
@@ -420,7 +424,7 @@ After=network-online.target
 [Service]
 User=root
 Type=simple
-ExecStart=/usr/bin/archibold upgrade
+ExecStart=/usr/bin/archibold upgrade --skip-update
 TimeoutStopSec=180
 KillMode=process
 KillSignal=SIGINT
