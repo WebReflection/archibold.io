@@ -62,11 +62,11 @@ installation() {
       epiphany https://www.mozilla.org/en-US/firefox/all
       ;;
     spotify)
-      commonProcedure 'libgcrypt15'
+      commonProcedure 'libgcrypt15' 'spotify'
       commonProcedure 'spotify'
       ;;
     sublime3)
-      commonProcedure 'sublime-text-nightly'
+      commonProcedure 'sublime-text-nightly' 'sublime3'
       mkdir -p /home/$USER/.config/sublime-text-3/Packages
       if [ ! -d "/home/$USER/.config/sublime-text-3/Packages/Theme - Soda" ]; then
         cd /home/$USER/.config/sublime-text-3/Packages
@@ -74,7 +74,7 @@ installation() {
       fi
       ;;
     telegram)
-      commonProcedure 'telegram-desktop'
+      commonProcedure 'telegram-desktop' 'telegram'
       /opt/telegram/Telegram
       ;;
     *)
@@ -165,10 +165,49 @@ updateLoginBackground() {
   fi
 }
 
+findFromAURAndRemove() {
+  local name=$1
+  local pkg=
+  if [ -d ~/.archibold ]; then
+    for pkg in $(ls ~/.archibold/aur/); do
+      if [ "$(cat ~/.archibold/aur/$pkg/nick)" = "$name" ]; then
+        echo "$pkg"
+      fi
+    done
+  fi
+}
+
 getAURPackageNameAsURL() {
   local name=$1
   local type=${name:0:2}
   echo "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
+}
+
+getAURPackageVersion() {
+  local name=$1
+  local type=${name:0:2}
+  local pkg=$(curl -s -k -L "https://aur.archlinux.org/packages/${type}/${name}/PKGBUILD")
+  local pkgver=$(echo $pkg | sed -e 's/^.*\(pkgver=\([0-9][0-9.]*\)\).*$/\2/g')
+  local pkgrel=$(echo $pkg | sed -e 's/^.*\(pkgrel=\([0-9][0-9.]*\)\).*$/\2/g')
+  local epoch=$(echo $pkg | sed -e 's/^.*\(epoch=\([0-9][0-9.]*\)\).*$/\2/g')
+  if [ "${pkgrel:0:10}" = "${pkg:0:10}" ]; then
+    pkgrel=""
+  else
+    pkgrel="-$pkgrel"
+  fi
+  if [ "${epoch:0:10}" = "${pkg:0:10}" ]; then
+    epoch=""
+  else
+    epoch="$epoch:"
+  fi
+  echo "$epoch$pkgver$pkgrel"
+}
+
+getPackageVersion() {
+  local name=$1
+  if [ "$(sudo pacman -Qs $name)" != "" ]; then
+    echo $(echo $(sudo pacman -Q $name) | sed -e "s/^$name //g")
+  fi
 }
 
 downloadArchive() {
@@ -188,6 +227,7 @@ removeArchive() {
 
 commonProcedure() {
   local name=$1
+  local nick=$2
   local RESET="\033[0m"
   local RED="\033[0;31m"
   local GREEN="\033[0;32m"
@@ -202,6 +242,12 @@ commonProcedure() {
     exit 1
   else
     removeArchive $name
+    mkdir -p ~/.archibold/aur/$name
+    getPackageVersion $name >~/.archibold/aur/$name/version
+    if [ "$nick" = "" ]; then
+      nick=$name
+    fi
+    echo $nick>~/.archibold/aur/$name/nick
     echo -e " ${GREEN}✔${RESET} ${BOLD}${name}${RESET} successfully ${BOLD}installed${RESET}"
   fi
 }
@@ -223,6 +269,22 @@ updateArchibold() {
     sudo mv archibold $1
     sync
     echo "1"
+  fi
+}
+
+upgradeAURPackaged() {
+  local name=$1
+  local pkg=
+  local current=
+  local remote=
+  if [ -d ~/.archibold ]; then
+    for pkg in $(ls ~/.archibold/aur/); do
+      current=$(getPackageVersion $pkg)
+      remote=$(getAURPackageVersion $pkg)
+      if [ "$current" != "$remote" ];  then
+        commonProcedure "$pkg" "$(cat ~/.archibold/aur/$pkg/nick)"
+      fi
+    done
   fi
 }
 
@@ -263,6 +325,9 @@ archibold() {
       ;;
     reset-keys)
       resetKeys $0
+      ;;
+    upgrade-aur)
+      upgradeAURPackaged 'all'
       ;;
     upgrade)
       if [ "$(updateArchibold $0)" = "1" ]; then
@@ -364,10 +429,10 @@ archibold() {
         ab-android)
           sudo pacman -S --needed --noconfirm jdk8-openjdk android-udev android-tools apache-ant
           # sudo pacman -S --needed --noconfirm gcc git gnupg flex bison gperf sdl wxgtk squashfs-tools curl ncurses zlib schedtool perl-switch zip unzip libxslt python2-virtualenv bc
-          commonProcedure 'android-sdk'
-          commonProcedure 'android-sdk-platform-tools'
-          commonProcedure 'android-sdk-build-tools'
-          commonProcedure 'android-platform'
+          commonProcedure 'android-sdk' 'ab-android'
+          commonProcedure 'android-sdk-platform-tools' 'ab-android'
+          commonProcedure 'android-sdk-build-tools' 'ab-android'
+          commonProcedure 'android-platform' 'ab-android'
           sudo groupadd sdkusers
           sudo gpasswd -a $USER sdkusers
           export ANDROID_HOME=/opt/android-sdk
@@ -390,8 +455,8 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
           ;;
         ab-chromium)
           sudo pacman -S --needed --noconfirm chromium
-          commonProcedure 'chromium-pepper-flash'
-          commonProcedure 'chromium-widevine'
+          commonProcedure 'chromium-pepper-flash' 'ab-chromium'
+          commonProcedure 'chromium-widevine' 'ab-chromium'
           ;;
         ab-espruino-pico)
           sudo groupadd plugdev
@@ -489,7 +554,22 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
       fi
       ;;
     remove)
-      sudo pacman -Rsc $2
+      # if package actually known/installed
+      if [ "$(sudo pacman -Qs $name)" != "" ]; then
+        sudo pacman -Rsc $2
+        # verify that it was removed
+        if [ "$(sudo pacman -Qs $name)" = "" ]; then
+          # and if it was from AUR
+          if [ -d ~/.archibold/aur/$2 ]; then
+            # remove its folder too
+            rm -rf ~/.archibold/aur/$2
+          fi
+        fi
+      else
+        # it could be a package from AUR
+        # installed through a nick name
+        findFromAURAndRemove $2
+      fi
       ;;
     login-background)
       updateLoginBackground $2
@@ -503,7 +583,7 @@ ${BOLD} __________________
 
  ${BOLD}usage${RESET}:
 
-  archibold [clean|reset-keys|update|upgrade]
+  archibold [clean|reset-keys|update|upgrade|upgrade-aur]
   archibold [install|remove|search] package-name
   archibold [login-background|resplash]
 
