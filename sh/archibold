@@ -369,7 +369,7 @@ archibold() {
       if [ "$2" = "off" ]; then
         if [ -f /etc/systemd/system/archibold-$USER.service ]; then
           sudo systemctl disable archibold-$USER
-          rm -rf /etc/systemd/system/archibold-$USER.service
+          sudo rm -rf /etc/systemd/system/archibold-$USER.service
         fi
       else
         echo "[Unit]
