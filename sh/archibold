@@ -365,44 +365,44 @@ archibold() {
         fi
       fi
       ;;
-    autoupdate)
+    autoupgrade)
       if [ "$2" = "off" ]; then
-        if [ -f /etc/systemd/system/autoupdate.service ]; then
-          sudo systemctl disable autoupdate
-          sudo rm -rf /etc/systemd/system/autoupdate.service
+        if [ -f /etc/systemd/system/autoupgrade.service ]; then
+          sudo systemctl disable autoupgrade
+          sudo rm -rf /etc/systemd/system/autoupgrade.service
         fi
-        if [ -f /etc/systemd/system/autoupdate.timer ]; then
-          sudo systemctl disable /etc/systemd/system/autoupdate.timer
-          sudo rm -rf /etc/systemd/system/autoupdate.timer
+        if [ -f /etc/systemd/system/autoupgrade.timer ]; then
+          sudo systemctl disable /etc/systemd/system/autoupgrade.timer
+          sudo rm -rf /etc/systemd/system/autoupgrade.timer
         fi
       else
         echo '[Unit]
-Description=Automatic Update
+Description=archibold automatic upgrade
 After=network-online.target 
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/pacman -Syuq --noconfirm
+ExecStart=/usr/bin/archibold upgrade
 TimeoutStopSec=180
 KillMode=process
 KillSignal=SIGINT
 
 [Install]
-WantedBy=multi-user.target'>~/autoupdate.service
-        sudo mv ~/autoupdate.service /etc/systemd/system/autoupdate.service
-        sudo systemctl enable autoupdate
+WantedBy=multi-user.target'>~/autoupgrade.service
+        sudo mv ~/autoupgrade.service /etc/systemd/system/autoupgrade.service
+        sudo systemctl enable autoupgrade
         echo '[Unit]
 Description=Automatic Update when booted up after 5 minutes then check the system for updates every 45 minutes
 
 [Timer]
-OnBootSec=5min
+OnBootSec=45min
 OnUnitActiveSec=45min
-Unit=autoupdate.service
+Unit=autoupgrade.service
 
 [Install]
-WantedBy=multi-user.target'>~/autoupdate.timer
-        sudo mv ~/autoupdate.timer /etc/systemd/system/autoupdate.timer
-        sudo systemctl enable autoupdate.timer
+WantedBy=multi-user.target'>~/autoupgrade.timer
+        sudo mv ~/autoupgrade.timer /etc/systemd/system/autoupgrade.timer
+        sudo systemctl enable autoupgrade.timer
       fi
       ;;
     clean)
