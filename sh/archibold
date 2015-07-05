@@ -365,29 +365,44 @@ archibold() {
         fi
       fi
       ;;
-    auto-upgrade)
+    autoupdate)
       if [ "$2" = "off" ]; then
-        if [ -f /etc/systemd/system/archibold-$USER.service ]; then
-          sudo systemctl disable archibold-$USER
-          sudo rm -rf /etc/systemd/system/archibold-$USER.service
+        if [ -f /etc/systemd/system/autoupdate.service ]; then
+          sudo systemctl disable autoupdate
+          sudo rm -rf /etc/systemd/system/autoupdate.service
+        fi
+        if [ -f /etc/systemd/system/autoupdate.timer ]; then
+          sudo systemctl disable /etc/systemd/system/autoupdate.timer
+          sudo rm -rf /etc/systemd/system/autoupdate.timer
         fi
       else
-        echo "[Unit]
-Description=archibold-$USER automatic upgrade
+        echo '[Unit]
+Description=Automatic Update
+After=network-online.target 
 
 [Service]
-Type=idle
-ExecStartPre=/usr/bin/cp /etc/sudoers /etc/sudoers-backup
-ExecStart=/usr/bin/bash -c '/usr/bin/echo \"$USER ALL=(ALL) NOPASSWD: ALL\">>/etc/sudoers'
-ExecStart=
-ExecStart=/usr/bin/sudo -u $USER /usr/bin/archibold upgrade
-ExecStartPost=/usr/bin/mv /etc/sudoers-backup /etc/sudoers
+Type=simple
+ExecStart=/usr/bin/pacman -Syuq --noconfirm
+TimeoutStopSec=180
+KillMode=process
+KillSignal=SIGINT
 
 [Install]
-WantedBy=multi-user.target
-">~/archibold-$USER.service
-        sudo mv ~/archibold-$USER.service /etc/systemd/system/archibold-$USER.service
-        sudo systemctl enable archibold-$USER
+WantedBy=multi-user.target'>~/autoupdate.service
+        sudo mv ~/autoupdate.service /etc/systemd/system/autoupdate.service
+        sudo systemctl enable autoupdate
+        echo '[Unit]
+Description=Automatic Update when booted up after 5 minutes then check the system for updates every 45 minutes
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=45min
+Unit=autoupdate.service
+
+[Install]
+WantedBy=multi-user.target'>~/autoupdate.timer
+        sudo mv ~/autoupdate.timer /etc/systemd/system/autoupdate.timer
+        sudo systemctl enable autoupdate.timer
       fi
       ;;
     clean)
