@@ -269,7 +269,7 @@ updateArchibold() {
       fi
     fi
     /usr/bin/mkdir -p $dest
-    /usr/bin/cd $dest
+    cd $dest
     /usr/bin/sudo /usr/bin/curl -s -k -L -O https://webreflection.github.io/archibold.io/sh/archibold
     /usr/bin/sync
 
