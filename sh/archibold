@@ -256,34 +256,39 @@ updateArchibold() {
   local original=
   local replacement=
   local dropafter=
-  local dest=/home/$USER/Downloads/archibold
+  local dest=/home/$USER/Downloads
+  local target="$dest/archibold"
   if [ "$2" = "--skip-update" ]; then
-    echo "0"
+    /usr/bin/echo "0"
   else
     if [ ! -d /home/$USER ]; then
       dropafter='user'
     else
-      if [ ! -d /home/$USER/Downloads ]; then
+      if [ ! -d $dest ]; then
         dropafter='dl'
       fi
     fi
-    /usr/bin/mkdir -p /home/$USER/Downloads
-    /usr/bin/sudo /usr/bin/curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>$dest
+    /usr/bin/mkdir -p $dest
+    /usr/bin/cd $dest
+    /usr/bin/sudo /usr/bin/curl -s -k -L -O https://webreflection.github.io/archibold.io/sh/archibold
     /usr/bin/sync
 
-    if [ ! -f $dest ]; then
+    if [ ! -f $target ]; then
+      /usr/bin/echo "0"
       exit 1
     fi
-    if [ "$(/usr/bin/sudo /usr/bin/wc -c $dest)" = "0 $dest" ]; then
+    if [ "$(/usr/bin/sudo /usr/bin/wc -c $target)" = "0 $target" ]; then
+      /usr/bin/echo "0"
       exit 1
     fi
 
-    /usr/bin/sudo /usr/bin/chmod +x $dest
+    /usr/bin/sudo /usr/bin/chmod +x $target
 
     original=$(/usr/bin/cat "$1" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
-    replacement=$(/usr/bin/cat "$dest" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
+    replacement=$(/usr/bin/cat "$target" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
     if [ "$original" = "$replacement" ]; then
-      /usr/bin/sudo /usr/bin/rm  $dest
+      echo 'archibold already upgraded'
+      /usr/bin/sudo /usr/bin/rm  $target
       if [ "$dropafter" = "dl" ]; then
         /usr/bin/rm -rf /home/$USER/Downloads
       else
@@ -294,7 +299,7 @@ updateArchibold() {
       sync
       /usr/bin/echo "0"
     else
-      /usr/bin/sudo /usr/bin/mv $dest $1
+      /usr/bin/sudo /usr/bin/mv $target $1
       /usr/bin/sync
       if [ "$dropafter" = "dl" ];  then
         /usr/bin/rm -rf /home/$USER/Downloads
