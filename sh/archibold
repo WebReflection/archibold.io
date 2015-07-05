@@ -263,35 +263,36 @@ updateArchibold() {
       dropafter='dl'
     fi
   fi
-  mkdir -p /home/$USER/Downloads
-  sudo curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>/home/$USER/Downloads/archibold
-  sync
-  sudo chmod +x /home/$USER/Downloads/archibold
-  original=$(cat "$1" | openssl dgst -sha256 -binary | base64)
-  replacement=$(cat "/home/$USER/Downloads/archibold" | openssl dgst -sha256 -binary | base64)
+  /usr/bin/mkdir -p /home/$USER/Downloads
+  /usr/bin/sudo /usr/bin/curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>/home/$USER/Downloads/archibold
+  /usr/bin/sync
+
+  /usr/bin/sudo /usr/bin/chmod +x /home/$USER/Downloads/archibold
+  original=$(/usr/bin/cat "$1" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
+  replacement=$(/usr/bin/cat "/home/$USER/Downloads/archibold" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
   if [ "$original" = "$replacement" ]; then
-    sudo rm  /home/$USER/Downloads/archibold
+    /usr/bin/sudo /usr/bin/rm  /home/$USER/Downloads/archibold
     if [ "$dropafter" = "dl" ]; then
-      rm -rf /home/$USER/Downloads
+      /usr/bin/rm -rf /home/$USER/Downloads
     else
       if [ "$dropafter" = "user" ]; then
-        rm -rf /home/$USER
+        /usr/bin/rm -rf /home/$USER
       fi
     fi
     sync
-    echo "0"
+    /usr/bin/echo "0"
   else
-    sudo mv /home/$USER/Downloads/archibold $1
-    sync
+    /usr/bin/sudo /usr/bin/mv /home/$USER/Downloads/archibold $1
+    /usr/bin/sync
     if [ "$dropafter" = "dl" ];  then
-      rm -rf /home/$USER/Downloads
+      /usr/bin/rm -rf /home/$USER/Downloads
     else
       if [ "$dropafter" = "user" ];  then
-        rm -rf /home/$USER
+        /usr/bin/rm -rf /home/$USER
       fi
     fi
-    sync
-    echo "1"
+    /usr/bin/sync
+    /usr/bin/echo "1"
   fi
 }
 
@@ -337,12 +338,12 @@ archibold() {
   case $1 in
     archibold)
       if [ "$(updateArchibold $0)" = "1" ]; then
-        echo -e "$UPDATED"
+        /usr/bin/echo -e "$UPDATED"
       fi
       ;;
     update)
       if [ "$(updateArchibold $0)" = "1" ]; then
-        echo -e "$UPDATED"
+        /usr/bin/echo -e "$UPDATED"
       fi
       updateOSInfo $0
       ;;
@@ -354,15 +355,15 @@ archibold() {
       ;;
     upgrade)
       if [ "$(updateArchibold $0)" = "1" ]; then
-        echo -e "$UPDATED"
-        echo ''
-        echo '  please restart the upgrade'
-        echo ''
+        /usr/bin/echo -e "$UPDATED"
+        /usr/bin/echo ''
+        /usr/bin/echo '  please restart the upgrade'
+        /usr/bin/echo ''
         exit 0
       else
         if [ -f "/usr/bin/gnome-shell" ]; then
-          AUR=$(gnome-shell --version)
-          if [ "$AUR" != "$(echo $AUR | sed -e 's/3\.14//g')" ]; then
+          AUR=$(/usr/bin/gnome-shell --version)
+          if [ "$AUR" != "$(/usr/bin/echo $AUR | /usr/bin/sed -e 's/3\.14//g')" ]; then
             AUR="1"
           else
             AUR="0"
@@ -370,16 +371,17 @@ archibold() {
         fi
         updateOSInfo $0
         if [ "$WIDTH" = "--force" ]; then
-          sudo pacman -Su --force --noconfirm
+          /usr/bin/sudo /usr/bin/pacman -Su --force --noconfirm
         else
-          sudo pacman -Su --noconfirm
+          /usr/bin/sudo /usr/bin/pacman -Su --noconfirm
         fi
         if [ -d "/boot/EFI" ]; then
           if [ -f "/boot/vmlinuz-linux" ]; then
-            echo 'Linux upgraded, moving files ...'
-            sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
+            /usr/bin/echo 'Linux upgraded, moving files ...'
+            /usr/bin/sudo /usr/bin/mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
           fi
         fi
+        # should never happen on bootstrap
         if [ "$AUR" = "1" ]; then
           echo 'GNOME 3.14 upgraded, tweaking info ...'
           dbus-launch gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
