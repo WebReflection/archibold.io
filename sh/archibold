@@ -253,20 +253,19 @@ commonProcedure() {
 }
 
 updateArchibold() {
-  local original
-  local replacement
-  mkdir -p ~/Downloads
-  cd ~/Downloads
-  sudo curl -s -k -L -O https://webreflection.github.io/archibold.io/sh/archibold
+  local original=
+  local replacement=
+  mkdir -p /home/$USER/Downloads
+  sudo curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>/home/$USER/Downloads/archibold
   sync
-  sudo chmod +x ./archibold
+  sudo chmod +x /home/$USER/Downloads/archibold
   original=$(cat "$1" | openssl dgst -sha256 -binary | base64)
-  replacement=$(cat "./archibold" | openssl dgst -sha256 -binary | base64)
+  replacement=$(cat "/home/$USER/Downloads/archibold" | openssl dgst -sha256 -binary | base64)
   if [ "$original" = "$replacement" ]; then
-    sudo rm  archibold
+    sudo rm  /home/$USER/Downloads/archibold
     echo "0"
   else
-    sudo mv archibold $1
+    sudo mv /home/$USER/Downloads/archibold $1
     sync
     echo "1"
   fi
@@ -364,6 +363,31 @@ archibold() {
           dbus-launch gsettings set org.gnome.Epiphany.web enable-webaudio true
           dbus-launch gsettings set org.gnome.Epiphany.web enable-webgl true
         fi
+      fi
+      ;;
+    auto-upgrade)
+      if [ "$2" = "off" ]; then
+        if [ -f /etc/systemd/system/archibold-$USER.service ]; then
+          sudo systemctl disable archibold-$USER
+          rm -rf /etc/systemd/system/archibold-$USER.service
+        fi
+      else
+        echo "[Unit]
+Description=archibold-$USER automatic upgrade
+
+[Service]
+Type=idle
+ExecStartPre=/usr/bin/cp /etc/sudoers /etc/sudoers-backup
+ExecStart=/usr/bin/bash -c '/usr/bin/echo \"$USER ALL=(ALL) NOPASSWD: ALL\">>/etc/sudoers'
+ExecStart=
+ExecStart=/usr/bin/sudo -u $USER /usr/bin/archibold upgrade
+ExecStartPost=/usr/bin/mv /etc/sudoers-backup /etc/sudoers
+
+[Install]
+WantedBy=multi-user.target
+">~/archibold-$USER.service
+        sudo mv ~/archibold-$USER.service /etc/systemd/system/archibold-$USER.service
+        sudo systemctl enable archibold-$USER
       fi
       ;;
     clean)
