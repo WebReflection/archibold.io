@@ -424,7 +424,7 @@ archibold() {
         echo -e " ${GREEN}✔${RESET} setting up ${BOLD}automatic upgrades${RESET}"
         echo '[Unit]
 Description=archibold automatic upgrade
-After=network-online.target 
+After=network.target 
 
 [Service]
 User=root
