@@ -267,7 +267,20 @@ updateArchibold() {
   /usr/bin/sudo /usr/bin/curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>/home/$USER/Downloads/archibold
   /usr/bin/sync
 
+  if [ "$(/usr/bin/sudo /usr/bin/wc -c /home/$USER/Downloads/archibold)" = "0 /home/$USER/Downloads/archibold" ]; then
+    /usr/bin/rm /home/$USER/Downloads/archibold
+    if [ "$dropafter" = "dl" ];  then
+      /usr/bin/rm -rf /home/$USER/Downloads
+    else
+      if [ "$dropafter" = "user" ];  then
+        /usr/bin/rm -rf /home/$USER
+      fi
+    fi
+    echo "0"
+  fi
+
   /usr/bin/sudo /usr/bin/chmod +x /home/$USER/Downloads/archibold
+
   original=$(/usr/bin/cat "$1" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
   replacement=$(/usr/bin/cat "/home/$USER/Downloads/archibold" | /usr/bin/openssl dgst -sha256 -binary | /usr/bin/base64)
   if [ "$original" = "$replacement" ]; then
