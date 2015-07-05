@@ -255,6 +255,14 @@ commonProcedure() {
 updateArchibold() {
   local original=
   local replacement=
+  local dropafter=
+  if [ ! -d /home/$USER ]; then
+    dropafter='user'
+  else
+    if [ ! -d /home/$USER/Downloads ]; then
+      dropafter='dl'
+    fi
+  fi
   mkdir -p /home/$USER/Downloads
   sudo curl -s -k -L https://webreflection.github.io/archibold.io/sh/archibold>/home/$USER/Downloads/archibold
   sync
@@ -263,9 +271,23 @@ updateArchibold() {
   replacement=$(cat "/home/$USER/Downloads/archibold" | openssl dgst -sha256 -binary | base64)
   if [ "$original" = "$replacement" ]; then
     sudo rm  /home/$USER/Downloads/archibold
+    if [ "$dropafter" = "dl" ];  then
+      rm -rf /home/$USER/Downloads
+    else
+      if [ "$dropafter" = "user" ];  then
+        rm -rf /home/$USER
+      fi
+    fi
     echo "0"
   else
     sudo mv /home/$USER/Downloads/archibold $1
+    if [ "$dropafter" = "dl" ];  then
+      rm -rf /home/$USER/Downloads
+    else
+      if [ "$dropafter" = "user" ];  then
+        rm -rf /home/$USER
+      fi
+    fi
     sync
     echo "1"
   fi
@@ -367,6 +389,7 @@ archibold() {
       ;;
     autoupgrade)
       if [ "$2" = "off" ]; then
+        echo -e " ${GREEN}✔${RESET} ${BOLD}removing${RESET} automatic upgrades"
         if [ -f /etc/systemd/system/autoupgrade.service ]; then
           sudo systemctl disable autoupgrade
           sudo rm -rf /etc/systemd/system/autoupgrade.service
@@ -376,6 +399,7 @@ archibold() {
           sudo rm -rf /etc/systemd/system/autoupgrade.timer
         fi
       else
+        echo -e " ${GREEN}✔${RESET} setting up ${BOLD}automatic upgrades${RESET}"
         echo '[Unit]
 Description=archibold automatic upgrade
 After=network-online.target 
