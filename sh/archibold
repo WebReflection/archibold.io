@@ -271,16 +271,18 @@ updateArchibold() {
   replacement=$(cat "/home/$USER/Downloads/archibold" | openssl dgst -sha256 -binary | base64)
   if [ "$original" = "$replacement" ]; then
     sudo rm  /home/$USER/Downloads/archibold
-    if [ "$dropafter" = "dl" ];  then
+    if [ "$dropafter" = "dl" ]; then
       rm -rf /home/$USER/Downloads
     else
-      if [ "$dropafter" = "user" ];  then
+      if [ "$dropafter" = "user" ]; then
         rm -rf /home/$USER
       fi
     fi
+    sync
     echo "0"
   else
     sudo mv /home/$USER/Downloads/archibold $1
+    sync
     if [ "$dropafter" = "dl" ];  then
       rm -rf /home/$USER/Downloads
     else
@@ -405,6 +407,7 @@ Description=archibold automatic upgrade
 After=network-online.target 
 
 [Service]
+User=root
 Type=simple
 ExecStart=/usr/bin/archibold upgrade
 TimeoutStopSec=180
