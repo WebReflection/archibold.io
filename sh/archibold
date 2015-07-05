@@ -442,7 +442,7 @@ WantedBy=multi-user.target'>~/autoupgrade.service
 Description=Automatic Update when booted up after 5 minutes then check the system for updates every 45 minutes
 
 [Timer]
-OnBootSec=45min
+OnBootSec=15min
 OnUnitActiveSec=45min
 Unit=autoupgrade.service
 
