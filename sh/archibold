@@ -664,7 +664,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.4.0 |
+| archibold v0.4.1 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
