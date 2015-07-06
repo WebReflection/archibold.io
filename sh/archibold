@@ -417,10 +417,12 @@ archibold() {
       ;;
     autoupgrade)
       if [ "$2" = "off" ]; then
-        echo -e " ${GREEN}✔${RESET} ${BOLD}removing${RESET} automatic upgrades"
         if [ -f /etc/systemd/system/autoupgrade.service ]; then
           sudo systemctl disable autoupgrade
           sudo rm -rf /etc/systemd/system/autoupgrade.service
+          echo -e " ${GREEN}✔${RESET} ${BOLD}removed${RESET} automatic upgrades"
+        else
+          echo " automatic upgrades were already disabled"
         fi
         if [ -f /etc/systemd/system/autoupgrade.timer ]; then
           sudo systemctl disable /etc/systemd/system/autoupgrade.timer
