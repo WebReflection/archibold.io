@@ -316,15 +316,21 @@ updateArchibold() {
 
 upgradeAURPackaged() {
   local name=$1
+  local RESET="\033[0m"
+  local BOLD="\033[1m"
+  local folder="/home/$USER/.archibold"
   local pkg=
   local current=
   local remote=
-  if [ -d ~/.archibold ]; then
-    for pkg in $(ls ~/.archibold/aur/); do
+  if [ -d $folder ]; then
+    for pkg in $(ls $folder/aur/); do
       current=$(getPackageVersion $pkg)
       remote=$(getAURPackageVersion $pkg)
       if [ "$current" != "$remote" ];  then
-        commonProcedure "$pkg" "$(cat ~/.archibold/aur/$pkg/nick)"
+        echo -e " updating ${BOLD}$pkg${RESET}"
+        commonProcedure "$pkg" "$(cat $folder/aur/$pkg/nick)"
+      else
+        echo -e " ${GREEN}✔${RESET} ${BOLD}$pkg${RESET} already updated"
       fi
     done
   fi
