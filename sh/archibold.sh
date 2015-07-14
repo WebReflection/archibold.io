@@ -20,7 +20,7 @@
 # DISK    where to install archibold
 # USER    the main user name, lower case
 #
-# SWAP    default 2G, a swap partition
+# SWAP    default 2GiB, a swap partition
 #         SWAP=0 to not use any SWAP
 #
 # PASSWD  root password, by default root
@@ -120,7 +120,7 @@ fi
 
 # swap checks
 if [ "$SWAP" = "" ]; then
-  SWAP=2G
+  SWAP=2GiB
 fi
 
 if [ "$EDD" = "NO" ]; then
