@@ -668,7 +668,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           archibold remove $(findFromAURAndRemove $2)
         fi
       else
-        echo "unable to recognize the package $2"
+        echo "nothing to do"
       fi
       ;;
     login-background)
