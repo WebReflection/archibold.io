@@ -9,6 +9,29 @@
 #
 #     by Andrea Giammarchi - @WebReflection - http://archibold.io/
 
+aurinstallation() {
+  local name=$1
+  local RESET="\033[0m"
+  local RED="\033[0;31m"
+  local GREEN="\033[0;32m"
+  local YELLOW="\033[1;33m"
+  local BOLD="\033[1m"
+  local AUR=$(curl -s -I $(getAURPackageNameAsURL $name) | grep '404')
+  if [ "$AUR" = "" ]; then
+    echo -e "Found an ${YELLOW}unknown${RESET} AUR ${BOLD}${1}${RESET} package."
+    read -n1 -r -p "Are you sure you would like to install it? [y/N]" AUR
+    if [ "$AUR" = "Y" ]; then
+      AUR="y"
+    fi
+    if [ "$AUR" = "y" ]; then
+      commonProcedure $name
+    fi
+  else
+    echo -e "${RED}[WARNING]${RESET} package ${BOLD}${1}${RESET} not found";
+    exit 1
+  fi
+}
+
 installation() {
   local name=$1
   local RESET="\033[0m"
@@ -79,20 +102,7 @@ installation() {
       ;;
     *)
       if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
-        AUR=$(curl -s -I $(getAURPackageNameAsURL $name) | grep '404')
-        if [ "$AUR" = "" ]; then
-          echo -e "Found an ${YELLOW}unknown${RESET} AUR ${BOLD}${1}${RESET} package."
-          read -n1 -r -p "Are you sure you would like to install it? [y/N]" AUR
-          if [ "$AUR" = "Y" ]; then
-            AUR="y"
-          fi
-          if [ "$AUR" = "y" ]; then
-            commonProcedure $name
-          fi
-        else
-          echo -e "${RED}[WARNING]${RESET} package ${BOLD}${1}${RESET} not found";
-          exit 1
-        fi
+        aurinstallation $name
       else
         sudo pacman -S --needed --noconfirm $name
       fi
@@ -626,6 +636,9 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           ;;
       esac
       ;;
+    install-aur)
+      aurinstallation $2
+      ;;
     uninstall)
       archibold remove $2
       ;;
@@ -684,7 +697,7 @@ ${BOLD} __________________
  ${BOLD}usage${RESET}:
 
   archibold [clean|reset-keys|update|upgrade|upgrade-aur]
-  archibold [install|remove|search] package-name
+  archibold [install|remove|search|install-aur] package-name
   archibold [login-background|resplash]
 
  ${BOLD}list of included AUR packages${RESET}:
