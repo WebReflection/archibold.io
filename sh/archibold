@@ -649,10 +649,12 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
       ;;
     remove)
       # if package actually known/installed
-      if [ "$(sudo pacman -Qs $name)" != "" ]; then
+      if [ "$(sudo pacman -Qs $2)" != "" ]; then
         sudo pacman -Rsc $2
+        sync
+        sleep 1
         # verify that it was removed
-        if [ "$(sudo pacman -Qs $name)" = "" ]; then
+        if [ "$(sudo pacman -Qs $2)" = "" ]; then
           # and if it was from AUR
           if [ -d ~/.archibold/aur/$2 ]; then
             # remove its folder too
