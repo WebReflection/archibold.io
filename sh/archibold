@@ -648,23 +648,27 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
       fi
       ;;
     remove)
-      # if package actually known/installed
-      if [ "$(sudo pacman -Qs $2)" != "" ]; then
-        sudo pacman -Rsc $2
-        sync
-        sleep 1
-        # verify that it was removed
-        if [ "$(sudo pacman -Qs $2)" = "" ]; then
-          # and if it was from AUR
-          if [ -d ~/.archibold/aur/$2 ]; then
-            # remove its folder too
-            rm -rf ~/.archibold/aur/$2
+      if [ "$2" != "" ]; then
+        # if package actually known/installed
+        if [ "$(sudo pacman -Qs $2)" != "" ]; then
+          sudo pacman -Rsc $2
+          sync
+          sleep 1
+          # verify that it was removed
+          if [ "$(sudo pacman -Qs $2)" = "" ]; then
+            # and if it was from AUR
+            if [ -d ~/.archibold/aur/$2 ]; then
+              # remove its folder too
+              rm -rf ~/.archibold/aur/$2
+            fi
           fi
+        else
+          # it could be a package from AUR
+          # installed through a nick name
+          archibold remove $(findFromAURAndRemove $2)
         fi
       else
-        # it could be a package from AUR
-        # installed through a nick name
-        archibold remove $(findFromAURAndRemove $2)
+        echo "unable to recognize the package $2"
       fi
       ;;
     login-background)
