@@ -376,8 +376,8 @@ sudo netctl list
 
  <strong>usage:</strong>
 
-  archibold [clean|reset-keys|update|upgrade]
-  archibold [install|remove|search] package-name
+  archibold [clean|reset-keys|update|upgrade|upgrade-aur]
+  archibold [install|remove|search|install-aur] package-name
   archibold [login-background|resplash]
 
  <strong>list of included AUR packages:</strong>
@@ -385,18 +385,18 @@ sudo netctl list
   acroread                # Adobe Acrobat Reader
   broadcom-wl-dkms        # Broadcom wifi
   dropbox                 # Dropbox client
-  google-chrome-dev       # Chrome dev channel
-  hal                     # Flash DRM content for Google Play
-  iojs-bin | iojs         # an updated community fork of nodejs
   spotify                 # music baby!
-  sublime-text-nightly    # Sublime 3 (requires a valid license)
+  sublime3                # Sublime 3 (requires a valid license)
   telegram                # the best messanger in town (telegram.org)
 
  <strong>list of simplified installations:</strong>
 
   ab-android              # android-sdk and development
+  ab-chromium             # Chromium with pepper-flash and DRM
+  ab-espruino-pico        # configure group and rules for pico
   ab-fs-extra             # (ex)fat utilities
   ab-git                  # git + ssh key configuration
+  ab-heroku               # configure heroku
   ab-nodejs               # nodejs + npm configuration
   ab-pad                  # recognizes external devices
   ab-virtualbox           # virtualbox + configuration
@@ -487,6 +487,15 @@ sudo mv archibold /usr/bin
           If your favorite sites work already there's no need to change browser.<br/>
           In all other cases, please follow these instructions.
         </p>
+        <h2 id="chromium">
+          <a href="#chromium">Chromium</a>
+        </h2>
+        <p>
+          Thanks to its recent support for HiDPi, Chromium is now the <strong>best</strong> external <strong>browser</strong>.<br/>
+          <strike>Right now is the only Chrome based browser that really works on retina and is rock stable reliable.</strike><br/>
+          You can write on the terminal either <code>archibold install chromium</code> to have just the browser,
+          or <code>archibold install ab-chromium</code> to also have pepper-flash and widevine plugins from AUR.
+        </p>
         <h2 id="opera">
           <a href="#opera">Opera</a>
         </h2>
@@ -523,7 +532,14 @@ sudo mv archibold /usr/bin
         <p>
           It's embarrassing in 2015 there are still websites requiring Flash player.<br/>
           However, if this is the case, you might try to install it for Firefox via:
-        </p><pre><code></code>archibold install flashplugin</pre>
+        </p><pre><code>archibold install flashplugin</code></pre>
+        <p>
+          Please <strong>bear in mind</strong> if you use <strong>Chromium</strong> instead,
+          you should install pepper-flash  from AURinstead.
+        </p><pre><code>archibold install chromium-pepper-flash</code></pre>
+        <p>
+          If you need to play DRM content too, you will need widevine too.
+        </p><pre><code>archibold install chromium-widevine</code></pre>
       </section>
       <section id="problem-solving">
         <h1>
