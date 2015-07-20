@@ -307,7 +307,7 @@ sync
 TMP=
 ROOT=
 if [ "$UEFI" = "NO" ]; then
-  for CHOICE in $POSSIBLEDISKS); do
+  for CHOICE in $POSSIBLEDISKS; do
     if [ "$CHOICE" != "$DISK" ]; then
       if [ "$SWAP" = "0" ]; then
         ROOT="$CHOICE"
@@ -323,7 +323,7 @@ if [ "$UEFI" = "NO" ]; then
   done
 else
   EFI=
-  for CHOICE in $POSSIBLEDISKS); do
+  for CHOICE in $POSSIBLEDISKS; do
     if [ "$CHOICE" != "$DISK" ]; then
       if [ "$EFI" = "" ]; then
         EFI="$CHOICE"
