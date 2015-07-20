@@ -241,10 +241,13 @@ fi
 echo ' - - - - - - - - - - - - - - '
 
 echo "verifying $DISK"
-POSSIBLEDISKS=$(ls {${DISK},${DISK}[0-9p]*})
+POSSIBLEDISKS=$(ls ${DISK}[0-9p]*)
 
 if [[ $? -ne 0 ]] ; then
-  exit 1
+  POSSIBLEDISKS=$(ls ${DISK})
+  if [[ $? -ne 0 ]] ; then
+    exit 1
+  fi
 fi
 
 for CHOICE in $POSSIBLEDISKS; do
@@ -303,6 +306,11 @@ else
 fi
 
 sync
+
+POSSIBLEDISKS=$(ls ${DISK}[0-9p]*)
+if [[ $? -ne 0 ]] ; then
+  exit 1
+fi
 
 TMP=
 ROOT=
