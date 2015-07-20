@@ -241,13 +241,13 @@ fi
 echo ' - - - - - - - - - - - - - - '
 
 echo "verifying $DISK"
-ls ${DISK}*
+POSSIBLEDISKS=$(ls {${DISK},${DISK}[0-9p]*})
 
 if [[ $? -ne 0 ]] ; then
   exit 1
 fi
 
-for CHOICE in $(ls ${DISK}*); do
+for CHOICE in $POSSIBLEDISKS; do
   if [ "$CHOICE" != "$DISK" ]; then
     if [ "$(df | grep $CHOICE)" != "" ]; then
       echo "unmounting $CHOICE"
@@ -307,7 +307,7 @@ sync
 TMP=
 ROOT=
 if [ "$UEFI" = "NO" ]; then
-  for CHOICE in $(ls ${DISK}*); do
+  for CHOICE in $POSSIBLEDISKS); do
     if [ "$CHOICE" != "$DISK" ]; then
       if [ "$SWAP" = "0" ]; then
         ROOT="$CHOICE"
@@ -323,7 +323,7 @@ if [ "$UEFI" = "NO" ]; then
   done
 else
   EFI=
-  for CHOICE in $(ls ${DISK}*); do
+  for CHOICE in $POSSIBLEDISKS); do
     if [ "$CHOICE" != "$DISK" ]; then
       if [ "$EFI" = "" ]; then
         EFI="$CHOICE"
