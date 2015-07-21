@@ -657,6 +657,8 @@ if [ '$SWAP' != '0' ]; then
   sudo swapon $SWAP
 fi
 sync
+
+sudo pacman -S --needed --noconfirm  arch-install-scripts
 genfstab -U -p / > /etc/fstab
 sync
 
