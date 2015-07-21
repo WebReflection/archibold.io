@@ -555,7 +555,9 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
 
   sync
 
-  pacman -Syu --needed --noconfirm gnome-extra
+  if [ '$GNOME' != 'NOEXTRA' ]; then
+    pacman -Syu --needed --noconfirm gnome-extra
+  fi
 
   sudo -u $USER echo '# new tabs, same dir
 [[ -s /etc/profile.d/vte.sh ]] && . /etc/profile.d/vte.sh' >> /home/$USER/.bashrc
