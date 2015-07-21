@@ -414,6 +414,13 @@ archibold() {
             /usr/bin/echo 'Linux upgraded, moving files ...'
             /usr/bin/sudo /usr/bin/mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
           fi
+        else
+          if [ -d "/boot/efi" ]; then
+            if [ -f "/boot/vmlinuz-linux" ]; then
+              /usr/bin/echo 'Linux upgraded, moving files ...'
+              /usr/bin/sudo /usr/bin/mv /boot/{vmlinuz-linux,*.img} "/boot/efi"
+            fi
+          fi
         fi
         # should never happen on bootstrap
         if [ "$AUR" = "1" ]; then
@@ -503,8 +510,13 @@ WantedBy=multi-user.target'>~/autoupgrade.timer
         echo "moving new ${WIDTH}x${HEIGHT} splash into /boot/EFI"
         sudo cp archibold.jpg /boot/EFI
       else
-        echo "moving new ${WIDTH}x${HEIGHT} splash into /boot"
-        sudo cp archibold.jpg /boot
+        if [ -d "/boot/efi/syslinux" ]; then
+          echo "moving new ${WIDTH}x${HEIGHT} splash into /boot/efi"
+          sudo cp archibold.jpg /boot/efi
+        else
+          echo "moving new ${WIDTH}x${HEIGHT} splash into /boot"
+          sudo cp archibold.jpg /boot
+        fi
       fi
       rm archibold.{jpg,png,svg}
       if [ "$AUR" = "" ]; then
