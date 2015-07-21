@@ -358,6 +358,11 @@ if [ "$SWAP" != "0" ]; then
 fi
 echo "ROOT:             $ROOT"
 
+if [ "$SWAP" != "0" ]; then
+  sudo mkswap $SWAP
+  sudo swapon $SWAP
+fi
+
 sync
 
 if [ "$DEBUG" = "YES" ]; then
@@ -396,6 +401,18 @@ fi
 
 sudo pacstrap archibold $TOPACKSTRAP
 sync
+
+cat archibold/etc/fstab > archibold.fstab
+genfstab -U -p archibold >> archibold.fstab
+cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
+sudo mv etc.fstab archibold/etc/fstab
+rm archibold.fstab
+cat archibold/etc/fstab
+sync
+
+if [ "$DEBUG" = "YES" ]; then
+  read -n1 -r -p "[ fstab ]" TMP
+fi
 
 APPEND="APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2"
 if [ "$EDD" != "" ]; then
@@ -651,21 +668,6 @@ hostname=$LABEL
 if [ '$GNOME' != 'NO' ]; then
   archibold login-background /usr/share/backgrounds/gnome/adwaita-night.jpg
 fi
-
-if [ '$SWAP' != '0' ]; then
-  sudo mkswap $SWAP
-  sudo swapon $SWAP
-fi
-sync
-
-sudo pacman -S --needed --noconfirm  arch-install-scripts
-genfstab -U -p / > /etc/fstab
-sync
-
-if [ '$DEBUG' = 'YES' ]; then
-  read -n1 -r -p '[ fstab ]' TMP
-fi
-
 
 exit
 ">archibold.bash
