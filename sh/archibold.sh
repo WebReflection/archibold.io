@@ -383,7 +383,7 @@ if [ "$UEFI" != "NO" ]; then
 fi
 sync
 
-TOPACKSTRAP="base sudo networkmanager syslinux gptfdisk intel-ucode"
+TOPACKSTRAP="base sudo networkmanager syslinux gptfdisk arch-install-scripts intel-ucode"
 if [ "$UEFI" != "NO" ]; then
   TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
 fi
