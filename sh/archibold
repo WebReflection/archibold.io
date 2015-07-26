@@ -582,6 +582,9 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
 ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1", MODE="0666", GROUP="plugdev"'>~/Downloads/45-espruino.rules
           sudo mv ~/Downloads/45-espruino.rules /etc/udev/rules.d/
           ;;
+        ab-fonts)
+          sudo pacman -S --needed --noconfirm ttf-dejavu ttf-liberation ttf-symbola ttf-droid
+          ;;
         ab-fs-extra)
           sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
           ;;
@@ -750,6 +753,7 @@ ${BOLD} __________________
   ab-android              # android-sdk and development
   ab-chromium             # Chromium with pepper-flash and DRM
   ab-espruino-pico        # configure group and rules for pico
+  ab-fonts                # install common fonts (non GNOME only)
   ab-fs-extra             # (ex)fat utilities
   ab-git                  # git + ssh key configuration
   ab-heroku               # configure heroku
