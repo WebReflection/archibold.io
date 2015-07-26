@@ -654,6 +654,30 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
     uninstall)
       archibold remove $2
       ;;
+    use)
+      case $2 in
+        python2) ]
+          AUR=$(which python)
+          sudo rm -f $AUR
+          sudo ln -s $(which python2) $AUR
+          echo -e "now using ${BOLD}python2${RESET} $(python --version)"
+        ;;
+        python3)
+          AUR=$(which python)
+          sudo rm -f $AUR
+          sudo ln -s $(which python3) $AUR
+          echo -e "now using ${BOLD}python3${RESET} $(python --version)"
+        ;;
+        *)
+          echo -e "
+${BOLD}archibold use [options]${RESET}
+
+  python2
+  python3
+"
+        ;;
+      esac
+      ;;
     swap)
       if [ -f "/swap" ]; then
         AUR="no"
