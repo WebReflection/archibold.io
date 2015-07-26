@@ -232,6 +232,11 @@ fi
 if [ "$GNOME" = "NO" ]; then
   echo "  without GNOME"
 else
+  if [ "$GNOME" = "NOEXTRA" ]; then
+    echo "  with GNOME"
+  else
+    echo "  with GNOME and all extras"
+  fi
   echo "  with GPU $GPU"
   echo "  and resolution ${WIDTH}x${HEIGHT}"
 fi
@@ -508,6 +513,17 @@ if [ '$UEFI' != 'NO' ]; then
     cp -r /usr/lib/syslinux/efi32/* $SYSLINUX_ROOT/syslinux
   fi
   cp -r /usr/lib/syslinux/$UEFI/syslinux.efi $SYSLINUX_ROOT/syslinux
+  echo '[Unit]
+Description=$SYSLINUX_ROOT automatically mounted
+
+[Service]
+User=root
+Type=simple
+ExecStart=/usr/bin/mount $EFI $SYSLINUX_ROOT
+
+[Install]
+WantedBy=multi-user.target'>/etc/systemd/system/automount-efi.service
+  systemctl enable automount-efi
 fi
 
 if [ '$GNOME' != 'NO' ]; then
