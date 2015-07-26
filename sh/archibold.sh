@@ -383,7 +383,7 @@ if [ "$UEFI" != "NO" ]; then
 fi
 sync
 
-TOPACKSTRAP="base sudo networkmanager syslinux gptfdisk arch-install-scripts intel-ucode"
+TOPACKSTRAP="base sudo syslinux gptfdisk arch-install-scripts intel-ucode"
 if [ "$UEFI" != "NO" ]; then
   TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
 fi
@@ -486,7 +486,9 @@ sync
 
 free -h
 
-systemctl enable NetworkManager.service
+if [ '$GNOME' != 'NO' ]; then
+  systemctl enable NetworkManager.service
+fi
 
 syslinux-install_update -ia
 
@@ -668,11 +670,11 @@ sleep 3
 
 # echo '$LABEL' >> /etc/hostname
 hostnamectl set-hostname '$LABEL'
-echo '[keyfile]
-hostname=$LABEL
-'>>/etc/NetworkManager/NetworkManager.conf
 
 if [ '$GNOME' != 'NO' ]; then
+  echo '[keyfile]
+hostname=$LABEL
+'>>/etc/NetworkManager/NetworkManager.conf
   archibold login-background /usr/share/backgrounds/gnome/adwaita-night.jpg
 fi
 
