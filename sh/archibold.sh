@@ -404,6 +404,7 @@ sync
 
 if [ "$SAVE_FSTAB_INFO" = "1" ]; then
   mkdir -p archibold/info
+  fdisk -l > /info/fdisk
   cat archibold/etc/fstab > archibold/info/fstab
   genfstab -U -p archibold > archibold/info/genfstab
 fi
@@ -676,6 +677,7 @@ if [ '$GNOME' != 'NO' ]; then
 fi
 
 if [ '$SAVE_FSTAB_INFO' = '1' ]; then
+  fdisk -l > /info/fdisk-chroot
   genfstab -U -p / > /info/genfstab-chroot
 fi
 
