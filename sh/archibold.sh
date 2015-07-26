@@ -404,7 +404,7 @@ sync
 
 if [ "$SAVE_FSTAB_INFO" = "1" ]; then
   mkdir -p archibold/info
-  fdisk -l > /info/fdisk
+  fdisk -l > archibold/info/fdisk
   cat archibold/etc/fstab > archibold/info/fstab
   genfstab -U -p archibold > archibold/info/genfstab
 fi
