@@ -402,20 +402,24 @@ fi
 sudo pacstrap archibold $TOPACKSTRAP
 sync
 
-if [ "$SAVE_FSTAB_INFO" = "1" ]; then
-  mkdir -p archibold/info
-  fdisk -l > archibold/info/fdisk
-  cat archibold/etc/fstab > archibold/info/fstab
-  genfstab -U -p archibold > archibold/info/genfstab
+if [ "$UEFI" = "NO" ]; then
+  if [ "$SAVE_FSTAB_INFO" = "1" ]; then
+    mkdir -p archibold/info
+    fdisk -l > archibold/info/fdisk
+    cat archibold/etc/fstab > archibold/info/fstab
+    genfstab -U -p archibold > archibold/info/genfstab
+  fi
 fi
 
-cat archibold/etc/fstab > archibold.fstab
-genfstab -U -p archibold >> archibold.fstab
-cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
-sudo mv etc.fstab archibold/etc/fstab
-rm archibold.fstab
-cat archibold/etc/fstab
-sync
+if [ "$UEFI" = "NO" ]; then
+  cat archibold/etc/fstab > archibold.fstab
+  genfstab -U -p archibold >> archibold.fstab
+  cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
+  sudo mv etc.fstab archibold/etc/fstab
+  rm archibold.fstab
+  cat archibold/etc/fstab
+  sync
+fi
 
 if [ "$DEBUG" = "YES" ]; then
   read -n1 -r -p "[ fstab ]" TMP
@@ -678,9 +682,11 @@ hostname=$LABEL
   archibold login-background /usr/share/backgrounds/gnome/adwaita-night.jpg
 fi
 
-if [ '$SAVE_FSTAB_INFO' = '1' ]; then
-  fdisk -l > /info/fdisk-chroot
-  genfstab -U -p / > /info/genfstab-chroot
+if [ '$UEFI' = 'NO' ]; then
+  if [ '$SAVE_FSTAB_INFO' = '1' ]; then
+    fdisk -l > /info/fdisk-chroot
+    genfstab -U -p / > /info/genfstab-chroot
+  fi
 fi
 
 exit
