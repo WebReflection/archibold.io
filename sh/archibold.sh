@@ -402,6 +402,12 @@ fi
 sudo pacstrap archibold $TOPACKSTRAP
 sync
 
+if [ "$SAVE_FSTAB_INFO" = "1" ]; then
+  mkdir -p archibold/info
+  cat archibold/etc/fstab > archibold/info/fstab
+  genfstab -U -p archibold > archibold/info/genfstab
+fi
+
 cat archibold/etc/fstab > archibold.fstab
 genfstab -U -p archibold >> archibold.fstab
 cat archibold.fstab | sed -e 's/root\/archibold//g' | sed -e 's/\/\/boot/\/boot/g' > etc.fstab
@@ -667,6 +673,10 @@ hostname=$LABEL
 
 if [ '$GNOME' != 'NO' ]; then
   archibold login-background /usr/share/backgrounds/gnome/adwaita-night.jpg
+fi
+
+if [ '$SAVE_FSTAB_INFO' = '1' ]; then
+  genfstab -U -p / > /info/genfstab-chroot
 fi
 
 exit
