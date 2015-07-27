@@ -66,24 +66,24 @@ installation() {
     #  sudo systemctl enable hal.service
     #  sudo systemctl start hal.service
     #  ;;
-    silverlight)
-      if [ "$(uname -m)" = "x86_64" ]; then
-        yes y | sudo pacman -S gcc-multilib
-      fi
-      commonProcedure 'wine-silverlight'
-      sudo pacman -S --needed --noconfirm mesa-demos wine-mono wine_gecko
-      commonProcedure 'ttf-ms-fonts'
-      commonProcedure 'pipelight'
-      if [ "$(uname -m)" = "x86_64" ]; then
-        yes y | sudo pacman -S gcc
-      fi
-      echo 'Please download Firefox for Windows in your language.'
-      echo 'You can write the following in the console, once downloaded:'
-      echo '  wine ~/Downloads/Firefox*.exe'
-      echo 'And follow instructions'
-      sleep 5
-      epiphany https://www.mozilla.org/en-US/firefox/all
-      ;;
+    #silverlight)
+    #  if [ "$(uname -m)" = "x86_64" ]; then
+    #    yes y | sudo pacman -S gcc-multilib
+    #  fi
+    #  commonProcedure 'wine-silverlight'
+    #  sudo pacman -S --needed --noconfirm mesa-demos wine-mono wine_gecko
+    #  commonProcedure 'ttf-ms-fonts'
+    #  commonProcedure 'pipelight'
+    #  if [ "$(uname -m)" = "x86_64" ]; then
+    #    yes y | sudo pacman -S gcc
+    #  fi
+    #  echo 'Please download Firefox for Windows in your language.'
+    #  echo 'You can write the following in the console, once downloaded:'
+    #  echo '  wine ~/Downloads/Firefox*.exe'
+    #  echo 'And follow instructions'
+    #  sleep 5
+    #  epiphany https://www.mozilla.org/en-US/firefox/all
+    #  ;;
     spotify)
       commonProcedure 'libgcrypt15' 'spotify'
       commonProcedure 'spotify'
@@ -694,9 +694,11 @@ ${BOLD}archibold use [options]${RESET}
       sudo mkswap /swap
       sudo swapon /swap
       if [ "$AUR" != "no" ]; then
-        cat /etc/fstab >>~/__________________fstab
-        echo '/swap none swap defaults 0 0' >>~/__________________fstab
-        sudo mv ~/__________________fstab /etc/fstab
+        if [ -f "/etc/fstab" ]; then
+          cat /etc/fstab >>~/__________________fstab
+          echo '/swap none swap defaults 0 0' >>~/__________________fstab
+          sudo mv ~/__________________fstab /etc/fstab
+        fi
       fi
       ;;
     remove)
@@ -730,7 +732,7 @@ ${BOLD}archibold use [options]${RESET}
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.4.1 |
+| archibold v0.5.0 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:

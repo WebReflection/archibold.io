@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.4.1             #
+# archibold 0.5.0             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -51,7 +51,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.4.1'
+ARCHIBOLD='0.5.0'
 
 clear
 
@@ -657,9 +657,9 @@ fi
 
 mkinitcpio -p linux
 
-if [ '$UEFI' != 'NO' ]; then
-  mv /boot/{vmlinuz-linux,*.img} $SYSLINUX_ROOT
-fi
+# if [ '$UEFI' != 'NO' ]; then
+#   mv /boot/{vmlinuz-linux,*.img} $SYSLINUX_ROOT
+# fi
 
 sync
 
