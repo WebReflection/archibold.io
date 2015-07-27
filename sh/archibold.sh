@@ -222,7 +222,7 @@ if [ "$UEFI" = "NO" ]; then
   echo "  without EFI"
 else
   SYSLINUX_BOOT=''
-  SYSLINUX_ROOT='/boot/EFI'
+  SYSLINUX_ROOT='/boot'
   echo "  using syslinux/$UEFI"
   echo "  with label $LABEL"
 fi
@@ -514,7 +514,7 @@ if [ '$UEFI' != 'NO' ]; then
   fi
   cp -r /usr/lib/syslinux/$UEFI/syslinux.efi $SYSLINUX_ROOT/syslinux
   echo '[Unit]
-Description=$SYSLINUX_ROOT automatically mounted
+Description=$SYSLINUX_ROOT EFI partition automatically mounted
 
 [Service]
 User=root
