@@ -330,10 +330,7 @@ updateSyslinuxConfig() {
   local tmp=~/tmp_syslinux.cfg
   local WIDTH=$2
   local HEIGHT=$3
-  echo $(
-    cat $syslinux |
-    sed -e "s/MENU RESOLUTION [0-9]* [0-9]*/MENU RESOLUTION $WIDTH $HEIGHT/"
-  )>$tmp
+  cat $syslinux | sed -e "s/MENU RESOLUTION [0-9]* [0-9]*/MENU RESOLUTION $WIDTH $HEIGHT/">$tmp
   sudo cp $tmp $syslinux
   rm $tmp
 }
