@@ -444,7 +444,10 @@ if [ "$DEBUG" = "YES" ]; then
   read -n1 -r -p "[ fstab ]" TMP
 fi
 
-APPEND="APPEND root=$ROOT rw quiet splash loglevel=0 console=tty2"
+APPEND="APPEND root=$ROOT rw"
+if [ "$BOOT_LOUDLY" = "" ]; then
+  APPEND="$APPEND quiet splash loglevel=0 console=tty2"
+fi
 if [ "$EDD" != "" ]; then
   APPEND="$APPEND edd=$EDD"
 fi
