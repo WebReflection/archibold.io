@@ -451,6 +451,10 @@ fi
 if [ "$EDD" != "" ]; then
   APPEND="$APPEND edd=$EDD"
 fi
+if [ "$DEBUG" = "YES" ]; then
+  echo "$APPEND"
+  read -n1 -r -p "[ appended ]" TMP
+fi
 
 echo "#!/usr/bin/env bash
 
@@ -614,13 +618,13 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   sudo -u $USER dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
   sudo -u $USER dbus-launch gsettings set org.gnome.desktop.background show-desktop-icons true
   sudo -u $USER dbus-launch gsettings set org.gnome.Terminal.Legacy.Settings dark-theme true
-  # sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad disable-while-typing true
-  # sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
-  # sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
   sudo -u $USER dbus-launch gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
   sudo -u $USER dbus-launch gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
   sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webaudio true
   sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webgl true
+  sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad disable-while-typing true
+  sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad natural-scroll true
+  sudo -u $USER dbus-launch gsettings set org.gnome.settings-daemon.peripherals.touchpad tap-to-click true
   # sudo -u $USER xdg-mime default org.gnome.Nautilus.desktop inode/directory
 
   echo '
