@@ -405,6 +405,8 @@ sync
 TOPACKSTRAP="base sudo syslinux gptfdisk arch-install-scripts intel-ucode"
 if [ "$UEFI" != "NO" ]; then
   TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
+else
+  TOPACKSTRAP="$TOPACKSTRAP genfstab"
 fi
 
 if [ "$GNOME" != "NO" ]; then
