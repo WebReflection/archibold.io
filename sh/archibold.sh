@@ -381,10 +381,23 @@ yes | sudo mkfs.ext4 $ROOT
 
 sync
 mkdir -p archibold
-sudo mount $ROOT archibold
-if [ "$UEFI" != "NO" ]; then
+
+# temporary hack to test boot from SD
+# and system in the EMMC
+# needed to be done upfront:
+#   1. create a primary ext4 partition in /dev/emmcblk0
+#   2. mkfs.ext4 /dev/emmcblk0p1
+#   3. specify such partition before running this installer
+if [ "$EXP_USE_EMMC" != "" ]; then
+  sudo mount $EXP_USE_EMMC archibold
   sudo mkdir -p "archibold$SYSLINUX_ROOT"
-  sudo mount $EFI "archibold$SYSLINUX_ROOT"
+  sudo mount $ROOT "archibold$SYSLINUX_ROOT"
+else
+  sudo mount $ROOT archibold
+  if [ "$UEFI" != "NO" ]; then
+    sudo mkdir -p "archibold$SYSLINUX_ROOT"
+    sudo mount $EFI "archibold$SYSLINUX_ROOT"
+  fi
 fi
 sync
 
