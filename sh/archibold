@@ -696,6 +696,13 @@ ${BOLD}archibold use [options]${RESET}
         ;;
       esac
       ;;
+    show-gnome-settings)
+      for schema in `gsettings list-schemas`; do
+        for key in `gsettings list-keys $schema`; do
+          echo "$schema $key $(gsettings get $schema $key)"
+        done
+      done
+      ;;
     swap)
       if [ -f "/swap" ]; then
         AUR="no"
