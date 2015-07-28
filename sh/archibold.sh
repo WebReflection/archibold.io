@@ -392,6 +392,7 @@ if [ "$EXP_USE_EMMC" != "" ]; then
   sudo mount $EXP_USE_EMMC archibold
   sudo mkdir -p "archibold$SYSLINUX_ROOT"
   sudo mount $ROOT "archibold$SYSLINUX_ROOT"
+  SYSLINUX_BOOT=''
 else
   sudo mount $ROOT archibold
   if [ "$UEFI" != "NO" ]; then
