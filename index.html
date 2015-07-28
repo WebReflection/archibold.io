@@ -300,6 +300,12 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
             This option is usually needed for Gizmo 2 BIOS, together with the <code>UEFI=NO</code> directive.<br/>
             In this board case, <code>EDD=NO</code> or <code>EDD=off</code> is needed.
           </li>
+          <li>
+            <strong>BOOT_LOUDLY</strong>, optional, if specified with any value will boot with all mesasges visible.<br/>
+            By default, archibold tries its best to boot quietly but sometimes you want/need to see what happens.<br/>
+            It is possible to eventually add <code>quiet splash loglevel=0 console=tty2</code> to the file <code>syslinux/syslinux.cfg</code>
+            after the <code>APPEND</code> directive at any time in the future.
+          </li>
         </ul>
         <p>
           Once we understand the meaning of these variables, we can simply launch the installer as such:
