@@ -284,9 +284,10 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
           </li>
           <li>
             <strong>GNOME</strong>, optional, if <code>GNOME=NO</code> or <code>GNOME=0</code> will skip the Desktop environment.
+            If <code>GNOME=NOEXTRA</code> is specified, the installation will be way faster without bringing in all extras.
           </li>
           <li>
-            <strong>LABEL</strong>, optional hostname, by default <strong>archibold</strong>.<br/>
+            <strong>LABEL</strong>, optional UEFI and hostname value, by default <strong>archibold</strong>.<br/>
             Pick your favorite hostname and EFI label if you are into that sort of things. ;-)
           </li>
           <li>
@@ -431,14 +432,20 @@ sudo mv archibold /usr/bin
         </p>
         <ul>
           <li><strong>archibold upgrade</strong> tries to upgrade all installed packages, excluding those installed via AUR. If for some reason it fails, and it could happen if you haven't updated for a while, we can try to <code>archibold reset-keys</code> first and then upgrade again.</li>
+          <li><strong>archibold upgrade-aur</strong> tries to upgrade all packages previously installed from AUR. It will rebuild them if necessary, it won't do anything otherwise.</li>
           <li><strong>archibold update</strong> simply checks if there are new version of <code>archibold</code> CLI and upgrades it. It updates also packages info.</li>
           <li><strong>archibold clean</strong> removes all cached old downloaded archives, freeing some space on the disk. It's suggested after successful upgrades, but not mandatory.</li>
           <li><strong>archibold reset-keys</strong> forces a clean up and regeneration of all packages keys and signatures. If <code>update</code> or <code>upgrade</code> fails, running the upfront should resolve the problem.</li>
-          <li><strong>archibold resplash</strong> creates again the initial boot splash screen in case you changed monitor or screen resolution.</li>
+          <li><strong>archibold resplash</strong> creates again the initial boot splash screen in case you changed monitor or screen resolution. You can specify width and height too via <code>archibold resplash 800 600</code> to force that size. Please note that this will also update the <code>syslinux.cfg</code> file.</li>
           <li><strong>archibold search <i>package-name</i></strong> is a way to look for <i>package-name</i> in both regular repositories and AUR.</li>
           <li><strong>archibold install <i>package-name</i></strong> tries to install <i>package-name</i> from official repositories, falling back to AUR. In latter case you need to confirm you want to install from aur via <code>y</code></li>
+          <li><strong>archibold install-aur <i>package-name</i></strong> tries to install <i>package-name</i> from AUR only.</li>
           <li><strong>archibold remove <i>package-name</i></strong> will remove and clean up the package.</li>
           <li><strong>archibold install ab-<i>package-name</i></strong> will perform few operations needed to install packages that requires extra steps and all at once.</li>
+          <li><strong>archibold show-gnome-settings</strong> will echo all known GNOME gsettings. Handy combined with <code>grep</code> to know, or set, defaults.</li>
+          <li><strong>archibold login-background</strong> will recompile GNOME style to include the background image on login screen.</li>
+          <li><strong>archibold use</strong> will change default version of Python. <coed>archibold use python2</coed> or <coed>archibold use python3</coed> will make the change permanent. In the future this will be used to change other defaults too.</li>
+          <li><strong>archibold autoupgrade</strong> is an experimental feature that will keep automatically updated the system.</li>
         </ul>
         <p>
           Finally, if a package is white listed from AUR, such <i>acroread</i>, <i>dropbox</i>, or <i>spotify</i>, no confirmation would be required.
