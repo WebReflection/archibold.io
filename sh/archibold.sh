@@ -77,7 +77,8 @@ verifyuser() {
 }
 
 verifyTechnology() {
-  case $(uname -m) in
+  local arch=$(uname -m)
+  case $arch in
     x86_64)
       ;;
     i386)
@@ -89,8 +90,8 @@ verifyTechnology() {
     i686)
       ;;
     *)
-      echo 'my apologies, at this time archibold works'
-      echo 'only on systems powered by Intel'
+      echo "Apologies, at this time archibold does not work"
+      echo "on systems with current architecture: ${arch}"
       ;;
   esac
 }
