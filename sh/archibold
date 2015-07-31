@@ -747,6 +747,12 @@ ${BOLD}archibold use [options]${RESET}
         echo "nothing to do"
       fi
       ;;
+    remove-aur)
+      if [ -d ~/.archibold/aur/$2 ]; then
+        # remove its folder too
+        sudo rm -rf ~/.archibold/aur/$2
+      fi
+      ;;
     login-background)
       updateLoginBackground $2
       ;;
