@@ -190,7 +190,8 @@ findFromAURAndRemove() {
 getAURPackageNameAsURL() {
   local name=$1
   local type=${name:0:2}
-  echo "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
+  echo "https://aur.archlinux.org/cgit/aur.git/snapshot/${name}.tar.gz"
+  # echo "https://aur.archlinux.org/packages/${type}/${name}/${name}.tar.gz"
 }
 
 getAURPackageVersion() {
@@ -760,7 +761,7 @@ ${BOLD}archibold use [options]${RESET}
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.5.0 |
+| archibold v0.5.1 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
