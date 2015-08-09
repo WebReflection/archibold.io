@@ -197,7 +197,8 @@ getAURPackageNameAsURL() {
 getAURPackageVersion() {
   local name=$1
   local type=${name:0:2}
-  local pkg=$(curl -s -k -L "https://aur.archlinux.org/packages/${type}/${name}/PKGBUILD")
+  local pkg=$(curl -s -k -L "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${name}")
+  # local pkg=$(curl -s -k -L "https://aur.archlinux.org/packages/${type}/${name}/PKGBUILD")
   local pkgver=$(echo $pkg | sed -e 's/^.*\(pkgver=\([0-9a-z][0-9a-z.]*\)\).*$/\2/g')
   local pkgrel=$(echo $pkg | sed -e 's/^.*\(pkgrel=\([0-9a-z][0-9a-z.]*\)\).*$/\2/g')
   local epoch=$(echo $pkg | sed -e 's/^.*\(epoch=\([0-9a-z][0-9a-z.]*\)\).*$/\2/g')
