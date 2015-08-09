@@ -96,10 +96,6 @@ installation() {
         git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
       fi
       ;;
-    telegram)
-      commonProcedure 'telegram-desktop' 'telegram'
-      /opt/telegram/Telegram
-      ;;
     *)
       if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
         aurinstallation $name
@@ -778,7 +774,6 @@ ${BOLD} __________________
   dropbox                 # Dropbox client
   spotify                 # music baby!
   sublime3                # Sublime 3 (requires a valid license)
-  telegram                # the best messanger in town (telegram.org)
 
  ${BOLD}list of simplified installations${RESET}:
 
