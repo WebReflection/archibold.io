@@ -220,7 +220,7 @@ getPackageVersion() {
 
 downloadArchive() {
   local name=$1
-  sudo pacman -S --needed --noconfirm base-devel git
+  installBaseDevel $1
   cd ~/Downloads
   curl -L -O $(getAURPackageNameAsURL $name)
   tar -xzf "${name}.tar.gz"
@@ -353,6 +353,10 @@ upgradeAURPackaged() {
       fi
     done
   fi
+}
+
+installBaseDevel() {
+  sudo pacman -S --needed --noconfirm base-devel git
 }
 
 resetKeys() {
@@ -601,6 +605,17 @@ ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1",
         ab-fs-extra)
           sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
           ;;
+        ab-intel-cstick-wifi)
+          installBaseDevel $1
+          sudo pacman -S --needed --noconfirm linux-headers
+          cd ~/Downloads
+          git clone https://github.com/hadess/rtl8723bs
+          cd rtl8723bs
+          make
+          sudo make install
+          cd ..
+          rm -rf rtl8723bs
+          ;;
         ab-git)
           if [ "$GIT_USER" != "" ]; then
             if [ "$GIT_EMAIL" != "" ]; then
@@ -787,6 +802,7 @@ ${BOLD} __________________
   ab-nodejs               # nodejs + npm configuration
   ab-pad                  # recognizes external devices
   ab-virtualbox           # virtualbox + configuration
+  ab-intel-cstick-wifi    # compute stick wifi module
 
 "
       ;;
