@@ -648,6 +648,29 @@ Time to add your key in GitHub.'
         ab-pad)
           sudo pacman -S --needed --noconfirm dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
           ;;
+        ab-telegram)
+          cd ~/Downloads
+          if [ "$(uname -m)" = "x86_64" ]; then
+            curl -o telegram-setup.tar.xz -L "https://tdesktop.com/linux"
+          else
+            curl -o telegram-setup.tar.xz -L "https://tdesktop.com/linux32"
+          fi
+          tar xvfJ telegram-setup.tar.xz
+          rm telegram-setup.tar.xz
+          echo "[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Telegram
+Comment=Instant messaging tool
+Exec=${HOME}/Telegram/Telegram
+Icon=${HOME}/Telegram/Telegram.svg
+Terminal=false
+Categories=Network;InstantMessaging;">Telegram/telegram.desktop
+          cp -r Telegram "${HOME}/"
+          cd "${HOME}/Telegram"
+          curl -o Telegram.svg -L "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+          sudo install -Dm644 "telegram.desktop" "/usr/share/applications/telegram.desktop"
+          ;;
         ab-virtualbox)
           sudo pacman -S --needed --noconfirm virtualbox qt4
           echo 'vboxdrv
@@ -801,6 +824,7 @@ ${BOLD} __________________
   ab-heroku               # configure heroku
   ab-nodejs               # nodejs + npm configuration
   ab-pad                  # recognizes external devices
+  ab-telegram             # install Telegram IM
   ab-virtualbox           # virtualbox + configuration
   ab-intel-cstick-wifi    # compute stick wifi module
 
