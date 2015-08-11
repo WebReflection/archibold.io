@@ -658,17 +658,23 @@ Time to add your key in GitHub.'
           tar xvfJ telegram-setup.tar.xz
           rm telegram-setup.tar.xz
           echo "[Desktop Entry]
-Type=Application
+Encoding=UTF-8
 Version=1.0
 Name=Telegram
-Comment=Instant messaging tool
-Exec=${HOME}/Telegram/Telegram
+Comment=Official desktop version of Telegram messaging app
+Exec=${HOME}/Telegram/Telegram -- %u
 Icon=${HOME}/Telegram/Telegram.svg
 Terminal=false
-Categories=Network;InstantMessaging;">Telegram/telegram.desktop
+Type=Application
+Categories=Network;InstantMessaging;
+MimeType=application/x-xdg-protocol-tg;x-scheme-handler/tg;
+X-Desktop-File-Install-Version=0.22">Telegram/telegram.desktop
+          if [ -d "${HOME}/Telegram" ]; then
+            rm -rf "${HOME}/Telegram"
+          fi
           cp -r Telegram "${HOME}/"
           cd "${HOME}/Telegram"
-          curl -o Telegram.svg -L "https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+          curl -o Telegram.svg -L "https://upload.wikimedia.org/wikipedia/commons/d/dd/Telegram_alternative_logo.svg"
           sudo install -Dm644 "telegram.desktop" "/usr/share/applications/telegram.desktop"
           ;;
         ab-virtualbox)
