@@ -716,7 +716,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
       ;;
     use)
       case $2 in
-        python2) ]
+        python2)
           AUR=$(which python)
           sudo rm -f $AUR
           sudo ln -s $(which python2) $AUR
