@@ -356,7 +356,7 @@ upgradeAURPackaged() {
 }
 
 installBaseDevel() {
-  sudo pacman -S --needed --noconfirm base-devel git
+  sudo pacman -S --needed --noconfirm base-devel git > /dev/null 2>&1
 }
 
 resetKeys() {
