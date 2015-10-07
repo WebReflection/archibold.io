@@ -85,6 +85,7 @@ installation() {
     #  epiphany https://www.mozilla.org/en-US/firefox/all
     #  ;;
     spotify)
+      sudo pacman -S --needed --noconfirm ffmpeg-compat
       commonProcedure 'libgcrypt15'
       commonProcedure 'libcurl-compat'
       commonProcedure 'spotify'
