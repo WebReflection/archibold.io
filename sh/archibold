@@ -85,7 +85,8 @@ installation() {
     #  epiphany https://www.mozilla.org/en-US/firefox/all
     #  ;;
     spotify)
-      commonProcedure 'libgcrypt15' 'spotify'
+      commonProcedure 'libgcrypt15'
+      commonProcedure 'libcurl-compat'
       commonProcedure 'spotify'
       ;;
     sublime3)
