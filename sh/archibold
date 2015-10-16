@@ -358,7 +358,8 @@ upgradeAURPackaged() {
 }
 
 installBaseDevel() {
-  sudo pacman -S --needed --noconfirm base-devel git diffstat chrpath wget cpio > /dev/null 2>&1
+  sudo pacman -S --needed --noconfirm base-devel git diffstat chrpath wget cpio pv > /dev/null 2>&1
+  # dd if=/dev/urandom | pv | dd of=/dev/null
 }
 
 resetKeys() {
