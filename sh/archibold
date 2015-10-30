@@ -60,30 +60,6 @@ installation() {
       sudo pacman -Syu --needed ufw-extras perl-file-mimeinfo
       commonProcedure 'dropbox'
       ;;
-    #hal)
-    #  commonProcedure 'hal-info'
-    #  commonProcedure 'hal'
-    #  sudo systemctl enable hal.service
-    #  sudo systemctl start hal.service
-    #  ;;
-    #silverlight)
-    #  if [ "$(uname -m)" = "x86_64" ]; then
-    #    yes y | sudo pacman -S gcc-multilib
-    #  fi
-    #  commonProcedure 'wine-silverlight'
-    #  sudo pacman -S --needed --noconfirm mesa-demos wine-mono wine_gecko
-    #  commonProcedure 'ttf-ms-fonts'
-    #  commonProcedure 'pipelight'
-    #  if [ "$(uname -m)" = "x86_64" ]; then
-    #    yes y | sudo pacman -S gcc
-    #  fi
-    #  echo 'Please download Firefox for Windows in your language.'
-    #  echo 'You can write the following in the console, once downloaded:'
-    #  echo '  wine ~/Downloads/Firefox*.exe'
-    #  echo 'And follow instructions'
-    #  sleep 5
-    #  epiphany https://www.mozilla.org/en-US/firefox/all
-    #  ;;
     spotify)
       sudo pacman -S --needed --noconfirm ffmpeg-compat
       commonProcedure 'libgcrypt15'
@@ -358,6 +334,7 @@ upgradeAURPackaged() {
 }
 
 installBaseDevel() {
+  echo 'updating development packages ...'
   sudo pacman -S --needed --noconfirm base-devel git diffstat chrpath wget cpio pv > /dev/null 2>&1
   # dd if=/dev/urandom | pv | dd of=/dev/null
 }
@@ -593,6 +570,9 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
           sudo pacman -S --needed --noconfirm chromium
           commonProcedure 'chromium-pepper-flash' 'ab-chromium'
           commonProcedure 'chromium-widevine' 'ab-chromium'
+          ;;
+        ab-dev)
+          installBaseDevel $1
           ;;
         ab-espruino-pico)
           sudo groupadd plugdev
