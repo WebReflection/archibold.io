@@ -74,6 +74,10 @@ installation() {
         git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
       fi
       ;;
+    yaourt)
+      commonProcedure 'package-query'
+      commonProcedure 'yaourt'
+      ;;
     *)
       if [ "$(sudo pacman -Ssq $name | grep $name)" = "" ]; then
         aurinstallation $name
@@ -785,7 +789,7 @@ ${BOLD}archibold use [options]${RESET}
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.5.1 |
+| archibold v0.5.2 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
@@ -801,6 +805,7 @@ ${BOLD} __________________
   dropbox                 # Dropbox client
   spotify                 # music baby!
   sublime3                # Sublime 3 (requires a valid license)
+  yaourt                  # Yet AnOther User Repository Tool
 
  ${BOLD}list of simplified installations${RESET}:
 
