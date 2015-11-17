@@ -1,0 +1,141 @@
+#!/usr/bin/gjs
+
+/*! by Andrea Giammarchi */
+
+const
+  Gtk = imports.gi.Gtk,
+  Mainloop = imports.mainloop,
+  createInterval = function (repeat) {
+    return function (fn, ms) {
+      for (var args = [], i = 2; i < arguments.length; i++) {
+        args[i - 2] = arguments[i];
+      }
+      return Mainloop.timeout_add(ms || 0, () => {
+        fn.apply(null, args);
+        return repeat;
+      });
+    };
+  },
+  setInterval = createInterval(true),
+  setTimeout = createInterval(false),
+  clearInterval = (id) => Mainloop.source_remove(id),
+  clearTimeout = clearInterval
+;
+
+Gtk.init(null, 0);
+
+// similar to 'GTK_THEME="Adwaita:dark"',
+Gtk.Settings.get_default().set_property('gtk-application-prefer-dark-theme', true);
+
+let
+  width = 300,
+  height = 60,
+  marginTop = 10,
+  title = new Gtk.Label({
+    margin_left: 10,
+    margin_top: marginTop
+  }),
+  progressBar = new Gtk.ProgressBar({
+    margin_left: 10,
+    margin_right: 10
+  }),
+  win = new Gtk.Window({
+    type : Gtk.WindowType.TOPLEVEL,
+    window_position: Gtk.WindowPosition.CENTER
+  }),
+  grid = new Gtk.Grid({
+    column_homogeneous: true,
+    row_spacing: marginTop
+  })
+;
+
+// removes title and buttons
+win.set_decorated(false);
+// still recognizable
+win.title = 'archibold update';
+
+// basic behavior
+win.set_default_size(width, height + marginTop * 2);
+win.connect('show', () => Gtk.main());
+win.connect('destroy', () => Gtk.main_quit());
+
+// setup
+title.set_markup('<big><b>archibold</b> upgrade</big>');
+grid.attach(
+  // what
+  title,
+  0,  // left
+  0,  // top
+  1,  // columns
+  1   // rows
+);
+grid.attach(
+  progressBar,
+  0,
+  1,
+  1,
+  1
+);
+
+progressBar.set_text('initializing ...');
+progressBar.set_show_text(true);
+
+// the upgrade procedure
+(function (Gio, GLib) {
+
+  function SpawnReader() {};
+  SpawnReader.prototype.spawn = function (path, command, func) {
+      let pid, stdin, stdout, stderr, stream, reader;
+      [res, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
+          path, command, null, GLib.SpawnFlags.SEARCH_PATH, null);
+      stream = new Gio.DataInputStream({ base_stream : new Gio.UnixInputStream({ fd : stdout }) });
+      this.read(stream, func);
+  };
+  SpawnReader.prototype.read = function (stream, func) {
+      stream.read_line_async(GLib.PRIORITY_LOW, null, function (source, res) {
+          let out, length;
+          [out, length] = source.read_line_finish(res);
+          if (out !== null) {
+              func(out);
+              this.read(source, func);
+          } else {
+            func();
+          }
+      }.bind(this));
+  };
+
+  let position = 0;
+  let total = 0;
+  let packages = [];
+  (new SpawnReader).spawn('./', ['pacman', '-Syu', '--noconfirm'], function (line) {
+    switch (true) {
+      case line === undefined:
+        progressBar.set_text('upgrade completed');
+        progressBar.set_fraction(1);
+        setTimeout(win.destroy.bind(win), 500);
+      case /^\s*::/.test(line):
+        position++;
+        break;
+      case /Packages \((\d+)\)/.test(line):
+        total = 4 + parseFloat(RegExp.$1) * 2;
+        packages = String(line).split(/\)\s+/)[1].split(/\s+/);
+        break;
+      case /^\s*downloading\s+(\S+)/.test(line):
+        if (-1 < packages.indexOf(RegExp.$1.replace(/\.+$/, ''))) position++;
+        break;
+      case /^\s*upgrading\s+(\S+)/.test(line):
+        let pkg = RegExp.$1.replace(/\.+$/, '');
+        if (packages.some((p)=>!p.indexOf(pkg))) position++;
+        break;
+    }
+    if (progressBar.get_fraction() < 1) {
+      progressBar.set_text(String(line).replace(/^\s*::\s+|\.+$/g, ''));
+      progressBar.set_fraction(total === 0 ? (.01 * position) : position / total);
+    }
+  });
+
+}(imports.gi.Gio, imports.gi.GLib));
+
+// attach the grid and show all
+win.add(grid);
+win.show_all();
