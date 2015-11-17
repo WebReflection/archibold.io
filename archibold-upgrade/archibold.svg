@@ -86,11 +86,11 @@
      pagecolor="#000000"
      bordercolor="#000000"
      borderopacity="0"
-     inkscape:pageopacity="1"
+     inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.91432927"
-     inkscape:cx="374.68178"
-     inkscape:cy="468.68878"
+     inkscape:cx="44.385015"
+     inkscape:cy="466.50138"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -111,7 +111,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -163,7 +163,7 @@
            height="417.7926"
            x="804.96167"
            y="223.63455" /></flowRegion><flowPara
-         id="flowPara4191"></flowPara></flowRoot>  </g>
+         id="flowPara4191" /></flowRoot>  </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
