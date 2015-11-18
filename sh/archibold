@@ -782,6 +782,28 @@ ${BOLD}archibold use [options]${RESET}
         sudo rm -rf ~/.archibold/aur/$2
       fi
       ;;
+    ui)
+      installBaseDevel ''
+      echo 'checking gtk3 and gjs ...'
+      sudo pacman -S --needed --noconfirm gtk3 gjs > /dev/null 2>&1
+      mkdir -p ~/.archibold/tmp
+      cd ~/.archibold/tmp
+      curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/archibold-upgrade
+      curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/archibold-upgrade.png
+      curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/archibold-upgrade.desktop.in
+      curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/autogen.sh
+      curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/Makefile.am
+      curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/configure.ac
+      chmod +x archibold-upgrade
+      chmod +x autogen.sh
+      ./autogen.sh
+      sudo make install
+      sudo mv archibold-upgrade.png "$(which archibold-upgrade).png"
+      rm -rf *
+      echo ''
+      echo -e "You can use ${BOLD}archibold-upgrade${RESET} program directly now"
+      echo ''
+      ;;
     login-background)
       updateLoginBackground $2
       ;;
@@ -789,14 +811,14 @@ ${BOLD}archibold use [options]${RESET}
       echo -e "
 ${BOLD} __________________
 |                  |
-| archibold v0.5.2 |
+| archibold v0.5.3 |
 |__________________|${RESET}
 
  ${BOLD}usage${RESET}:
 
   archibold [clean|reset-keys|update|upgrade|upgrade-aur]
   archibold [install|remove|search|install-aur] package-name
-  archibold [login-background|resplash]
+  archibold [login-background|resplash|ui]
 
  ${BOLD}list of included AUR packages${RESET}:
 
