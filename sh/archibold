@@ -784,8 +784,8 @@ ${BOLD}archibold use [options]${RESET}
       ;;
     ui)
       installBaseDevel ''
-      echo 'checking gtk3 and gjs ...'
-      sudo pacman -S --needed --noconfirm gtk3 gjs > /dev/null 2>&1
+      echo 'checking gtk3, gjs and gksu ...'
+      sudo pacman -S --needed --noconfirm gtk3 gjs gksu > /dev/null 2>&1
       mkdir -p ~/.archibold/tmp
       cd ~/.archibold/tmp
       curl -L -O https://webreflection.github.io/archibold.io/archibold-upgrade/archibold-upgrade
@@ -799,10 +799,23 @@ ${BOLD}archibold use [options]${RESET}
       ./autogen.sh
       sudo make install
       sudo mv archibold-upgrade.png "$(which archibold-upgrade).png"
+      sudo cp "$(which archibold-upgrade)" "$(which archibold-upgrade).gjs"
+      echo 'gksudo archibold-upgrade.gjs' > archibold-upgrade
+      chmod +x archibold-upgrade
+      sudo mv archibold-upgrade "$(which archibold-upgrade)"
       rm -rf *
       echo ''
       echo -e "You can use ${BOLD}archibold-upgrade${RESET} program directly now"
       echo ''
+      cd -
+      ;;
+    ui-remove)
+      cd "$(which archibold-upgrade)"
+      rm -rf archibold-upgrade*
+      cd -
+      cd '/usr/local/share/applications'
+      rm -f archibold-upgrade.desktop
+      cd -
       ;;
     login-background)
       updateLoginBackground $2
