@@ -800,7 +800,8 @@ ${BOLD}archibold use [options]${RESET}
       sudo make install
       sudo mv archibold-upgrade.png "$(which archibold-upgrade).png"
       sudo cp "$(which archibold-upgrade)" "$(which archibold-upgrade).gjs"
-      echo 'sleep 1 && gksudo archibold-upgrade.gjs' > archibold-upgrade
+      echo '#!/usr/bin/env bash' > archibold-upgrade
+      echo 'sleep 1 && gksudo archibold-upgrade.gjs' >> archibold-upgrade
       chmod +x archibold-upgrade
       sudo mv archibold-upgrade "$(which archibold-upgrade)"
       rm -rf ~/.archibold/tmp
