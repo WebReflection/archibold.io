@@ -107,7 +107,7 @@ progressBar.set_show_text(true);
   let position = 0;
   let total = 0;
   let packages = [];
-  (new SpawnReader).spawn('./', ['pacman', '-Syu', '--noconfirm'], function (line) {
+  (new SpawnReader).spawn('./', ['archibold', 'upgrade'], function (line) {
     switch (true) {
       case line === undefined:
         progressBar.set_text('upgrade completed');
