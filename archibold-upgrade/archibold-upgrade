@@ -77,6 +77,7 @@ grid.attach(
   1
 );
 
+progressBar.set_ellipsize(imports.gi.Pango.EllipsizeMode.END);
 progressBar.set_text('initializing ...');
 progressBar.set_show_text(true);
 
@@ -85,7 +86,7 @@ progressBar.set_show_text(true);
 
   function SpawnReader() {};
   SpawnReader.prototype.spawn = function (path, command, func) {
-      let pid, stdin, stdout, stderr, stream, reader;
+      let pid, stdin, stdout, stderr, stream;
       [res, pid, stdin, stdout, stderr] = GLib.spawn_async_with_pipes(
           path, command, null, GLib.SpawnFlags.SEARCH_PATH, null);
       stream = new Gio.DataInputStream({ base_stream : new Gio.UnixInputStream({ fd : stdout }) });
