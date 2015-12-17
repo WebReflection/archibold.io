@@ -52,12 +52,12 @@ installation() {
       removeArchive acroread
       ;;
     broadcom-wl-dkms)
-      sudo pacman -Syu --needed linux-headers dkms
+      sudo pacman -Syu --needed --noconfirm linux-headers dkms
       sudo systemctl enable dkms.service
       commonProcedure 'broadcom-wl-dkms'
       ;;
     dropbox)
-      sudo pacman -Syu --needed ufw-extras perl-file-mimeinfo
+      sudo pacman -Syu --needed --noconfirm ufw-extras perl-file-mimeinfo
       commonProcedure 'dropbox'
       ;;
     spotify)
