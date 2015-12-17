@@ -1,5 +1,280 @@
 #!/usr/bin/bash
 
+archy() {
+  local TMP
+  local ITEM
+  local OUT
+  local RESULT
+  case $1 in
+    clean)
+      yaourt -Sc --noconfirm
+      ;;
+    clear)
+      archy clean
+      ;;
+    install)
+      case $2 in
+        archy-android)
+          sudo pacman -S --needed --noconfirm jdk8-openjdk android-udev android-tools apache-ant
+          yaourt -S --needed --noconfirm android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
+          sudo groupadd sdkusers
+          sudo gpasswd -a $USER sdkusers
+          export ANDROID_HOME=/opt/android-sdk
+          echo '
+# needed by PhoneGap
+ANDROID_HOME=/opt/android-sdk
+PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
+          sudo chown -R :sdkusers /opt/android-sdk/
+          sudo chmod -R g+w /opt/android-sdk/
+          echo '
+SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
+'>>51-android.rules
+          sudo mv 51-android.rules /etc/udev/rules.d/
+          sudo udevadm control --reload-rules
+          echo ''
+          echo 'unplug and re-plug your device, if any'
+          echo ''
+          ;;
+        archy-chromium)
+          sudo pacman -S --needed --noconfirm chromium
+          yaourt -S --needed --noconfirm chromium-pepper-flash chromium-widevine
+          ;;
+        archy-espruino-pico)
+          sudo groupadd plugdev
+          sudo gpasswd -a $USER plugdev
+          mkdir -p ~/Downloads
+          echo '# To go in /etc/udev/rules.d/
+# Makes Espruino s serial port accessible to non-SU users, and stops the Modem Manager trying to enumerate it
+ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1", MODE="0666", GROUP="plugdev"'>~/Downloads/45-espruino.rules
+          sudo mv ~/Downloads/45-espruino.rules /etc/udev/rules.d/
+          ;;
+        archy-fonts)
+          sudo pacman -S --needed --noconfirm ttf-dejavu ttf-liberation ttf-symbola ttf-droid
+          ;;
+        archy-fs-extra)
+          sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
+          ;;
+        archy-git)
+          if [ "$GIT_USER" != "" ]; then
+            if [ "$GIT_EMAIL" != "" ]; then
+              sudo pacman -S --needed --noconfirm git
+              git config --global user.name "$GIT_USER"
+              git config --global user.email "$GIT_EMAIL"
+              git config --global push.default simple
+              sudo pacman -S --needed --noconfirm openssh xclip
+              ssh-keygen -t rsa -C "$GIT_EMAIL"
+              eval "$(ssh-agent -s)"
+              ssh-add ~/.ssh/id_rsa
+              echo '
+Time to add your key in GitHub.'
+              read -n1 -r -p "Press any key to copy to clipboard" key
+              cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
+              echo ''
+              icho '[*][g]✔[/] [*]git[/] successfully configured.'
+              echo 'You can now add your key* in https://github.com/settings/ssh'
+              echo ' * the key will be available via Ctrl+v'
+              echo ''
+              exit 0
+            fi
+          fi
+          echo ''
+          icho '[*][r]x[/] unable to configure [*]git[/]'
+          icho 'Please specify a [*]GIT_USER[/] and a [*]GIT_EMAIL[/] upfront.'
+          echo 'GIT_USER="Name Surname" GIT_EMAIL="name@surname.com" archy install archy-git'
+          echo ''
+          exit 1
+          ;;
+        archy-heroku)
+          sudo pacman -S --needed --noconfirm ruby
+          mkdir -p ~/Downloads
+          cd ~/Downloads
+          curl -L -O https://toolbelt.heroku.com/install.sh
+          sh install.sh
+          rm install.sh
+          ;;
+        archy-intel-cstick-wifi)
+          sudo pacman -S --needed --noconfirm linux-headers
+          mkdir -p ~/Downloads
+          cd ~/Downloads
+          git clone https://github.com/hadess/rtl8723bs
+          cd rtl8723bs
+          make
+          sudo make install
+          cd ..
+          rm -rf rtl8723bs
+          ;;
+        archy-node)
+          sudo pacman -S --needed --noconfirm npm nodejs
+          mkdir -p ~/.npm-packages/bin
+          npm config set prefix '~/.npm-packages'
+          echo '
+# npm and nodejs global modules
+export PATH="$PATH:$HOME/.npm-packages/bin"
+export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+'>>~/.bashrc
+          echo ''
+          echo 'Please add your npm info (if any)'
+          echo ''
+          npm adduser
+          ;;
+        archy-pad)
+          sudo pacman -S --needed --noconfirm dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
+          ;;
+        archy-virtualbox)
+          sudo pacman -S --needed --noconfirm virtualbox qt4
+          echo 'vboxdrv
+vboxnetadp
+vboxnetflt
+vboxpci'>~/virtualbox.conf
+          sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
+          sudo modprobe vboxdrv
+          sudo modprobe vboxnetadp
+          sudo modprobe vboxnetflt
+          sudo modprobe vboxpci
+          ;;
+        *)
+          if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
+            sudo pacman -S --needed --noconfirm $2
+          elif [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
+            icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
+            read -n1 -r -p "Would you like to proceed? [y/N]" TMP
+            if [ "$TMP" = "Y" ]; then
+              TMP="y"
+            fi
+            if [ "$TMP" = "y" ]; then
+              yaourt -S --needed --noconfirm $2
+            fi
+          else
+            icho " [r]x[/] Unable to find [*]$2[/] package"
+          fi
+          ;;
+      esac
+      ;;
+    search)
+      if [ "$(sudo pacman -Qsq $2 | grep ^$2$)" != "" ]; then
+        TMP=" [installed]"
+      fi
+      if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
+        icho " [g]✔[/] Official [*]$2[/] package available$TMP"
+      elif [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
+        icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
+      else
+        TMP="$(yaourt -Ssq $2)"
+        if [ "$TMP" != "" ]; then
+          OUT=""
+          for ITEM in $TMP; do
+            OUT="$OUT, $ITEM"
+          done
+          icho " [*]$2[/] not found."
+          echo " Perhaps one of the following?"
+          echo " ${OUT:2}"
+        else
+          icho " [r]x[/] Unable to find [*]$2[/] package"
+        fi
+      fi
+      ;;
+    remove)
+      archy uninstall $2
+      ;;
+    uninstall)
+      case $2 in
+        *)
+          yaourt -Rsc $2
+          ;;
+      esac
+      ;;
+    update)
+      yaourt -Syu --needed --noconfirm
+      sudo pacman-db-upgrade
+      # legacy archiboiold syslinux gotcha
+      if [ -d "/boot/EFI" ]; then
+        if [ -f "/boot/vmlinuz-linux" ]; then
+          echo 'Linux upgraded, moving files ...'
+          sudo mv /boot/{vmlinuz-linux,*.img} "/boot/EFI"
+        fi
+      else
+        if [ -d "/boot/efi" ]; then
+          if [ -f "/boot/vmlinuz-linux" ]; then
+            echo 'Linux upgraded, moving files ...'
+            sudo mv /boot/{vmlinuz-linux,*.img} "/boot/efi"
+          fi
+        fi
+      fi
+      ;;
+    upgrade)
+      TMP="$(which archy)"
+      if [ "$TMP" != "" ]; then
+        sudo curl -L -s -o "$TMP" "http://archibold.io/sh/archy"
+        sudo chmod +x $TMP
+        if [[ $? -ne 0 ]] ; then
+          icho " [*][r]x[/] [*]unable to update archy[/]"
+        else
+          icho " [*][g]✔[/] [*]archy is up to date[/] \o/"
+        fi
+      fi
+      archy update
+      ;;
+    *)
+      icho "[*]
+ ┌────────────────┐
+ │  archy v0.1.0  │
+ └────────────────┘
+ [/]
+ [*]usage[/]:
+
+  archy [clean|clear|update|upgrade]
+  archy [install|remove|search|uninstall] package-name
+
+ [*]list of simplified installations[/]:
+
+  archy-android              # android-sdk and development
+  archy-chromium             # Chromium with pepper-flash and DRM
+  archy-espruino-pico        # configure group and rules for pico
+  archy-fonts                # install common fonts (non GNOME only)
+  archy-fs-extra             # (ex)fat utilities
+  archy-git                  # git + ssh key configuration
+  archy-heroku               # configure heroku
+  archy-intel-cstick-wifi    # compute stick wifi module
+  archy-node                 # nodejs + npm configuration
+  archy-pad                  # recognizes external devices (iOS)
+  archy-virtualbox           # configure virtualbox
+"
+    echo ''
+    ;;
+  esac
+}
+
+commonProcedure() {
+  local name=$1
+  downloadArchive $name
+  cd ~/Downloads
+  cd "${name}"
+  makepkg -Asc --needed --noconfirm
+  sudo pacman -U --needed --noconfirm ${name}*.pkg.tar.xz
+  if [[ $? -ne 0 ]] ; then
+    icho " [*][r]x[/] the package [*]${name}[/] was [*]not installed[/]"
+    exit 1
+  else
+    removeArchive $name
+    icho " [*][g]✔[/] [*]${name}[/] successfully [*]installed[/]"
+  fi
+}
+
+downloadArchive() {
+  local name=$1
+  mkdir -p ~/Downloads
+  cd ~/Downloads
+  curl -L -O $(getAURPackageNameAsURL $name)
+  tar -xzf "${name}.tar.gz"
+}
+
+getAURPackageNameAsURL() {
+  local name=$1
+  echo "https://aur.archlinux.org/cgit/aur.git/snapshot/${name}.tar.gz"
+}
+
 icho() {
 
   # [*][g]✔[/] [*][r]x[/] [*][y]![/]
@@ -68,61 +343,25 @@ icho() {
   echo -e "${phrase}${reset_all}"
 }
 
-archy() {
-  local TMP
-  local ITEM
-  local OUT
-  local RESULT
-  case $1 in
-    install)
-      case $2 in
-        *)
-          yaourt -S --needed --noconfirm $2
-          ;;
-      esac
-      ;;
-    search)
-      if [ "$(sudo pacman -Qsq $2 | grep ^$2$)" != "" ]; then
-        TMP=" [installed]"
-      fi
-      if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
-        icho " [g]✔[/] Official [*]$2[/] package available$TMP"
-      elif [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
-        icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
-      else
-        TMP="$(yaourt -Ssq $2)"
-        if [ "$TMP" != "" ]; then
-          OUT=""
-          for ITEM in $TMP; do
-            OUT="$OUT, $ITEM"
-          done
-          icho " [*]$2[/] not found."
-          echo " Perhaps one of the following?"
-          echo " ${OUT:2}"
-        else
-          icho " [r]x[/] Unable to find [*]$2[/] package"
-        fi
-      fi
-      ;;
-    uninstall)
-      case $2 in
-        *)
-          yaourt -Rcs $2
-          ;;
-      esac
-      ;;
-    update)
-      yaourt -Syu --noconfirm
-      ;;
-    upgrade)
-      TMP="$(which archy)"
-      if [ "$TMP" != "" ]; then
-        sudo curl -L -s -o "$TMP" "http://archibold.io/sh/archy"
-        sudo chmod +x $TMP
-      fi
-      yaourt -Syu --noconfirm
-      ;;
-  esac
+removeArchive() {
+  local name=$1
+  cd ~/Downloads
+  rm -rf "${name}"
+  rm "${name}.tar.gz"
 }
 
+verifyYaourt() {
+  local name="yaourt"
+  if [ "$(sudo pacman -Qsq $name | grep ^$name$)" = "" ]; then
+    icho "[*][g]$name[/] not found."
+    icho "installing [*]development packages[/]"
+    sudo pacman -S --needed --noconfirm base-devel git sudo diffstat chrpath wget cpio pv > /dev/null 2>&1
+    icho "installing [*]package-query[/]"
+    commonProcedure 'package-query'
+    icho "installing [*]$name[/]"
+    commonProcedure "$name"
+  fi
+}
+
+verifyYaourt
 archy "$@"
