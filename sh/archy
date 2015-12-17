@@ -1,5 +1,25 @@
 #!/usr/bin/bash
 
+# Copyright (c) 2015 Andrea Giammarchi
+# 
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+# 
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+# 
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+# OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+# THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+# IN THE SOFTWARE.
+
 archy() {
   local TMP
   local ITEM
@@ -19,11 +39,13 @@ archy() {
           yaourt -S --needed --noconfirm android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
           sudo groupadd sdkusers
           sudo gpasswd -a $USER sdkusers
-          export ANDROID_HOME=/opt/android-sdk
-          echo '
+          if [ "$ANDROID_HOME" = "" ]; then
+            export ANDROID_HOME=/opt/android-sdk
+            echo '
 # needed by PhoneGap
 ANDROID_HOME=/opt/android-sdk
 PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
+          fi
           sudo chown -R :sdkusers /opt/android-sdk/
           sudo chmod -R g+w /opt/android-sdk/
           echo '
@@ -37,9 +59,18 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
           echo 'unplug and re-plug your device, if any'
           echo ''
           ;;
+        archy-broadcom-wl-dkms)
+          sudo pacman -Syu --needed --noconfirm linux-headers dkms
+          sudo systemctl enable dkms.service
+          yaourt -S --needed --noconfirm broadcom-wl-dkms
+          ;;
         archy-chromium)
           sudo pacman -S --needed --noconfirm chromium
           yaourt -S --needed --noconfirm chromium-pepper-flash chromium-widevine
+          ;;
+        archy-dropbox)
+          sudo pacman -S --needed --noconfirm ufw-extras perl-file-mimeinfo
+          yaourt -S --needed --noconfirm dropbox
           ;;
         archy-espruino-pico)
           sudo groupadd plugdev
@@ -122,6 +153,19 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
         archy-pad)
           sudo pacman -S --needed --noconfirm dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
           ;;
+        archy-spotify)
+          sudo pacman -S --needed --noconfirm ffmpeg-compat
+          yaourt -S --needed --noconfirm libgcrypt15 libcurl-compat
+          yaourt -S --needed --noconfirm spotify
+          ;;
+        archy-sublime3)
+          yaourt -S --needed --noconfirm sublime-text-nightly
+          mkdir -p /home/$USER/.config/sublime-text-3/Packages
+          if [ ! -d "/home/$USER/.config/sublime-text-3/Packages/Theme - Soda" ]; then
+            cd /home/$USER/.config/sublime-text-3/Packages
+            git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
+          fi
+          ;;
         archy-virtualbox)
           sudo pacman -S --needed --noconfirm virtualbox qt4
           echo 'vboxdrv
@@ -180,6 +224,74 @@ vboxpci'>~/virtualbox.conf
       ;;
     uninstall)
       case $2 in
+        archy-android)
+          sudo pacman -Rsc jdk8-openjdk android-udev android-tools apache-ant
+          yaourt -Rsc android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
+          ;;
+        archy-broadcom-wl-dkms)
+          sudo systemctl disable dkms.service
+          yaourt -Rsc broadcom-wl-dkms
+          sudo pacman -Rsc linux-headers dkms
+          ;;
+        archy-chromium)
+          sudo pacman -Rsc chromium
+          yaourt -Rsc chromium-pepper-flash chromium-widevine
+          ;;
+        archy-dropbox)
+          sudo pacman -Rsc ufw-extras perl-file-mimeinfo
+          yaourt -Rsc dropbox
+          ;;
+        archy-espruino-pico)
+          if [ -f /etc/udev/rules.d/45-espruino.rules ]; then
+            sudo rm /etc/udev/rules.d/45-espruino.rules
+          fi
+          ;;
+        archy-fonts)
+          sudo pacman -Rsc ttf-dejavu ttf-liberation ttf-symbola ttf-droid
+          ;;
+        archy-fs-extra)
+          sudo pacman -Rsc exfat-utils fuse-exfat dosfstools
+          ;;
+        archy-git)
+          sudo pacman -Rsc git
+          ;;
+        archy-heroku)
+          sudo pacman -Rsc ruby
+          ;;
+        archy-intel-cstick-wifi)
+          sudo pacman -S --needed --noconfirm linux-headers
+          mkdir -p ~/Downloads
+          cd ~/Downloads
+          git clone https://github.com/hadess/rtl8723bs
+          cd rtl8723bs
+          make
+          sudo make uninstall
+          cd ..
+          rm -rf rtl8723bs
+          sudo pacman -Rsc linux-headers
+          ;;
+        archy-node)
+          sudo pacman -Rsc npm nodejs
+          ;;
+        archy-pad)
+          sudo pacman -Rsc dosfstools usbmuxd gvfs-afc gvfs-afp gvfs-goa gvfs-gphoto2 gvfs-mtp gvfs-smb
+          ;;
+        archy-spotify)
+          sudo pacman -Rsc ffmpeg-compat
+          yaourt -Rsc libgcrypt15 libcurl-compat spotify
+          ;;
+        archy-sublime3)
+          yaourt -Rsc sublime-text-nightly
+          if [ -d /home/$USER/.config/sublime-text-3 ]; then
+            rm -rf /home/$USER/.config/sublime-text-3
+          fi
+          ;;
+        archy-virtualbox)
+          sudo pacman -Rsc virtualbox qt4
+          if [ -f /etc/modules-load.d/virtualbox.conf ]; then
+            sudo rm /etc/modules-load.d/virtualbox.conf
+          fi
+          ;;
         *)
           yaourt -Rsc $2
           ;;
@@ -217,29 +329,33 @@ vboxpci'>~/virtualbox.conf
       archy update
       ;;
     *)
-      icho "[*]
- ┌────────────────┐
- │  archy v0.1.0  │
- └────────────────┘
+      icho "[*][g]
+ ╔════════════════╗
+ ║  archy v0.1.0  ║
+ ╚════════════════╝
  [/]
- [*]usage[/]:
+ [g]usage[/]:
 
   archy [clean|clear|update|upgrade]
   archy [install|remove|search|uninstall] package-name
 
- [*]list of simplified installations[/]:
+ [g]list of simplified installations[/]:
 
-  archy-android              # android-sdk and development
-  archy-chromium             # Chromium with pepper-flash and DRM
-  archy-espruino-pico        # configure group and rules for pico
-  archy-fonts                # install common fonts (non GNOME only)
-  archy-fs-extra             # (ex)fat utilities
-  archy-git                  # git + ssh key configuration
-  archy-heroku               # configure heroku
-  archy-intel-cstick-wifi    # compute stick wifi module
-  archy-node                 # nodejs + npm configuration
-  archy-pad                  # recognizes external devices (iOS)
-  archy-virtualbox           # configure virtualbox
+  archy-android              [b]# android-sdk and development[/]
+  archy-broadcom-wl-dkms     [b]# Broadcom wifi[/]
+  archy-chromium             [b]# Chromium with pepper-flash and DRM[/]
+  archy-dropbox              [b]# Dropbox client[/]
+  archy-espruino-pico        [b]# configure group and rules for pico[/]
+  archy-fonts                [b]# install common fonts (non GNOME only)[/]
+  archy-fs-extra             [b]# (ex)fat utilities[/]
+  archy-git                  [b]# git + ssh key configuration[/]
+  archy-heroku               [b]# configure heroku[/]
+  archy-intel-cstick-wifi    [b]# compute stick wifi module[/]
+  archy-node                 [b]# nodejs + npm configuration[/]
+  archy-pad                  [b]# recognizes external devices (iOS)[/]
+  archy-spotify              [b]# install spotify[/]
+  archy-sublime3             [b]# Sublime3 (requires a valid license)[/]
+  archy-virtualbox           [b]# configure virtualbox[/]
 "
     echo ''
     ;;
