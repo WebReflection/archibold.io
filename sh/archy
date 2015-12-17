@@ -298,8 +298,9 @@ vboxpci'>~/virtualbox.conf
       esac
       ;;
     update)
-      yaourt -Syu --needed --noconfirm
+      sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
+      yaourt -Syu --noconfirm
       # legacy archiboiold syslinux gotcha
       if [ -d "/boot/EFI" ]; then
         if [ -f "/boot/vmlinuz-linux" ]; then
