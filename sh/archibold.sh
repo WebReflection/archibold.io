@@ -694,8 +694,11 @@ fi
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
 sudo -u $USER curl -L -O http://archibold.io/sh/archibold
+sudo -u $USER curl -L -O http://archibold.io/sh/archy
 chmod +x archibold
+chmod +x archy
 mv archibold /usr/bin
+mv archy /usr/bin
 sync
 
 rm /archibold

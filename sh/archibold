@@ -261,6 +261,7 @@ updateArchibold() {
     /usr/bin/mkdir -p $dest
     cd $dest
     /usr/bin/sudo /usr/bin/curl -s -k -L -O https://webreflection.github.io/archibold.io/sh/archibold
+    /usr/bin/sudo /usr/bin/curl -s -k -L -O https://webreflection.github.io/archibold.io/sh/archy
     /usr/bin/sync
 
     if [ ! -f $target ]; then
