@@ -27,7 +27,7 @@ archy() {
   local RESULT
   case $1 in
     clean)
-      yaourt -Sc --noconfirm
+      pacman -Sc --noconfirm
       ;;
     clear)
       archy clean
@@ -339,7 +339,7 @@ vboxpci'>~/virtualbox.conf
  [/]
  [g]usage[/]:
 
-  archy [clean|clear|update|upgrade]
+  archy [clean|clear|update|upgrade] [aur]
   archy [install|remove|search|uninstall] package-name
 
  [g]list of simplified installations[/]:
