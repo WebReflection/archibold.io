@@ -300,7 +300,9 @@ vboxpci'>~/virtualbox.conf
     update)
       sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
-      yaourt -Su --aur --noconfirm
+      if [ "$2" = "aur" ]; then
+        yaourt -Su --aur --noconfirm
+      fi
       # legacy archiboiold syslinux gotcha
       if [ -d "/boot/EFI" ]; then
         if [ -f "/boot/vmlinuz-linux" ]; then
@@ -327,7 +329,7 @@ vboxpci'>~/virtualbox.conf
           icho " [*][g]✔[/] [*]archy is up to date[/] \o/"
         fi
       fi
-      archy update
+      archy update $2
       ;;
     *)
       icho "[*][g]
