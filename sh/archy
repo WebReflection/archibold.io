@@ -25,12 +25,64 @@ archy() {
   local ITEM
   local OUT
   local RESULT
+  local WIDTH=$2
+  local HEIGHT=$3
   case $1 in
+    archibold-boot-image)
+      cd ~/Downloads
+      TMP=$(sudo pacman -Qs fbset)
+      if [ "$TMP" = "" ]; then
+        sudo pacman -S --needed --noconfirm fbset
+      fi
+      if [ "$WIDTH" = "" ]; then
+        WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
+      fi
+      if [ "$HEIGHT" = "" ]; then
+        HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
+      fi
+      if [ "$TMP" = "" ]; then
+        sudo pacman -Rsc --noconfirm fbset
+      fi
+      TMP=$(sudo pacman -Qs inkscape)
+      if [ "$TMP" = "" ]; then
+        sudo pacman -S --needed --noconfirm inkscape
+      fi
+      curl -L -O https://webreflection.github.io/archibold.io/img/archibold.svg
+      inkscape \
+        --export-png=archibold.png \
+        --export-width=$WIDTH \
+        --export-height=$HEIGHT \
+        archibold.svg
+      convert archibold.png -quality 100% archibold.jpg
+      if [ -d "/boot/EFI/syslinux" ]; then
+        echo "moving new ${WIDTH}x${HEIGHT} splash into /boot/EFI"
+        sudo cp archibold.jpg /boot/EFI
+        updateSyslinuxConfig "/boot/EFI" "$WIDTH" "$HEIGHT"
+      else
+        if [ -d "/boot/efi/syslinux" ]; then
+          echo "moving new ${WIDTH}x${HEIGHT} splash into /boot/efi"
+          sudo cp archibold.jpg /boot/efi
+          updateSyslinuxConfig "/boot/efi" "$WIDTH" "$HEIGHT"
+        else
+          echo "moving new ${WIDTH}x${HEIGHT} splash into /boot"
+          sudo cp archibold.jpg /boot
+          updateSyslinuxConfig "/boot" "$WIDTH" "$HEIGHT"
+        fi
+      fi
+      echo "updated background size as ${WIDTH}x${HEIGHT}"
+      rm archibold.{jpg,png,svg}
+      if [ "$TMP" = "" ]; then
+        sudo pacman -Rsc --noconfirm inkscape
+      fi
+      ;;
     clean)
       pacman -Sc --noconfirm
       ;;
     clear)
       archy clean
+      ;;
+    gnome-login-bg)
+      gnomeLoginBG $2
       ;;
     install)
       case $2 in
@@ -196,6 +248,13 @@ vboxpci'>~/virtualbox.conf
           ;;
       esac
       ;;
+    reset-keys)
+      sudo dirmngr </dev/null
+      sudo pacman -Sy --noconfirm
+      sudo pacman-key -u
+      sudo pacman-key --populate archlinux
+      sudo pacman-key --refresh-keys
+      ;;
     search)
       if [ "$(sudo pacman -Qsq $2 | grep ^$2$)" != "" ]; then
         TMP=" [installed]"
@@ -334,13 +393,14 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.0  ║
+ ║  archy v0.1.1  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
 
-  archy [clean|clear|update|upgrade] [aur]
+  archy [clean|clear|reset-keys|update|upgrade] [aur]
   archy [install|remove|search|uninstall] package-name
+  archy [archibold-boot-image|gnome-login-bg]
 
  [g]list of simplified installations[/]:
 
@@ -392,6 +452,71 @@ downloadArchive() {
 getAURPackageNameAsURL() {
   local name=$1
   echo "https://aur.archlinux.org/cgit/aur.git/snapshot/${name}.tar.gz"
+}
+
+gnomeLoginBG() {
+  local IMAGE=$1
+  local CREATED_TMP="0"
+  local GST=/usr/share/gnome-shell/gnome-shell-theme.gresource
+  local GSTRES=$(basename $GST)
+  local WORKDIR=~/tmp/gdm-login-background
+  local r
+  if [ "$IMAGE" = "" ]; then
+    IMAGE=$(
+      dbus-launch gsettings get org.gnome.desktop.screensaver picture-uri |
+      sed -e "s/'//g" |
+      sed -e "s/^file:\/\///g"
+    )
+  fi
+  if [ ! -f $IMAGE ]; then
+    echo "unknown IMAGE $IMAGE"
+    exit 1
+  fi
+  if [ ! -d ~/tmp ]; then
+    mkdir -p ~/tmp
+    CREATED_TMP="1"
+  fi
+  mkdir -p $WORKDIR
+  cd $WORKDIR
+  mkdir -p theme
+  for r in `gresource list $GST`; do
+    gresource extract $GST $r >$WORKDIR$(echo $r | sed -e 's/^\/org\/gnome\/shell\//\//g')
+  done
+  cd theme
+  cp "$IMAGE" ./
+  sync
+  IMAGE=$(basename $IMAGE)
+
+  cat gnome-shell.css | sed -e 's/#lockDialogGroup/#lockDialogGroup-ignore/g' >gnome-shell.tmp
+
+  echo "
+#lockDialogGroup {
+  background: #2e3436 url(resource:///org/gnome/shell/theme/${IMAGE});
+  background-repeat: no-repeat;
+  background-size: cover; }" >>gnome-shell.tmp
+
+  sync
+  mv gnome-shell.tmp gnome-shell.css
+
+  echo '<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/gnome/shell/theme">' >"${GSTRES}.xml"
+  for r in `ls *.*`; do
+    echo "    <file>$r</file>" >>"${GSTRES}.xml"
+  done
+  echo '  </gresource>
+</gresources>' >>"${GSTRES}.xml"
+  sync
+  glib-compile-resources "${GSTRES}.xml"
+
+  sudo mv "/usr/share/gnome-shell/$GSTRES" "/usr/share/gnome-shell/${GSTRES}.backup"
+  sudo mv "$GSTRES" /usr/share/gnome-shell/
+
+  rm -r $WORKDIR
+
+  if [ "$CREATED_TMP" = "1" ]; then
+    rm -r ~/tmp
+  fi
 }
 
 icho() {
