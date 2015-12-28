@@ -88,6 +88,7 @@ archy() {
       case $2 in
         archy-android)
           sudo pacman -S --needed --noconfirm jdk8-openjdk android-udev android-tools apache-ant
+          verifyYaourt
           yaourt -S --needed --noconfirm android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
           sudo groupadd sdkusers
           sudo gpasswd -a $USER sdkusers
@@ -114,14 +115,17 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
         archy-broadcom-wl-dkms)
           sudo pacman -Syu --needed --noconfirm linux-headers dkms
           sudo systemctl enable dkms.service
+          verifyYaourt
           yaourt -S --needed --noconfirm broadcom-wl-dkms
           ;;
         archy-chromium)
           sudo pacman -S --needed --noconfirm chromium
+          verifyYaourt
           yaourt -S --needed --noconfirm chromium-pepper-flash chromium-widevine
           ;;
         archy-dropbox)
           sudo pacman -S --needed --noconfirm ufw-extras perl-file-mimeinfo
+          verifyYaourt
           yaourt -S --needed --noconfirm dropbox
           ;;
         archy-espruino-pico)
@@ -207,10 +211,12 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           ;;
         archy-spotify)
           sudo pacman -S --needed --noconfirm ffmpeg-compat
+          verifyYaourt
           yaourt -S --needed --noconfirm libgcrypt15 libcurl-compat
           yaourt -S --needed --noconfirm spotify
           ;;
         archy-sublime3)
+          verifyYaourt
           yaourt -S --needed --noconfirm sublime-text-nightly
           mkdir -p /home/$USER/.config/sublime-text-3/Packages
           if [ ! -d "/home/$USER/.config/sublime-text-3/Packages/Theme - Soda" ]; then
@@ -233,17 +239,20 @@ vboxpci'>~/virtualbox.conf
         *)
           if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
             sudo pacman -S --needed --noconfirm $2
-          elif [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
-            icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
-            read -n1 -r -p "Would you like to proceed? [y/N]" TMP
-            if [ "$TMP" = "Y" ]; then
-              TMP="y"
-            fi
-            if [ "$TMP" = "y" ]; then
-              yaourt -S --needed --noconfirm $2
-            fi
           else
-            icho " [r]x[/] Unable to find [*]$2[/] package"
+            verifyYaourt
+            if [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
+              icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
+              read -n1 -r -p "Would you like to proceed? [y/N]" TMP
+              if [ "$TMP" = "Y" ]; then
+                TMP="y"
+              fi
+              if [ "$TMP" = "y" ]; then
+                yaourt -S --needed --noconfirm $2
+              fi
+            else
+              icho " [r]x[/] Unable to find [*]$2[/] package"
+            fi
           fi
           ;;
       esac
@@ -261,20 +270,23 @@ vboxpci'>~/virtualbox.conf
       fi
       if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
         icho " [g]✔[/] Official [*]$2[/] package available$TMP"
-      elif [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
-        icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
       else
-        TMP="$(yaourt -Ssq $2)"
-        if [ "$TMP" != "" ]; then
-          OUT=""
-          for ITEM in $TMP; do
-            OUT="$OUT, $ITEM"
-          done
-          icho " [*]$2[/] not found."
-          echo " Perhaps one of the following?"
-          echo " ${OUT:2}"
+        verifyYaourt
+        if [ "$(yaourt -Ssq $2 | grep ^$2$)" != "" ]; then
+          icho " [y]![/] Package [*]$2[/] found in [*]AUR[/]$TMP"
         else
-          icho " [r]x[/] Unable to find [*]$2[/] package"
+          TMP="$(yaourt -Ssq $2)"
+          if [ "$TMP" != "" ]; then
+            OUT=""
+            for ITEM in $TMP; do
+              OUT="$OUT, $ITEM"
+            done
+            icho " [*]$2[/] not found."
+            echo " Perhaps one of the following?"
+            echo " ${OUT:2}"
+          else
+            icho " [r]x[/] Unable to find [*]$2[/] package"
+          fi
         fi
       fi
       ;;
@@ -285,19 +297,23 @@ vboxpci'>~/virtualbox.conf
       case $2 in
         archy-android)
           sudo pacman -Rsc jdk8-openjdk android-udev android-tools apache-ant
+          verifyYaourt
           yaourt -Rsc android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
           ;;
         archy-broadcom-wl-dkms)
           sudo systemctl disable dkms.service
+          verifyYaourt
           yaourt -Rsc broadcom-wl-dkms
           sudo pacman -Rsc linux-headers dkms
           ;;
         archy-chromium)
           sudo pacman -Rsc chromium
+          verifyYaourt
           yaourt -Rsc chromium-pepper-flash chromium-widevine
           ;;
         archy-dropbox)
           sudo pacman -Rsc ufw-extras perl-file-mimeinfo
+          verifyYaourt
           yaourt -Rsc dropbox
           ;;
         archy-espruino-pico)
@@ -337,9 +353,11 @@ vboxpci'>~/virtualbox.conf
           ;;
         archy-spotify)
           sudo pacman -Rsc ffmpeg-compat
+          verifyYaourt
           yaourt -Rsc libgcrypt15 libcurl-compat spotify
           ;;
         archy-sublime3)
+          verifyYaourt
           yaourt -Rsc sublime-text-nightly
           if [ -d /home/$USER/.config/sublime-text-3 ]; then
             rm -rf /home/$USER/.config/sublime-text-3
@@ -352,6 +370,7 @@ vboxpci'>~/virtualbox.conf
           fi
           ;;
         *)
+          verifyYaourt
           yaourt -Rsc $2
           ;;
       esac
@@ -360,6 +379,7 @@ vboxpci'>~/virtualbox.conf
       sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
       if [ "$2" = "aur" ]; then
+        verifyYaourt
         yaourt -Su --aur --noconfirm
       fi
       # legacy archiboiold syslinux gotcha
@@ -393,7 +413,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.1  ║
+ ║  archy v0.1.2  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
@@ -607,5 +627,4 @@ verifyYaourt() {
   fi
 }
 
-verifyYaourt
 archy "$@"
