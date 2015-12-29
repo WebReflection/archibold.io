@@ -76,7 +76,7 @@ archy() {
       fi
       ;;
     clean)
-      pacman -Sc --noconfirm
+      sudo pacman -Sc --noconfirm
       ;;
     clear)
       archy clean
