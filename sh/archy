@@ -469,12 +469,12 @@ vboxpci'>~/virtualbox.conf
   archy-fs-extra             [b]# (ex)fat utilities[/]
   archy-git                  [b]# git + ssh key configuration[/]
   archy-heroku               [b]# configure heroku[/]
-  archy-intel-cstick-wifi    [b]# compute stick wifi module[/]
+  archy-intel-cstick-wifi    [b]# compute stick WiFi module[/]
   archy-node                 [b]# nodejs + npm configuration[/]
   archy-pad                  [b]# recognizes external devices (iOS)[/]
-  archy-spotify              [b]# install spotify[/]
+  archy-spotify              [b]# install Spotify[/]
   archy-telegram             [b]# install Telegram Messanger[/]
-  archy-virtualbox           [b]# configure virtualbox[/]
+  archy-virtualbox           [b]# configure Virtualbox[/]
 "
     echo ''
     ;;
