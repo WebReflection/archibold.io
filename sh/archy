@@ -226,7 +226,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           ;;
         archy-telegram)
           verifyYaourt
-          yaourt -S --needed --noconfirm telegram-desktop
+          yaourt -S --needed --noconfirm telegram-desktop-bin
           ;;
         archy-virtualbox)
           sudo pacman -S --needed --noconfirm virtualbox qt4
