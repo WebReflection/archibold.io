@@ -381,77 +381,66 @@ sudo netctl list
           <a href="#maintenance">Basic maintenance</a>
         </h2>
         <p>
-          In order to keep updated, install, or remove software, type <code>archibold</code> once in the terminal:
-        </p><pre><code>$ archibold
+          In order to keep updated, install, or remove software, type <code>archy</code> once in the terminal:
+        </p><pre><code>$ archy
 
- <strong>__________________
-|                  |
-| archibold v0.5.3 |
-|__________________|</strong>
+ <strong> ╔════════════════╗
+ ║  archy v0.1.3  ║
+ ╚════════════════╝</strong>
+ 
+ <strong>usage</strong>:
 
- <strong>usage:</strong>
+  archy [clean|clear|reset-keys|update|upgrade] [aur]
+  archy [install|remove|search|uninstall] package-name
+  archy [archibold-boot-image|gnome-login-bg|show-gnome-settings|use]
 
-  archibold [clean|reset-keys|update|upgrade|upgrade-aur]
-  archibold [install|remove|search|install-aur] package-name
-  archibold [login-background|resplash|ui]
+ <strong>list of simplified installations</strong>:
 
- <strong>list of included AUR packages:</strong>
+  archy-android              # android-sdk and development
+  archy-broadcom-wl-dkms     # Broadcom wifi
+  archy-chromium             # Chromium with pepper-flash and DRM
+  archy-dropbox              # Dropbox client
+  archy-espruino-pico        # configure group and rules for pico
+  archy-fonts                # install common fonts (non GNOME only)
+  archy-fs-extra             # (ex)fat utilities
+  archy-git                  # git + ssh key configuration
+  archy-heroku               # configure heroku
+  archy-intel-cstick-wifi    # compute stick wifi module
+  archy-node                 # nodejs + npm configuration
+  archy-pad                  # recognizes external devices (iOS)
+  archy-spotify              # install spotify
+  archy-sublime3             # Sublime3 (requires a valid license)
+  archy-virtualbox           # configure virtualbox
 
-  acroread                # Adobe Acrobat Reader
-  broadcom-wl-dkms        # Broadcom wifi
-  dropbox                 # Dropbox client
-  spotify                 # music baby!
-  sublime3                # Sublime 3 (requires a valid license)
-  yaourt                  # Yet AnOther User Repository Tool
-
- <strong>list of simplified installations:</strong>
-
-  ab-android              # android-sdk and development
-  ab-chromium             # Chromium with pepper-flash and DRM
-  ab-espruino-pico        # configure group and rules for pico
-  ab-fonts                # install common fonts (non GNOME only)
-  ab-fs-extra             # (ex)fat utilities
-  ab-git                  # git + ssh key configuration
-  ab-heroku               # configure heroku
-  ab-nodejs               # nodejs + npm configuration
-  ab-pad                  # recognizes external devices
-  ab-telegram             # install Telegram IM
-  ab-virtualbox           # virtualbox + configuration
-  ab-intel-cstick-wifi    # compute stick wifi module
 
 </code></pre>
         <h2 id="archibold-cli">
-          <a href="#archibold-cli">archibold CLI</a>
+          <a href="#archibold-cli">archy CLI (alias archibold)</a>
         </h2>
         <p>
-          The CLI file is installed by default but it's also possible to simply grab <code>./archibold</code> cli only following these instructions.
-        </p><pre><code>curl -L -O http://archibold.io/sh/archibold
-chmod +x archibold
-sudo mv archibold /usr/bin
+          The CLI file is installed by default but it's also possible to simply grab <code>./archy</code> cli only following these instructions.
+        </p><pre><code>curl -L -O http://archibold.io/sh/archy
+chmod +x archy
+sudo mv archy /usr/bin
         </code></pre>
         <p>
           Following the explanation of current CLI commands
         </p>
         <ul>
-          <li><strong>archibold upgrade</strong> tries to upgrade all installed packages, excluding those installed via AUR. If for some reason it fails, and it could happen if you haven't updated for a while, we can try to <code>archibold reset-keys</code> first and then upgrade again.</li>
-          <li><strong>archibold upgrade-aur</strong> tries to upgrade all packages previously installed from AUR. It will rebuild them if necessary, it won't do anything otherwise.</li>
-          <li><strong>archibold update</strong> simply checks if there are new version of <code>archibold</code> CLI and upgrades it. It updates also packages info.</li>
-          <li><strong>archibold clean</strong> removes all cached old downloaded archives, freeing some space on the disk. It's suggested after successful upgrades, but not mandatory.</li>
-          <li><strong>archibold reset-keys</strong> forces a clean up and regeneration of all packages keys and signatures. If <code>update</code> or <code>upgrade</code> fails, running the upfront should resolve the problem.</li>
-          <li><strong>archibold resplash</strong> creates again the initial boot splash screen in case you changed monitor or screen resolution. You can specify width and height too via <code>archibold resplash 800 600</code> to force that size. Please note that this will also update the <code>syslinux.cfg</code> file.</li>
-          <li><strong>archibold search <i>package-name</i></strong> is a way to look for <i>package-name</i> in both regular repositories and AUR.</li>
-          <li><strong>archibold install <i>package-name</i></strong> tries to install <i>package-name</i> from official repositories, falling back to AUR. In latter case you need to confirm you want to install from aur via <code>y</code></li>
-          <li><strong>archibold install-aur <i>package-name</i></strong> tries to install <i>package-name</i> from AUR only.</li>
-          <li><strong>archibold remove <i>package-name</i></strong> will remove and clean up the package.</li>
-          <li><strong>archibold install ab-<i>package-name</i></strong> will perform few operations needed to install packages that requires extra steps and all at once.</li>
-          <li><strong>archibold show-gnome-settings</strong> will echo all known GNOME gsettings. Handy combined with <code>grep</code> to know, or set, defaults.</li>
-          <li><strong>archibold login-background</strong> will recompile GNOME style to include the background image on login screen.</li>
-          <li><strong>archibold use</strong> will change default version of Python. <coed>archibold use python2</coed> or <coed>archibold use python3</coed> will make the change permanent. In the future this will be used to change other defaults too.</li>
-          <li><strong>archibold autoupgrade</strong> is an experimental feature that will keep automatically updated the system.</li>
+          <li><strong>archy clean/clear</strong> removes all cached old downloaded archives, freeing some space on the disk. It's suggested after successful upgrades, but not mandatory.</li>
+          <li><strong>archy reset-keys</strong> forces a clean up and regeneration of all packages keys and signatures. If <code>update</code> or <code>upgrade</code> fails, running the upfront should resolve the problem.</li>
+          <li><strong>archy update</strong> updates all installed packages, excluding those installed via AUR. If for some reason it fails, and it could happen if you haven't updated for a while, we can try to <code>archibold reset-keys</code> first and then update again.</li>
+          <li><strong>archy upgrade</strong> simply checks if there are new version of <code>archy</code> CLI and upgrades it. It updates also packages info.</li>
+          <li><strong>archy update aur</strong> updates all packages installed from AUR.</li>
+          <li><strong>archy install <i>package-name</i></strong> tries to install <i>package-name</i> from official repositories, falling back to AUR.</li>
+          <li><strong>archy remove/uninstall<i>package-name</i></strong> will remove and clean up the package.</li>
+          <li><strong>archy search <i>package-name</i></strong> is a way to look for <i>package-name</i> in both regular repositories and in AUR.</li>
+          <li><strong>archy archibold-boot-image</strong> creates again the initial boot splash screen in case you changed monitor or screen resolution. You can specify width and height too via <code>archibold resplash 800 600</code> to force that size. Please note that this will also update the <code>syslinux.cfg</code> file.</li>
+          <li><strong>archy gnome-login-bg</strong> will recompile GNOME style to include the background image on login screen.</li>
+          <li><strong>archy install archy-*</strong> will perform few operations needed to install packages that requires extra steps and all at once.</li>
+          <li><strong>archy show-gnome-settings</strong> will echo all known GNOME gsettings. Handy combined with <code>grep</code> to know, or set, defaults.</li>
+          <li><strong>archy use</strong> will change default version of Python. <coed>archibold use python2</coed> or <coed>archibold use python3</coed> will make the change permanent. In the future this will be used to change other defaults too.</li>
         </ul>
-        <p>
-          Finally, if a package is white listed from AUR, such <i>acroread</i>, <i>dropbox</i>, or <i>spotify</i>, no confirmation would be required.
-        </p>
         <h2 id="suggested-settings">
           <a href="#suggested-settings">Suggested Settings</a>
         </h2>
@@ -468,38 +457,19 @@ sudo mv archibold /usr/bin
           </li>
         </ul>
         <h2 id="suggested-tweaks">
-          <a href="#suggested-tweaks">Suggested Tweaks</a>
+          <a href="#suggested-tweaks">Software Updates Tweaks</a>
         </h2>
         <p>
-          <em>archibold</em> comes with <strong>gnome-tweak</strong> tool by default.<br/>
-          Use the Window/Start button or reach the top left corner and type <strong>tweak</strong>.<br/>
-          Click on the Tweak Tool icon and check at least these:
+          <em>archibold</em> comes with <strong>GNOME Software</strong> installed by default.<br/>
+          Simply press the special (Window/Command) key and type Software.<br/>
+          That is a specific UI in case you prefer graphical  updates.
         </p>
-        <ul>
-          <li>
-            <strong>Appearance</strong>, the Globl Dark Theme is gorgeous and it's ON by default.
-          </li>
-          <li>
-            <strong>Desktop</strong>, Icons on Desktop, ON by default.
-          </li>
-          <li>
-            <strong>Extensions</strong>, Applications Menu to discover all you have installed.<br/>
-            This might slow down boot time hence it's OFF by default.
-          </li>
-          <li>
-            <strong>Top Bar</strong>, Show date too, not just the time, ON by default.
-          </li>
-          <li>
-            <strong>Dark Terminal</strong>, actually out of Tweak. Launch the Terminal then:<br/>
-            Edit &gt; Preferences &gt; Use dark theme variant, which is ON by default.
-          </li>
-        </ul>
       </section>
       <img src="img/dark-theme.png" alt="showcase dark theme"/>
       <section id="browser">
         <h1><a href="#browser">Browser</a></h1>
         <p>
-          The default browser that works out of the box is <strong>Epiphany</strong>, also known as GNOME Web browser.<br/>
+          The default browser that works out of the box is <strong>Web</strong>, also known as Epiphany browser.<br/>
           This is both a very beautiful and deadly simple to use browser.<br/>
           It's also so sleek it has been used in <a href="http://www.raspbian.org/">Raspbian</a> as default browser for the <a href="http://www.raspberrypi.org/web-browser-released/">Raspberry Pi</a>.
         </p>
@@ -517,23 +487,14 @@ sudo mv archibold /usr/bin
         <p>
           Thanks to its recent support for HiDPi, Chromium is now the <strong>best</strong> external <strong>browser</strong>.<br/>
           You can write on the terminal either <code>archibold install chromium</code> to have just the browser,
-          or <code>archibold install ab-chromium</code> to also have pepper-flash and widevine plugins from AUR.
-        </p>
-        <h2 id="opera">
-          <a href="#opera">Opera</a>
-        </h2>
-        <p>
-          The <strong>best</strong> external <strong>browser</strong> with <strong>out of the box HiDPI</strong> support is <strong><a href="http://www.opera.com">Opera</a></strong>.<br/>
-          <strike>Right now is the only Chrome based browser that really works on retina and is rock stable reliable.</strike><br/>
-          Recently <strong>Chromium</strong> browser became compatible with HiDPI out of the box too.<br/>
-          Simply write <code>archibold install opera</code> on the terminal and enjoy.
+          or <code>archy install archy-chromium</code> to also have pepper-flash and widevine plugins from AUR.
         </p>
         <h2 id="firefox">
           <a href="#firefox">Firefox</a>
         </h2>
         <p>
           As alternative, and with also a decent HiDPI support, is <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>.<br/>
-          To install it, launch the terminal and write <code>archibold install firefox</code>.
+          To install it, either use <code>Software</code> or launch the terminal and write <code>archy install firefox</code>.
         </p>
         <h3 id="hidpi-firefox">
           <a href="#hidpi-firefox">HiDPI Firefox</a>
@@ -549,20 +510,6 @@ sudo mv archibold /usr/bin
           Search <em>pixel</em> and change the value of <code>layout.css.devPixelPerPx</code> to <strong>2</strong>.<br/>
           Apply and eventually restart Firefox.
         </p>
-        <h2 id="flash-player">
-          <a href="#flash-player">Flash Player</a>
-        </h2>
-        <p>
-          It's embarrassing in 2015 there are still websites requiring Flash player.<br/>
-          However, if this is the case, you might try to install it <strong>for Firefox</strong> via:
-        </p><pre><code>archibold install flashplugin</code></pre>
-        <p>
-          Please <strong>bear in mind</strong> if you use <strong>Chromium</strong> instead,
-          you should install pepper-flash  from AURinstead.
-        </p><pre><code>archibold install chromium-pepper-flash</code></pre>
-        <p>
-          If you need to play DRM content too, you will need widevine too.
-        </p><pre><code>archibold install chromium-widevine</code></pre>
       </section>
       <section id="problem-solving">
         <h1>

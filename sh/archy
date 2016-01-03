@@ -290,6 +290,13 @@ vboxpci'>~/virtualbox.conf
         fi
       fi
       ;;
+    show-gnome-settings)
+      for schema in `gsettings list-schemas`; do
+        for key in `gsettings list-keys $schema`; do
+          echo "$schema $key $(gsettings get $schema $key)"
+        done
+      done
+      ;;
     remove)
       archy uninstall $2
       ;;
@@ -410,17 +417,42 @@ vboxpci'>~/virtualbox.conf
       fi
       archy update $2
       ;;
+    use)
+      case $2 in
+        python2)
+          TMP=$(which python)
+          sudo rm -f $TMP
+          sudo ln -s $(which python2) $TMP
+          icho "now using [*]python2[/] $(python --version)"
+        ;;
+        python3)
+          TMP=$(which python)
+          sudo rm -f $TMP
+          sudo ln -s $(which python3) $TMP
+          icho "now using [*]python3[/] $(python --version)"
+        ;;
+        *)
+        icho "
+[*]archibold use [options][/]
+                  ↓
+               python2
+               python3
+  
+"
+        ;;
+      esac
+      ;;
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.2  ║
+ ║  archy v0.1.3  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
 
   archy [clean|clear|reset-keys|update|upgrade] [aur]
   archy [install|remove|search|uninstall] package-name
-  archy [archibold-boot-image|gnome-login-bg]
+  archy [archibold-boot-image|gnome-login-bg|show-gnome-settings|use]
 
  [g]list of simplified installations[/]:
 
