@@ -224,6 +224,10 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
             git clone https://github.com/buymeasoda/soda-theme/ "Theme - Soda"
           fi
           ;;
+        archy-telegram)
+          verifyYaourt
+          yaourt -S --needed --noconfirm telgram-desktop
+          ;;
         archy-virtualbox)
           sudo pacman -S --needed --noconfirm virtualbox qt4
           echo 'vboxdrv
@@ -469,7 +473,7 @@ vboxpci'>~/virtualbox.conf
   archy-node                 [b]# nodejs + npm configuration[/]
   archy-pad                  [b]# recognizes external devices (iOS)[/]
   archy-spotify              [b]# install spotify[/]
-  archy-sublime3             [b]# Sublime3 (requires a valid license)[/]
+  archy-telegram             [b]# install Telegram Messanger[/]
   archy-virtualbox           [b]# configure virtualbox[/]
 "
     echo ''
