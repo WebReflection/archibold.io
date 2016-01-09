@@ -822,10 +822,11 @@ ${BOLD}archibold use [options]${RESET}
       ;;
     *)
       echo -e "
-${BOLD} __________________
-|                  |
-| archibold v0.5.3 |
-|__________________|${RESET}
+${BOLD} __________________________
+|                          |
+| archibold deprecated     |
+| please use archy instead |
+|__________________________|${RESET}
 
  ${BOLD}usage${RESET}:
 

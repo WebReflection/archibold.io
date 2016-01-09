@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.5.3             #
+# archibold 0.6.0             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -51,7 +51,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.5.3'
+ARCHIBOLD='0.6.0'
 
 clear
 
@@ -233,10 +233,10 @@ fi
 if [ "$GNOME" = "NO" ]; then
   echo "  without GNOME"
 else
-  if [ "$GNOME" = "NOEXTRA" ]; then
-    echo "  with GNOME"
-  else
+  if [ "$GNOME" = "EXTRA" ]; then
     echo "  with GNOME and all extras"
+  else
+    echo "  with GNOME"
   fi
   echo "  with GPU $GPU"
   echo "  and resolution ${WIDTH}x${HEIGHT}"
@@ -405,7 +405,7 @@ sync
 
 TOPACKSTRAP="base sudo syslinux gptfdisk arch-install-scripts intel-ucode"
 if [ "$UEFI" != "NO" ]; then
-  TOPACKSTRAP="$TOPACKSTRAP efibootmgr"
+  TOPACKSTRAP="$TOPACKSTRAP efibootmgr prebootloader"
 fi
 
 if [ "$GNOME" != "NO" ]; then
@@ -606,7 +606,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
 
   sync
 
-  if [ '$GNOME' != 'NOEXTRA' ]; then
+  if [ '$GNOME' = 'EXTRA' ]; then
     pacman -Syu --needed --noconfirm gnome-extra
   fi
 
@@ -668,7 +668,13 @@ pacman-db-upgrade
 sync
 
 if [ '$UEFI' != 'NO' ]; then
-  efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+  if [ -d /usr/lib/prebootloader ]; then
+    cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
+    cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
+    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
+  else
+    efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+  fi
   sync
 fi
 
