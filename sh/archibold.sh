@@ -563,7 +563,7 @@ if [ '$GNOME' != 'NO' ]; then
 
   echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
 
-TIMEOUT 20
+TIMEOUT 15
 PROMPT 0
 DEFAULT arch
 
@@ -636,7 +636,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
 }' >> /usr/share/gnome-shell/theme/gnome-classic.css
 
 else
-  echo 'TIMEOUT 20
+  echo 'TIMEOUT 15
 PROMPT 0
 DEFAULT arch
 
