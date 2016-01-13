@@ -229,16 +229,30 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           yaourt -S --needed --noconfirm telegram-desktop-bin
           ;;
         archy-virtualbox)
-          sudo pacman -S --needed --noconfirm virtualbox qt4
+          sudo pacman -S --needed --noconfirm virtualbox virtualbox-guest-utils qt4
           echo 'vboxdrv
 vboxnetadp
 vboxnetflt
-vboxpci'>~/virtualbox.conf
+vboxpci
+vboxvideo'>~/virtualbox.conf
           sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
           sudo modprobe vboxdrv
           sudo modprobe vboxnetadp
           sudo modprobe vboxnetflt
           sudo modprobe vboxpci
+          sudo modprobe vboxvideo
+          sudo gpasswd -a $USER vboxusers
+          verifyYaourt
+          yaourt -S --needed --noconfirm virtualbox-ext-oracle
+          # For WebCam passthrough
+          # https://www.virtualbox.org/manual/ch09.html#webcam-passthrough
+          # e.g.
+          # VBoxManage list webcams
+          # > .1 "Integrated_Webcam_HD"
+          # > /dev/video0
+          # VBoxManage controlvm "Win64" webcam attach ".1"
+          # OR
+          # VBoxManage controlvm "Win64" webcam attach /dev/video0
           ;;
         *)
           if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
@@ -379,7 +393,8 @@ vboxpci'>~/virtualbox.conf
           yaourt -Rsc telegram-desktop-bin
           ;;
         archy-virtualbox)
-          sudo pacman -Rsc virtualbox qt4
+          verifyYaourt
+          yaourt -Rsc virtualbox virtualbox-guest-utils qt4 virtualbox-ext-oracle
           if [ -f /etc/modules-load.d/virtualbox.conf ]; then
             sudo rm /etc/modules-load.d/virtualbox.conf
           fi
