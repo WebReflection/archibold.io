@@ -244,7 +244,7 @@ vboxvideo'>~/virtualbox.conf
           sudo gpasswd -a $USER vboxusers
           verifyYaourt
           yaourt -S --needed --noconfirm virtualbox-ext-oracle
-          # For WebCam passthrough
+          # For WebCam passthrough (where USB 2.0 works better than 3.0)
           # https://www.virtualbox.org/manual/ch09.html#webcam-passthrough
           # e.g.
           # VBoxManage list webcams
@@ -253,6 +253,8 @@ vboxvideo'>~/virtualbox.conf
           # VBoxManage controlvm "Win64" webcam attach ".1"
           # OR
           # VBoxManage controlvm "Win64" webcam attach /dev/video0
+          # OR
+          # VBoxManage startvm Win64 --type gui && VBoxManage controlvm Win64 webcam attach /dev/video0
           ;;
         *)
           if [ "$(sudo pacman -Ssq $2 | grep ^$2$)" != "" ]; then
