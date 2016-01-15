@@ -229,7 +229,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           yaourt -S --needed --noconfirm telegram-desktop-bin
           ;;
         archy-virtualbox)
-          sudo pacman -S --needed --noconfirm virtualbox virtualbox-guest-utils qt4
+          sudo pacman -S --needed --noconfirm virtualbox qt4
           echo 'vboxdrv
 vboxnetadp
 vboxnetflt
@@ -414,7 +414,7 @@ vboxvideo'>~/virtualbox.conf
           ;;
         archy-virtualbox)
           verifyYaourt
-          yaourt -Rsc virtualbox virtualbox-guest-utils qt4 virtualbox-ext-oracle
+          yaourt -Rsc virtualbox-ext-oracle virtualbox qt4
           if [ -f /etc/modules-load.d/virtualbox.conf ]; then
             sudo rm /etc/modules-load.d/virtualbox.conf
           fi
