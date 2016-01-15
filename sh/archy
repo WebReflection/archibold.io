@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 
-# Copyright (c) 2015 Andrea Giammarchi
+# Copyright (c) 2015-2016 Andrea Giammarchi
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -320,6 +320,24 @@ vboxvideo'>~/virtualbox.conf
     remove)
       archy uninstall $2
       ;;
+    sha)
+      sha "sha" "$2"
+      ;;
+    sha1)
+      sha "sha1" "$2"
+      ;;
+    sha224)
+      sha "sha224" "$2"
+      ;;
+    sha256)
+      sha "sha256" "$2"
+      ;;
+    sha384)
+      sha "sha384" "$2"
+      ;;
+    sha512)
+      sha "sha512" "$2"
+      ;;
     uninstall)
       case $2 in
         archy-android)
@@ -408,8 +426,13 @@ vboxvideo'>~/virtualbox.conf
       esac
       ;;
     update)
+      TMP="$(sudo pacman -Qs gnome-shell)"
       sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
+      if [ "$(sudo pacman -Qs gnome-shell)" != "$TMP" ]; then
+        icho "[*]GNOME updated[/] ... regenerating login background"
+        archy gnome-login-bg
+      fi
       if [ "$2" = "aur" ]; then
         verifyYaourt
         yaourt -Su --aur --noconfirm
@@ -470,7 +493,7 @@ vboxvideo'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.3  ║
+ ║  archy v0.1.4  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
@@ -478,8 +501,9 @@ vboxvideo'>~/virtualbox.conf
   archy [clean|clear|reset-keys|update|upgrade] [aur]
   archy [install|remove|search|uninstall] package-name
   archy [archibold-boot-image|gnome-login-bg|show-gnome-settings|use]
+  archy [sha|sha1|sha224|sha256|sha384|sha512] file-name-or-string
 
- [g]list of simplified installations[/]:
+ [g]list of simplified installations[/]: [d]archy install archy-*[/]
 
   archy-android              [b]# android-sdk and development[/]
   archy-broadcom-wl-dkms     [b]# Broadcom wifi[/]
@@ -669,6 +693,25 @@ removeArchive() {
   cd ~/Downloads
   rm -rf "${name}"
   rm "${name}.tar.gz"
+}
+
+sha() {
+  local how=$1
+  local what=$2
+  if [ "$(which openssl 2> /dev/null)" = "" ]; then
+    sudo pacman -S --needed --noconfirm openssl > /dev/null 2>&1
+  fi
+  if [ ! -f "$what" ]; then
+    icho "[*]string mode[/]"
+    echo "$what" > /tmp/archy-sha-content
+    what=/tmp/archy-sha-content
+  fi
+  echo "cat '${what}' | openssl dgst -$how -binary | base64" > /tmp/archy-sha
+  echo "${how}-$(sh /tmp/archy-sha)"
+  rm /tmp/archy-sha
+  if [ -f /tmp/archy-sha-content ]; then
+    rm /tmp/archy-sha-content
+  fi
 }
 
 verifyYaourt() {
