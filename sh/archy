@@ -233,14 +233,12 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           echo 'vboxdrv
 vboxnetadp
 vboxnetflt
-vboxpci
-vboxvideo'>~/virtualbox.conf
+vboxpci'>~/virtualbox.conf
           sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
           sudo modprobe vboxdrv
           sudo modprobe vboxnetadp
           sudo modprobe vboxnetflt
           sudo modprobe vboxpci
-          sudo modprobe vboxvideo
           sudo gpasswd -a $USER vboxusers
           verifyYaourt
           yaourt -S --needed --noconfirm virtualbox-ext-oracle
