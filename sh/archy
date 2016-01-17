@@ -81,6 +81,74 @@ archy() {
     clear)
       archy clean
       ;;
+    create-desktop-app)
+      OUT="${3}.png"
+      if [ "$2" = "" ] || [ "$3" = "" ] || [ ! -f "$3" ] || [ ! -f "$OUT" ]; then
+        icho "
+  [*]Usage[/]:
+    archy create-desktop-app 'AppName' '/path/to/executable-file'
+
+  Please note, there must be a '/path/to/executable-file.png' icon too.
+        "
+        exit 1
+      fi
+      mkdir -p /tmp/create-desktop-app
+      cp $3 /tmp/create-desktop-app
+      cp $OUT /tmp/create-desktop-app
+      cd /tmp/create-desktop-app
+      TMP="$(basename $3)"
+      ITEM="$(basename $OUT)"
+      chmod +x "$TMP"
+      echo '#!/bin/sh
+set -e
+test -n "$srcdir" || srcdir=`dirname "$0"`
+test -n "$srcdir" || srcdir=.
+olddir=`pwd`
+cd "$srcdir"
+autoreconf --force --install
+cd "$olddir"
+if test -z "$NOCONFIGURE"; then
+  "$srcdir"/configure "$@"
+fi'>autogen.sh
+      chmod +x autogen.sh
+      echo "[Desktop Entry]
+Version=1.0
+Encoding=UTF-8
+Name=$2
+Comment=$2 Application
+Exec=@prefix@/bin/$TMP
+Icon=@prefix@/bin/$ITEM
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=GNOME;Application;">"${TMP}.desktop.in"
+      echo "bin_SCRIPTS = ${TMP}">Makefile.am
+      echo 'EXTRA_DIST = $(bin_SCRIPTS)'>>Makefile.am
+      echo 'desktopdir = $(datadir)/applications'>>Makefile.am
+      echo "desktop_DATA = ${TMP}.desktop">>Makefile.am
+      echo "AC_INIT([$2], 1.0)
+AM_INIT_AUTOMAKE([1.10 no-define foreign dist-xz no-dist-gzip])
+AC_CONFIG_FILES([Makefile ${TMP}.desktop])
+AC_OUTPUT">configure.ac
+      ./autogen.sh
+      sudo make install
+      sudo cp $ITEM "$(dirname $(which $TMP))"
+      rm -rf /tmp/create-desktop-app
+      icho "
+  Application [*]${2}[/] successfully installed as ${TMP}
+      "
+      ;;
+    destroy-desktop-app)
+      TMP="$2"
+      if [ "$(which $TMP 2> /dev/null)" = "" ]; then
+        icho "[r]Unable[/] to find [*]${TMP}[/]"
+      else
+        ITEM="$(which $TMP)"
+        sudo rm -rf "$(dirname $(dirname ${ITEM}))/share/applications/${TMP}.desktop"
+        sudo rm -rf "${ITEM}.png"
+        sudo rm -rf "${ITEM}"
+      fi
+      ;;
     gnome-login-bg)
       gnomeLoginBG $2
       ;;
@@ -491,7 +559,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.4  ║
+ ║  archy v0.1.5  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
@@ -500,6 +568,7 @@ vboxpci'>~/virtualbox.conf
   archy [install|remove|search|uninstall] package-name
   archy [archibold-boot-image|gnome-login-bg|show-gnome-settings|use]
   archy [sha|sha1|sha224|sha256|sha384|sha512] file-name-or-string
+  archy [create-desktop-app 'App Name' '/path/to/exec-app'|destroy-desktop-app exec-app]
 
  [g]list of simplified installations[/]: [d]archy install archy-*[/]
 
