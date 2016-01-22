@@ -9,25 +9,27 @@ sudo pacman -S --needed --noconfirm \
   libnotify gconf nss alsa-plugins
 
 # configure npm
-mkdir -p ~/.npm-packages/bin
-npm config set prefix '~/.npm-packages'
-echo '
+if [ ! -d ~/.npm-packages/bin ]; then
+  mkdir -p ~/.npm-packages/bin
+  npm config set prefix '~/.npm-packages'
+  echo '
 # npm and nodejs global modules
 export PATH="$PATH:$HOME/.npm-packages/bin"
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 '>>~/.bashrc
-source ~/.bashrc
+  source ~/.bashrc
+fi
 
+if [ ! -f ~/www/package.json ]; then
+  mkdir -p ~/www
 
-mkdir -p ~/www
-
-echo '{
+  echo '{
   "name"    : "SinonOS",
   "version" : "0.0.1",
   "main"    : "main.js"
 }'>~/www/package.json
 
-echo "'use strict';
+  echo "'use strict';
 
 const
   electron  = require('electron'),
@@ -54,7 +56,7 @@ app
   });
 ">~/www/main.js
 
-echo '<!DOCTYPE html>
+  echo '<!DOCTYPE html>
 <html>
   <head>
     <meta charset="UTF-8">
@@ -66,8 +68,11 @@ echo '<!DOCTYPE html>
     and Electron <script>document.write(process.versions.electron)</script>.
   </body>
 </html>'>~/www/index.html
+fi
 
-echo "WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//') HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//') electron ~/www/">~/.xinitrc
+if [ ! -f ~/.xinitrc ];then
+  echo "WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//') HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//') electron ~/www/">~/.xinitrc
+fi
 
 npm install -g electron-prebuilt
 
