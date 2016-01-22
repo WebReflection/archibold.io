@@ -81,7 +81,7 @@ app
 fi
 
 if [ ! -f ~/.xinitrc ];then
-  echo "WIDTH=\$(sudo fbset | grep 'mode ' | sed -e 's/mode \"//' | sed -e 's/x.*//') HEIGHT=\$(sudo fbset | grep 'mode ' | sed -e 's/mode \"[0-9]*x//' | sed -e 's/\"//') electron ~/www/">~/.xinitrc
+  echo "WIDTH=\$(fbset | grep 'mode ' | sed -e 's/mode \"//' | sed -e 's/x.*//') HEIGHT=\$(fbset | grep 'mode ' | sed -e 's/mode \"[0-9]*x//' | sed -e 's/\"//') electron ~/www/">~/.xinitrc
 fi
 
 # npm install -g electron-prebuilt
