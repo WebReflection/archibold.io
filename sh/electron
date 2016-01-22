@@ -53,11 +53,11 @@ app
       y: 0,
       fullscreen: true,
       kiosk: true,
-      darkTheme: true,
-      skipTaskbar: true
+      darkTheme: true
     });
+    // throws error ...
+    // mainWindow.setContentSize(WIDTH, HEIGHT, false);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
-    mainWindow.setContentSize(WIDTH, HEIGHT, false);
     // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function() {
       mainWindow = null;
