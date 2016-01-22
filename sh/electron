@@ -47,18 +47,22 @@ app
   })
   .on('ready', function() {
     mainWindow = new BrowserWindow({
-      width: WIDTH,
-      height: HEIGHT,
       x: 0,
       y: 0,
+      width: WIDTH,
+      height: HEIGHT,
       fullscreen: true,
       kiosk: true,
-      darkTheme: true
+      darkTheme: true,
+      transparent: true,
+      show: true,
+      frame: false,
+      resizable: false
     });
-    // throws error ...
-    // mainWindow.setContentSize(WIDTH, HEIGHT, false);
+    setTimeout(function() {
+      mainWindow.setKiosk(true);
+    }, 100);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
-    // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function() {
       mainWindow = null;
     });
