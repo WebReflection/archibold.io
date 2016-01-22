@@ -5,6 +5,17 @@ sudo pacman -S --needed --noconfirm \
   xf86-video-intel \
   xorg-server xorg-xinit
 
+# configure npm
+mkdir -p ~/.npm-packages/bin
+npm config set prefix '~/.npm-packages'
+echo '
+# npm and nodejs global modules
+export PATH="$PATH:$HOME/.npm-packages/bin"
+export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+'>>~/.bashrc
+source ~/.bashrc
+
+
 mkdir -p ~/www
 
 echo '{
