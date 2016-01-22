@@ -46,9 +46,14 @@ app
   .on('ready', function() {
     mainWindow = new BrowserWindow({
       width: process.env.WIDTH,
-      height: process.env.HEIGHT
+      height: process.env.HEIGHT,
+      x: 0,
+      y: 0,
+      fullscreen: true,
+      kiosk: true,
+      darkTheme: true
     });
-    mainWindow.setFullScreen(true);
+    mainWindow.setKiosk(true);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function() {
@@ -64,15 +69,16 @@ app
     <title>SinonOS</title>
   </head>
   <body>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+    Resolution is <script>document.write(process.env.WIDTH + 'x' process.env.HEIGHT)</script><br>
+    NodeJS <script>document.write(process.versions.node)</script><br>
+    Chrome <script>document.write(process.versions.chrome)</script><br>
+    Electron <script>document.write(process.versions.electron)</script><br>
   </body>
 </html>'>~/www/index.html
 fi
 
 if [ ! -f ~/.xinitrc ];then
-  echo "WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//') HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//') electron ~/www/">~/.xinitrc
+  echo "WIDTH=\$(sudo fbset | grep 'mode ' | sed -e 's/mode \"//' | sed -e 's/x.*//') HEIGHT=\$(sudo fbset | grep 'mode ' | sed -e 's/mode \"[0-9]*x//' | sed -e 's/\"//') electron ~/www/">~/.xinitrc
 fi
 
 # npm install -g electron-prebuilt
