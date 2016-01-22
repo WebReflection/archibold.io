@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+sudo pacman -S --needed --noconfirm \
+  fbset sed grep npm \
+  xf86-video-intel \
+  xorg-server xorg-xinit
+
+mkdir -p ~/www
+
+echo '{
+  "name"    : "SinonOS",
+  "version" : "0.0.1",
+  "main"    : "main.js"
+}'>~/www/package.json
+
+echo "'use strict';
+
+const
+  WIDTH = $(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//'),
+  HEIGHT = $(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//'),
+  electron  = require('electron'),
+  app = electron.app,
+  BrowserWindow = electron.BrowserWindow
+;
+
+var mainWindow = null;
+
+app
+  .on('window-all-closed', function() {
+    if (process.platform != 'darwin') app.quit();
+  })
+  .on('ready', function() {
+    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow.loadURL('file://' + __dirname + '/index.html');
+    mainWindow.webContents.openDevTools();
+    mainWindow.on('closed', function() {
+      mainWindow = null;
+    });
+  });
+">~/www/main.js
+
+echo '<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>SinonOS</title>
+  </head>
+  <body>
+    We are using node <script>document.write(process.versions.node)</script>,
+    Chrome <script>document.write(process.versions.chrome)</script>,
+    and Electron <script>document.write(process.versions.electron)</script>.
+  </body>
+</html>'>~/www/index.html
+
+echo 'electron ~/www/'>>~/.xinitrc
