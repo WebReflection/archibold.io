@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 sudo pacman -S --needed --noconfirm \
+  mesa-libgl xf86-video-intel \
   fbset sed grep npm \
-  xf86-video-intel xf86-input-synaptics \
-  xorg-server xorg-xinit \
+  xorg-server xorg-xinit xf86-input-synaptics \
   libxrandr libxinerama libxcursor libxtst \
   gnome-themes-standard gtk-engines \
   libnotify gconf nss alsa-plugins
@@ -48,6 +48,7 @@ app
       width: process.env.WIDTH,
       height: process.env.HEIGHT
     });
+    mainWindow.setFullScreen(true);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function() {
