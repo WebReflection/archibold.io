@@ -76,4 +76,4 @@ fi
 
 npm install -g electron-prebuilt
 
-startx
+startx -- vt1 &> /dev/null
