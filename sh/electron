@@ -32,6 +32,8 @@ if [ ! -f ~/www/package.json ]; then
   echo "'use strict';
 
 const
+  WIDTH = process.env.WIDTH,
+  HEIGHT = process.env.HEIGHT,
   electron  = require('electron'),
   app = electron.app,
   BrowserWindow = electron.BrowserWindow
@@ -45,16 +47,17 @@ app
   })
   .on('ready', function() {
     mainWindow = new BrowserWindow({
-      width: process.env.WIDTH,
-      height: process.env.HEIGHT,
+      width: WIDTH,
+      height: HEIGHT,
       x: 0,
       y: 0,
       fullscreen: true,
       kiosk: true,
-      darkTheme: true
+      darkTheme: true,
+      skipTaskbar: true
     });
-    mainWindow.setKiosk(true);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
+    mainWindow.setContentSize(WIDTH, HEIGHT, false);
     // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function() {
       mainWindow = null;
@@ -69,7 +72,7 @@ app
     <title>SinonOS</title>
   </head>
   <body>
-    Resolution is <script>document.write(process.env.WIDTH + "x" process.env.HEIGHT)</script><br>
+    Resolution is <script>document.write(process.env.WIDTH + "x" + process.env.HEIGHT)</script><br>
     NodeJS <script>document.write(process.versions.node)</script><br>
     Chrome <script>document.write(process.versions.chrome)</script><br>
     Electron <script>document.write(process.versions.electron)</script><br>
