@@ -5,7 +5,7 @@ sudo pacman -S --needed --noconfirm \
   fbset sed grep npm \
   xorg-server xorg-xinit xf86-input-synaptics \
   libxrandr libxinerama libxcursor libxtst \
-  gnome-themes-standard gtk-engines \
+  gnome-themes-standard adwaita-icon-theme gtk-engines \
   libnotify gconf nss alsa-plugins
 
 # configure npm
