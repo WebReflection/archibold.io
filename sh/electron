@@ -75,6 +75,5 @@ if [ ! -f ~/.xinitrc ];then
   echo "WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//') HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//') electron ~/www/">~/.xinitrc
 fi
 
-npm install -g electron-prebuilt
-
-startx -- vt1 &> /dev/null
+# npm install -g electron-prebuilt
+# startx -- vt1 &> /dev/null
