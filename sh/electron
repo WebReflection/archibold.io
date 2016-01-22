@@ -61,7 +61,8 @@ app
     });
     setTimeout(function() {
       mainWindow.setKiosk(true);
-    }, 100);
+      mainWindow.setFullScreen(true);
+    }, 2000);
     mainWindow.loadURL('file://' + __dirname + '/index.html');
     mainWindow.on('closed', function() {
       mainWindow = null;
