@@ -2,8 +2,11 @@
 
 sudo pacman -S --needed --noconfirm \
   fbset sed grep npm \
-  xf86-video-intel \
-  xorg-server xorg-xinit
+  xf86-video-intel xf86-input-synaptics \
+  xorg-server xorg-xinit \
+  libxrandr libxinerama libxcursor libxtst \
+  gnome-themes-standard gtk-engines \
+  libnotify gconf nss alsa-plugins
 
 # configure npm
 mkdir -p ~/.npm-packages/bin
@@ -27,8 +30,6 @@ echo '{
 echo "'use strict';
 
 const
-  WIDTH = $(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//'),
-  HEIGHT = $(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//'),
   electron  = require('electron'),
   app = electron.app,
   BrowserWindow = electron.BrowserWindow
@@ -41,9 +42,12 @@ app
     if (process.platform != 'darwin') app.quit();
   })
   .on('ready', function() {
-    mainWindow = new BrowserWindow({width: 800, height: 600});
+    mainWindow = new BrowserWindow({
+      width: process.env.WIDTH,
+      height: process.env.HEIGHT
+    });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
     mainWindow.on('closed', function() {
       mainWindow = null;
     });
@@ -63,4 +67,8 @@ echo '<!DOCTYPE html>
   </body>
 </html>'>~/www/index.html
 
-echo 'electron ~/www/'>>~/.xinitrc
+echo "WIDTH=$(sudo fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//') HEIGHT=$(sudo fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//') electron ~/www/">~/.xinitrc
+
+npm install -g electron-prebuilt
+
+startx
