@@ -464,18 +464,31 @@ USER='$USER'
 EFI='$EFI'
 ROOT='$ROOT'
 LABEL='$LABEL'
+LOCALE='$LOCALE'
 
 echo '
-en_DK.UTF-8 UTF-8
-en_GB.UTF-8 UTF-8
 en_US.UTF-8 UTF-8
+en_GB.UTF-8 UTF-8
 ' >> /etc/locale.gen
+
+if [ '$LOCALE' != '' ]; then
+  echo '$LOCALE.UTF-8 UTF-8' >> /etc/locale.gen
+fi
+
 locale-gen
 locale > /etc/locale.conf
-echo '
-LANG=en_US.UTF-8
-LC_TIME=en_DK.UTF-8
+
+if [ '$LOCALE' != '' ]; then
+  echo '
+LANG=$LOCALE.UTF-8
+LC_TIME=$LOCALE.UTF-8
 '>>/etc/locale.conf
+else
+  echo '
+LANG=en_US.UTF-8
+LC_TIME=en_US.UTF-8
+'>>/etc/locale.conf
+fi
 
 hwclock --systohc --utc
 
