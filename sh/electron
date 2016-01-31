@@ -54,11 +54,14 @@ app
       kiosk: true,
       darkTheme: true,
       transparent: true,
-      show: true,
+      show: false,
       frame: false,
       resizable: false
     });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
+    mainWindow.webContents.on('dom-ready', function() {
+      mainWindow.show();      
+    });
     mainWindow.on('closed', function() {
       mainWindow = null;
     });
@@ -72,7 +75,7 @@ app
     <title>SinonOS</title>
     <style>
     html {
-      bakground: #000;
+      background: #000;
       color: #FFF;
     }
     </style>
