@@ -32,8 +32,8 @@ if [ ! -f ~/www/package.json ]; then
   echo "'use strict';
 
 const
-  WIDTH = process.env.WIDTH,
-  HEIGHT = process.env.HEIGHT,
+  WIDTH = parseFloat(process.env.WIDTH),
+  HEIGHT = parseFloat(process.env.HEIGHT),
   electron  = require('electron'),
   app = electron.app,
   BrowserWindow = electron.BrowserWindow
@@ -51,7 +51,6 @@ app
       y: 0,
       width: WIDTH,
       height: HEIGHT,
-      fullscreen: true,
       kiosk: true,
       darkTheme: true,
       transparent: true,
@@ -63,15 +62,6 @@ app
     mainWindow.on('closed', function() {
       mainWindow = null;
     });
-    setTimeout(function() {
-      mainWindow.setFullScreen(true);
-    }, 1000);
-    setTimeout(function() {
-      mainWindow.setKiosk(true);
-    }, 2000);
-    setTimeout(function() {
-      mainWindow.setContentSize(WIDTH, HEIGHT, false);
-    }, 3000);
   });
 ">~/www/main.js
 
@@ -80,6 +70,12 @@ app
   <head>
     <meta charset="UTF-8">
     <title>SinonOS</title>
+    <style>
+    html {
+      bakground: #000;
+      color: #FFF;
+    }
+    </style>
   </head>
   <body>
     Resolution is <script>document.write(process.env.WIDTH + "x" + process.env.HEIGHT)</script><br>
