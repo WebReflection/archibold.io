@@ -209,7 +209,7 @@ ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1",
           sudo pacman -S --needed --noconfirm ttf-dejavu ttf-liberation ttf-symbola ttf-droid
           ;;
         archy-fs-extra)
-          sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools
+          sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools ntfs-3g
           ;;
         archy-git)
           if [ "$GIT_USER" != "" ]; then
@@ -436,7 +436,7 @@ vboxpci'>~/virtualbox.conf
           sudo pacman -Rsc ttf-dejavu ttf-liberation ttf-symbola ttf-droid
           ;;
         archy-fs-extra)
-          sudo pacman -Rsc exfat-utils fuse-exfat dosfstools
+          sudo pacman -Rsc exfat-utils fuse-exfat dosfstools ntfs-3g
           ;;
         archy-git)
           sudo pacman -Rsc git
