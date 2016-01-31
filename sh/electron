@@ -49,18 +49,23 @@ app
     mainWindow = new BrowserWindow({
       x: 0,
       y: 0,
-      width: WIDTH,
-      height: HEIGHT,
+      width: 0,
+      height: 0,
       kiosk: true,
       darkTheme: true,
-      transparent: true,
-      show: false,
+      show: true,
       frame: false,
       resizable: false
     });
     mainWindow.loadURL('file://' + __dirname + '/index.html');
-    mainWindow.webContents.on('dom-ready', function() {
-      mainWindow.show();      
+    mainWindow.webContents.on('dom-ready', function bootstrap() {
+      mainWindow.webContents.removeListener('dom-ready', bootstrap);
+      win.setBounds({
+        x: 0,
+        y: 0,
+        width: WIDTH,
+        height: HEIGHT
+      }, false);      
     });
     mainWindow.on('closed', function() {
       mainWindow = null;
