@@ -494,8 +494,8 @@ vboxpci'>~/virtualbox.conf
     update)
       if [ "5" \> "$(archy version-major pacman)" ];then
         if [ "$(sudo pacman -Qsq yaourt | grep ^yaourt$)" != "" ]; then
+          OUT="upgrade-yaourt"
           sudo pacman -Rsc --noconfirm package-query
-          verifyYaourt
         fi
       fi
       TMP="$(sudo pacman -Qs gnome-shell)"
@@ -522,6 +522,9 @@ vboxpci'>~/virtualbox.conf
             sudo mv /boot/{vmlinuz-linux,*.img} "/boot/efi"
           fi
         fi
+      fi
+      if [ "$OUT" = "upgrade-yaourt" ]; then
+        verifyYaourt
       fi
       ;;
     upgrade)
