@@ -492,6 +492,12 @@ vboxpci'>~/virtualbox.conf
       esac
       ;;
     update)
+      if [ "5" \> "$(archy version-major pacman)" ];then
+        if [ "$(sudo pacman -Qsq yaourt | grep ^yaourt$)" != "" ]; then
+          sudo pacman -Rsc --noconfirm package-query
+          verifyYaourt
+        fi
+      fi
       TMP="$(sudo pacman -Qs gnome-shell)"
       sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
@@ -556,10 +562,24 @@ vboxpci'>~/virtualbox.conf
         ;;
       esac
       ;;
+    version)
+      TMP=$(
+        pacman -Qi $2 |
+        sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9.-]+).*/\1/p"
+      )
+      echo $TMP
+      ;;
+    version-major)
+      TMP=$(
+        pacman -Qi $2 |
+        sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9]+).*/\1/p"
+      )
+      echo $TMP
+      ;;
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.5  ║
+ ║  archy v0.1.6  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
