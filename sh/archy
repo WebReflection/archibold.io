@@ -492,6 +492,14 @@ vboxpci'>~/virtualbox.conf
       esac
       ;;
     update)
+      if [ "$(checkBoot)" = "0" ]; then
+        mountBoot
+        sleep 1
+        if [ "$(checkBoot)" = "0" ]; then
+          icho '[*][r]WARNING[/] unable to mount [*]/boot[/] folder'
+          exit 1
+        fi
+      fi
       if [ "5" \> "$(archy version-major pacman)" ];then
         if [ "$(sudo pacman -Qsq yaourt | grep ^yaourt$)" != "" ]; then
           OUT="upgrade-yaourt"
@@ -582,7 +590,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.1.6  ║
+ ║  archy v0.1.7  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
@@ -614,6 +622,14 @@ vboxpci'>~/virtualbox.conf
     echo ''
     ;;
   esac
+}
+
+checkBoot() {
+  if [ ! -d "/boot" ] || [ "$(ls /boot)" = "" ]; then
+    echo '0'
+  else
+    echo '1'
+  fi
 }
 
 commonProcedure() {
@@ -776,6 +792,32 @@ icho() {
     sed -e "s/\[\/\]/\\${reset_all}/g"
   )
   echo -e "${phrase}${reset_all}"
+}
+
+mountBoot() {
+  local IFS
+  local len
+  local info
+  local disk
+  local found=0
+  lsblk -r | while IFS= read -r line; do
+    len=${#line}
+    if [ "${line:$len-6}" = " disk " ]; then
+      for info in $line; do
+        disk=$info
+        break
+      done
+    fi
+    if [ "${line:$len-2}" = " /" ]; then
+      for info in $line; do
+        len=${#disk}
+        if [ "${info:0:$len}" = "$disk" ]; then
+          sudo mount "/dev/${disk}1" /boot
+          break
+        fi
+      done
+    fi
+  done
 }
 
 removeArchive() {
