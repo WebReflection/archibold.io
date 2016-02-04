@@ -599,7 +599,8 @@ vboxpci'>~/virtualbox.conf
   archy [install|remove|search|uninstall] package-name
   archy [archibold-boot-image|gnome-login-bg|show-gnome-settings|use]
   archy [sha|sha1|sha224|sha256|sha384|sha512] file-name-or-string
-  archy [create-desktop-app 'App Name' '/path/to/exec-app'|destroy-desktop-app exec-app]
+  archy [create-desktop-app 'App Name' '/path/to/exec-app']
+  archy [destroy-desktop-app exec-app]
 
  [g]list of simplified installations[/]: [d]archy install archy-*[/]
 
