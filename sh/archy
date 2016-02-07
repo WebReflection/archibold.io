@@ -206,7 +206,7 @@ ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1",
           sudo mv ~/Downloads/45-espruino.rules /etc/udev/rules.d/
           ;;
         archy-fonts)
-          sudo pacman -S --needed --noconfirm ttf-dejavu ttf-liberation ttf-symbola ttf-droid
+          sudo pacman -S --needed --noconfirm ttf-dejavu ttf-liberation ttf-symbola ttf-droid ttf-freefont
           ;;
         archy-fs-extra)
           sudo pacman -S --needed --noconfirm exfat-utils fuse-exfat dosfstools ntfs-3g
@@ -433,7 +433,7 @@ vboxpci'>~/virtualbox.conf
           fi
           ;;
         archy-fonts)
-          sudo pacman -Rsc ttf-dejavu ttf-liberation ttf-symbola ttf-droid
+          sudo pacman -R ttf-dejavu ttf-liberation ttf-symbola ttf-droid ttf-freefont
           ;;
         archy-fs-extra)
           sudo pacman -Rsc exfat-utils fuse-exfat dosfstools ntfs-3g
