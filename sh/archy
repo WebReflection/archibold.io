@@ -248,6 +248,8 @@ Time to add your key in GitHub.'
           curl -L -O https://toolbelt.heroku.com/install.sh
           sh install.sh
           rm install.sh
+          echo '# heroku' >> ~/.bashrc
+          echo 'PATH="/usr/local/heroku/bin:$PATH"' >> ~/.bashrc
           ;;
         archy-intel-cstick-wifi)
           sudo pacman -S --needed --noconfirm linux-headers
