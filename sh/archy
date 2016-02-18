@@ -572,7 +572,7 @@ vboxpci'>~/virtualbox.conf
         else
           if [ "$WIDTH" != "$(cat $TMP)" ]; then
             icho " [*][g]✔[/] [*]archy is up to date[/] \o/"
-            icho "         please restart the upgrade."
+            icho "     please restart the upgrade."
             exit 0
           fi
         fi
