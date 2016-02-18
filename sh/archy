@@ -564,12 +564,17 @@ vboxpci'>~/virtualbox.conf
     upgrade)
       TMP="$(which archy)"
       if [ "$TMP" != "" ]; then
+        WIDTH=$(cat $TMP)
         sudo curl -L -s -o "$TMP" "http://archibold.io/sh/archy"
         sudo chmod +x $TMP
         if [[ $? -ne 0 ]] ; then
           icho " [*][r]x[/] [*]unable to update archy[/]"
         else
-          icho " [*][g]✔[/] [*]archy is up to date[/] \o/"
+          if [ "$WIDTH" != "$(cat $TMP)" ]; then
+            icho " [*][g]✔[/] [*]archy is up to date[/] \o/"
+            icho "         please restart the upgrade."
+            exit 0
+          fi
         fi
       fi
       archy update $2
@@ -616,7 +621,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.0  ║
+ ║  archy v0.2.1  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
