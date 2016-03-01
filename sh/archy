@@ -621,7 +621,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.1  ║
+ ║  archy v0.2.2  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
@@ -891,6 +891,8 @@ updateSyslinuxConfig() {
 
 verifyYaourt() {
   local name="yaourt"
+  local current
+  local remote
   if [ "$(sudo pacman -Qsq $name | grep ^$name$)" = "" ]; then
     icho "[*][g]$name[/] not found."
     icho "installing [*]development packages[/]"
@@ -899,6 +901,22 @@ verifyYaourt() {
     commonProcedure 'package-query'
     icho "installing [*]$name[/]"
     commonProcedure "$name"
+  else
+    current=$(
+      yaourt -Qi $name |
+      sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9.-]+).*/\1/p"
+    )
+    remote=$(
+      yaourt -Si $name |
+      sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9.-]+).*/\1/p"
+    )
+    if [ "$current" != "$remote" ]; then
+      sudo pacman -R --noconfirm $name package-query
+      icho "updating [*]package-query[/]"
+      commonProcedure 'package-query'
+      icho "updating [*]$name[/]"
+      commonProcedure "$name"
+    fi
   fi
 }
 
