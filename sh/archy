@@ -498,13 +498,11 @@ vboxpci'>~/virtualbox.conf
       if [ -d /boot/syslinux ]; then
         sudo umount /boot 2> /dev/null
       fi
+      mountBoot
+      sleep 1
       if [ "$(checkBoot)" = "0" ]; then
-        mountBoot
-        sleep 1
-        if [ "$(checkBoot)" = "0" ]; then
-          icho '[*][r]WARNING[/] unable to mount [*]/boot[/] folder'
-          exit 1
-        fi
+        icho '[*][r]WARNING[/] unable to mount [*]/boot[/] folder'
+        exit 1
       fi
       if [ "5" \> "$(archy version-major pacman)" ];then
         if [ "$(sudo pacman -Qsq yaourt | grep ^yaourt$)" != "" ]; then
