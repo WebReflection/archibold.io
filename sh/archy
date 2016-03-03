@@ -495,6 +495,9 @@ vboxpci'>~/virtualbox.conf
       esac
       ;;
     update)
+      if [ -d /boot/syslinux ]; then
+        sudo umount /boot 2> /dev/null
+      fi
       if [ "$(checkBoot)" = "0" ]; then
         mountBoot
         sleep 1
@@ -621,7 +624,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.2  ║
+ ║  archy v0.2.3  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
