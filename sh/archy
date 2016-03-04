@@ -496,7 +496,7 @@ vboxpci'>~/virtualbox.conf
       ;;
     update)
       if [ "$(sudo cat /etc/mtab | grep /boot)" = "" ]; then
-        if [ "$(which efibootmgr > /dev/null 2>&1)" != "" ]; then
+        if [ "$(which efibootmgr 2> /dev/null)" != "" ]; then
           mountBoot
           sleep 1
           if [ "$(checkBoot)" = "0" ]; then
