@@ -300,7 +300,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           yaourt -S --needed --noconfirm telegram-desktop-bin
           ;;
         archy-virtualbox)
-          sudo pacman -S --needed --noconfirm virtualbox qt4
+          sudo pacman -S --needed --noconfirm virtualbox virtualbox-host-modules qt4
           echo 'vboxdrv
 vboxnetadp
 vboxnetflt
