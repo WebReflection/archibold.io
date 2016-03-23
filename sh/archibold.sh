@@ -207,7 +207,7 @@ cat archibold.header
 echo ' - - - - - - - - - - - - - - '
 echo ' SUMMARY '
 echo ' - - - - - - - - - - - - - - '
-echo "  installing archibld $ARCHIBOLD"
+echo "  installing archibold $ARCHIBOLD"
 echo "  for users/passwords"
 echo "    root/${PASSWD}"
 echo "    ${USER}/${UPASSWD}"
