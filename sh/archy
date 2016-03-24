@@ -608,15 +608,15 @@ vboxpci'>~/virtualbox.conf
       ;;
     version)
       TMP=$(
-        pacman -Qi $2 |
-        sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
+        pacman -Q $2 |
+        sed -n -E "s/^.+?[ ]+([0-9.-]+).*/\1/p"
       )
       echo $TMP
       ;;
     version-major)
       TMP=$(
-        pacman -Qi $2 |
-        sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9]+).*/\1/p"
+        pacman -Q $2 |
+        sed -n -E "s/^.+?[ ]+([0-9]+).*/\1/p"
       )
       echo $TMP
       ;;
@@ -904,21 +904,22 @@ verifyYaourt() {
     icho "installing [*]$name[/]"
     commonProcedure "$name"
   else
-    current=$(
-      yaourt -Qi $name |
-      sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
-    )
-    remote=$(
-      yaourt -Si $name |
-      sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
-    )
-    if [ "$current" != "$remote" ]; then
-      sudo pacman -R --noconfirm $name package-query
-      icho "updating [*]package-query[/]"
-      commonProcedure 'package-query'
-      icho "updating [*]$name[/]"
-      commonProcedure "$name"
-    fi
+    yaourt -S --needed --noconfirm package-query yaourt
+    # current=$(
+    #   yaourt -Q $name |
+    #   sed -n -E "s/^.+?[ ]+([0-9.-]+).*/\1/p"
+    # )
+    # remote=$(
+    #   yaourt -Si $name |
+    #   sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
+    # )
+    # if [ "$current" != "$remote" ]; then
+    #   sudo pacman -R --noconfirm $name package-query
+    #   icho "updating [*]package-query[/]"
+    #   commonProcedure 'package-query'
+    #   icho "updating [*]$name[/]"
+    #   commonProcedure "$name"
+    # fi
   fi
 }
 
