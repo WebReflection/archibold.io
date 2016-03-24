@@ -609,14 +609,14 @@ vboxpci'>~/virtualbox.conf
     version)
       TMP=$(
         pacman -Qi $2 |
-        sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9.-]+).*/\1/p"
+        sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
       )
       echo $TMP
       ;;
     version-major)
       TMP=$(
         pacman -Qi $2 |
-        sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9]+).*/\1/p"
+        sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9]+).*/\1/p"
       )
       echo $TMP
       ;;
@@ -906,11 +906,11 @@ verifyYaourt() {
   else
     current=$(
       yaourt -Qi $name |
-      sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9.-]+).*/\1/p"
+      sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
     )
     remote=$(
       yaourt -Si $name |
-      sed -n -E "s/^.+?Version[ ]*:[ ]*([0-9.-]+).*/\1/p"
+      sed -n -E "s/^.+?Ver[a-z]+[ ]*:[ ]*([0-9.-]+).*/\1/p"
     )
     if [ "$current" != "$remote" ]; then
       sudo pacman -R --noconfirm $name package-query
