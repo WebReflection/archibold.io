@@ -623,7 +623,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.3  ║
+ ║  archy v0.2.4  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:

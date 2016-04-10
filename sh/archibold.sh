@@ -566,7 +566,7 @@ if [ '$GNOME' != 'NO' ]; then
   pacman -Syu --needed --noconfirm \
     $GPU_DRIVERS \
     libva-mesa-driver mesa-vdpau \
-    xf86-input-synaptics \
+    xf86-input-synaptics xf86-input-libinput \
     xorg-server xorg-xinit xorg-server-xwayland \
     gnome gnome-calendar gnome-tweak-tool \
     gstreamer-vaapi gst-libav \
