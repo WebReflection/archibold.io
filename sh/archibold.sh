@@ -628,7 +628,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
 [[ -s /etc/profile.d/vte.sh ]] && . /etc/profile.d/vte.sh' >> /home/$USER/.bashrc
 
   sudo -u $USER dbus-launch gsettings set org.gnome.desktop.background picture-uri '/usr/share/backgrounds/gnome/Sandstone.jpg'
-  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.screensaver picture-uri '/usr/share/backgrounds/gnome/FootFall.jpg'
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.screensaver picture-uri '/usr/share/backgrounds/gnome/Godafoss_Iceland.jpg'
   sudo -u $USER dbus-launch gsettings set org.gnome.desktop.datetime automatic-timezone true
   sudo -u $USER dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
   sudo -u $USER dbus-launch gsettings set org.gnome.desktop.background show-desktop-icons true
@@ -644,7 +644,7 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
 
   echo '
 #lockDialogGroup {
-  background: #2e3436 url(/usr/share/backgrounds/gnome/FootFall.jpg);
+  background: #2e3436 url(/usr/share/backgrounds/gnome/Godafoss_Iceland.jpg);
   background-size: cover;
   background-repeat: no-repeat;
 }' >> /usr/share/gnome-shell/theme/gnome-classic.css
