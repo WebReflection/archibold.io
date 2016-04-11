@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.6.0             #
+# archibold 0.6.1             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -51,7 +51,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.6.0'
+ARCHIBOLD='0.6.1'
 
 clear
 
@@ -642,12 +642,13 @@ gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
   sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webgl true
   # sudo -u $USER xdg-mime default org.gnome.Nautilus.desktop inode/directory
 
-  echo '
-#lockDialogGroup {
-  background: #2e3436 url(/usr/share/backgrounds/gnome/Godafoss_Iceland.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
-}' >> /usr/share/gnome-shell/theme/gnome-classic.css
+  # ### with gnome 3.20 this stuff is probably not neede anymore
+  #   echo '
+  # #lockDialogGroup {
+  #   background: #2e3436 url(/usr/share/backgrounds/gnome/Godafoss_Iceland.jpg);
+  #   background-size: cover;
+  #   background-repeat: no-repeat;
+  # }' >> /usr/share/gnome-shell/theme/gnome-classic.css
 
 else
   echo 'TIMEOUT 15
@@ -741,7 +742,7 @@ if [ '$GNOME' != 'NO' ]; then
   echo '[keyfile]
 hostname=$LABEL
 '>>/etc/NetworkManager/NetworkManager.conf
-  archy gnome-login-bg /usr/share/backgrounds/gnome/FootFall.jpg
+  # archy gnome-login-bg /usr/share/backgrounds/gnome/Godafoss_Iceland.jpg
 fi
 
 if [ '$UEFI' = 'NO' ]; then

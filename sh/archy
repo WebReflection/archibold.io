@@ -516,12 +516,13 @@ vboxpci'>~/virtualbox.conf
       sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
       if [ "$(sudo pacman -Qs gnome-shell)" != "$TMP" ]; then
-        icho "[*]GNOME updated[/] ... regenerating login background"
-        archy gnome-login-bg
+        icho "[*]GNOME updated[/]"
+        echo " if after reboot login screen background won't work, try:"
+        echo " archy gnome-login-bg"
       fi
       if [ "$(archy version syslinux)" != "$SYSLINUX" ]; then
         if [ "$(sudo pacman -Qs efibootmgr)" != "" ]; then
-          icho "[*]Syslinux updated[/] ... regenerating boot loader"
+          icho "[*]Syslinux updated[/] ... regenerating boot loader."
           archy update-syslinux-efi
         fi
       fi
@@ -561,6 +562,7 @@ vboxpci'>~/virtualbox.conf
       if [ -d /usr/lib/prebootloader ]; then
         sudo cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
         sudo cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
+        icho " Remember to choose [*]loader[/] or [*]PreLoader[/] file in [*]secure boot[/]"
       fi
       ;;
     upgrade)
@@ -623,7 +625,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.4  ║
+ ║  archy v0.2.5  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
