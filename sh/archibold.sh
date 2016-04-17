@@ -1,5 +1,5 @@
 ###############################
-# archibold 0.6.1             #
+# archibold 0.6.2             #
 # - - - - - - - - - - - - - - #
 #        by Andrea Giammarchi #
 # - - - - - - - - - - - - - - #
@@ -51,7 +51,7 @@
 #
 ###############################
 
-ARCHIBOLD='0.6.1'
+ARCHIBOLD='0.6.2'
 
 clear
 
@@ -508,7 +508,7 @@ echo '###############
 echo -e '$PASSWD
 $PASSWD' | passwd
 
-useradd -m -g users -G wheel,storage,power,video -s /bin/bash $USER
+useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
 echo '##################
 ## $USER ##
 ##################'
@@ -573,6 +573,7 @@ if [ '$GNOME' != 'NO' ]; then
     alsa-utils xdg-utils \
     hunspell-en \
     file-roller \
+    bluez bluez-utils gnome-bluetooth gnome-user-share \
     ttf-liberation ttf-symbola ttf-droid ttf-freefont
 
   echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
@@ -612,6 +613,7 @@ LABEL arch
   fi
 
   systemctl enable gdm.service
+  systemctl enable bluetooth.service
 
   sudo -u $USER mkdir -p /home/$USER/.config/gtk-3.0
   sudo -u $USER touch /home/$USER/.config/gtk-3.0/settings.ini
