@@ -562,7 +562,7 @@ vboxpci'>~/virtualbox.conf
       if [ -d /usr/lib/prebootloader ]; then
         sudo cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
         sudo cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
-        icho " Remember to choose [*]loader[/] or [*]PreLoader[/] file in [*]secure boot[/]"
+        icho " Remember to enroll last [*]loader[/] file hash via the [*]secure boot[/]"
       fi
       ;;
     upgrade)
