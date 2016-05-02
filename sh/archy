@@ -495,35 +495,39 @@ vboxpci'>~/virtualbox.conf
       esac
       ;;
     update)
-      if [ "$(sudo cat /etc/mtab | grep /boot)" = "" ]; then
-        if [ "$(which efibootmgr 2> /dev/null)" != "" ]; then
-          mountBoot
-          sleep 1
-          if [ "$(checkBoot)" = "0" ]; then
-            icho '[*][r]WARNING[/] unable to mount [*]/boot[/] folder'
-            exit 1
+      if [ "$(which syslinux 2> /dev/null)" != "" ]; then
+        if [ "$(sudo cat /etc/mtab | grep /boot)" = "" ]; then
+          if [ "$(which efibootmgr 2> /dev/null)" != "" ]; then
+            mountBoot
+            sleep 1
+            if [ "$(checkBoot)" = "0" ]; then
+              icho '[*][r]WARNING[/] unable to mount [*]/boot[/] folder'
+              exit 1
+            fi
           fi
         fi
-      fi
-      if [ "5" \> "$(archy version-major pacman)" ];then
-        if [ "$(sudo pacman -Qsq yaourt | grep ^yaourt$)" != "" ]; then
-          OUT="upgrade-yaourt"
-          sudo pacman -Rsc --noconfirm package-query
+        if [ "5" \> "$(archy version-major pacman)" ];then
+          if [ "$(sudo pacman -Qsq yaourt | grep ^yaourt$)" != "" ]; then
+            OUT="upgrade-yaourt"
+            sudo pacman -Rsc --noconfirm package-query
+          fi
         fi
+        TMP="$(sudo pacman -Qs gnome-shell)"
+        SYSLINUX="$(archy version syslinux)"
       fi
-      TMP="$(sudo pacman -Qs gnome-shell)"
-      SYSLINUX="$(archy version syslinux)"
       sudo pacman -Syu --noconfirm
       sudo pacman-db-upgrade
-      if [ "$(sudo pacman -Qs gnome-shell)" != "$TMP" ]; then
-        icho "[*]GNOME updated[/]"
-        echo " if after reboot login screen background won't work, try:"
-        echo " archy gnome-login-bg"
-      fi
-      if [ "$(archy version syslinux)" != "$SYSLINUX" ]; then
-        if [ "$(sudo pacman -Qs efibootmgr)" != "" ]; then
-          icho "[*]Syslinux updated[/] ... regenerating boot loader."
-          archy update-syslinux-efi
+      if [ "$SYSLINUX" != "" ]; then
+        if [ "$(sudo pacman -Qs gnome-shell)" != "$TMP" ]; then
+          icho "[*]GNOME updated[/]"
+          echo " if after reboot login screen background won't work, try:"
+          echo " archy gnome-login-bg"
+        fi
+        if [ "$(archy version syslinux)" != "$SYSLINUX" ]; then
+          if [ "$(sudo pacman -Qs efibootmgr)" != "" ]; then
+            icho "[*]Syslinux updated[/] ... regenerating boot loader."
+            archy update-syslinux-efi
+          fi
         fi
       fi
       if [ "$2" = "aur" ]; then
