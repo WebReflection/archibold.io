@@ -589,6 +589,24 @@ vboxpci'>~/virtualbox.conf
       ;;
     use)
       case $2 in
+        linux)
+          if [ ! -f /boot/syslinux/syslinux.cfg ]; then
+            echo 'Unable to locate syslinux. Please mount /boot first'
+            exit 1
+          fi
+          sudo sed -i 's/vmlinuz-linux-lts/vmlinuz-linux/;s/initramfs-linux-lts.img/initramfs-linux.img/' /boot/syslinux/syslinux.cfg
+        ;;
+        linux-lts)
+          archy use linux
+          if [[ $? -ne 0 ]] ; then
+            exit 1
+          fi
+          sync
+          if [ ! -f /boot/vmlinuz-linux ]; then
+            sudo pacman -S --needed --noconfirm linux-lts linux-lts-headers
+          fi
+          sudo sed -i 's/vmlinuz-linux/vmlinuz-linux-lts/;s/initramfs-linux.img/initramfs-linux-lts.img/' /boot/syslinux/syslinux.cfg
+        ;;
         python2)
           TMP=$(which python)
           sudo rm -f $TMP
@@ -629,7 +647,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.5  ║
+ ║  archy v0.2.6  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
