@@ -625,6 +625,8 @@ vboxpci'>~/virtualbox.conf
                   ↓
                python2
                python3
+               linux-lts
+               linux
   
 "
         ;;
