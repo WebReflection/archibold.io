@@ -595,10 +595,10 @@ vboxpci'>~/virtualbox.conf
             exit 1
           fi
           sync
-          sudo pacman -S --needed --noconfirm linux linux-headers
+          sudo pacman -S --needed --noconfirm linux linux-headers 2> /dev/null
           sudo sed -i 's/vmlinuz-linux-lts/vmlinuz-linux/;s/initramfs-linux-lts.img/initramfs-linux.img/' /boot/syslinux/syslinux.cfg
           if [ "$3" = "only" ]; then
-            sudo pacman -R --noconfirm linux-lts linux-lts-headers
+            sudo pacman -R --noconfirm linux-lts linux-lts-headers 2> /dev/null
             icho "now using [*]linux[/] $(archy version linux)"
           fi
         ;;
@@ -608,10 +608,10 @@ vboxpci'>~/virtualbox.conf
             exit 1
           fi
           sync
-          sudo pacman -S --needed --noconfirm linux-lts linux-lts-headers
+          sudo pacman -S --needed --noconfirm linux-lts linux-lts-headers 2> /dev/null
           sudo sed -i 's/vmlinuz-linux/vmlinuz-linux-lts/;s/initramfs-linux.img/initramfs-linux-lts.img/' /boot/syslinux/syslinux.cfg
           if [ "$3" = "only" ]; then
-            sudo pacman -R --noconfirm linux linux-headers
+            sudo pacman -R --noconfirm linux linux-headers 2> /dev/null
             icho "now using [*]linux-lts[/] $(archy version linux-lts)"
           fi
         ;;
