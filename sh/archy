@@ -595,6 +595,10 @@ vboxpci'>~/virtualbox.conf
             exit 1
           fi
           sudo sed -i 's/vmlinuz-linux-lts/vmlinuz-linux/;s/initramfs-linux-lts.img/initramfs-linux.img/' /boot/syslinux/syslinux.cfg
+          if [ "$3" = "only" ]; then
+            sudo pacman -R --noconfirm linux-lts linux-lts-headers
+            icho "now using [*]linux[/] $(archy version linux)"
+          fi
         ;;
         linux-lts)
           archy use linux
@@ -606,6 +610,10 @@ vboxpci'>~/virtualbox.conf
             sudo pacman -S --needed --noconfirm linux-lts linux-lts-headers
           fi
           sudo sed -i 's/vmlinuz-linux/vmlinuz-linux-lts/;s/initramfs-linux.img/initramfs-linux-lts.img/' /boot/syslinux/syslinux.cfg
+          if [ "$3" = "only" ]; then
+            sudo pacman -R --noconfirm linux linux-headers
+            icho "now using [*]linux-lts[/] $(archy version linux-lts)"
+          fi
         ;;
         python2)
           TMP=$(which python)
@@ -625,8 +633,8 @@ vboxpci'>~/virtualbox.conf
                   ↓
                python2
                python3
-               linux-lts
-               linux
+               linux-lts  [only]
+               linux      [only]
   
 "
         ;;
@@ -649,7 +657,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.6  ║
+ ║  archy v0.2.7  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
