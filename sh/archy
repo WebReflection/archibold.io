@@ -594,6 +594,8 @@ vboxpci'>~/virtualbox.conf
             echo 'Unable to locate syslinux. Please mount /boot first'
             exit 1
           fi
+          sync
+          sudo pacman -S --needed --noconfirm linux linux-headers
           sudo sed -i 's/vmlinuz-linux-lts/vmlinuz-linux/;s/initramfs-linux-lts.img/initramfs-linux.img/' /boot/syslinux/syslinux.cfg
           if [ "$3" = "only" ]; then
             sudo pacman -R --noconfirm linux-lts linux-lts-headers
@@ -606,9 +608,7 @@ vboxpci'>~/virtualbox.conf
             exit 1
           fi
           sync
-          if [ ! -f /boot/vmlinuz-linux ]; then
-            sudo pacman -S --needed --noconfirm linux-lts linux-lts-headers
-          fi
+          sudo pacman -S --needed --noconfirm linux-lts linux-lts-headers
           sudo sed -i 's/vmlinuz-linux/vmlinuz-linux-lts/;s/initramfs-linux.img/initramfs-linux-lts.img/' /boot/syslinux/syslinux.cfg
           if [ "$3" = "only" ]; then
             sudo pacman -R --noconfirm linux linux-headers
