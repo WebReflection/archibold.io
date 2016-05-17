@@ -563,10 +563,17 @@ vboxpci'>~/virtualbox.conf
         TMP="$2"
       fi
       sudo cp -r /usr/lib/syslinux/${TMP}/* /boot/syslinux
-      if [ -d /usr/lib/prebootloader ]; then
-        sudo cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
+      if [ -d /usr/share/efitools/efi/ ]; then
+        sudo cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi /boot/syslinux/
         sudo cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
         icho " Remember to enroll last [*]loader[/] file hash via the [*]secure boot[/]"
+      else
+        # old system fallback
+        if [ -d /usr/lib/prebootloader ]; then
+          sudo cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
+          sudo cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
+          icho " Remember to enroll last [*]loader[/] file hash via the [*]secure boot[/]"
+        fi
       fi
       ;;
     upgrade)

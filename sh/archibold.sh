@@ -405,7 +405,7 @@ sync
 
 TOPACKSTRAP="base sudo syslinux gptfdisk arch-install-scripts intel-ucode"
 if [ "$UEFI" != "NO" ]; then
-  TOPACKSTRAP="$TOPACKSTRAP efibootmgr" # prebootloader
+  TOPACKSTRAP="$TOPACKSTRAP efibootmgr efitools"
 fi
 
 if [ "$GNOME" != "NO" ]; then
@@ -684,12 +684,18 @@ pacman-db-upgrade
 sync
 
 if [ '$UEFI' != 'NO' ]; then
-  if [ -d /usr/lib/prebootloader ]; then
-    cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
+  if [ -d /usr/share/efitools/efi/ ]; then
+    cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi /boot/syslinux/
     cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
     efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
   else
-    efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+    if [ -d /usr/lib/prebootloader ]; then
+      cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
+      cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
+      efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
+    else
+      efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
+    fi
   fi
   sync
 fi
