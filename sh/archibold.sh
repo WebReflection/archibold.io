@@ -574,7 +574,7 @@ if [ '$GNOME' != 'NO' ]; then
     hunspell-en \
     file-roller \
     bluez bluez-utils gnome-bluetooth gnome-user-share \
-    ttf-liberation ttf-symbola ttf-droid ttf-freefont
+    ttf-liberation ttf-symbola ttf-droid ttf-freefont ttf-bitstream-vera
 
   echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
 
