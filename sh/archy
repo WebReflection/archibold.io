@@ -78,6 +78,7 @@ archy() {
       ;;
     clean)
       sudo pacman -Sc --noconfirm
+      sudo pacman-optimize
       ;;
     clear)
       archy clean
