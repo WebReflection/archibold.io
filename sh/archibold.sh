@@ -69,6 +69,53 @@ SAY
 ">archibold.header
 cat archibold.header
 
+get_drives() {
+  local out=""
+  local d=
+  local p=
+  local l=0
+  for d in $(lsblk --output NAME | sed -e 's/[├─└─]//g'); do
+    if [ $l -eq 0 ]; then l=${#d}; fi
+    if [ "${d:0:$l}" = "$p" ]; then
+      out="${out} /dev/${d}"
+    else
+      p="$d"
+      l=${#d}
+    fi
+  done
+  echo "$out" | sed -e 's/^[[:space:]]*//'
+}
+
+get_fstype() {
+  local t=0
+  local c="$(echo "$1" | sed -e 's/^\/dev\///')"
+  for d in $(lsblk --output NAME,FSTYPE "$1"); do
+    if [ "$c" = "$d" ]; then
+      t=1
+    else
+      if [ "$t" = "1" ]; then
+        echo "$d"
+        break
+      fi
+    fi
+  done
+}
+
+get_uuid() {
+  local t=0
+  local c="$(echo "$1" | sed -e 's/^\/dev\///')"
+  for d in $(lsblk --output NAME,UUID "$1"); do
+    if [ "$c" = "$d" ]; then
+      t=1
+    else
+      if [ "$t" = "1" ]; then
+        echo "$d"
+        break
+      fi
+    fi
+  done
+}
+
 verifyuser() {
   if [ "$1" = "$2" ]; then
     echo "please specify a USER name (i.e. USER=archibold)"
@@ -445,7 +492,7 @@ if [ "$DEBUG" = "YES" ]; then
   read -n1 -r -p "[ fstab ]" TMP
 fi
 
-APPEND="APPEND root=$ROOT rw"
+APPEND="APPEND root=UUID=$(get_uuid $ROOT) rw"
 if [ "$BOOT_LOUDLY" = "" ]; then
   APPEND="$APPEND quiet splash loglevel=0 console=tty2"
 fi
@@ -554,7 +601,7 @@ Description=$SYSLINUX_ROOT EFI partition automatically mounted
 [Service]
 User=root
 Type=simple
-ExecStart=/usr/bin/mount $EFI $SYSLINUX_ROOT
+ExecStart=/usr/bin/mount --uuid $(get_uuid $EFI) $SYSLINUX_ROOT
 
 [Install]
 WantedBy=multi-user.target'>/etc/systemd/system/automount-efi.service
