@@ -118,7 +118,7 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
   _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
 
 
-  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.6.1
+  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.7.0
 
       </pre></section>
       <section id="update">
@@ -259,11 +259,11 @@ ping 8.8.8.8
 # if not, try to start the service manually
 #&gt; netctl start wlp2s0-YourWiFi-NAME</code></pre>
         <p>
-          Once we have a usable network, we can download <strong>archibold.sh</strong> installer.
+          Once we have a usable network, we can download the installer.
         </p>
-        <pre><code>curl -L -O http://archibold.io/sh/archibold.sh</code></pre>
+        <pre><code>curl -L -O http://archibold.io/sh/install</code></pre>
         <p>
-          The file <code>archibold.sh</code> should be in the folder now.<br/>
+          The file <code>install</code> should be in the folder now.<br/>
           Sometimes you need this operation twice (fancy DNS redirects).<br/>
           Use <code>ls</code> to verify it's in the list or run pevious command again.<br/>
           Before launching it, we need to understand how to configure it.
@@ -295,14 +295,14 @@ ping 8.8.8.8
             If none of these is specified, default password will be <code>root</code> and chosen <code>$USER</code>.<br/>
             Examples:<pre><code># the root user will have root password
 # the archibold user will have archibold password
-DISK=/dev/sda USER=archibold sh archibold.sh
+DISK=/dev/sda USER=archibold sh install
 
 # both root and user will have 12345 password
-DISK=/dev/sda USER=archibold PASSWD=12345 sh archibold.sh
+DISK=/dev/sda USER=archibold PASSWD=12345 sh install
 
 # root will have r00t password
 # archibold will have archib0ld password
-DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
+DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh install
 </code></pre>
           </li>
           <li>
@@ -334,7 +334,7 @@ DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh archibold.sh
         <p>
           Once we understand the meaning of these variables, we can simply launch the installer as such:
         </p>
-        <pre><code>DISK=/dev/sdX USER=archibold sh archibold.sh</code></pre>
+        <pre><code>DISK=/dev/sdX USER=archibold sh install</code></pre>
         <p>
           From now on, we can simply follow instructions. Here a summary of what we'll need to do:
         </p>
