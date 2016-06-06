@@ -114,7 +114,9 @@ fi
 
 # require common utils
 curl -LO http://archibold.io/sh/utils
-. utils
+sync
+sleep 1
+. ./utils
 
 clear # after previous operations
 
@@ -265,15 +267,16 @@ sync
 ROOT_UUID="$(cat /proc/sys/kernel/random/uuid)"
 tune2fs -U $ROOT_UUID $ROOT
 sync
+sleep 2
 
 # show info
 if [ "$UEFI" != "NO" ]; then
-  EFI_UUID="$(get_fatid $EFI)"
+  EFI_UUID="$(get_partid 'vfat' $EFI)"
   echo "EFI:             ${EFI} ${EFI_UUID}"
 fi
 
 if [ "$SWAP" != "0" ]; then
-  SWAP_UUID="$(get_uuid $SWAP)"
+  SWAP_UUID="$(get_partid 'swap' $SWAP)"
   echo "SWAP:            ${SWAP} ${SWAP_UUID}"
 fi
 
