@@ -607,8 +607,8 @@ vboxpci'>~/virtualbox.conf
           sudo sed -i 's/vmlinuz-linux-lts/vmlinuz-linux/;s/initramfs-linux-lts.img/initramfs-linux.img/' /boot/syslinux/syslinux.cfg
           if [ "$3" = "only" ]; then
             sudo pacman -R --noconfirm linux-lts linux-lts-headers 2> /dev/null
-            icho "now using [*]linux[/] $(archy version linux)"
           fi
+          icho "now using [*]linux[/] $(archy version linux)"
         ;;
         linux-lts)
           archy use linux
@@ -620,8 +620,8 @@ vboxpci'>~/virtualbox.conf
           sudo sed -i 's/vmlinuz-linux/vmlinuz-linux-lts/;s/initramfs-linux.img/initramfs-linux-lts.img/' /boot/syslinux/syslinux.cfg
           if [ "$3" = "only" ]; then
             sudo pacman -R --noconfirm linux linux-headers 2> /dev/null
-            icho "now using [*]linux-lts[/] $(archy version linux-lts)"
           fi
+          icho "now using [*]linux-lts[/] $(archy version linux-lts)"
         ;;
         python2)
           TMP=$(which python)
