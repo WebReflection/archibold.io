@@ -206,6 +206,19 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
 # Makes Espruino s serial port accessible to non-SU users, and stops the Modem Manager trying to enumerate it
 ATTRS{idProduct}=="5740", ATTRS{idVendor}=="0483", ENV{ID_MM_DEVICE_IGNORE}="1", MODE="0666", GROUP="plugdev"'>~/Downloads/45-espruino.rules
           sudo mv ~/Downloads/45-espruino.rules /etc/udev/rules.d/
+          sudo udevadm control --reload-rules
+          ;;
+        archy-chip)
+          sudo groupadd dialout
+          sudo gpasswd -a $USER dialout
+          sudo groupadd plugdev
+          sudo gpasswd -a $USER plugdev
+          echo -e 'SUBSYSTEM=="usb", ATTRS{idVendor}=="1f3a", ATTRS{idProduct}=="efe8", GROUP="plugdev", MODE="0660" SYMLINK+="usb-chip"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="18d1", ATTRS{idProduct}=="1010", GROUP="plugdev", MODE="0660" SYMLINK+="usb-chip-fastboot"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="1f3a", ATTRS{idProduct}=="1010", GROUP="plugdev", MODE="0660" SYMLINK+="usb-chip-fastboot"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", GROUP="plugdev", MODE="0660" SYMLINK+="usb-serial-adapter"
+' | sudo tee /etc/udev/rules.d/99-allwinner.rules
+          sudo udevadm control --reload-rules
           ;;
         archy-fonts)
           sudo pacman -S --needed --noconfirm ttf-dejavu ttf-liberation ttf-symbola ttf-droid ttf-freefont
@@ -434,6 +447,11 @@ vboxpci'>~/virtualbox.conf
         archy-espruino-pico)
           if [ -f /etc/udev/rules.d/45-espruino.rules ]; then
             sudo rm /etc/udev/rules.d/45-espruino.rules
+          fi
+          ;;
+        archy-chip)
+          if [ -f /etc/udev/rules.d/99-allwinner.rules ]; then
+            sudo rm /etc/udev/rules.d/99-allwinner.rules
           fi
           ;;
         archy-fonts)
@@ -665,7 +683,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.7  ║
+ ║  archy v0.2.8  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
@@ -684,6 +702,7 @@ vboxpci'>~/virtualbox.conf
   archy-chromium             [b]# Chromium with pepper-flash and DRM[/]
   archy-dropbox              [b]# Dropbox client[/]
   archy-espruino-pico        [b]# configure group and rules for pico[/]
+  archy-chip                 [b]# configure group and rules for C.H.I.P.[/]
   archy-fonts                [b]# install common fonts (non GNOME only)[/]
   archy-fs-extra             [b]# (ex)fat utilities[/]
   archy-git                  [b]# git + ssh key configuration[/]
