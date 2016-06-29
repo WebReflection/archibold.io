@@ -568,10 +568,14 @@ echo '
 Defaults env_reset, timestamp_timeout=-1
 ' >> /etc/sudoers
 
-mkdir -p /etc/systemd/system/getty@tty1.service.d
+if [ -f /etc/systemd/system/getty.target.wants/getty@tty1.service ]; then
+  sed -i -e 's/ExecStart=-\/sbin\/agetty.*/ExecStart=-\/sbin\/agetty -n -i -a $USER %I \$TERM/' /etc/systemd/system/getty.target.wants/getty@tty1.service
+else
+  mkdir -p /etc/systemd/system/getty@tty1.service.d
 echo '[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty -n -i -a $USER %I'>/etc/systemd/system/getty@tty1.service.d/autologin.conf
+fi
 
 sync
 
