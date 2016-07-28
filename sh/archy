@@ -314,7 +314,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           yaourt -S --needed --noconfirm telegram-desktop-bin
           ;;
         archy-virtualbox)
-          sudo pacman -S --needed --noconfirm linux-headers virtualbox virtualbox-host-dkms qt4
+          sudo pacman -S --needed --noconfirm linux-headers virtualbox virtualbox-host-dkms qt5-x11extras
           echo 'vboxdrv
 vboxnetadp
 vboxnetflt
@@ -502,7 +502,7 @@ vboxpci'>~/virtualbox.conf
           ;;
         archy-virtualbox)
           verifyYaourt
-          yaourt -Rsc virtualbox-ext-oracle virtualbox virtualbox-host-dkms qt4
+          yaourt -Rsc virtualbox-ext-oracle virtualbox virtualbox-host-dkms qt5-x11extras
           if [ -f /etc/modules-load.d/virtualbox.conf ]; then
             sudo rm /etc/modules-load.d/virtualbox.conf
           fi
@@ -683,7 +683,7 @@ vboxpci'>~/virtualbox.conf
     *)
       icho "[*][g]
  ╔════════════════╗
- ║  archy v0.2.8  ║
+ ║  archy v0.2.9  ║
  ╚════════════════╝
  [/]
  [g]usage[/]:
