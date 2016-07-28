@@ -422,11 +422,10 @@ vboxpci'>~/virtualbox.conf
       sha "sha512" "$2"
       ;;
     tmpsize)
-      if [ "$2" = "" ]; then
-        df -h /tmp
-      else
+      if [ "$2" != "" ]; then
         sudo mount -o remount,size=$2 /tmp
       fi
+      df -h /tmp
       ;;
     uninstall)
       case $2 in
