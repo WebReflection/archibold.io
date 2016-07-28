@@ -421,6 +421,9 @@ vboxpci'>~/virtualbox.conf
     sha512)
       sha "sha512" "$2"
       ;;
+    tmpsize)
+      sudo mount -o remount,size=$2 /tmp
+      ;;
     uninstall)
       case $2 in
         archy-android)
@@ -694,6 +697,7 @@ vboxpci'>~/virtualbox.conf
   archy [sha|sha1|sha224|sha256|sha384|sha512] file-name-or-string
   archy [create-desktop-app 'App Name' '/path/to/exec-app']
   archy [destroy-desktop-app exec-app]
+  archy tmpsize 8G
 
  [g]list of simplified installations[/]: [d]archy install archy-*[/]
 
