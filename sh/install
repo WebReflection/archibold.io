@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ARCHIBOLD='0.7.0'
+ARCHIBOLD='0.7.1'
 
 clear
 
@@ -32,8 +32,8 @@ elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
 fi
 
 if [ "$GPU" = "" ]; then
-  echo 'unable to detect a GPU. This platform is not supported.'
-  exit 1
+  GPU='Mesa Framebuffer'
+  GPU_DRIVERS='xf86-video-fbdev'
 fi
 
 # DISK checks
