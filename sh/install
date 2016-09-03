@@ -77,7 +77,7 @@ fi
 
 # UEFI architecture check
 if [ "$UEFI" != "NO" ]; then
-  if [ "$UEFI" != "" ] && [ "$UEFI" != "NO" ] && [ "$UEFI" != "efi64" ] && [ "$UEFI" != "efi32" ]; then
+  if [ "$UEFI" != "" ] && [ "$UEFI" != "efi64" ] && [ "$UEFI" != "efi32" ]; then
     echo "valid UEFI are efi64 or efi32, not $UEFI"
     exit 1
   else
@@ -211,9 +211,9 @@ if [ "$UEFI" = "NO" ]; then
   PARTED_START_AT="2048s"
   sudo parted --script $DISK mklabel msdos
 else
-  PARTED_START_AT="64M"
+  PARTED_START_AT="100M"
   sudo parted --script $DISK mklabel gpt
-  sudo parted --script --align optimal $DISK mkpart primary fat16 2048s 64M
+  sudo parted --script --align optimal $DISK mkpart primary fat16 2048s $PARTED_START_AT
   sudo parted $DISK set 1 boot on
 fi
 
