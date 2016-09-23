@@ -401,6 +401,15 @@ sudo netctl list
         <p>
           At this point every boot should try to reconnect to the chosen WiFi network.
         </p>
+        <h2 id="hi-dpi">
+          <a href="#hi-dpi">HiDPi and 4K</a>
+        </h2>
+        <p>
+          There are few ways to solve HiDPi gotchas with GNOME.
+          You can either try to change scaling factor in GNOME Tweaks Tool, Window panel, or specify
+          a scaling factor directly in via <code>gsettings</code>.
+        </p>
+        <pre><code>gsettings set org.gnome.desktop.interface scaling-factor 2</code></pre>
         <h2 id="maintenance">
           <a href="#maintenance">Basic maintenance</a>
         </h2>
