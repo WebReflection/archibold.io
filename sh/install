@@ -462,6 +462,9 @@ if [ '$UEFI' != 'NO' ]; then
 fi
 
 if [ '$GNOME' != 'NO' ]; then
+  curl -L -O http://archibold.io/sh/open
+  chmod a+x open
+  mv open /usr/bin
   sync
   pacman -Syu --needed --noconfirm \
     $GPU_DRIVERS \
