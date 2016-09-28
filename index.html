@@ -419,7 +419,7 @@ sudo netctl list
         </p><pre><code>$ archy
 
  <strong>╔════════════════╗
- ║  archy v0.2.5  ║
+ ║  archy v0.3.0  ║
  ╚════════════════╝</strong>
  
  <strong>usage</strong>:
@@ -555,6 +555,20 @@ sudo mv archy /usr/bin
           Following a list of known gotchas that could make <em>archibold</em> journey not so nice.
         </p>
         <ul>
+          <li>
+            <strong>VirtualBox EFI Boot Loader</strong><br/>
+            If your VBox doesn't remember how to load archibold,
+            type the following on the EFI v2 Shell:
+            <pre><code>FS0:\syslinux\loader.efi</code></pre>
+            To make this change permanent you can create the structure VBox search by default.<br/>
+            Once in archibold, open a terminal session and:
+            <pre><code># create folder structure and copy the loader
+sudo mkdir -p /boot/EFI/BOOT
+sudo cp /boot/syslinux/loader.efi /boot/EFI/BOOT/bootx64.efi
+            </code></pre>
+            At this point <code>archy upgrade</code> would take care of copying over the loader if Syslinux got updated.<br/>
+            If you don't use <code>archy</code> please remember to do the same once you update your VM.
+          </li>
           <li>
             <strong>Broadcom WiFi</strong> problems. The hybrid driver works quite OK if patched.<br/>
             In order to know which one you have, write this on the terminal: <code>lspci -nn</code><br/>
