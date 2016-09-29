@@ -141,13 +141,24 @@ fi
 if [ "$UEFI" = "NO" ]; then
   SYSLINUX_BOOT='/boot'
   SYSLINUX_ROOT='/boot'
+  SYSLINUX_FULL="$SYSLINUX_ROOT"
   echo "  without EFI"
 else
-  SYSLINUX_BOOT=''
-  SYSLINUX_ROOT='/boot'
-  echo "  using syslinux/$UEFI"
-  echo "  with label $LABEL"
-  clean_efibootmgr "$LABEL"
+  if [ "$VBOX" != "" ]; then
+    SYSLINUX_BOOT='/boot/EFI'
+    SYSLINUX_ROOT='/boot/EFI'
+    SYSLINUX_FULL="$SYSLINUX_ROOT/BOOT"
+    echo "  booting VirtualBox"
+    echo "  with label $LABEL"
+    clean_efibootmgr "$LABEL"
+  else
+    SYSLINUX_BOOT=''
+    SYSLINUX_ROOT='/boot'
+    SYSLINUX_FULL="$SYSLINUX_ROOT/syslinux"
+    echo "  using syslinux/$UEFI"
+    echo "  with label $LABEL"
+    clean_efibootmgr "$LABEL"
+  fi
 fi
 
 if [ "$VBOX" != "" ]; then
@@ -461,13 +472,13 @@ if [ '$DEBUG' = 'YES' ]; then
 fi
 
 if [ '$UEFI' != 'NO' ]; then
-  mkdir -p $SYSLINUX_ROOT/syslinux
+  mkdir -p $SYSLINUX_FULL
   if [ '$(uname -m)' = 'x86_64' ]; then
-    cp -r /usr/lib/syslinux/efi64/* $SYSLINUX_ROOT/syslinux
+    cp -r /usr/lib/syslinux/efi64/* $SYSLINUX_FULL
   else
-    cp -r /usr/lib/syslinux/efi32/* $SYSLINUX_ROOT/syslinux
+    cp -r /usr/lib/syslinux/efi32/* $SYSLINUX_FULL
   fi
-  cp -r /usr/lib/syslinux/$UEFI/syslinux.efi $SYSLINUX_ROOT/syslinux
+  cp -r /usr/lib/syslinux/$UEFI/syslinux.efi $SYSLINUX_FULL
 fi
 
 if [ '$GNOME' != 'NO' ]; then
@@ -507,7 +518,7 @@ LABEL arch
       $APPEND
       MENU CLEAR
 
-' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
+' > $SYSLINUX_FULL/syslinux.cfg
 
   pacman -Syu --needed --noconfirm inkscape
   curl -L -O http://archibold.io/img/archibold.svg
@@ -581,7 +592,7 @@ LABEL arch
       INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
       $APPEND
 
-' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
+' > $SYSLINUX_FULL/syslinux.cfg
 fi
 
 pacman-db-upgrade
@@ -589,14 +600,22 @@ sync
 
 if [ '$UEFI' != 'NO' ]; then
   if [ -d /usr/share/efitools/efi/ ]; then
-    cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi /boot/syslinux/
-    cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
-    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
+    cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi $SYSLINUX_FULL
+    if [ '$VBOX' != '' ]; then
+      cp $SYSLINUX_FULL/syslinux.efi $SYSLINUX_FULL/bootx64.efi
+    else
+      cp $SYSLINUX_FULL/syslinux.efi $SYSLINUX_FULL/loader.efi
+      efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
+    fi
   else
     if [ -d /usr/lib/prebootloader ]; then
-      cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
-      cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
-      efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
+      cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi $SYSLINUX_FULL
+      if [ '$VBOX' != '' ]; then
+        cp $SYSLINUX_FULL/syslinux.efi $SYSLINUX_FULL/bootx64.efi
+      else
+        cp $SYSLINUX_FULL/syslinux.efi $SYSLINUX_FULL/loader.efi
+        efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L '$LABEL'
+      fi
     else
       efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L '$LABEL'
     fi
