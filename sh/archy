@@ -552,9 +552,9 @@ vboxpci'>~/virtualbox.conf
           if [ "$(sudo pacman -Qs efibootmgr)" != "" ]; then
             icho "[*]Syslinux updated[/] ... regenerating boot loader."
             archy update-syslinux-efi
-            if [ -f "/boot/EFI/BOOT/bootx64.efi" ]; then
-              cp /boot/syslinux/loader.efi /boot/EFI/BOOT/bootx64.efi
-            fi
+            # if [ -f "/boot/EFI/BOOT/bootx64.efi" ]; then
+            #   cp /boot/syslinux/loader.efi /boot/EFI/BOOT/bootx64.efi
+            # fi
           fi
         fi
       fi

@@ -149,6 +149,15 @@ else
   echo "  with label $LABEL"
   clean_efibootmgr "$LABEL"
 fi
+
+if [ "$VBOX" != "" ]; then
+  SYSLINUX_EFI="/EFI"
+  SYSLINUX_VESA="$SYSLINUX_EFI/BOOT"
+else
+  SYSLINUX_EFI="$SYSLINUX_BOOT"
+  SYSLINUX_VESA="$SYSLINUX_EFI/syslinux"
+fi
+
 if [ "$GNOME" = "0" ]; then
   GNOME="NO"
 fi
@@ -479,7 +488,7 @@ if [ '$GNOME' != 'NO' ]; then
     bluez bluez-utils gnome-bluetooth gnome-user-share \
     ttf-liberation ttf-symbola ttf-droid ttf-freefont
 
-  echo 'UI $SYSLINUX_BOOT/syslinux/vesamenu.c32
+  echo 'UI $SYSLINUX_VESA/vesamenu.c32
 
 TIMEOUT 15
 PROMPT 0
@@ -487,14 +496,14 @@ DEFAULT arch
 
 MENU TITLE archibold
 MENU RESOLUTION $WIDTH $HEIGHT
-MENU BACKGROUND $SYSLINUX_BOOT/archibold.jpg
+MENU BACKGROUND $SYSLINUX_EFI/archibold.jpg
 MENU HIDDEN
 MENU COLOR timeout_msg 37;40 #00000000 #00000000 none
 MENU COLOR timeout 37;40 #00000000 #00000000 none
 
 LABEL arch
-      LINUX $SYSLINUX_BOOT/vmlinuz-linux
-      INITRD $SYSLINUX_BOOT/intel-ucode.img,$SYSLINUX_BOOT/initramfs-linux.img
+      LINUX $SYSLINUX_EFI/vmlinuz-linux
+      INITRD $SYSLINUX_EFI/intel-ucode.img,$SYSLINUX_EFI/initramfs-linux.img
       $APPEND
       MENU CLEAR
 
@@ -603,15 +612,19 @@ fi
 
 mkinitcpio -p linux
 
-# if [ '$UEFI' != 'NO' ]; then
-#   mv /boot/{vmlinuz-linux,*.img} $SYSLINUX_ROOT
-# fi
-
 sync
 
 sleep 3
 if [ '$DEBUG' = 'YES' ]; then
   read -n1 -r -p '[ after mkinitcpio ]' TMP
+fi
+
+if [ '$VBOX' != '' ]; then
+  mkdir -p /EFI
+  mv /boot/* /EFI
+  mv /EFI /boot
+  mv /boot/EFI/syslinux /boot/EFI/BOOT
+  mv /bootEFI/BOOT/loader.efi /boot/EFI/BOOT/bootx64.efi
 fi
 
 cd /home/$USER
