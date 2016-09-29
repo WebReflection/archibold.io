@@ -628,7 +628,7 @@ if [ '$VBOX' != '' ]; then
   mv /boot/* /EFI
   mv /EFI /boot
   mv /boot/EFI/syslinux /boot/EFI/BOOT
-  mv /bootEFI/BOOT/loader.efi /boot/EFI/BOOT/bootx64.efi
+  mv /boot/EFI/BOOT/loader.efi /boot/EFI/BOOT/bootx64.efi
 fi
 
 cd /home/$USER
