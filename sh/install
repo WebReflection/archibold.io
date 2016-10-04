@@ -282,7 +282,13 @@ sync
 if [ "$UEFI" != "NO" ]; then
   mkfs.vfat $EFI
 fi
-yes | mkfs.ext4 $ROOT
+
+if [ "$AMD" = "1" ]; then
+  yes | mkfs.ext4 -O ^64bit $ROOT
+else
+  yes | mkfs.ext4 $ROOT
+fi
+
 sync
 
 ROOT_UUID="$(cat /proc/sys/kernel/random/uuid)"
