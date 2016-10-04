@@ -19,6 +19,12 @@ SAY
 
 cat archibold.header | sed -e 's/SAY  / /g' | sed -e 's/SAY//g'
 
+if [ "$AMD" = "1" ]; then
+  EDD=NO
+  UEFI=NO
+  SWAP=0
+fi
+
 # GPU card checks
 if [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep Intel)" != "" ]; then
   GPU='Intel'
@@ -28,7 +34,7 @@ elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep NVIDIA)" != "" ]; t
   GPU_DRIVERS='xf86-video-nouveau mesa-libgl'
 elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
   GPU='Radeon'
-  GPU_DRIVERS='xf86-video-ati libva-mesa-driver'
+  GPU_DRIVERS='xf86-video-amdgpu mesa-libgl libva-mesa-driver'
 fi
 
 if [ "$GPU" = "" ]; then
