@@ -191,7 +191,7 @@ SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",S
         archy-chromium)
           sudo pacman -S --needed --noconfirm chromium
           verifyYaourt
-          yaourt -S --needed --noconfirm chromium-pepper-flash chromium-widevine
+          yaourt -S --needed --noconfirm chromium-widevine
           ;;
         archy-dropbox)
           sudo pacman -S --needed --noconfirm ufw-extras perl-file-mimeinfo
@@ -299,6 +299,9 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           verifyYaourt
           yaourt -S --needed --noconfirm libgcrypt15 libcurl-compat
           yaourt -S --needed --noconfirm spotify
+          ;;
+        archy-steam)
+          sudo pacman -S --needed --noconfirm steam lib32-gtk2 lib32-libxtst lib32-libpulse lib32-openal
           ;;
         archy-sublime3)
           verifyYaourt
@@ -443,7 +446,7 @@ vboxpci'>~/virtualbox.conf
         archy-chromium)
           sudo pacman -Rsc chromium
           verifyYaourt
-          yaourt -Rsc chromium-pepper-flash chromium-widevine
+          yaourt -Rsc chromium-widevine
           ;;
         archy-dropbox)
           sudo pacman -Rsc ufw-extras perl-file-mimeinfo
