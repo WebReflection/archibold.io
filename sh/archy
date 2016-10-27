@@ -301,7 +301,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
           yaourt -S --needed --noconfirm spotify
           ;;
         archy-steam)
-          sudo pacman -S --needed --noconfirm steam lib32-gtk2 lib32-libxtst lib32-libpulse lib32-openal
+          sudo pacman -S --needed --noconfirm steam lib32-libxtst lib32-libpulse lib32-openal lib32-nss lib32-gtk2 lib32-gtk3 lib32-libcanberra lib32-gconf lib32-dbus-glib lib32-libnm-glib lib32-libudev0-shim
           ;;
         archy-sublime3)
           verifyYaourt
