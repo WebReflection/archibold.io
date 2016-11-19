@@ -1,0 +1,38 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+addGroup() {
+  local g
+  for g in $(groups); do
+    if [ "$g" = "wheel" ]; then
+      exit 0
+    fi
+  done
+  su -c 'useradd -G wheel $USER'
+}
+
+if [ "$USER" = "root" ]; then
+  echo -e "\x1B[1m\x1B[31mWarning\x1B[39m\x1B[22m not installing \x1B[1msudo\x1B[22m as root"
+  exit 1
+else
+  su -c '# install sudo
+pacman -S --needed --noconfirm sudo &> /dev/null
+
+if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
+  echo "
+## [archibold.io] enabled wheel group
+%wheel ALL=(ALL) ALL
+" >> /etc/sudoers
+fi
+
+if [[ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]]; then
+  echo "
+## [archibold.io] never expiring sudo password
+Defaults env_reset, timestamp_timeout=-1
+" >> /etc/sudoers
+fi'
+
+  addGroup
+
+fi

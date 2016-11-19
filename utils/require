@@ -1,0 +1,18 @@
+require() {
+  local pkg="$1"
+  local tmp=$(type -t $pkg)
+  if [ "$tmp" != "function" ] && [ "$tmp" != "file" ]; then
+    tmp=$(mktemp /tmp/archibold.XXXXXXXX)
+    echo '#!/usr/bin/env bash' > $tmp
+    if [[ "$(cat $tmp | grep -sn '^#!/usr/bin/env ')" =~ ^1:#* ]]; then
+      chmod a+x $tmp
+      alias $pkg=$tmp
+    else
+      source $tmp
+    fi
+  fi
+}
+
+require 'echomd'
+
+echomd 'Hello *Archibold* !!!'

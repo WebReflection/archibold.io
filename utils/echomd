@@ -1,0 +1,234 @@
+#!/usr/bin/env perl
+#
+# echomd -- An md like conversion tool for shell terminals
+#
+# Fully inspired by the work of John Gruber
+# <http://daringfireball.net/projects/markdown/>
+#
+# ────────────────────────────────────────────────────────────────────────
+# The MIT License (MIT)
+# Copyright (c) 2016 Andrea Giammarchi - @WebReflection
+#
+# Permission is hereby granted, free of charge, to any person obtaining a
+# copy of this software and associated documentation files (the "Software"),
+# to deal in the Software without restriction, including without limitation
+# the rights to use, copy, modify, merge, publish, distribute, sublicense,
+# and/or sell copies of the Software, and to permit persons to whom
+# the Software is furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included
+# in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+# TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+# THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+# ────────────────────────────────────────────────────────────────────────
+
+use strict;
+use warnings;
+use Digest::MD5 qw(md5_base64);
+
+# main transformer
+# takes care of code blocks too
+# without modifying their content
+# inline `code blocks` as well as
+# ```
+# multiline code blocks
+# ```
+sub echomd {
+  my ($txt) = @_;
+  my %code;
+  # preserve code blocks
+  $txt =~ s{(`{2,})(.+?)(?<!`)\1(?!`)}
+           {$1.($code{$2}=md5_base64($2)).$1}egs;
+  # preserve inline blocks too
+  $txt =~ s{(`)(.+?)\1}{$1.($code{$2}=md5_base64($2)).$1}egm;
+  # converter everything else
+  $txt = _horizontal($txt);
+  $txt = _header($txt);
+  $txt = _bold_underline_strike($txt);
+  $txt = _list($txt);
+  $txt = _quote($txt);
+  $txt = _color($txt);
+  # put back inline blocks
+  $txt =~ s{(`)(.+?)\1}{$1._get_source($2,\%code).$1}egm;
+  # put back code blocks too
+  $txt =~ s{(`{3})(.+?)(?<!`)\1(?!`)}
+           {$1._get_source($2,\%code).$1}egs;
+  return $txt;
+}
+
+# for *bold* _underline_ ~strike~ (strike on Linux only)
+# it works with both double **__~~ or just single *_~
+sub _bold_underline_strike {
+  my ($txt) = @_;
+  $txt =~ s/(\*{1,2})(?=\S)(.+?)(?<=\S)\1/\x1B[1m$2\x1B[22m/gs;
+  $txt =~ s/(\_{1,2})(?=\S)(.+?)(?<=\S)\1/\x1B[4m$2\x1B[24m/gs;
+  $txt =~ s/(\~{1,2})(?=\S)(.+?)(?<=\S)\1/\x1B[9m$2\x1B[29m/gs;
+  return $txt;
+}
+
+# for #color(text) or !#bgcolor(text)
+# virtually compatible with #RGBA(text)
+# or for background via !#RGBA(text)
+sub _color {
+  my ($txt) = @_;
+  $txt =~ s{(!?)#([a-zA-Z0-9]{3,8})\((.+?)\)(?!\))}
+           {_get_color($1,$2,$3)}egs;
+  return $txt;
+}
+
+# for very important # Headers
+# and for less important ## One
+sub _header {
+  my ($txt) = @_;
+  $txt =~ s{^(\#{1,6})[ \t]+(.+?)[ \t]*\#*([\r\n]+|$)}
+           {_get_header($1,$2).$3}egm;
+  return $txt;
+}
+
+# for horizontal lines
+# --- or - - - or ___ or * * *
+sub _horizontal {
+  my ($txt) = @_;
+  my $line = "─" x 72;
+  $txt =~ s{^[ ]{0,2}([ ]?[\*_-][ ]?){3,}[ \t]*$}
+           {\x1B[1m$line\x1B[22m}gm;
+  return $txt;
+}
+
+# for lists such:
+#   * list 1
+#     etc, etc
+#   * list 2
+#   * list 3
+sub _list {
+  my ($txt) = @_;
+  $txt =~ s/^([ \t]{2,})[*+-]([ \t]{1,})/$1•$2/gm;
+  return $txt;
+}
+
+# for quoted text such:
+# > this is quote
+# > this is the rest of the quote
+sub _quote {
+  my ($txt) = @_;
+  $txt =~ s/^[ \t]*>([ \t]?)/\x1B[7m$1\x1B[27m$1/gm;
+  return $txt;
+}
+
+
+
+# HELPERS
+
+# used to grab colors by name
+sub _get_color {
+  my $bg = $1;
+  my $rgb = $2;
+  my $out = "";
+  # one day, when it won't show experimental warnings
+  # given($rgb){
+  #   when("black")   { $out = "\x1B[30m" }
+  #   when("red")     { $out = "\x1B[31m" }
+  #   when("green")   { $out = "\x1B[32m" }
+  #   when("blue")    { $out = "\x1B[34m" }
+  #   when("magenta") { $out = "\x1B[35m" }
+  #   when("cyan")    { $out = "\x1B[36m" }
+  #   when("white")   { $out = "\x1B[37m" }
+  #   when("yellow")  { $out = "\x1B[39m" }
+  #   when("grey")    { $out = "\x1B[90m" }
+  # }
+  if ($rgb eq "black") {
+    $out = "\x1B[30m";
+  } elsif ($rgb eq "red") {
+    $out = "\x1B[31m";
+  } elsif ($rgb eq "green") {
+    $out = "\x1B[32m";
+  } elsif ($rgb eq "blue") {
+    $out = "\x1B[34m";
+  } elsif ($rgb eq "magenta") {
+    $out = "\x1B[35m";
+  } elsif ($rgb eq "cyan") {
+    $out = "\x1B[36m";
+  } elsif ($rgb eq "white") {
+    $out = "\x1B[37m";
+  } elsif ($rgb eq "yellow") {
+    $out = "\x1B[39m";
+  } elsif ($rgb eq "grey") {
+    $out = "\x1B[90m";
+  }
+  $out .= ($out eq "") ? $3 : "$3\x1B[39m";
+  return ($bg eq "") ? $out : "\x1B[7m$out\x1B[27m";
+}
+
+sub _get_header {
+  my ($hash, $txt) = @_;
+  if (length($hash) eq 1) {
+    $txt = "\x1B[1m$txt\x1B[22m";
+  }
+  return "\x1B[7m $txt \x1B[27m";
+}
+
+# used to place parsed code back
+sub _get_source {
+  my ($hash) = @_;
+  my %code = %{$_[1]};
+  for my $source (keys %code) {
+    if ($code{$source} eq $hash) {
+      return $source;
+    }
+  }
+}
+
+# used when output is piped into echomd
+sub _parse_stdin {
+  my $txt = "";
+  while (<STDIN>) {
+    $txt .= "$_";
+  }
+  return echomd($txt);
+}
+
+# ./echomd -h | --help
+sub _demo {
+  # everything is duplicated on output
+  # to give a hint while showing results
+  my $output = echomd("
+# # Bringing MD Like Syntax To Bash Shell
+It should be something as ***easy***
+and as ___natural___ as writing text.
+
+> > Kepp It Simple
+
+Is the idea
+
+  *  * behind
+  *  * all this
+
+~~~striking~~~ UX for `shell` users too.
+");
+  $output .= "- - -".echomd("- - -");
+  $output .= "\n./echomd #green(".echomd("#green(v0.1.1)").")";
+  print "$output\n\n";
+}
+
+
+
+# the echomd utility
+# - - - - - - - - - -
+# echomd some *input*
+# echomd -h | --help
+# echo 'some input' | echomd
+if (-t STDIN) {
+  if ($#ARGV eq 0 && ($ARGV[0] eq '-h' || $ARGV[0] eq '--help')) {
+    _demo();
+  } elsif ($#ARGV gt -1) {
+    print echomd(join(" ", @ARGV))."\n";
+  }
+} else {
+  print _parse_stdin();
+}

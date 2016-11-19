@@ -1,0 +1,9 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+  curl -o- archibold.io/install/yaourt | bash
+fi
+
+yaourt -S --needed --noconfirm chromium chromium-widevine pepper-flash
