@@ -18,4 +18,8 @@ require echomd
 echomd 'Hello *archibold.io* !!!'
 ```
 
-Please note **install** scripts are independent and can be used directly via `curl -o- archibold.io/install/yaourt | bash`.
+Please note **install** scripts are independent and can be used directly via
+
+```
+curl -o- archibold.io/install/yaourt | bash
+```
