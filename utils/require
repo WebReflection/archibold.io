@@ -1,18 +1,23 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
 require() {
   local pkg="$1"
   local tmp=$(type -t $pkg)
   if [ "$tmp" != "function" ] && [ "$tmp" != "file" ]; then
-    tmp=$(mktemp /tmp/archibold.XXXXXXXX)
-    echo '#!/usr/bin/env bash' > $tmp
-    if [[ "$(cat $tmp | grep -sn '^#!/usr/bin/env ')" =~ ^1:#* ]]; then
-      chmod a+x $tmp
-      alias $pkg=$tmp
-    else
+    if curl --output /dev/null --silent --head --fail "archibold.io/utils/$pkg"; then
+      tmp=$(mktemp /tmp/archibold.XXXXXXXX)
+      curl -Lso $tmp archibold.io/utils/$pkg
+      if [[ "$(cat $tmp | grep -sn '^#!/usr/bin/env ')" =~ ^1:#* ]]; then
+        chmod a+x $tmp
+        pkg="$pkg(){ $tmp \"\$@\"; }"
+        tmp=$(mktemp /tmp/archibold.XXXXXXXX)
+        echo "$pkg" > $tmp
+      fi
       source $tmp
+    else
+      curl -o- archibold.io/install/$pkg | bash
     fi
   fi
 }
-
-require 'echomd'
-
-echomd 'Hello *Archibold* !!!'
