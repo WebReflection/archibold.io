@@ -16,8 +16,12 @@ require() {
         echo "$pkg" > $tmp
       fi
       source $tmp
-    else
+    elif curl --output /dev/null --silent --head --fail "archibold.io/install/$pkg"; then
+      echo -e "Installing \x1B[1m$pkg\x1B[22m"
       curl -o- archibold.io/install/$pkg | bash
+    else
+      echo -e "\x1B[1m\x1B[31mError\x1B[39m\x1B[22m: unable to import \x1B[1m$pkg\x1B[22m"
+      exit 1
     fi
   fi
 }
