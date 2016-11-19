@@ -1,0 +1,37 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  curl -o- archibold.io/install/sudo | bash
+fi
+
+echo '#!/usr/bin/env bash
+
+switchToPython() {
+  local version=$1
+  local bin=$(which python)
+  sudo rm -f $bin
+  sudo ln -s $(which "python$version") $bin
+  echo 'current version'
+  python --version
+}
+
+if [ "$1" = "2" ] || [ "$1" = "3" ]; then
+  if [ "$(which "python$1" 2> /dev/null)" = "" ]; then
+    echo -e "\x1B[1m\x1B[31mError\x1B[39m\x1B[22m: unable to locate \x1B[1mpython$1\x1B[22m"
+    exit 1
+  else
+    switchToPython "$1"
+  fi
+else
+  echo ""
+  echo "python-switcher $version"
+  echo "    python-switcher 2"
+  echo "    python-switcher 3"
+  echo ""
+fi' > /tmp/python-switcher
+
+chmod a+x /tmp/python-switcher
+
+sudo mv /tmp/python-switcher /usr/bin
