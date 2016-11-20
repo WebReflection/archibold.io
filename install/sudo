@@ -16,9 +16,8 @@ if [ "$USER" = "root" ]; then
   echo -e "\x1B[1m\x1B[31mWarning\x1B[39m\x1B[22m not installing \x1B[1msudo\x1B[22m as root"
   exit 1
 else
-  echo -e "Please enter the \x1B[1mroot\x1B[22m password:"
-  read -s archibold_supwd
-  echo -e "$archibold_supwd" | su -c '# install sudo
+  echo -e "Please enter the \x1B[1mroot\x1B[22m password"
+  su -c '# install sudo
 pacman -Sy --needed --noconfirm sudo &> /dev/null
 
 if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
