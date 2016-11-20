@@ -17,6 +17,9 @@ export ACLOCAL_PATH=$WLD/share/aclocal
 export ACLOCAL="aclocal -I $ACLOCAL_PATH"
 export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
 ' >> ~/.bashrc
+fi
+
+if [ "$WLD" = "" ]; then
   source ~/.bashrc
 fi
 
@@ -28,7 +31,7 @@ fi
 mkdir -p $WLD/share/aclocal
 
 sudo pacman -Sy --needed --noconfirm base-devel git \
-  python2-mako libxml2
+  python2-mako libxml2 libxslt
 
 mkdir -p ~/weston
 cd ~/weston
@@ -48,6 +51,15 @@ fi
 cd wayland-protocols
 ./autogen.sh --prefix=$WLD
 
+make
+sudo make install
+cd ..
+
+if [ ! -d pthread-stubs ]; then
+  git clone git://anongit.freedesktop.org/xcb/pthread-stubs
+fi
+cd pthread-stubs
+./autogen.sh --prefix=$WLD
 make
 sudo make install
 cd ..
