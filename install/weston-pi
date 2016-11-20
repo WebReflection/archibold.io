@@ -35,7 +35,7 @@ mkdir -p $WLD/share/aclocal
 
 sudo pacman -Sy --needed --noconfirm base-devel git \
   python2-mako libxml2 libxslt \
-  glproto libdrm dri2proto dri3proto presentproto xcb-proto libxcb
+  glproto libdrm dri2proto dri3proto presentproto xcb-proto libxcb xextproto inputproto exieext randrproto renderproto xineramaproto
 
 mkdir -p ~/weston
 
@@ -70,6 +70,21 @@ cd pthread-stubs
 
 make
 sudo make install
+
+cd ~/weston
+if [ ! -d x11proto ]; then
+  git clone git://anongit.freedesktop.org/xorg/proto/x11proto
+fi
+cd x11proto
+./autogen.sh --prefix=$WLD
+
+make
+sudo make install
+
+sudo pacman -Sy --needed --noconfirm \
+  xtrans libxdmcp libxcb xcb-util xcb-util-image xcb-util-wm kbproto \
+  libx11 libxrender libxext libxinerama libxrandr fixesproto libxfixes libxi \
+  libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto
 
 cd ~/weston
 if [ ! -d mesa ]; then
