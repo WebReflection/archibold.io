@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+
+###################################
+# ./fakeman (C) Andrea Giammarchi #
+#                           0.0.3 #
+###################################
+
+architecture() {
+  echo $(uname -m | sed \
+    -e s/i.86/i386/ \
+    -e s/sun4u/sparc64/ \
+    -e s/arm.*/arm/ \
+    -e s/sa110/arm/ \
+    -e s/s390x/s390/ \
+    -e s/parisc64/parisc/ \
+    -e s/ppc.*/powerpc/ \
+    -e s/mips.*/mips/ \
+    -e s/sh[234].*/sh/ \
+    -e s/aarch64.*/arm64/ \
+  )
+}
+
+details_for() {
+  local NAME=$1
+  local PROPERTY=$2
+  local RESULT=$(cat ~/.fakeman/.info | grep "^$PROPERTY" | sed -e "s/^$PROPERTY\s*: //g")
+  if [[ $? -ne 0 ]] || [ "$RESULT" = "None" ]; then
+    echo ""
+  else
+    echo "$RESULT"
+  fi
+}
+
+wrap_in_quotes() {
+  if [ "$1" = "" ]; then
+    echo ""
+  else
+    echo "'$(echo $1 | sed -e "s/ /' '/g")'"
+  fi
+}
+
+# next time I'll go for a switch, I promise ... 
+if [ "$1" = "help" ] || [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$2" = "" ]; then
+  echo '
+[fakeman]
+
+  ./fakeman prepare|install|remove pkgname
+
+    prepare   will simply create the PKGBUILD file
+    install   will create PKGBUILD and install it
+    remove    will remove the package and its PKGBUILD
+
+  These files are created in ~/.fakeman/${pkgname} folder
+
+  optional variables:
+
+    VERSION=explicit-version
+    REL=explicit-release
+    LICENSE=explicit-license
+    URL=explicit-url
+'
+else
+  NAME="$2"
+  DIR=~/.fakeman
+  mkdir -p $DIR
+  DIR="${DIR}/$NAME"
+  if [ "$1" = "remove" ]; then
+    sudo pacman -Rsc --noconfirm $NAME
+    if [[ $? -ne 0 ]] ; then
+        exit 0
+    fi
+    if [ -d "$DIR" ]; then
+      rm -rf "$DIR"
+    fi
+  else
+    # get this info only once
+    pacman -Si $NAME > ~/.fakeman/.info
+    ARCHITECTURE=$(uname -m)
+    if [ "$LICENSE" = "" ]; then
+      LICENSE=$(details_for $NAME 'Licenses')
+    fi
+    if [ "$URL" = "" ]; then
+      URL=$(details_for $NAME 'URL')
+    fi
+    if [ "$VERSION" = "" ]; then
+      VERSION=$(details_for $NAME 'Version')
+      if [ "$REL" = "" ]; then
+        REL=$(echo "$VERSION" | cut -d '-' -f2)
+      fi
+      VERSION=$(echo "$VERSION" | cut -d '-' -f1)
+    fi
+    if [ "$REL" = "" ]; then
+      REL=1
+    fi
+
+    # details
+    if [ "$PROVIDES" = "" ]; then
+      PROVIDES=$(details_for $NAME 'Provides')
+    fi
+    PROVIDES="$(echo '"${pkgname}=${pkgver}"') $(wrap_in_quotes "$PROVIDES")"
+
+    if [ "$CONFLICTS" = "" ]; then
+      CONFLICTS=$(details_for $NAME 'Conflicts With')
+    fi
+    CONFLICTS="$(echo '"${pkgname}"') $(wrap_in_quotes "$CONFLICTS")"
+
+    if [ "$REPLACES" = "" ]; then
+      REPLACES=$(details_for $NAME 'Replaces')
+    fi
+    REPLACES="$(echo '"${pkgname}"') $(wrap_in_quotes "$REPLACES")"
+
+    # cleaning up
+    rm ~/.fakeman/.info
+
+    # show summary
+    echo "=====================================
+  $NAME $VERSION-$REL
+-------------------------------------
+  $ARCHITECTURE
+  $URL
+  $LICENSE
+-------------------------------------
+  provides=($PROVIDES)
+  conflicts=($CONFLICTS)
+  replaces=($REPLACES)
+====================================="
+
+    # make dir and create PKGBUILD
+    mkdir -p "$DIR"
+    cd "$DIR"
+
+    echo "# ./fakeman (C) Andrea Giammarchi
+
+pkgbase='$NAME'
+pkgname='$NAME'
+pkgver='$VERSION'
+pkgrel='$REL'
+pkgdesc='$NAME installed via ./fakeman'
+arch=('$ARCHITECTURE')
+url='$URL'
+license=('$LICENSE')
+source=('./PKGBUILD')
+md5sums=('SKIP')
+provides=($PROVIDES)
+conflicts=($CONFLICTS)
+replaces=($REPLACES)
+
+pkgver() {
+    echo '$VERSION'
+}
+
+build () {
+    echo 'OK'
+}
+
+package () {
+    echo 'OK'
+}
+" > PKGBUILD
+
+    # install if asked to ...
+    if [ "$1" = "install" ]; then
+      rm *.tar.xz
+      makepkg -Ac
+      sudo pacman -U --noconfirm $NAME*.tar.xz
+    fi
+  fi
+fi

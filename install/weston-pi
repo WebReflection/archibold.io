@@ -6,6 +6,9 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
 
+source <(curl -s archibold.io/require)
+require fakeman
+
 if [ "$(cat ~/.bashrc | grep '# archibold weston')" = "" ]; then
   echo '
 # archibold weston
@@ -31,9 +34,11 @@ fi
 mkdir -p $WLD/share/aclocal
 
 sudo pacman -Sy --needed --noconfirm base-devel git \
-  python2-mako libxml2 libxslt
+  python2-mako libxml2 libxslt \
+  glproto libdrm dri2proto dri3proto presentproto xcb-proto libxcb
 
 mkdir -p ~/weston
+
 cd ~/weston
 if [ ! -d wayland ]; then
   git clone git://anongit.freedesktop.org/wayland/wayland
@@ -43,8 +48,9 @@ cd wayland
 
 make
 sudo make install
-cd ..
+fakeman install wayland
 
+cd ~/weston
 if [ ! -d wayland-protocols ]; then
   git clone git://anongit.freedesktop.org/wayland/wayland-protocols
 fi
@@ -53,17 +59,19 @@ cd wayland-protocols
 
 make
 sudo make install
-cd ..
+fakeman install wayland-protocols
 
+cd ~/weston
 if [ ! -d pthread-stubs ]; then
   git clone git://anongit.freedesktop.org/xcb/pthread-stubs
 fi
 cd pthread-stubs
 ./autogen.sh --prefix=$WLD
+
 make
 sudo make install
-cd ..
 
+cd ~/weston
 if [ ! -d mesa ]; then
   git clone git://anongit.freedesktop.org/mesa/mesa
 fi
@@ -77,8 +85,9 @@ cd mesa
 
 make
 sudo make install
-cd ..
+fakeman install mesa
 
+cd ~/weston
 if [ ! -d libinput ]; then
   git clone git://anongit.freedesktop.org/wayland/libinput
 fi
@@ -86,8 +95,8 @@ cd libinput
 ./autogen.sh --prefix=$WLD
 make
 sudo make install
-cd ..
 
+cd ~/weston
 if [ ! -d weston ]; then
   git clone git://anongit.freedesktop.org/wayland/weston
 fi
@@ -96,4 +105,3 @@ cd weston
   --disable-libunwind
 make
 sudo make install
-cd ..
