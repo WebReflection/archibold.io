@@ -35,7 +35,8 @@ mkdir -p $WLD/share/aclocal
 
 sudo pacman -Sy --needed --noconfirm base-devel git \
   python2-mako libxml2 libxslt \
-  glproto libdrm dri2proto dri3proto presentproto xcb-proto libxcb xextproto inputproto exieext randrproto renderproto xineramaproto
+  glproto libdrm dri2proto dri3proto presentproto xcb-proto libxcb \
+  xextproto inputproto evieext randrproto renderproto xineramaproto xorg-util-macros
 
 mkdir -p ~/weston
 
@@ -46,7 +47,7 @@ fi
 cd wayland
 ./autogen.sh --prefix=$WLD --disable-documentation
 
-make
+make -j`nproc`
 sudo make install
 fakeman install wayland
 
@@ -57,7 +58,7 @@ fi
 cd wayland-protocols
 ./autogen.sh --prefix=$WLD
 
-make
+make -j`nproc`
 sudo make install
 fakeman install wayland-protocols
 
@@ -68,7 +69,7 @@ fi
 cd pthread-stubs
 ./autogen.sh --prefix=$WLD
 
-make
+make -j`nproc`
 sudo make install
 
 cd ~/weston
@@ -78,13 +79,13 @@ fi
 cd x11proto
 ./autogen.sh --prefix=$WLD
 
-make
+make -j`nproc`
 sudo make install
 
 sudo pacman -Sy --needed --noconfirm \
   xtrans libxdmcp libxcb xcb-util xcb-util-image xcb-util-wm kbproto \
   libx11 libxrender libxext libxinerama libxrandr fixesproto libxfixes libxi \
-  libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto
+  libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto libomxil-bellagio
 
 cd ~/weston
 if [ ! -d mesa ]; then
@@ -98,9 +99,11 @@ cd mesa
   --with-gallium-drivers=vc4 \
   --without-dri-drivers
 
-make
+make -j`nproc`
 sudo make install
 fakeman install mesa
+
+sudo pacman -S --needed libva
 
 cd ~/weston
 if [ ! -d libinput ]; then
@@ -108,8 +111,10 @@ if [ ! -d libinput ]; then
 fi
 cd libinput
 ./autogen.sh --prefix=$WLD
-make
+
+make -j`nproc`
 sudo make install
+fakeman install libinput
 
 cd ~/weston
 if [ ! -d weston ]; then
@@ -118,5 +123,6 @@ fi
 cd weston
 ./autogen.sh --prefix=$WLD \
   --disable-libunwind
-make
+
+make -j`nproc`
 sudo make install
