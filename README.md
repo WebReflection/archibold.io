@@ -21,5 +21,5 @@ echomd 'Hello *archibold.io* !!!'
 Please note **install** scripts are independent and can be used directly via
 
 ```
-curl -o- archibold.io/install/yaourt | bash
+bash <(curl -s archibold.io/install/yaourt)
 ```

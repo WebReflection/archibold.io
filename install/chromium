@@ -3,7 +3,7 @@
 #########################
 
 if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  curl -o- archibold.io/install/yaourt | bash
+  bash <(curl -s archibold.io/install/yaourt)
 fi
 
 yaourt -S --needed --noconfirm chromium chromium-widevine pepper-flash

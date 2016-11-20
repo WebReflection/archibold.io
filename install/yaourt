@@ -3,7 +3,7 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  curl -o- archibold.io/install/sudo | bash
+  bash <(curl -s archibold.io/install/sudo)
 fi
 
 installFromAUR() {
