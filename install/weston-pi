@@ -80,7 +80,7 @@ sudo pacman -Sy --needed --noconfirm \
   xtrans libxdmcp libxcb xcb-util xcb-util-image xcb-util-wm kbproto \
   libx11 libxrender libxext libxinerama libxrandr fixesproto libxfixes libxi \
   libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto libomxil-bellagio \
-  llvm llvm-libs libjpeg libpng
+  llvm llvm-libs libjpeg libpng libpciaccess
 
 
 if [ "$(hasPackage libdrm)" = "" ]; then
@@ -134,7 +134,22 @@ if [ "$(hasPackage mesa)" = "" ]; then
 fi
 
 sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom libinput
-sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon cairo
+sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon libvdpau-va-gl
+
+if [ "$(hasPackage cairo)" = "" ]; then
+  cd ~/weston
+  if [ ! -d cairo ]; then
+    git clone git://anongit.freedesktop.org/cairo
+  fi
+  cd cairo
+  ./autogen.sh --prefix=$WLD \
+    --enable-glesv2 --enable-egl \
+    --enable-xlib-xcb
+
+  make -j`nproc`
+  sudo make install
+  fakeman install weston
+fi
 
 if [ "$(hasPackage weston)" = "" ]; then
   cd ~/weston
