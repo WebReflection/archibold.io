@@ -6,6 +6,9 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
 
+source <(curl -s archibold.io/require)
+require fakeman
+
 hasPackage() {
   local package=$1
   pacman -Q $package &> /dev/null
@@ -15,9 +18,6 @@ hasPackage() {
     echo "$package"
   fi
 }
-
-source <(curl -s archibold.io/require)
-require fakeman
 
 if [ "$(cat ~/.bashrc | grep '# archibold weston')" = "" ]; then
   echo '
@@ -36,10 +36,7 @@ fi
 ' >> ~/.bashrc
 fi
 
-if [ "$WLD" = "" ]; then
-  source ~/.bashrc
-fi
-
+source ~/.bashrc
 mkdir -p $WLD/share/aclocal
 
 sudo pacman -Sy --needed --noconfirm base-devel git \
