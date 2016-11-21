@@ -92,12 +92,8 @@ if [ "$(hasPackage libdrm)" = "" ]; then
   fi
   cd drm
   ./autogen.sh --prefix=$WLD \
-    --disable-silent-rules \
     --disable-dependency-tracking \
     --disable-cairo-tests \
-    --enable-omap-experimental-api \
-    --enable-freedreno-experimental-api \
-    --enable-install-test-programs \
     --enable-intel
 
   make -j`nproc`
@@ -113,22 +109,19 @@ if [ "$(hasPackage mesa)" = "" ]; then
   fi
   cd mesa
   ./autogen.sh --prefix=$WLD \
-    --enable-gles1 \
     --enable-gles2 \
     --enable-gbm \
-    --disable-glx \
     --enable-nls \
     --enable-dri \
     --with-dri-drivers=swrast \
     --disable-dri3 \
     --enable-egl \
-    --with-egl-platforms=drm,wayland \
-    --with-gallium-drivers=swrast,vc4,vc4 \
+    --with-egl-platforms=drm,wayland,x11 \
+    --with-gallium-drivers=vc4 \
     --enable-gallium-egl \
     --enable-gallium-gbm \
     --enable-gallium-llvm \
-    --with-llvm-shared-libs \
-    --disable-openvg
+    --with-llvm-shared-libs
 
   make -j`nproc`
   sleep 5
@@ -140,36 +133,38 @@ fi
 sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom libinput
 sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon libvdpau-va-gl pixman
 
-if [ "$(hasPackage cairo)" = "" ]; then
-  cd ~/weston
-  if [ ! -d cairo ]; then
-    git clone git://anongit.freedesktop.org/cairo
-  fi
-  cd cairo
-  ./autogen.sh --prefix=$WLD \
-    --enable-glesv2 --enable-egl \
-    --enable-xlib-xcb
+# if [ "$(hasPackage cairo)" = "" ]; then
+#   cd ~/weston
+#   if [ ! -d cairo ]; then
+#     git clone git://anongit.freedesktop.org/cairo
+#   fi
+#   cd cairo
+#   ./autogen.sh --prefix=$WLD \
+#     --enable-glesv2 --enable-egl \
+#     --enable-xlib-xcb
+# 
+#   make -j`nproc`
+#   sleep 5
+#   sudo make install
+#   fakeman install cairo
+# fi
 
-  make -j`nproc`
-  sleep 5
-  sudo make install
-  fakeman install cairo
-fi
+# if [ "$(hasPackage weston)" = "" ]; then
+#   cd ~/weston
+#   if [ ! -d weston ]; then
+#     git clone git://anongit.freedesktop.org/wayland/weston
+#   fi
+#   cd weston
+#   ./autogen.sh --prefix=$WLD \
+#     --disable-libunwind
+# 
+#   make -j`nproc`
+#   sleep 5
+#   sudo make install
+#   fakeman install weston
+# fi
 
-if [ "$(hasPackage weston)" = "" ]; then
-  cd ~/weston
-  if [ ! -d weston ]; then
-    git clone git://anongit.freedesktop.org/wayland/weston
-  fi
-  cd weston
-  ./autogen.sh --prefix=$WLD \
-    --disable-libunwind
-
-  make -j`nproc`
-  sleep 5
-  sudo make install
-  fakeman install weston
-fi
+sudo pacman -S --needed weston xorg-server xorg-xinit
 
 if [ "$(cat /boot/config.txt | grep 'dispmanx_offline=1')" = "" ]; then
   sudo bash -c 'echo "dispmanx_offline=1" >>/boot/config.txt'
