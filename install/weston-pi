@@ -170,3 +170,8 @@ if [ "$(hasPackage weston)" = "" ]; then
   sudo make install
   fakeman install weston
 fi
+
+if [ "$(cat /boot/config.txt | grep 'dispmanx_offline=1')" = "" ]; then
+  sudo bash -c 'echo "dispmanx_offline=1" >>/boot/config.txt'
+  sudo sed -i.bak s/gpu_mem=.*/gpu_mem=128/ /boot/config.txt
+fi
