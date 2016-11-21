@@ -59,6 +59,7 @@ if [ "$(hasPackage pthread-stubs)" = "" ]; then
   ./autogen.sh --prefix=$WLD
 
   make -j`nproc`
+  sleep 5
   sudo make install
   LICENSE="MIT" URL="http://freedesktop.org/" VERSION="0.1" REL="6" fakeman install pthread-stubs
 fi
@@ -72,6 +73,7 @@ if [ "$(hasPackage x11proto)" = "" ]; then
   ./autogen.sh --prefix=$WLD
 
   make -j`nproc`
+  sleep 5
   sudo make install
   LICENSE="MIT" URL="http://freedesktop.org/" VERSION="0.1" REL="6" fakeman install x11proto
 fi
@@ -99,6 +101,7 @@ if [ "$(hasPackage libdrm)" = "" ]; then
     --enable-intel
 
   make -j`nproc`
+  sleep 5
   sudo make install
   fakeman install libdrm
 fi
@@ -128,6 +131,7 @@ if [ "$(hasPackage mesa)" = "" ]; then
     --disable-openvg
 
   make -j`nproc`
+  sleep 5
   sudo make install
   fakeman install mesa
   fakeman install mesa-libgl
@@ -147,8 +151,9 @@ if [ "$(hasPackage cairo)" = "" ]; then
     --enable-xlib-xcb
 
   make -j`nproc`
+  sleep 5
   sudo make install
-  fakeman install weston
+  fakeman install cairo
 fi
 
 if [ "$(hasPackage weston)" = "" ]; then
@@ -161,6 +166,7 @@ if [ "$(hasPackage weston)" = "" ]; then
     --disable-libunwind
 
   make -j`nproc`
+  sleep 5
   sudo make install
   fakeman install weston
 fi
