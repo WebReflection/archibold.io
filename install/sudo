@@ -9,7 +9,7 @@ addGroup() {
       exit 0
     fi
   done
-  su -c 'useradd -G wheel $USER'
+  su -c "useradd -G wheel $USER"
 }
 
 if [ "$USER" = "root" ]; then

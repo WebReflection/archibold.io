@@ -44,36 +44,11 @@ mkdir -p $WLD/share/aclocal
 
 sudo pacman -Sy --needed --noconfirm base-devel git \
   python2-mako libxml2 libxslt \
-  glproto libdrm dri2proto dri3proto presentproto xcb-proto libxcb \
-  xextproto inputproto evieext randrproto renderproto xineramaproto xorg-util-macros
+  glproto dri2proto dri3proto presentproto xcb-proto libxcb \
+  xextproto inputproto evieext randrproto renderproto xineramaproto xorg-util-macros \
+  wayland wayland-protocols
 
 mkdir -p ~/weston
-
-if [ "$(hasPackage wayland)" = "" ]; then
-  cd ~/weston
-  if [ ! -d wayland ]; then
-    git clone git://anongit.freedesktop.org/wayland/wayland
-  fi
-  cd wayland
-  ./autogen.sh --prefix=$WLD --disable-documentation
-
-  make -j`nproc`
-  sudo make install
-  fakeman install wayland
-fi
-
-if [ "$(hasPackage wayland-protocols)" = "" ]; then
-  cd ~/weston
-  if [ ! -d wayland-protocols ]; then
-    git clone git://anongit.freedesktop.org/wayland/wayland-protocols
-  fi
-  cd wayland-protocols
-  ./autogen.sh --prefix=$WLD
-
-  make -j`nproc`
-  sudo make install
-  fakeman install wayland-protocols
-fi
 
 if [ "$(hasPackage pthread-stubs)" = "" ]; then
   cd ~/weston
@@ -104,7 +79,8 @@ fi
 sudo pacman -Sy --needed --noconfirm \
   xtrans libxdmcp libxcb xcb-util xcb-util-image xcb-util-wm kbproto \
   libx11 libxrender libxext libxinerama libxrandr fixesproto libxfixes libxi \
-  libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto libomxil-bellagio
+  libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto libomxil-bellagio \
+  llvm llvm-libs libjpeg libpng
 
 
 if [ "$(hasPackage libdrm)" = "" ]; then
@@ -113,7 +89,14 @@ if [ "$(hasPackage libdrm)" = "" ]; then
     git clone git://anongit.freedesktop.org/mesa/drm
   fi
   cd drm
-  ./autogen.sh --prefix=$WLD
+  ./autogen.sh --prefix=$WLD \
+    --disable-silent-rules \
+    --disable-dependency-tracking \
+    --disable-cairo-tests \
+    --enable-omap-experimental-api \
+    --enable-freedreno-experimental-api \
+    --enable-install-test-programs \
+    --enable-intel
 
   make -j`nproc`
   sudo make install
@@ -127,12 +110,22 @@ if [ "$(hasPackage mesa)" = "" ]; then
   fi
   cd mesa
   ./autogen.sh --prefix=$WLD \
+    --enable-gles1 \
     --enable-gles2 \
-    --with-egl-platforms=x11,wayland,drm \
-    --enable-gbm --enable-shared-glapi \
-    --with-gallium-drivers=vc4 \
+    --enable-gbm \
+    --disable-glx \
+    --enable-nls \
+    --enable-dri \
     --with-dri-drivers=swrast \
-    --disable-dri3
+    --disable-dri3 \
+    --enable-egl \
+    --with-egl-platforms=drm,wayland \
+    --with-gallium-drivers=swrast,vc4,vc4 \
+    --enable-gallium-egl \
+    --enable-gallium-gbm \
+    --enable-gallium-llvm \
+    --with-llvm-shared-libs \
+    --disable-openvg
 
   make -j`nproc`
   sudo make install
@@ -140,21 +133,7 @@ if [ "$(hasPackage mesa)" = "" ]; then
   fakeman install mesa-libgl
 fi
 
-sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom
-
-if [ "$(hasPackage libinput)" = "" ]; then
-  cd ~/weston
-  if [ ! -d libinput ]; then
-    git clone git://anongit.freedesktop.org/wayland/libinput
-  fi
-  cd libinput
-  ./autogen.sh --prefix=$WLD
-
-  make -j`nproc`
-  sudo make install
-  fakeman install libinput
-fi
-
+sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom libinput
 sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon cairo
 
 if [ "$(hasPackage weston)" = "" ]; then
