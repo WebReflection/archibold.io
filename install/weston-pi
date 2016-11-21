@@ -134,7 +134,7 @@ if [ "$(hasPackage mesa)" = "" ]; then
 fi
 
 sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom libinput
-sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon libvdpau-va-gl
+sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon libvdpau-va-gl pixman
 
 if [ "$(hasPackage cairo)" = "" ]; then
   cd ~/weston
