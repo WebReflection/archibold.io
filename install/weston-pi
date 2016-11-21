@@ -6,6 +6,16 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
 
+hasPackage() {
+  local package=$1
+  pacman -Q $package &> /dev/null
+  if [[ $? -ne 0 ]] ; then
+    echo ""
+  else
+    echo "$package"
+  fi
+}
+
 source <(curl -s archibold.io/require)
 require fakeman
 
@@ -19,16 +29,15 @@ export PATH=$WLD/bin:$PATH
 export ACLOCAL_PATH=$WLD/share/aclocal
 export ACLOCAL="aclocal -I $ACLOCAL_PATH"
 export XDG_RUNTIME_DIR=/tmp/${UID}-runtime-dir
+if ! test -d "${XDG_RUNTIME_DIR}"; then
+  mkdir "${XDG_RUNTIME_DIR}"
+  chmod 0700 "${XDG_RUNTIME_DIR}"
+fi
 ' >> ~/.bashrc
 fi
 
 if [ "$WLD" = "" ]; then
   source ~/.bashrc
-fi
-
-if ! test -d "${XDG_RUNTIME_DIR}"; then
-  mkdir "${XDG_RUNTIME_DIR}"
-  chmod 0700 "${XDG_RUNTIME_DIR}"
 fi
 
 mkdir -p $WLD/share/aclocal
@@ -40,89 +49,124 @@ sudo pacman -Sy --needed --noconfirm base-devel git \
 
 mkdir -p ~/weston
 
-cd ~/weston
-if [ ! -d wayland ]; then
-  git clone git://anongit.freedesktop.org/wayland/wayland
+if [ "$(hasPackage wayland)" = "" ]; then
+  cd ~/weston
+  if [ ! -d wayland ]; then
+    git clone git://anongit.freedesktop.org/wayland/wayland
+  fi
+  cd wayland
+  ./autogen.sh --prefix=$WLD --disable-documentation
+
+  make -j`nproc`
+  sudo make install
+  fakeman install wayland
 fi
-cd wayland
-./autogen.sh --prefix=$WLD --disable-documentation
 
-make -j`nproc`
-sudo make install
-fakeman install wayland
+if [ "$(hasPackage wayland-protocols)" = "" ]; then
+  cd ~/weston
+  if [ ! -d wayland-protocols ]; then
+    git clone git://anongit.freedesktop.org/wayland/wayland-protocols
+  fi
+  cd wayland-protocols
+  ./autogen.sh --prefix=$WLD
 
-cd ~/weston
-if [ ! -d wayland-protocols ]; then
-  git clone git://anongit.freedesktop.org/wayland/wayland-protocols
+  make -j`nproc`
+  sudo make install
+  fakeman install wayland-protocols
 fi
-cd wayland-protocols
-./autogen.sh --prefix=$WLD
 
-make -j`nproc`
-sudo make install
-fakeman install wayland-protocols
+if [ "$(hasPackage pthread-stubs)" = "" ]; then
+  cd ~/weston
+  if [ ! -d pthread-stubs ]; then
+    git clone git://anongit.freedesktop.org/xcb/pthread-stubs
+  fi
+  cd pthread-stubs
+  ./autogen.sh --prefix=$WLD
 
-cd ~/weston
-if [ ! -d pthread-stubs ]; then
-  git clone git://anongit.freedesktop.org/xcb/pthread-stubs
+  make -j`nproc`
+  sudo make install
+  LICENSE="MIT" URL="http://freedesktop.org/" VERSION="0.1" REL="6" fakeman install pthread-stubs
 fi
-cd pthread-stubs
-./autogen.sh --prefix=$WLD
 
-make -j`nproc`
-sudo make install
+if [ "$(hasPackage x11proto)" = "" ]; then
+  cd ~/weston
+  if [ ! -d x11proto ]; then
+    git clone git://anongit.freedesktop.org/xorg/proto/x11proto
+  fi
+  cd x11proto
+  ./autogen.sh --prefix=$WLD
 
-cd ~/weston
-if [ ! -d x11proto ]; then
-  git clone git://anongit.freedesktop.org/xorg/proto/x11proto
+  make -j`nproc`
+  sudo make install
+  LICENSE="MIT" URL="http://freedesktop.org/" VERSION="0.1" REL="6" fakeman install x11proto
 fi
-cd x11proto
-./autogen.sh --prefix=$WLD
-
-make -j`nproc`
-sudo make install
 
 sudo pacman -Sy --needed --noconfirm \
   xtrans libxdmcp libxcb xcb-util xcb-util-image xcb-util-wm kbproto \
   libx11 libxrender libxext libxinerama libxrandr fixesproto libxfixes libxi \
   libxevie xorg-xinput damageproto libxdamage libxshmfence xf86vidmodeproto libomxil-bellagio
 
-cd ~/weston
-if [ ! -d mesa ]; then
-  git clone git://anongit.freedesktop.org/mesa/mesa
+
+if [ "$(hasPackage libdrm)" = "" ]; then
+  cd ~/weston
+  if [ ! -d drm ]; then
+    git clone git://anongit.freedesktop.org/mesa/drm
+  fi
+  cd drm
+  ./autogen.sh --prefix=$WLD
+
+  make -j`nproc`
+  sudo make install
+  fakeman install libdrm
 fi
-cd mesa
-./autogen.sh --prefix=$WLD \
-  --enable-gles2 \
-  --with-egl-platforms=x11,wayland,drm \
-  --enable-gbm --enable-shared-glapi \
-  --with-gallium-drivers=vc4 \
-  --without-dri-drivers
 
-make -j`nproc`
-sudo make install
-fakeman install mesa
+if [ "$(hasPackage mesa)" = "" ]; then
+  cd ~/weston
+  if [ ! -d mesa ]; then
+    git clone git://anongit.freedesktop.org/mesa/mesa
+  fi
+  cd mesa
+  ./autogen.sh --prefix=$WLD \
+    --enable-gles2 \
+    --with-egl-platforms=x11,wayland,drm \
+    --enable-gbm --enable-shared-glapi \
+    --with-gallium-drivers=vc4 \
+    --with-dri-drivers=swrast \
+    --disable-dri3
 
-sudo pacman -S --needed libva
-
-cd ~/weston
-if [ ! -d libinput ]; then
-  git clone git://anongit.freedesktop.org/wayland/libinput
+  make -j`nproc`
+  sudo make install
+  fakeman install mesa
+  fakeman install mesa-libgl
 fi
-cd libinput
-./autogen.sh --prefix=$WLD
 
-make -j`nproc`
-sudo make install
-fakeman install libinput
+sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom
 
-cd ~/weston
-if [ ! -d weston ]; then
-  git clone git://anongit.freedesktop.org/wayland/weston
+if [ "$(hasPackage libinput)" = "" ]; then
+  cd ~/weston
+  if [ ! -d libinput ]; then
+    git clone git://anongit.freedesktop.org/wayland/libinput
+  fi
+  cd libinput
+  ./autogen.sh --prefix=$WLD
+
+  make -j`nproc`
+  sudo make install
+  fakeman install libinput
 fi
-cd weston
-./autogen.sh --prefix=$WLD \
-  --disable-libunwind
 
-make -j`nproc`
-sudo make install
+sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon cairo
+
+if [ "$(hasPackage weston)" = "" ]; then
+  cd ~/weston
+  if [ ! -d weston ]; then
+    git clone git://anongit.freedesktop.org/wayland/weston
+  fi
+  cd weston
+  ./autogen.sh --prefix=$WLD \
+    --disable-libunwind
+
+  make -j`nproc`
+  sudo make install
+  fakeman install weston
+fi
