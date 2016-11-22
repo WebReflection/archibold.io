@@ -21,6 +21,16 @@ addVideoGroup() {
   sudo bash -c "gpasswd -a $1 video"
 }
 
+hasPackage() {
+  local package=$1
+  pacman -Q $package &> /dev/null
+  if [[ $? -ne 0 ]] ; then
+    echo ""
+  else
+    echo "$package"
+  fi
+}
+
 commonInstall() {
   local package=$1
   local repo=$2
@@ -37,16 +47,6 @@ commonInstall() {
     sleep 5
     sudo make install
     fakeman install $package
-  fi
-}
-
-hasPackage() {
-  local package=$1
-  pacman -Q $package &> /dev/null
-  if [[ $? -ne 0 ]] ; then
-    echo ""
-  else
-    echo "$package"
   fi
 }
 
