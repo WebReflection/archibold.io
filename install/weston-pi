@@ -21,6 +21,25 @@ addVideoGroup() {
   sudo bash -c "gpasswd -a $1 video"
 }
 
+commonInstall() {
+  local package=$1
+  local repo=$2
+  local extras=$3
+  if [ "$(hasPackage $package)" = "" ]; then
+    cd ~/weston
+    if [ ! -d $package ]; then
+      git clone $repo
+    fi
+    cd $package
+    ./autogen.sh --prefix=$WLD $extras
+
+    make -j`nproc`
+    sleep 5
+    sudo make install
+    fakeman install $package
+  fi
+}
+
 hasPackage() {
   local package=$1
   pacman -Q $package &> /dev/null
@@ -48,6 +67,7 @@ if ! test -d "${XDG_RUNTIME_DIR}"; then
   chmod 0700 "${XDG_RUNTIME_DIR}"
 fi
 ' >> ~/.bashrc
+  sync
 fi
 
 source ~/.bashrc
@@ -56,10 +76,29 @@ mkdir -p $WLD/share/aclocal
 sudo pacman -Sy --needed --noconfirm base-devel git \
   python2-mako libxml2 libxslt \
   glproto dri2proto dri3proto presentproto xcb-proto libxcb \
-  xextproto inputproto evieext randrproto renderproto xineramaproto xorg-util-macros \
-  wayland wayland-protocols
+  xextproto inputproto evieext randrproto renderproto xineramaproto xorg-util-macros
 
 mkdir -p ~/weston
+
+cd ~/weston
+if [ ! -d linux ]; then
+  git clone --depth=1 https://github.com/raspberrypi/linux
+fi
+if [ ! -d /boot/overlays ]; then
+  sudo mkdir /boot/overlays
+  cd linux
+  # TODO: dynamic config for PI 1 too
+  KERNEL=kernel7
+  make bcm2709_defconfig
+  make -j`nproc` zImage modules dtbs
+  sudo make modules_install
+  sudo cp arch/arm/boot/dts/*.dtb /boot/
+  sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/overlays/
+  sudo cp arch/arm/boot/dts/overlays/README /boot/overlays/
+  sudo scripts/mkknlimg arch/arm/boot/zImage /boot/$KERNEL.img
+fi
+
+sudo reboot
 
 if [ "$(hasPackage pthread-stubs)" = "" ]; then
   cd ~/weston
@@ -141,7 +180,11 @@ if [ "$(hasPackage mesa)" = "" ]; then
   fakeman install mesa-libgl
 fi
 
-sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom libinput
+commonInstall wayland git://anongit.freedesktop.org/wayland/wayland '--disable-documentation'
+commonInstall wayland-protocols git://anongit.freedesktop.org/wayland/wayland-protocols
+commonInstall libinput git://anongit.freedesktop.org/wayland/libinput
+
+sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom
 sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon libvdpau-va-gl pixman
 
 if [ "$(hasPackage cairo)" = "" ]; then
@@ -152,7 +195,8 @@ if [ "$(hasPackage cairo)" = "" ]; then
   cd cairo
   ./autogen.sh --prefix=$WLD \
     --enable-glesv2 --enable-egl --enable-drm \
-    --enable-xlib-xcb
+    --enable-xlib-xcb \
+    –-enable-directfb
 
   make -j`nproc`
   sleep 5
