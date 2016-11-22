@@ -9,14 +9,14 @@ fi
 source <(curl -s archibold.io/require)
 require fakeman
 
-addGroup() {
+addVideoGroup() {
   local g
   for g in $(groups); do
     if [ "$g" = "video" ]; then
       exit 0
     fi
   done
-  sudo bash -c "gpasswd -a $USER video"
+  sudo bash -c "gpasswd -a $1 video"
 }
 
 hasPackage() {
@@ -29,7 +29,7 @@ hasPackage() {
   fi
 }
 
-addGroup video
+addVideoGroup $USER
 
 if [ "$(cat ~/.bashrc | grep '# archibold weston')" = "" ]; then
   echo '
