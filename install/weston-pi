@@ -67,7 +67,7 @@ if ! test -d "${XDG_RUNTIME_DIR}"; then
   chmod 0700 "${XDG_RUNTIME_DIR}"
 fi
 ' >> ~/.bashrc
-  sync
+  sleep 1
 fi
 
 source ~/.bashrc
