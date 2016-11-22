@@ -2,6 +2,8 @@
 # archibold.io (C) 2016 #
 #########################
 
+set -e
+
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
