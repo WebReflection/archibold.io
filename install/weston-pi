@@ -84,21 +84,21 @@ cd ~/weston
 if [ ! -d linux ]; then
   git clone --depth=1 https://github.com/raspberrypi/linux
 fi
-if [ ! -d /boot/overlays ]; then
-  sudo mkdir /boot/overlays
+if [ "$KERNEL" != "" ]; then
   cd linux
-  # TODO: dynamic config for PI 1 too
-  KERNEL=kernel7
-  make bcm2709_defconfig
+  if [ "$KERNEL" = "kernel7" ]; then
+    make bcm2709_defconfig
+  else
+    make bcmrpi_defconfig
+  fi
   make -j`nproc` zImage modules dtbs
   sudo make modules_install
   sudo cp arch/arm/boot/dts/*.dtb /boot/
   sudo cp arch/arm/boot/dts/overlays/*.dtb* /boot/overlays/
   sudo cp arch/arm/boot/dts/overlays/README /boot/overlays/
   sudo scripts/mkknlimg arch/arm/boot/zImage /boot/$KERNEL.img
+  sudo reboot
 fi
-
-sudo reboot
 
 if [ "$(hasPackage pthread-stubs)" = "" ]; then
   cd ~/weston
