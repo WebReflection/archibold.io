@@ -81,9 +81,11 @@ sudo pacman -Sy --needed --noconfirm base-devel git \
 mkdir -p ~/weston
 
 cd ~/weston
+
 if [ ! -d linux ]; then
   git clone --depth=1 https://github.com/raspberrypi/linux
 fi
+
 if [ "$KERNEL" != "" ]; then
   cd linux
   if [ "$KERNEL" = "kernel7" ]; then
@@ -225,5 +227,3 @@ if [ "$(cat /boot/config.txt | grep 'dispmanx_offline=1')" = "" ]; then
   sudo bash -c 'echo "dispmanx_offline=1" >>/boot/config.txt'
   sudo sed -i.bak s/gpu_mem=.*/gpu_mem=128/ /boot/config.txt
 fi
-
-reboot
