@@ -9,6 +9,16 @@ fi
 source <(curl -s archibold.io/require)
 require fakeman
 
+addGroup() {
+  local g
+  for g in $(groups); do
+    if [ "$g" = "video" ]; then
+      exit 0
+    fi
+  done
+  sudo bash -c "gpasswd -a $USER video"
+}
+
 hasPackage() {
   local package=$1
   pacman -Q $package &> /dev/null
@@ -18,6 +28,8 @@ hasPackage() {
     echo "$package"
   fi
 }
+
+addGroup video
 
 if [ "$(cat ~/.bashrc | grep '# archibold weston')" = "" ]; then
   echo '
@@ -130,40 +142,42 @@ fi
 sudo pacman -Sy --needed --noconfirm libva mtdev libevdev libwacom libinput
 sudo pacman -Sy --needed --noconfirm libxcursor libxkbcommon libvdpau-va-gl pixman
 
-# if [ "$(hasPackage cairo)" = "" ]; then
-#   cd ~/weston
-#   if [ ! -d cairo ]; then
-#     git clone git://anongit.freedesktop.org/cairo
-#   fi
-#   cd cairo
-#   ./autogen.sh --prefix=$WLD \
-#     --enable-glesv2 --enable-egl \
-#     --enable-xlib-xcb
-# 
-#   make -j`nproc`
-#   sleep 5
-#   sudo make install
-#   fakeman install cairo
-# fi
+if [ "$(hasPackage cairo)" = "" ]; then
+  cd ~/weston
+  if [ ! -d cairo ]; then
+    git clone git://anongit.freedesktop.org/cairo
+  fi
+  cd cairo
+  ./autogen.sh --prefix=$WLD \
+    --enable-glesv2 --enable-egl --enable-drm \
+    --enable-xlib-xcb
 
-# if [ "$(hasPackage weston)" = "" ]; then
-#   cd ~/weston
-#   if [ ! -d weston ]; then
-#     git clone git://anongit.freedesktop.org/wayland/weston
-#   fi
-#   cd weston
-#   ./autogen.sh --prefix=$WLD \
-#     --disable-libunwind
-# 
-#   make -j`nproc`
-#   sleep 5
-#   sudo make install
-#   fakeman install weston
-# fi
+  make -j`nproc`
+  sleep 5
+  sudo make install
+  fakeman install cairo
+fi
 
-sudo pacman -S --needed weston xorg-server xorg-xinit
+if [ "$(hasPackage weston)" = "" ]; then
+  cd ~/weston
+  if [ ! -d weston ]; then
+    git clone git://anongit.freedesktop.org/wayland/weston
+  fi
+  cd weston
+  ./autogen.sh --prefix=$WLD \
+    --disable-libunwind
+
+  make -j`nproc`
+  sleep 5
+  sudo make install
+  fakeman install weston
+fi
+
+sudo pacman -S --needed --noconfirm xf86-input-libinput xorg-server xorg-xinit
 
 if [ "$(cat /boot/config.txt | grep 'dispmanx_offline=1')" = "" ]; then
   sudo bash -c 'echo "dispmanx_offline=1" >>/boot/config.txt'
   sudo sed -i.bak s/gpu_mem=.*/gpu_mem=128/ /boot/config.txt
 fi
+
+reboot
