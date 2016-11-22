@@ -70,10 +70,10 @@ fi
   sleep 1
 fi
 
-source ~/.bashrc
+source .bashrc
 mkdir -p $WLD/share/aclocal
 
-sudo pacman -Sy --needed --noconfirm base-devel git \
+sudo pacman -Sy --needed --noconfirm base-devel bc git \
   python2-mako libxml2 libxslt \
   glproto dri2proto dri3proto presentproto xcb-proto libxcb \
   xextproto inputproto evieext randrproto renderproto xineramaproto xorg-util-macros
