@@ -1,0 +1,1 @@
+yes y | sudo apt-get install xcompmgr xorg gjs libwebkit2gtk-4.0

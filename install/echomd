@@ -1,0 +1,12 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+cd tmp
+curl -LO archibold.io/utils/echomd
+chmod a+x echomd
+sudo mv echomd /usr/bin
