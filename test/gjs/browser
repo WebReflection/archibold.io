@@ -37,10 +37,7 @@
   vbox.pack_start(scrollWindow, true, true, 0);
   window.connect('show', () => {
     if (FULLSCREEN) window.fullscreen();
-    else {
-      window.set_default_size(WIDTH, HEIGHT);
-      window.set_resizable(false);
-    }
+    else window.set_resizable(false);
     Gtk.main()
   });
   window.connect('destroy', () => Gtk.main_quit());
