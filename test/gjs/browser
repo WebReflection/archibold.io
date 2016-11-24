@@ -19,6 +19,8 @@
     gtkSettings = Gtk.Settings.get_default();
   ;
 
+  window.set_default_size(WIDTH, HEIGHT);
+
   gtkSettings.gtk_application_prefer_dark_theme = true;
   gtkSettings.gtk_theme_name = 'Adwaita';
 
@@ -33,10 +35,12 @@
   webView.load_uri(url(ARGV.filter(url => '-' !== url[0])[0] || 'archibold.io/test/css/'));
   scrollWindow.add(webView);
   vbox.pack_start(scrollWindow, true, true, 0);
-  window.set_default_size(WIDTH, HEIGHT);
   window.connect('show', () => {
     if (FULLSCREEN) window.fullscreen();
-    else window.set_resizable(false);
+    else {
+      window.set_default_size(WIDTH, HEIGHT);
+      window.set_resizable(false);
+    }
     Gtk.main()
   });
   window.connect('destroy', () => Gtk.main_quit());
