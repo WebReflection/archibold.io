@@ -4,17 +4,36 @@ partid() {
   local type="$2"
   local disk="$1"
   local length=${#disk}
+  local list="$(ls ${disk}* 2> /dev/null)"
   local found=
   local info=
   if [ "$type" = "" ]; then
-    if [ "$(blkid -o value "$disk")" = "" ]; then
-      lsblk --output NAME,UUID,FSTYPE "$disk"
+    if [ "$list" = "$disk" ]; then
+      if [ "$(blkid -o value "$disk")" = "" ]; then
+        for info in $(lsblk --output UUID "$disk"); do
+          if [ "$found" = "true" ]; then
+            echo $info
+            break
+          else
+            found=true
+          fi
+        done
+      else
+        for info in $(blkid -o value "$disk"); do
+          echo $info
+          break
+        done
+      fi
     else
-      for info in $(blkid); do
-        if [ "${info:0:$length}" = "$disk" ] && [ "${info:0:-1}" != "$disk" ]; then
-          blkid "${info:0:-1}"
-        fi
-      done
+      if [ "$(blkid -o value "$disk")" = "" ]; then
+        lsblk --output NAME,UUID,FSTYPE "$disk"
+      else
+        for info in $(blkid); do
+          if [ "${info:0:$length}" = "$disk" ] && [ "${info:0:-1}" != "$disk" ]; then
+            blkid "${info:0:-1}"
+          fi
+        done
+      fi
     fi
   else
     if [ "$(blkid -o value "$disk")" = "" ]; then
@@ -47,7 +66,7 @@ if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "" ]; then
   echo 'example:'
   echo '  partid /dev/sda vfat'
   echo '  partid /dev/mmcblk0 swap'
-  echo '  partid /dev/sda ext4'
+  echo '  partid /dev/mmcblk0p3'
   echo ''
 else
   partid "$1" "$2"
