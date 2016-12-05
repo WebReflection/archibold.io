@@ -1,11 +1,12 @@
 #!/usr/bin/env gjs
 
-;(function (Gtk, WebKit2) {'use strict';
+;(function (Gtk, Gdk, WebKit2) {'use strict';
   Gtk.init(null);
   const
-    WIDTH = +param('width', 480),
-    HEIGHT = +param('height', 320),
+    Screen = Gdk.Screen.get_default(),
     FULLSCREEN = param('fullscreen', false) !== false,
+    WIDTH = +param('width', FULLSCREEN ? Screen.get_width() : 480),
+    HEIGHT = +param('height', FULLSCREEN ? Screen.get_height() : 320),
     window = new Gtk.Window({
       title: 'GJS Unframed Browser',
       type : Gtk.WindowType.TOPLEVEL,
@@ -50,5 +51,6 @@
 
 }(
   imports.gi.Gtk,
+  imports.gi.Gdk,
   imports.gi.WebKit2
 ));
