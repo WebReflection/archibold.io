@@ -63,10 +63,12 @@ partid() {
   fi
 }
 
-if [ "$1" = "create" ] || [ "$1" = "new" ]; then
-  cat /proc/sys/kernel/random/uuid
-elif [ "$1" = "set" ] && [ "$2" != "" ]; then
-  tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
+if [ "$1" = "create" ]; then
+  if [ "$2" = "" ]; then
+    cat /proc/sys/kernel/random/uuid
+  else
+    tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
+  fi
 elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   echo ''
   echo -e "$(tput bold)example$(tput sgr0)"
