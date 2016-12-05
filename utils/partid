@@ -27,12 +27,16 @@ partid() {
         fi
       done
     else
-      for info in $(blkid -o value "$disk"); do
-        if [ "$info" = "$type" ]; then
-          echo "$found"
-          break
+      for info in $(blkid); do
+        if [ "${info:0:$length}" = "$disk" ] && [ "${info:0:-1}" != "$disk" ]; then
+          for info in $(blkid -o value "${info:0:-1}"); do
+            if [ "$info" = "$type" ]; then
+              echo "$found"
+              break
+            fi
+            found="$info"
+          done
         fi
-        found="$info"
       done
     fi
   fi
