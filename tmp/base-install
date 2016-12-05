@@ -34,7 +34,7 @@ mount $ROOT /mnt
 mkdir -p /mnt/boot
 mount $BOOT /mnt/boot
 
-pacstrap /mnt arch-install-scripts base gptfdisk syslinux
+pacstrap /mnt arch-install-scripts base syslinux
 
 # enter into the new system
 
@@ -43,8 +43,6 @@ arch-chroot /mnt /usr/bin/bash
 source <(curl -s archibold.io/utils/partid)
 
 genfstab -U -p / >> /etc/fstab
-
-source <(curl -s archibold.io/utils/partid)
 
 PART=/dev/mmcblk0p1
 sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
