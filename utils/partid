@@ -12,7 +12,7 @@ partid() {
       lsblk --output NAME,FSTYPE,UUID "$disk"
     else
       for info in $(blkid); do
-        if [ "${info:0:$length}" = "$disk" ]; then
+        if [ "${info:0:$length}" = "$disk" ] && [ "${info:0:-1}" != "$disk" ]; then
           blkid "${info:0:-1}"
         fi
       done
