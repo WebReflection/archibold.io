@@ -6,15 +6,12 @@ partid() {
   local disk="$1"
   local length=${#disk}
   local info=
+  local line=
   if [ "$type" = "" ]; then
     if [ "$(blkid -o value "$disk")" = "" ]; then
       lsblk --output NAME,FSTYPE,UUID "$disk"
     else
-      for info in $(blkid); do
-        if [ "${info:0:$length}" = "$disk" ]; then
-          echo $info
-        fi
-      done
+      blkid
     fi
   else
     for info in $(lsblk --output FSTYPE,UUID "$disk"); do
