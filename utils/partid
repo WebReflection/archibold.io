@@ -63,7 +63,11 @@ partid() {
   fi
 }
 
-if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+if [ "$1" = "create" ] || [ "$1" = "new" ]; then
+  cat /proc/sys/kernel/random/uuid
+elif [ "$1" = "set" ] && [ "$2" != "" ]; then
+  tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
+elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   echo ''
   echo -e "$(tput bold)example$(tput sgr0)"
   echo '  partid /dev/sda'
