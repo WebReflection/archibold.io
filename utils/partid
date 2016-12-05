@@ -66,7 +66,7 @@ partid() {
 if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
   echo ''
   echo -e "$(tput bold)example$(tput sgr0)"
-  echo '  partid /dev/sda vfat'
+  echo '  partid /dev/sda'
   echo '  partid /dev/mmcblk0 swap'
   echo '  partid /dev/mmcblk0p3'
   echo ''
