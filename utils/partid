@@ -2,14 +2,26 @@
 
 partid() {
   local found=0
-  if [ "$2" = "" ]; then
-    lsblk --output NAME,FSTYPE,UUID "$1"
+  local type="$2"
+  local disk="$1"
+  local length=${#disk}
+  local info=
+  if [ "$type" = "" ]; then
+    if [ "$(blkid -o value "$disk")" = "" ]; then
+      lsblk --output NAME,FSTYPE,UUID "$disk"
+    else
+      for info in $(blkid); do
+        if [ "${info:0:$length}" = "$disk" ]; then
+          echo $info
+        fi
+      done
+    fi
   else
-    for kind in $(lsblk --output FSTYPE,UUID "$1"); do
-      if [ "$kind" = "$2" ]; then
+    for info in $(lsblk --output FSTYPE,UUID "$disk"); do
+      if [ "$info" = "$type" ]; then
         found=1
       elif [ "$found" = "1" ]; then
-        echo $kind
+        echo $info
         break
       fi
     done
@@ -17,9 +29,12 @@ partid() {
 }
 
 if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "" ]; then
-  echo 'partid /dev/sda vfat'
-  echo 'partid /dev/sda swap'
-  echo 'partid /dev/sda ext4'
+  echo ''
+  echo 'example:'
+  echo '  partid /dev/sda vfat'
+  echo '  partid /dev/mmcblk0 swap'
+  echo '  partid /dev/sda ext4'
+  echo ''
 else
   partid "$1" "$2"
 fi
