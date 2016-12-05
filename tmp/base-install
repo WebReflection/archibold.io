@@ -1,0 +1,100 @@
+source <(curl -s archibold.io/utils/partid)
+
+# update local time
+ntpdate pool.ntp.org
+timedatectl set-local-rtc 1
+
+pacman -Sy --noconfirm
+pacman-db-upgrade
+pacman-key --init
+pacman-key --populate archlinux
+
+DISK=/dev/mmcblk0
+
+dd if=/dev/zero of=$DISK bs=1 count=2048
+parted --script $DISK mklabel msdos
+parted --script --align optimal $DISK mkpart primary ext4 2048s 100%
+
+
+BOOT=${DISK}p1
+SWAP=${DISK}p2
+ROOT=${DISK}p3
+
+mkfs.vfat $BOOT
+mkswap $SWAP
+swapon $SWAP
+
+mkfs.ext4 $ROOT
+
+# give a persistent UUID to the ext4 partition
+partid create $ROOT
+
+# mount system
+mount $ROOT /mnt
+mkdir -p /mnt/boot
+mount $BOOT /mnt/boot
+
+pacstrap /mnt arch-install-scripts base gptfdisk syslinux
+
+# enter into the new system
+
+arch-chroot /mnt /usr/bin/bash
+
+source <(curl -s archibold.io/utils/partid)
+
+genfstab -U -p / >> /etc/fstab
+
+source <(curl -s archibold.io/utils/partid)
+
+PART=/dev/mmcblk0p1
+sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
+
+PART=/dev/mmcblk0p2
+sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
+
+PART=/dev/mmcblk0p3
+sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
+
+syslinux-install_update -ia
+
+echo "TIMEOUT 15
+PROMPT 0
+DEFAULT arch
+
+LABEL arch
+      LINUX /boot/vmlinuz-linux
+      INITRD /boot/initramfs-linux.img
+      APPEND root=UUID=$(partid $PART) rw edd=off
+
+" > /boot/syslinux/syslinux.cfg
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
