@@ -13,15 +13,17 @@ partid() {
         for info in $(lsblk --output UUID "$disk"); do
           if [ "$found" = "true" ]; then
             echo $info
-            break
+            return
           else
             found=true
           fi
         done
       else
         for info in $(blkid -o value "$disk"); do
-          echo $info
-          break
+          if [ "$info" != "msdos" ]; then
+            echo $info
+            return
+          fi
         done
       fi
     else
@@ -42,7 +44,7 @@ partid() {
           found=true
         elif [ "$found" = "true" ]; then
           echo $info
-          break
+          return
         fi
       done
     else
@@ -51,7 +53,7 @@ partid() {
           for info in $(blkid -o value "${info:0:-1}"); do
             if [ "$info" = "$type" ]; then
               echo "$found"
-              break
+              return
             fi
             found="$info"
           done
