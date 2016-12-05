@@ -1,21 +1,25 @@
 #!/usr/bin/env bash
 
-getPartid() {
+partid() {
   local found=0
-  for kind in $(lsblk --output FSTYPE,UUID "$2"); do
-    if [ "$kind" = "$1" ]; then
-      found=1
-    elif [ "$found" = "1" ]; then
-      echo $kind
-      break
-    fi
-  done
+  if [ "$2" = "" ]; then
+    lsblk --output NAME,FSTYPE,UUID "$1"
+  else
+    for kind in $(lsblk --output FSTYPE,UUID "$1"); do
+      if [ "$kind" = "$2" ]; then
+        found=1
+      elif [ "$found" = "1" ]; then
+        echo $kind
+        break
+      fi
+    done
+  fi
 }
 
-if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$2" = "" ]; then
-  echo 'partid vfat /dev/sda'
-  echo 'partid swap /dev/sda'
-  echo 'partid ext4 /dev/sda'
+if [ "$1" = "--help" ] || [ "$1" = "-h" ] || [ "$1" = "" ]; then
+  echo 'partid /dev/sda vfat'
+  echo 'partid /dev/sda swap'
+  echo 'partid /dev/sda ext4'
 else
-  getPartid "$1" "$2"
+  partid "$1" "$2"
 fi
