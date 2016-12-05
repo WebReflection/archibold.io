@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
 
 partid() {
-  local found=0
   local type="$2"
   local disk="$1"
   local length=${#disk}
+  local found=
   local info=
-  local line=
   if [ "$type" = "" ]; then
     if [ "$(blkid -o value "$disk")" = "" ]; then
-      lsblk --output NAME,FSTYPE,UUID "$disk"
+      lsblk --output NAME,UUID,FSTYPE "$disk"
     else
       for info in $(blkid); do
         if [ "${info:0:$length}" = "$disk" ] && [ "${info:0:-1}" != "$disk" ]; then
@@ -18,14 +17,24 @@ partid() {
       done
     fi
   else
-    for info in $(lsblk --output FSTYPE,UUID "$disk"); do
-      if [ "$info" = "$type" ]; then
-        found=1
-      elif [ "$found" = "1" ]; then
-        echo $info
-        break
-      fi
-    done
+    if [ "$(blkid -o value "$disk")" = "" ]; then
+      for info in $(lsblk --output FSTYPE,UUID "$disk"); do
+        if [ "$info" = "$type" ]; then
+          found=true
+        elif [ "$found" = "true" ]; then
+          echo $info
+          break
+        fi
+      done
+    else
+      for info in $(blkid -o value "$disk"); do
+        if [ "$info" = "$type" ]; then
+          echo "$found"
+          break
+        fi
+        found="$info"
+      done
+    fi
   fi
 }
 
