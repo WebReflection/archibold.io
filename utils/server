@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+
+###################################
+# ./server (C) Andrea Giammarchi  #
+#                           0.0.3 #
+###################################
+
+try:
+    from http.server import HTTPServer, SimpleHTTPRequestHandler, test as test_orig
+    import sys
+    def test (*args):
+        test_orig(*args, port=int(sys.argv[1]) if len(sys.argv) > 1 else 8000)
+except ImportError:
+    from BaseHTTPServer import HTTPServer, test
+    from SimpleHTTPServer import SimpleHTTPRequestHandler
+
+class CORSRequestHandler (SimpleHTTPRequestHandler):
+
+    def do_OPTIONS(self):
+        self.send_response(200, 'OK')
+        self.end_headers()
+
+    def do_POST(self, *args, **kwargs):
+        self.data_string = self.rfile.read(int(self.headers['Content-Length']))
+        SimpleHTTPRequestHandler.do_GET(self)
+        self.end_headers()
+
+    def end_headers (self):
+        if hasattr(self, 'data_string'):
+            self.send_header('X-Posted-Data', self.data_string)
+        self.send_header('Access-Control-Allow-Headers', 'X-Requested-With, Content-type')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Credentials', 'true')
+        self.send_header('Access-Control-Allow-Origin', '*')
+        SimpleHTTPRequestHandler.end_headers(self)
+
+if __name__ == '__main__':
+    test(CORSRequestHandler, HTTPServer)
