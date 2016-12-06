@@ -28,8 +28,8 @@ updateSystemTime() {
 
 updatePacman() {
   echoWithHeader '
-  The pacman manager, also known as *pacman*,
-  might also need some update.'
+  The pacman manager, known as *pacman*,
+  might need some update.'
 
   pacman -Sy
   pacman-db-upgrade
