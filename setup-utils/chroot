@@ -36,11 +36,11 @@ if [ "$SWAP" != "0" ]; then
 fi
 
 # Locale
-echomd '  generating *locale*'
-sed -ir 's/^#([a-z])/\1/' /etc/locale.gen
+echomd '  generating English *locale*'
+cat /etc/locale.gen | sed -r 's/^#(en_)/\1/' > /etc/locale.tmp
+mv /etc/locale.tmp /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
-source /etc/locale.conf
 
 # Hardware basic needs
 echomd '  installing *wifi tools*'
@@ -54,7 +54,7 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
 fi
 
-# Create fstab
+# Create clean fstab
 genfstab -U -p / > /etc/fstab
 if [ "$BOOT" != "" ]; then
   sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
@@ -63,18 +63,17 @@ if [ "$SWAP" != "0" ]; then
   sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
 fi
 sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
+cat /etc/fstab | sed -r 's/^(# )?(\/etc|efivarfs).*//' > /etc/fstab.tmp
+mv /etc/fstab.tmp /etc/fstab
 
 # UEFI
 echo ''
 syslinux-install_update -ia
 echo ''
 sleep 1
-sed -ie "s#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#" /boot/syslinux/syslinux.cfg
-if [ "$INTEL" != "" ]; then
-  sed -ie "s#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#" /boot/syslinux/syslinux.cfg
-fi
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   cleanEfibootmgr "$LABEL"
+  cp -r /usr/lib/syslinux/$UEFI/* /boot/syslinux
   if [ -d /usr/share/efitools/efi/ ]; then
     cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi /boot/syslinux/
     cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
@@ -86,6 +85,11 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   else
     efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L "$LABEL"
   fi
+fi
+sleep 1
+sed -ie "s#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#" /boot/syslinux/syslinux.cfg
+if [ "$INTEL" != "" ]; then
+  sed -ie "s#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#" /boot/syslinux/syslinux.cfg
 fi
 sleep 1
 
