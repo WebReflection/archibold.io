@@ -232,6 +232,7 @@ askForUser() {
 }
 
 # The Archibold Installer
+INTEL="$(lscpu | grep GenuineIntel)"
 clear && updateSystemTime && sleep 1
 clear && updatePacman && sleep 1
 if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
@@ -272,7 +273,7 @@ fi
 mkdir archibold.env
 sudo mount $ROOT archibold.env
 if [ "$BOOT" != "" ]; then
-  mkdir archibold.env/boot
+  sudo mkdir -p archibold.env/boot
   sudo mount $BOOT archibold.env/boot
 fi
 
@@ -289,9 +290,14 @@ echoWithHeader "
   Creating basic installation via *arch-chroot*
 "
 sleep 1
-sudo bash -c "echo \"#!/usr/bin/env bash
+echo "#!/usr/bin/env bash
 
 source <(curl -s archibold.io/utils/partid)
+
+if [ '$INTEL' != '' ]; then
+  pacman -S --needed --noconfirm intel-ucode
+fi
+
 genfstab -U -p / > /etc/fstab
 
 if [ '$BOOT' != '' ]; then
@@ -304,6 +310,9 @@ sed -ie 's#$ROOT#UUID=$(partid $ROOT)#' /etc/fstab
 
 syslinux-install_update -ia
 sed -ie 's#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#' /boot/syslinux/syslinux.cfg
+if [ '$INTEL' != '' ]; then
+  sed -ie 's#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#' /boot/syslinux/syslinux.cfg
+fi
 
 echo -e 'root
 root' | passwd
@@ -312,13 +321,26 @@ useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
 echo -e '$USER
 $USER' | passwd $USER
 
+rm /archibold.install
 exit
-\" > archibold.env/tmp/install"
-sudo chmod a+x archibold.env/tmp/install
-sudo arch-chroot archibold.env /tmp/install
+" > /tmp/install
+sudo chmod a+x /tmp/install
+sudo mv /tmp/install archibold.env/archibold.install
+sudo arch-chroot archibold.env /archibold.install
+sudo umount ${DISK}* 2> /dev/null
+sleep 5
+clear
+echoWithHeader "
+  Congratulations. Arch Linux is ready.
 
+  Configured users: passwords are
 
+    *root*: *root*
+    *$USER*: *$USER*
 
+  Please type `shutdown -h now` and
+  remove the media after.
+"
 
 
 
