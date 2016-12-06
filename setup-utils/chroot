@@ -1,0 +1,95 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+#
+# arch-chroot env
+#
+# LABEL
+# DISK
+# BOOT
+# SWAP
+# ROOT
+# UEFI
+# USER
+# EDD
+# INTEL
+#
+
+source <(curl -s archibold.io/require)
+
+require echomd
+require partid
+
+cleanEfibootmgr() {
+  local which="$1"
+  local prev=
+  for entry in $(efibootmgr); do
+    if [ "$entry" = "$which" ]; then
+      efibootmgr -b "${prev:4:-1}" -B
+    fi
+    prev="$entry"
+  done
+}
+
+if [ "$SWAP" != "0" ]; then
+  swapon $SWAP
+fi
+
+# Hardware basic needs
+echomd '  installing *wifi tools*'
+pacman -S --needed --noconfirm dialog wpa_supplicant iw > /dev/null 2>&1
+if [ "$INTEL" != "" ]; then
+  echomd '  installing *intel-ucode*'
+  pacman -S --needed --noconfirm intel-ucode > /dev/null 2>&1
+fi
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  echomd '  installing *UEFI* tools'
+  pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
+fi
+
+# Create fstab
+genfstab -U -p / > /etc/fstab
+if [ "$BOOT" != "" ]; then
+  sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
+fi
+if [ "$SWAP" != "0" ]; then
+  sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
+fi
+sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
+
+# UEFI
+echo ''
+syslinux-install_update -ia
+echo ''
+sleep 1
+sed -ie "s#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#" /boot/syslinux/syslinux.cfg
+if [ "$INTEL" != "" ]; then
+  sed -ie "s#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#" /boot/syslinux/syslinux.cfg
+fi
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  cleanEfibootmgr archibold
+  if [ -d /usr/share/efitools/efi/ ]; then
+    cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi /boot/syslinux/
+    cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
+    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L $LABEL
+  elif [ -d /usr/lib/prebootloader ]; then
+    cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
+    cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
+    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L $LABEL
+  else
+    efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L $LABEL
+  fi
+fi
+
+# Users
+echo -e "root
+root" | passwd
+
+useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+echo -e "$USER
+$USER" | passwd $USER
+
+# Automatic login
+# sed -ie "s#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#" /etc/systemd/system/getty.target.wants/getty@tty1.service
+
+exit

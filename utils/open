@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 open() {
-  xdg-open "$@"
+  if [ "$1" != "" ]; then
+    xdg-open "$@"
+  fi
 }
 
-if [ "$1" != "" ]; then
-  open "$@"
-fi
+open "$@"

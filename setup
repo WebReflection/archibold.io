@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#########################
+# archibold.io (C) 2016 #
+#########################
+
 source <(curl -s archibold.io/require)
 
 require echomd
@@ -236,7 +240,6 @@ askForUser() {
 }
 
 # The Archibold Installer
-INTEL="$(lscpu | grep GenuineIntel)"
 clear && updateSystemTime && sleep 1
 clear && updatePacman && sleep 1
 if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
@@ -296,42 +299,20 @@ echoWithHeader "
 sleep 1
 echo "#!/usr/bin/env bash
 
-source <(curl -s archibold.io/utils/partid)
+LABEL=archibold
+DISK=$DISK
+BOOT=$BOOT
+SWAP=$SWAP
+ROOT=$ROOT
+UEFI=$UEFI
+USER=$USER
+EDD='$EDD'
+INTEL='$(lscpu | grep GenuineIntel)'
 
-if [ '$INTEL' != '' ]; then
-  pacman -S --needed --noconfirm intel-ucode
-fi
-
-genfstab -U -p / > /etc/fstab
-
-if [ '$BOOT' != '' ]; then
-  sed -ie \"s#$BOOT#UUID=\$(partid $BOOT)#\" /etc/fstab
-fi
-if [ '$SWAP' != '0' ]; then
-  sed -ie \"s#$SWAP#UUID=\$(partid $SWAP)#\" /etc/fstab
-fi
-sed -ie \"s#$ROOT#UUID=\$(partid $ROOT)#\" /etc/fstab
-
-syslinux-install_update -ia
-sed -ie \"s#APPEND root=.*#APPEND root=UUID=\$(partid $ROOT) rw${EDD}#\" /boot/syslinux/syslinux.cfg
-if [ '$INTEL' != '' ]; then
-  sed -ie 's#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#' /boot/syslinux/syslinux.cfg
-fi
-
-echo -e 'root
-root' | passwd
-
-useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
-echo -e '$USER
-$USER' | passwd $USER
-
-# sed -ie 's/ExecStart=-\/sbin\/agetty.*/ExecStart=-\/sbin\/agetty -nia $USER %I \$TERM/' /etc/systemd/system/getty.target.wants/getty@tty1.service
-
-pacman -S --needed --noconfirm dialog wpa_supplicant iw
-
-rm /archibold.install
-exit
 " > /tmp/install
+curl -Ls -o /tmp/install-chroot archibold.io/setup-utils/chroot
+cat /tmp/install-chroot >> /tmp/install
+rm /tmp/install-chroot
 sudo chmod a+x /tmp/install
 sudo mv /tmp/install archibold.env/archibold.install
 sudo arch-chroot archibold.env /archibold.install
@@ -349,29 +330,3 @@ echoWithHeader "
   Please type #green(shutdown -h now) and
   remove the media after.
 "
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
