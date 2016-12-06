@@ -92,6 +92,10 @@ askAboutUEFI() {
   echoWithHeader "
   Is *${DISK}* installed for a system
   compatible with *UEFI* ? [y/n]"
+  if [ "$INTEL" != "yes" ]; then
+    echomd "  if the raget is this system
+  then *n* is the suggested choice"
+  fi
   read -n1 -s choice
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
     clear
@@ -159,6 +163,17 @@ askAboutSWAP() {
     sleep 2 && clear && askAboutSWAP
   fi
 
+}
+
+askAboutAUTOLOGIN() {
+  local choice=
+  echoWithHeader "
+  Would you like $USER to *automatic login* ? [y/n]"
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    AUTOLOGIN="yes"
+  fi
 }
 
 createPartitions() {
@@ -235,6 +250,18 @@ createPartitions() {
   sleep 1
 }
 
+askAboutQUIET() {
+  local choice=
+  echoWithHeader "
+  Would you like a *quiet boot* ? [y/n]"
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    QUIET=yes
+  else
+    QUIET=no
+  fi
+}
+
 askForUser() {
   local choice=
   echoWithHeader "
@@ -255,14 +282,21 @@ askForUser() {
 # The Archibold Installer
 clear && updateSystemTime && sleep 1
 clear && updatePacman && sleep 1
+
+if [ "$INTEL" = "" ] && [ "$(lscpu | grep GenuineIntel)" != "" ]; then
+  INTEL="yes"
+fi
+
 if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
   clear && askForUser
 fi
 if [ "$DISK" = "" ]; then
   clear && findTheDisk
 fi
+
 sudo umount ${DISK}* 2> /dev/null
-if [ "$UEFI" != "32" ] && [ "$UEFI" != "64" ]; then
+
+if [ "$UEFI" != "32" ] && [ "$UEFI" != "64" ] && [ "$UEFI" != "yes" ]; then
   if [ "$UEFI" = "" ]; then
     clear && askAboutUEFI
     if [ "$UEFI" = "no" ]; then
@@ -275,17 +309,28 @@ fi
 if [ "$UEFI" = "32" ] || [ "$UEFI" = "64" ]; then
   UEFI="efi${UEFI}"
 else
-  if [ "$UEFI" != "yes" ]; then
-    UEFI=no
-  fi
   if [ "$EDD" = "" ]; then
     clear && askAboutEDD
   else
     EDD=" edd=$EDD"
   fi
 fi
+
 if [ "$SWAP" = "" ]; then
   clear && askAboutSWAP
+fi
+
+if [ "$QUIET" = "" ]; then
+  clear && askAboutQUIET
+fi
+if [ "$QUIET" = "yes" ]; then
+  QUIET=" quiet splash loglevel=0 console=tty2"
+else
+  QUIET=""
+fi
+
+if [ "$AUTOLOGIN" = "" ]; then
+  clear && askAboutAUTOLOGIN
 fi
 clear && createPartitions
 
@@ -321,8 +366,10 @@ SWAP=$SWAP
 ROOT=$ROOT
 UEFI=$UEFI
 USER=$USER
+AUTOLOGIN=$AUTOLOGIN
 EDD='$EDD'
-INTEL='$(lscpu | grep GenuineIntel)'
+QUIET='$QUIET'
+INTEL='$INTEL'
 
 " > /tmp/install
 curl -Ls -o /tmp/install-chroot archibold.io/setup-utils/chroot

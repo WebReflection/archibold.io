@@ -11,7 +11,9 @@
 # ROOT
 # UEFI
 # USER
+# AUTOLOGIN
 # EDD
+# QUIET
 # INTEL
 #
 
@@ -92,7 +94,7 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   fi
 fi
 sleep 1
-sed -ie "s#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#" /boot/syslinux/syslinux.cfg
+sed -ie "s#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${QUIET}${EDD}#" /boot/syslinux/syslinux.cfg
 if [ "$INTEL" != "" ]; then
   sed -ie "s#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#" /boot/syslinux/syslinux.cfg
 fi
@@ -107,6 +109,10 @@ echo -e "$USER
 $USER" | passwd $USER
 
 # Automatic login
-# sed -ie "s#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#" /etc/systemd/system/getty.target.wants/getty@tty1.service
+if [ "$AUTOLOGIN" = "yes" ]; then
+  sed -ie "s#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#" /etc/systemd/system/getty.target.wants/getty@tty1.service
+  touch /home/$USER/.hushlogin
+  chown -R $USER:users /home/$USER/.hushlogin
+fi
 
 exit
