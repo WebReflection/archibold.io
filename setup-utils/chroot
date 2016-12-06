@@ -35,6 +35,13 @@ if [ "$SWAP" != "0" ]; then
   swapon $SWAP
 fi
 
+# Locale
+echomd '  generating *locale*'
+sed -ir 's/^#([a-z])/\1/' /etc/locale.gen
+locale-gen
+locale > /etc/locale.conf
+source /etc/locale.conf
+
 # Hardware basic needs
 echomd '  installing *wifi tools*'
 pacman -S --needed --noconfirm dialog wpa_supplicant iw > /dev/null 2>&1
