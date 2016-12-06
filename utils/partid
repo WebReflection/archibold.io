@@ -19,6 +19,7 @@ partid() {
   local list="$(ls ${disk}* 2> /dev/null)"
   local found=
   local info=
+  blkid -g
   if [ "$type" = "" ]; then
     if [ "$list" = "$disk" ]; then
       if [ "$(blkid -o value "$disk")" = "" ]; then

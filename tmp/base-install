@@ -65,7 +65,6 @@ to install Arch Linux (pick a number).
       ((i=i+1))
       if [ "$i" = "$choice" ]; then
         DISK="/dev/$disk"
-        sudo umount ${DISK}* 2> /dev/null
       fi
     done
   else
@@ -228,6 +227,7 @@ clear && updatePacman && sync && sleep 1
 if [ "$DISK" = "" ]; then
   clear && findTheDisk
 fi
+sudo umount ${DISK}* 2> /dev/null
 if [ "$UEFI" != "32" ] && [ "$UEFI" != "64" ]; then
   if [ "$UEFI" = "" ]; then
     clear && askAboutUEFI
