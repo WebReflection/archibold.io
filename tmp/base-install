@@ -5,27 +5,27 @@ source <(curl -s archibold.io/require)
 require echomd
 require partid
 
-updateSystemTime() {
-echomd '
+echoWithHeader() {
+  echomd "
 # archibold.io
+$@
+"
+}
 
-Welcome to Archibold installer.
-As first step, we are going to update
-the current system time.
+updateSystemTime() {
+  echoWithHeader '
+  Welcome to Archibold installer.
+  As first step, we are going to update
+  the current system time.'
 
-'
   # ntpdate pool.ntp.org
   # timedatectl set-local-rtc 1
 }
 
 updatePacman() {
-  echomd '
-# archibold.io
-
-The pacman manager, also known as *pacman*,
-might also need some update.
-
-'
+  echoWithHeader '
+  The pacman manager, also known as *pacman*,
+  might also need some update.'
 
   # pacman -Sy
   # pacman-db-upgrade
@@ -39,14 +39,11 @@ findTheDisk() {
   local choice=
   local disks=
   local disk=
-    echomd '
-# archibold.io
+  echoWithHeader '
+  Please select the disk you would like to use
+  to install Arch Linux (pick a number).
 
-Please select the disk you would like to use
-to install Arch Linux (pick a number).
-
-*Please note:* #red(all data) in the chosen disk will be #red(lost).
-'
+  *Please note:* #red(all data) in the chosen disk will be #red(lost).'
 
   for disk in $(lsblk --output NAME); do
     if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
@@ -68,39 +65,34 @@ to install Arch Linux (pick a number).
       fi
     done
   else
-    echomd "#red(*Nope*), let's try again ... "
+    echomd "  #red(*Nope*), let's try again ... "
     sleep 2 && clear && findTheDisk
   fi
 }
 
 askAboutUEFI() {
   local choice=
-  echomd "
-# archibold.io
-
-Is *${DISK}* installed for a system
-compatible with *UEFI* ? [y/n]
-
-"
+  echoWithHeader "
+  Is *${DISK}* installed for a system
+  compatible with *UEFI* ? [y/n]"
   read -n1 -s choice
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
     clear
-    echomd "
-# archibold.io
-"
     if [ "$(uname -m)" = "x86_64" ]; then
-      echomd 'This system is probably a *64 bit* one.'
+      echoWithHeader '
+  This system is probably a *64 bit* one.'
     else
-      echomd 'This system is probably a *32 bit* one.'
+      echoWithHeader '
+  This system is probably a *32 bit* one.'
     fi
-    echo 'Which UEFI version would you like to use?'
-    echo 'Please type 32 or 64'
+    echo '  Which UEFI version would you like to use?'
+    echo '  Please type 32 or 64'
     read -n2 -s -p '' choice
     if [ "$choice" = "32" ] || [ "$choice" = "64" ]; then
       UEFI="$choice"
     else
       echo ''
-      echomd "#red(*Nope*), let's try again ... "
+      echomd "  #red(*Nope*), let's try again ... "
       sleep 2 && clear && askAboutUEFI
     fi
   else
@@ -111,13 +103,9 @@ compatible with *UEFI* ? [y/n]
 
 askAboutUEFILike() {
   local choice=
-  echomd "
-# archibold.io
-
-Would you like regardless an *UEFI* like
-partition *boot structure* ? [y/n]
-
-"
+  echoWithHeader "
+  Would you like regardless an *UEFI* like
+  partition *boot structure* ? [y/n]"
   read -n1 -s choice
 
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
@@ -128,12 +116,8 @@ partition *boot structure* ? [y/n]
 
 askAboutEDD() {
   local choice=
-  echomd "
-# archibold.io
-
-Would you like to *disable EDD* ? [y/n]
-
-"
+  echoWithHeader "
+  Would you like to *disable EDD* ? [y/n]"
   read -n1 -s choice
 
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
@@ -143,59 +127,59 @@ Would you like to *disable EDD* ? [y/n]
 
 askAboutSWAP() {
   local choice=
-  echomd "
-# archibold.io
+  echoWithHeader "
+  How much *swap* do you need?
 
-How much *swap* do you need?
+  Please specify an amount and press enter.
 
-Please specify an amount and press enter.
-
-Valid options can be 0, 100M or 1G or 2GiB, etc
-"
+  Valid options can be 0, 100M or 1G or 2Gi, etc"
   read choice
 
-  SWAP=$choice
+  SWAP=$(echo $choice | sed -r 's/^([0-9]+[A-Z]i)[bB]$/\1/' | numfmt --from=auto)
+  if [[ $? -ne 0 ]] ; then
+    echo ''
+    echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
+    sleep 2 && clear && askAboutSWAP
+  fi
 
 }
 
 createPartitions() {
   local start=2048s
   local part=
-  echomd "
-# archibold.io
-
-Preparing *$DISK*
-"
-  sudo dd if=/dev/zero of=$DISK bs=1 count=2048
-  echo ''
-  sync
+  echoWithHeader "
+  Preparing *$DISK*"
+  sudo dd if=/dev/zero of=$DISK bs=1 count=2048 > /dev/null 2>&1
+  sleep 1
   if [ "$UEFI" = "no" ] || [ "$UEFI" = "yes" ]; then
-    echomd 'with an *msdos* label'
+    echomd '  with an *msdos* label'
     echo ''
-    sudo parted --script $DISK mklabel msdos
+    sudo parted --script $DISK mklabel msdos > /dev/null 2>&1
   else
-    echomd 'with an UEFI *gpt* label'
+    echomd '  with UEFI *gpt* label'
     echo ''
-    sudo parted --script $DISK mklabel gpt
+    sudo parted --script $DISK mklabel gpt > /dev/null 2>&1
   fi
   if [ "$UEFI" != "no" ]; then
-    echomd 'with 120M *boot* partition'
+    echomd '  with 128MiB *boot* partition'
     echo ''
-    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 120M
+    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 128MiB > /dev/null 2>&1
     sudo parted $DISK set 1 boot on
-    start=120M
+    start=128MiB
   fi
   if [ "$SWAP" = "0" ]; then
-    echomd '*without swap* partition'
+    echomd '  *without swap* partition'
     echo ''
-    sudo parted --script --align optimal $DISK mkpart primary ext4 $start 100%
+    sudo parted --script --align optimal $DISK mkpart primary ext4 $start 100% > /dev/null 2>&1
   else
-    echomd "with *~$SWAP swap* partition"
+    echomd "  with *$(numfmt --to=si $SWAP) swap* partition"
+    ((SWAP=SWAP+134217728))
+    SWAP=$(numfmt --to=si $SWAP)
     echo ''
-    sudo parted --script --align optimal $DISK mkpart primary linux-swap $start $SWAP
-    sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100%
+    sudo parted --script --align optimal $DISK mkpart primary linux-swap $start $SWAP > /dev/null 2>&1
+    sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100% > /dev/null 2>&1
   fi
-  sync && sleep 1
+  sleep 1
   BOOT=
   ROOT=
   for part in $(ls ${DISK}*); do
@@ -213,17 +197,30 @@ Preparing *$DISK*
     fi
   done
   if [ "$BOOT" != "" ]; then
+    clear
+    echoWithHeader "
+  formatting *boot* partition"
     sudo mkfs.vfat $BOOT
+    sleep 1
   fi
-  if [ "$SWAP" != "" ]; then
+  if [ "$SWAP" != "0" ]; then
+    clear
+    echoWithHeader "
+  creating *swap* partition"
     sudo mkswap $SWAP
+    sleep 1
   fi
+  clear
+    echoWithHeader "
+  creating *root* partition"
   sudo bash -c "yes | mkfs.ext4 $ROOT"
   partid create $ROOT
+  sleep 1
 }
 
-clear && updateSystemTime && sync && sleep 1
-clear && updatePacman && sync && sleep 1
+# The Archibold Installer
+clear && updateSystemTime && sleep 1
+clear && updatePacman && sleep 1
 if [ "$DISK" = "" ]; then
   clear && findTheDisk
 fi
@@ -253,69 +250,51 @@ if [ "$SWAP" = "" ]; then
 fi
 clear && createPartitions
 
+if [ -d archibold.env ]; then
+  sudo rm -rf archibold.env
+fi
+mkdir archibold.env
+sudo mount $ROOT archibold.env
+if [ "$BOOT" != "" ]; then
+  mkdir archibold.env/boot
+  sudo mount $BOOT archibold.env/boot
+fi
 
-exit
+clear
+echoWithHeader "
+  Bootstrapping *Arch Linux* via
+  pacstrap arch-install-scripts base syslinux
+"
+sleep 1
+sudo pacstrap archibold.env arch-install-scripts base syslinux
 
-
-
-DISK=/dev/mmcblk0
-
-sudo dd if=/dev/zero of=$DISK bs=1 count=2048
-parted --script $DISK mklabel msdos
-parted --script --align optimal $DISK mkpart primary ext4 2048s 100%
-
-
-BOOT=${DISK}p1
-SWAP=${DISK}p2
-ROOT=${DISK}p3
-
-mkfs.vfat $BOOT
-mkswap $SWAP
-swapon $SWAP
-
-mkfs.ext4 $ROOT
-
-# give a persistent UUID to the ext4 partition
-partid create $ROOT
-
-# mount system
-mount $ROOT /mnt
-mkdir -p /mnt/boot
-mount $BOOT /mnt/boot
-
-pacstrap /mnt arch-install-scripts base syslinux
-
-# enter into the new system
-
-arch-chroot /mnt /usr/bin/bash
+clear
+echoWithHeader "
+  Creating basic installation via *arch-chroot*
+"
+sleep 1
+sudo bash -c "echo '#!/usr/bin/env bash
 
 source <(curl -s archibold.io/utils/partid)
 
-genfstab -U -p / >> /etc/fstab
+genfstab -U -p / > /etc/fstab
 
-PART=/dev/mmcblk0p1
-sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
-
-PART=/dev/mmcblk0p2
-sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
-
-PART=/dev/mmcblk0p3
-sed -ie "s#$PART#$(partid $PART)#" /etc/fstab
+if [ '$BOOT' != '' ]; then
+  sed -ie 's#$BOOT#$(partid $BOOT)#' /etc/fstab
+fi
+if [ '$SWAP' != '0' ]; then
+  sed -ie 's#$SWAP#$(partid $SWAP)#' /etc/fstab
+fi
+sed -ie 's#$ROOT#$(partid $ROOT)#' /etc/fstab
 
 syslinux-install_update -ia
 
-echo "TIMEOUT 15
-PROMPT 0
-DEFAULT arch
+sed -ie 's#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#' /boot/syslinux/syslinux.cfg
 
-LABEL arch
-      LINUX /boot/vmlinuz-linux
-      INITRD /boot/initramfs-linux.img
-      APPEND root=UUID=$(partid $PART) rw edd=off
+exit
 
-" > /boot/syslinux/syslinux.cfg
-
-
+' > /mnt/tmp/install"
+sudo arch-chroot archibold.env /tmp/install
 
 
 
