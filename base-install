@@ -321,6 +321,10 @@ useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
 echo -e '$USER
 $USER' | passwd $USER
 
+# sed -ie 's/ExecStart=-\/sbin\/agetty.*/ExecStart=-\/sbin\/agetty -nia $USER %I \$TERM/' /etc/systemd/system/getty.target.wants/getty@tty1.service
+
+pacman -S --needed --noconfirm dialog wpa_supplicant iw
+
 rm /archibold.install
 exit
 " > /tmp/install
