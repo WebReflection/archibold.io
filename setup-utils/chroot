@@ -17,9 +17,6 @@
 
 source <(curl -s archibold.io/require)
 
-require echomd
-require partid
-
 cleanEfibootmgr() {
   local which="$1"
   local prev=
@@ -32,21 +29,30 @@ cleanEfibootmgr() {
 }
 
 # Locale
-echomd '  generating UTF-8 *locale*'
 cat /etc/locale.gen | sed -r 's/^#(en_.* UTF-8)/\1/' > /etc/locale.tmp
 mv /etc/locale.tmp /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 
+# modules
+require partid
+require echomd
+
 # Hardware basic needs
-echomd '  installing *wifi tools*'
+echomd '
+  installing *wifi tools*
+'
 pacman -S --needed --noconfirm dialog wpa_supplicant iw > /dev/null 2>&1
 if [ "$INTEL" != "" ]; then
-  echomd '  installing *intel-ucode*'
+  echomd '
+  installing *intel-ucode*
+'
   pacman -S --needed --noconfirm intel-ucode > /dev/null 2>&1
 fi
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
-  echomd '  installing *UEFI* tools'
+  echomd '
+  installing *UEFI* tools
+'
   pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
 fi
 
