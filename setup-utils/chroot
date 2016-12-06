@@ -31,13 +31,9 @@ cleanEfibootmgr() {
   done
 }
 
-if [ "$SWAP" != "0" ]; then
-  swapon $SWAP
-fi
-
 # Locale
-echomd '  generating English *locale*'
-cat /etc/locale.gen | sed -r 's/^#(en_)/\1/' > /etc/locale.tmp
+echomd '  generating UTF-8 *locale*'
+cat /etc/locale.gen | sed -r 's/^#(en_.* UTF-8)/\1/' > /etc/locale.tmp
 mv /etc/locale.tmp /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
@@ -55,6 +51,9 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
 fi
 
 # Create clean fstab
+if [ "$SWAP" != "0" ]; then
+  swapon $SWAP
+fi
 genfstab -U -p / > /etc/fstab
 if [ "$BOOT" != "" ]; then
   sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
