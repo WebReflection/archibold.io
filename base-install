@@ -346,7 +346,7 @@ echoWithHeader "
     *root*: *root*
     *$USER*: *$USER*
 
-  Please type `shutdown -h now` and
+  Please type #green(shutdown -h now) and
   remove the media after.
 "
 
