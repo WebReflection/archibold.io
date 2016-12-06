@@ -301,15 +301,15 @@ fi
 genfstab -U -p / > /etc/fstab
 
 if [ '$BOOT' != '' ]; then
-  sed -ie 's#$BOOT#UUID=$(partid $BOOT)#' /etc/fstab
+  sed -ie \"s#$BOOT#UUID=\$(partid $BOOT)#\" /etc/fstab
 fi
 if [ '$SWAP' != '0' ]; then
-  sed -ie 's#$SWAP#UUID=$(partid $SWAP)#' /etc/fstab
+  sed -ie \"s#$SWAP#UUID=\$(partid $SWAP)#\" /etc/fstab
 fi
-sed -ie 's#$ROOT#UUID=$(partid $ROOT)#' /etc/fstab
+sed -ie \"s#$ROOT#UUID=\$(partid $ROOT)#\" /etc/fstab
 
 syslinux-install_update -ia
-sed -ie 's#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#' /boot/syslinux/syslinux.cfg
+sed -ie \"s#APPEND root=.*#APPEND root=UUID=\$(partid $ROOT) rw${EDD}#\" /boot/syslinux/syslinux.cfg
 if [ '$INTEL' != '' ]; then
   sed -ie 's#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#' /boot/syslinux/syslinux.cfg
 fi
