@@ -219,8 +219,8 @@ Preparing *$DISK*
   if [ "$SWAP" != "" ]; then
     sudo mkswap $SWAP
   fi
-  yes | sudo mkfs.ext4 $ROOT
-  sudo partid create $ROOT
+  sudo bash -c "yes | mkfs.ext4 $ROOT"
+  partid create $ROOT
 }
 
 clear && updateSystemTime && sync && sleep 1
