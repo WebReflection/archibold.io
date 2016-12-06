@@ -9,3 +9,4 @@ fi
 sudo pacman -S --needed gnome gnome-tweak-tool networkmanager xf86-input-libinput
 
 sudo systemctl enable NetworkManager
+sudo systemctl enable gdm
