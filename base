@@ -168,7 +168,10 @@ askAboutSWAP() {
 askAboutAUTOLOGIN() {
   local choice=
   echoWithHeader "
-  Would you like $USER to *automatic login* ? [y/n]"
+  Would you like $USER to *automatic login* ? [y/n]
+
+  Please note it is not neede if you are planning
+  to install a Desktop environment later on."
   read -n1 -s choice
 
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
