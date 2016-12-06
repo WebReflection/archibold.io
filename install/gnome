@@ -1,0 +1,11 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+sudo pacman -S --needed gnome gnome-tweak-tool networkmanager xf86-input-libinput
+
+sudo systemctl enable NetworkManager
