@@ -1,7 +1,19 @@
 #!/usr/bin/env bash
 
 partid() {
-  if [ "$1" = "create" ]; then
+  if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+    echo ''
+    echo -e "$(tput bold)example$(tput sgr0)"
+    echo ''
+    echo -e "  partid /dev/sda              \x1B[90m# lists partitions$(tput sgr0)"
+    echo -e "  partid /dev/mmcblk0 swap     \x1B[90m# get swap UUID$(tput sgr0)"
+    echo -e "  partid /dev/mmcblk0p3        \x1B[90m# get UUID$(tput sgr0)"
+    echo ''
+    echo -e "  partid create                \x1B[90m# UUID for ext4$(tput sgr0)"
+    echo -e "  partid create /dev/mmcblk0p3 \x1B[90m# set UUID$(tput sgr0)"
+    echo ''
+    return
+  elif [ "$1" = "create" ]; then
     if [ "$2" = "" ]; then
       cat /proc/sys/kernel/random/uuid
     else
@@ -11,6 +23,8 @@ partid() {
         sudo tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
       fi
     fi
+    return
+  elif [ "$1" = "" ]; then
     return
   fi
   local type="$2"
@@ -76,17 +90,4 @@ partid() {
   fi
 }
 
-if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
-  echo ''
-  echo -e "$(tput bold)example$(tput sgr0)"
-  echo ''
-  echo -e "  partid /dev/sda              \x1B[90m# lists partitions$(tput sgr0)"
-  echo -e "  partid /dev/mmcblk0 swap     \x1B[90m# get swap UUID$(tput sgr0)"
-  echo -e "  partid /dev/mmcblk0p3        \x1B[90m# get UUID$(tput sgr0)"
-  echo ''
-  echo -e "  partid create                \x1B[90m# UUID for ext4$(tput sgr0)"
-  echo -e "  partid create /dev/mmcblk0p3 \x1B[90m# set UUID$(tput sgr0)"
-  echo ''
-elif [ "$1" != "" ]; then
-  partid "$1" "$2"
-fi
+partid "$@"

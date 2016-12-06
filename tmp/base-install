@@ -218,9 +218,25 @@ createPartitions() {
   sleep 1
 }
 
+askForUser() {
+  local choice=
+  echoWithHeader "
+  Which *user name* would you like to use ?
+  Please note only lowercase letters are valid."
+  read -n1 -s choice
+  if [ "$choice" = "root" ] || [ "$(echo $choice | sed -e 's/[a-z]//g')" != "" ]; then
+    echo ''
+    echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
+    sleep 2 && clear && askForUser
+  fi
+}
+
 # The Archibold Installer
 clear && updateSystemTime && sleep 1
 clear && updatePacman && sleep 1
+if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
+  clear && askForUser
+fi
 if [ "$DISK" = "" ]; then
   clear && findTheDisk
 fi
@@ -273,27 +289,32 @@ echoWithHeader "
   Creating basic installation via *arch-chroot*
 "
 sleep 1
-sudo bash -c "echo '#!/usr/bin/env bash
+sudo bash -c "echo \"#!/usr/bin/env bash
 
 source <(curl -s archibold.io/utils/partid)
-
 genfstab -U -p / > /etc/fstab
 
 if [ '$BOOT' != '' ]; then
-  sed -ie 's#$BOOT#$(partid $BOOT)#' /etc/fstab
+  sed -ie 's#$BOOT#UUID=$(partid $BOOT)#' /etc/fstab
 fi
 if [ '$SWAP' != '0' ]; then
-  sed -ie 's#$SWAP#$(partid $SWAP)#' /etc/fstab
+  sed -ie 's#$SWAP#UUID=$(partid $SWAP)#' /etc/fstab
 fi
-sed -ie 's#$ROOT#$(partid $ROOT)#' /etc/fstab
+sed -ie 's#$ROOT#UUID=$(partid $ROOT)#' /etc/fstab
 
 syslinux-install_update -ia
-
 sed -ie 's#APPEND root=.*#APPEND root=UUID=$(partid $ROOT) rw${EDD}#' /boot/syslinux/syslinux.cfg
 
-exit
+echo -e 'root
+root' | passwd
 
-' > /mnt/tmp/install"
+useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+echo -e '$USER
+$USER' | passwd $USER
+
+exit
+\" > archibold.env/tmp/install"
+sudo chmod a+x archibold.env/tmp/install
 sudo arch-chroot archibold.env /tmp/install
 
 
