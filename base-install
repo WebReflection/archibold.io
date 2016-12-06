@@ -18,8 +18,8 @@ updateSystemTime() {
   As first step, we are going to update
   the current system time.'
 
-  # ntpdate pool.ntp.org
-  # timedatectl set-local-rtc 1
+  ntpdate pool.ntp.org
+  timedatectl set-local-rtc 1
 }
 
 updatePacman() {
@@ -27,10 +27,10 @@ updatePacman() {
   The pacman manager, also known as *pacman*,
   might also need some update.'
 
-  # pacman -Sy
-  # pacman-db-upgrade
-  # pacman-key --init
-  # pacman-key --populate archlinux
+  pacman -Sy
+  pacman-db-upgrade
+  pacman-key --init
+  pacman-key --populate archlinux
 
 }
 
@@ -222,12 +222,16 @@ askForUser() {
   local choice=
   echoWithHeader "
   Which *user name* would you like to use ?
-  Please note only lowercase letters are valid."
-  read -n1 -s choice
+  Write one and press enter.
+
+  Please note *only lowercase* letters are valid."
+  read choice
   if [ "$choice" = "root" ] || [ "$(echo $choice | sed -e 's/[a-z]//g')" != "" ]; then
     echo ''
     echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
     sleep 2 && clear && askForUser
+  else
+    USER=$choice
   fi
 }
 
