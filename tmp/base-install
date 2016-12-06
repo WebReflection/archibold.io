@@ -1,17 +1,266 @@
-source <(curl -s archibold.io/utils/partid)
+#!/usr/bin/env bash
 
-# update local time
-ntpdate pool.ntp.org
-timedatectl set-local-rtc 1
+source <(curl -s archibold.io/require)
 
-pacman -Sy --noconfirm
-pacman-db-upgrade
-pacman-key --init
-pacman-key --populate archlinux
+require echomd
+require partid
+
+updateSystemTime() {
+echomd '
+# archibold.io
+
+Welcome to Archibold installer.
+As first step, we are going to update
+the current system time.
+
+'
+  # ntpdate pool.ntp.org
+  # timedatectl set-local-rtc 1
+}
+
+updatePacman() {
+  echomd '
+# archibold.io
+
+The pacman manager, also known as *pacman*,
+might also need some update.
+
+'
+
+  # pacman -Sy
+  # pacman-db-upgrade
+  # pacman-key --init
+  # pacman-key --populate archlinux
+
+}
+
+findTheDisk() {
+  local i=0
+  local choice=
+  local disks=
+  local disk=
+    echomd '
+# archibold.io
+
+Please select the disk you would like to use
+to install Arch Linux (pick a number).
+
+*Please note:* #red(all data) in the chosen disk will be #red(lost).
+'
+
+  for disk in $(lsblk --output NAME); do
+    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+      ((i=i+1))
+      disks="$disks $disk"
+      echomd "  *$i* /dev/$disk"
+    fi
+  done
+
+  echo ''
+  read -n1 -s choice
+
+  if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
+    i=0
+    for disk in $disks; do
+      ((i=i+1))
+      if [ "$i" = "$choice" ]; then
+        DISK="/dev/$disk"
+        sudo umount ${DISK}* 2> /dev/null
+      fi
+    done
+  else
+    echomd "#red(*Nope*), let's try again ... "
+    sleep 2 && clear && findTheDisk
+  fi
+}
+
+askAboutUEFI() {
+  local choice=
+  echomd "
+# archibold.io
+
+Is *${DISK}* installed for a system
+compatible with *UEFI* ? [y/n]
+
+"
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    clear
+    echomd "
+# archibold.io
+"
+    if [ "$(uname -m)" = "x86_64" ]; then
+      echomd 'This system is probably a *64 bit* one.'
+    else
+      echomd 'This system is probably a *32 bit* one.'
+    fi
+    echo 'Which UEFI version would you like to use?'
+    echo 'Please type 32 or 64'
+    read -n2 -s -p '' choice
+    if [ "$choice" = "32" ] || [ "$choice" = "64" ]; then
+      UEFI="$choice"
+    else
+      echo ''
+      echomd "#red(*Nope*), let's try again ... "
+      sleep 2 && clear && askAboutUEFI
+    fi
+  else
+    UEFI="no"
+  fi
+
+}
+
+askAboutUEFILike() {
+  local choice=
+  echomd "
+# archibold.io
+
+Would you like regardless an *UEFI* like
+partition *boot structure* ? [y/n]
+
+"
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    UEFI=yes
+  fi
+
+}
+
+askAboutEDD() {
+  local choice=
+  echomd "
+# archibold.io
+
+Would you like to *disable EDD* ? [y/n]
+
+"
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    EDD=" edd=off"
+  fi
+}
+
+askAboutSWAP() {
+  local choice=
+  echomd "
+# archibold.io
+
+How much *swap* do you need?
+
+Please specify an amount and press enter.
+
+Valid options can be 0, 100M or 1G or 2GiB, etc
+"
+  read choice
+
+  SWAP=$choice
+
+}
+
+createPartitions() {
+  local start=2048s
+  local part=
+  echomd "
+# archibold.io
+
+Preparing *$DISK*
+"
+  sudo dd if=/dev/zero of=$DISK bs=1 count=2048
+  echo ''
+  sync
+  if [ "$UEFI" = "no" ] || [ "$UEFI" = "yes" ]; then
+    echomd 'with an *msdos* label'
+    echo ''
+    sudo parted --script $DISK mklabel msdos
+  else
+    echomd 'with an UEFI *gpt* label'
+    echo ''
+    sudo parted --script $DISK mklabel gpt
+  fi
+  if [ "$UEFI" != "no" ]; then
+    echomd 'with 120M *boot* partition'
+    echo ''
+    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 120M
+    sudo parted $DISK set 1 boot on
+    start=120M
+  fi
+  if [ "$SWAP" = "0" ]; then
+    echomd '*without swap* partition'
+    echo ''
+    sudo parted --script --align optimal $DISK mkpart primary ext4 $start 100%
+  else
+    echomd "with *~$SWAP swap* partition"
+    echo ''
+    sudo parted --script --align optimal $DISK mkpart primary linux-swap $start $SWAP
+    sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100%
+  fi
+  sync && sleep 1
+  BOOT=
+  ROOT=
+  for part in $(ls ${DISK}*); do
+    if [ "$part" != "$DISK" ]; then
+      if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
+        BOOT=$part
+      elif [ "$UEFI" = "no" ] && [ "$SWAP" = "0" ]; then
+        ROOT=$part
+      elif [ "$SWAP" != "0" ] && [ "$ROOT" = "" ]; then
+        SWAP=$part
+        ROOT=$part
+      else
+        ROOT=$part
+      fi
+    fi
+  done
+  if [ "$BOOT" != "" ]; then
+    sudo mkfs.vfat $BOOT
+  fi
+  if [ "$SWAP" != "" ]; then
+    sudo mkswap $SWAP
+  fi
+  yes | sudo mkfs.ext4 $ROOT
+  sudo partid create $ROOT
+}
+
+clear && updateSystemTime && sync && sleep 1
+clear && updatePacman && sync && sleep 1
+if [ "$DISK" = "" ]; then
+  clear && findTheDisk
+fi
+if [ "$UEFI" != "32" ] && [ "$UEFI" != "64" ]; then
+  if [ "$UEFI" = "" ]; then
+    clear && askAboutUEFI
+    if [ "$UEFI" = "no" ]; then
+      clear && askAboutUEFILike
+      if [ "$EDD" = "" ]; then
+        clear && askAboutEDD
+      else
+        EDD=" edd=$EDD"
+      fi
+    fi
+  else
+    UEFI=no
+  fi
+fi
+if [ "$UEFI" = "32" ] || [ "$UEFI" = "64" ]; then
+  UEFI="efi${UEFI}"
+elif [ "$UEFI" != "yes" ]; then
+  UEFI=no
+fi
+if [ "$SWAP" = "" ]; then
+  clear && askAboutSWAP
+fi
+clear && createPartitions
+
+
+exit
+
+
 
 DISK=/dev/mmcblk0
 
-dd if=/dev/zero of=$DISK bs=1 count=2048
+sudo dd if=/dev/zero of=$DISK bs=1 count=2048
 parted --script $DISK mklabel msdos
 parted --script --align optimal $DISK mkpart primary ext4 2048s 100%
 
