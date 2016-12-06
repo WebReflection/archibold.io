@@ -74,19 +74,20 @@ if [ "$INTEL" != "" ]; then
   sed -ie "s#INITRD ../initramfs-linux.img#INITRD ../intel-ucode.img,../initramfs-linux.img#" /boot/syslinux/syslinux.cfg
 fi
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
-  cleanEfibootmgr archibold
+  cleanEfibootmgr "$LABEL"
   if [ -d /usr/share/efitools/efi/ ]; then
     cp /usr/share/efitools/efi/{PreLoader,HashTool}.efi /boot/syslinux/
     cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
-    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L $LABEL
+    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L "$LABEL"
   elif [ -d /usr/lib/prebootloader ]; then
     cp /usr/lib/prebootloader/{PreLoader,HashTool}.efi /boot/syslinux/
     cp /boot/syslinux/syslinux.efi /boot/syslinux/loader.efi
-    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L $LABEL
+    efibootmgr -c -d $DISK -l /syslinux/PreLoader.efi -L "$LABEL"
   else
-    efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L $LABEL
+    efibootmgr -c -d $DISK -l /syslinux/syslinux.efi -L "$LABEL"
   fi
 fi
+sleep 1
 
 # Users
 echo -e "root
