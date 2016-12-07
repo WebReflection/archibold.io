@@ -142,9 +142,12 @@ askAboutEDD() {
   echoWithHeader "
   Would you like to *disable EDD* ? [y/n]
 "
-  if [ "$INTEL" != "yes" ]; then
-    echomd "  If the raget is this system,
-  or any AMD based one, *y* is suggested"
+  if [ "$INTEL" = "yes" ]; then
+    echomd "  If the target is this system, or any
+  *Intel* based one, *n* is the suggested choice"
+  else
+    echomd "  If the target is this system, or any
+  *AMD* based one, *n* is the suggested choice"
   fi
   read -n1 -s choice
 
