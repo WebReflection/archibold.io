@@ -17,7 +17,7 @@
 # INTEL
 #
 
-source <(curl -s archibold.io/require)
+source <(curl -s archibold.io/partid)
 
 cleanEfibootmgr() {
   local which="$1"
@@ -36,25 +36,21 @@ mv /etc/locale.tmp /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 
-# modules
-require partid
-require echomd
-
 # Hardware basic needs
-echomd '
-  installing *wifi tools*
-'
+echo -e "
+  installing $(tput bold)wifi tools$(tput sgr0)
+"
 pacman -S --needed --noconfirm dialog wpa_supplicant iw > /dev/null 2>&1
 if [ "$INTEL" != "" ]; then
-  echomd '
-  installing *intel-ucode*
-'
+  echo -e "
+  installing $(tput bold)intel-ucode$(tput sgr0)
+"
   pacman -S --needed --noconfirm intel-ucode > /dev/null 2>&1
 fi
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
-  echomd '
-  installing *UEFI* tools
-'
+  echo -e "
+  installing $(tput bold)UEFI$(tput sgr0) tools
+"
   pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
 fi
 

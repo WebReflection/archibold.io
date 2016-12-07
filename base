@@ -22,20 +22,21 @@ updateSystemTime() {
   As first step, we are going to update
   the current system time.'
 
-  ntpdate pool.ntp.org
-  timedatectl set-local-rtc 1
+  if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
+    sudo ntpdate pool.ntp.org
+    sudo timedatectl set-local-rtc 1
+  fi
 }
 
 updatePacman() {
   echoWithHeader '
   The pacman manager, known as *pacman*,
-  might need some update.'
+  might need some update too.'
 
-  pacman -Sy
-  pacman-db-upgrade
-  pacman-key --init
-  pacman-key --populate archlinux
-
+  sudo pacman -Sy
+  sudo pacman-db-upgrade
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinux
 }
 
 grabDiskSize() {
@@ -91,9 +92,10 @@ askAboutUEFI() {
   local choice=
   echoWithHeader "
   Is *${DISK}* installed for a system
-  compatible with *UEFI* ? [y/n]"
+  compatible with *UEFI* ? [y/n]
+"
   if [ "$INTEL" != "yes" ]; then
-    echomd "  if the raget is this system
+    echomd "  If the raget is this system
   then *n* is the suggested choice"
   fi
   read -n1 -s choice
@@ -138,7 +140,12 @@ askAboutUEFILike() {
 askAboutEDD() {
   local choice=
   echoWithHeader "
-  Would you like to *disable EDD* ? [y/n]"
+  Would you like to *disable EDD* ? [y/n]
+"
+  if [ "$INTEL" != "yes" ]; then
+    echomd "  If the raget is this system,
+  or any AMD based one, *y* is suggested"
+  fi
   read -n1 -s choice
 
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
@@ -170,8 +177,8 @@ askAboutAUTOLOGIN() {
   echoWithHeader "
   Would you like $USER to *automatic login* ? [y/n]
 
-  Please note it is not neede if you are planning
-  to install a Desktop environment later on."
+  If you are planning to install a Desktop environment later on,
+  the suggested choice is *n*"
   read -n1 -s choice
 
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
