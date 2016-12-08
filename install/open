@@ -2,11 +2,7 @@
 # archibold.io (C) 2016 #
 #########################
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+if [ "$(which open 2> /dev/null)" = "" ] && "$(cat ~/.bashrc | grep 'alias open')" = "" ]; then
+  echo 'alias open=xdg-open' >> ~/.bashrc
+  source <(curl -s archibold.io/utils/open)
 fi
-
-cd tmp
-curl -LO archibold.io/utils/open
-chmod a+x open
-sudo mv open /usr/bin

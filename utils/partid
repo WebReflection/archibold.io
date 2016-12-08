@@ -1,4 +1,6 @@
-#!/usr/bin/env bash
+#########################
+# archibold.io (C) 2016 #
+#########################
 
 partid() {
   if [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
@@ -89,5 +91,3 @@ partid() {
     fi
   fi
 }
-
-partid "$@"

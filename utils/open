@@ -1,9 +1,7 @@
-#!/usr/bin/env bash
+#########################
+# archibold.io (C) 2016 #
+#########################
 
 open() {
-  if [ "$1" != "" ]; then
-    xdg-open "$@"
-  fi
+  xdg-open "$@"
 }
-
-open "$@"

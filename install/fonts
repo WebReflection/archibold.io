@@ -6,7 +6,8 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
 
-sudo pacman -S --needed gnome gnome-software gnome-tweak-tool networkmanager xf86-input-libinput
-
-sudo systemctl enable NetworkManager
-sudo systemctl enable gdm
+sudo pacman -S --needed --noconfirm \
+  ttf-dejavu ttf-symbola \
+  ttf-liberation ttf-freefont \
+  ttf-droid \
+  noto-fonts noto-fonts-emoji

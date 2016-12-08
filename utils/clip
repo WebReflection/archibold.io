@@ -1,0 +1,61 @@
+#!/usr/bin/env python2
+
+# python 3 print compatible function for python2 too
+from __future__ import print_function
+
+# sys for i/o and Gobject Introspection
+import sys, gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk, Gdk, GObject
+
+
+class Clip(Gtk.Window):
+
+    def __init__(self):
+        Gtk.Window.__init__(self, decorated=False, opacity=0)
+        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+        self.clipboard.wait_for_text()
+        # for some reason this is not enough
+        # so that every method needs async operations
+
+    def get_text(self):
+        GObject.timeout_add(100, self._get_text)
+
+    def set_text(self, text):
+        self.text = text
+        GObject.timeout_add(100, self._set_text)
+
+    def _get_text(self):
+        self.clipboard.request_text(self._on_text)
+
+    def _on_text(self, widget, text):
+        print(text)
+        GObject.timeout_add(100, Gtk.main_quit)
+
+    def _set_text(self):
+        self.clipboard.set_text(self.text, -1)
+        GObject.timeout_add(100, Gtk.main_quit)
+
+
+def main():
+
+    text = ""
+    if sys.stdin.isatty():
+        text = " ".join(sys.argv[1:])
+    else:
+        for line in sys.stdin.read():
+            text = text + line
+
+    clip = Clip()
+
+    if len(text) == 0:
+        clip.get_text()
+    else:
+        clip.set_text(text)
+
+    clip.show()
+    Gtk.main()
+
+
+if __name__ == "__main__":
+    main()
