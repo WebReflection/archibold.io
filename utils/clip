@@ -13,6 +13,7 @@ class Clip(Gtk.Window):
 
     def __init__(self):
         Gtk.Window.__init__(self, decorated=False, opacity=0)
+        self.set_default_size(0, 0)
         self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
         self.clipboard.wait_for_text()
         # for some reason this is not enough
