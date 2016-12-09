@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>archibold</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimal-ui">
+    <meta property="og:site_name" content="archibold">
+    <meta property="og:url" content="http://archibold.io">
+    <meta property="og:title" content="archibold, by Andrea Giammarchi">
+    <meta property="og:image" content="http://archibold.io/img/archibold.jpg">
+    <meta name="twitter:image" content="http://archibold.io/img/archibold.jpg">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:url" content="http://archibold.io">
+    <meta name="twitter:title" content="archibold">
+    <meta name="twitter:description" content="archibold, by Andrea Giammarchi">
+    <meta name="twitter:site" content="@WebReflection">
+    <meta name="twitter:creator" content="@WebReflection">
+    <style>
+    html, body {
+      font-family: monospace;
+      background-color: #2A2A2A;
+      color: #C5C5C5;
+      padding: 0;
+      margin: 0;
+    }
+    body, #logo, div.img, footer {
+      text-align: center;
+    }
+    body > div {
+      padding: 8px;
+      max-width: 720px;
+    }
+    body > div, #logo > pre, img {
+      display: inline-block;
+      margin: auto;
+    }
+    pre {
+      padding: 8px;
+      background-color: #C5C5C5;
+      color: #2A2A2A;
+    }
+    p > code, li > code {
+      background-color: #C5C5C5;
+      color: #2A2A2A;
+      padding: 0 2px;
+    }
+    section {
+      text-align: left;
+      margin-top: 48px;
+    }
+    footer > img {
+      width: 60%;
+      margin: auto;
+      margin: 48px 0;
+    }
+    strong {
+      color: #EEE;
+    }
+    pre strong {
+      color: inherit;
+    }
+    body {
+      font-size: 1em;
+    }
+    h1 {
+      font-size: 1.6em;
+    }
+    h2 {
+      font-size: 1.4em;
+      margin-top: 24px;
+    }
+    h1:before {
+      content: '# ';
+    }
+    h2:before {
+      content: '## ';
+    }
+    h3:before {
+      content: '### ';
+    }
+    a, h1:before, h2:before {
+      color: #FFF;
+    }
+    a {
+      text-decoration: none;
+      border-bottom: 1px solid #2A2A2A;
+      transition: all .3s ease-in;
+    }
+    a:hover {
+      color: #EEE;
+      border-bottom: 1px solid #666;
+    }
+    img {
+      margin-top: 16px;
+      max-width: 640px;
+    }
+    #logo {
+      cursor: default;
+    }
+    #logo > h2 {
+      display: none;
+    }
+    #logo > pre {
+      padding: auto;
+      background-color: inherit;
+      color: inherit;
+    }
+    </style>
+  </head>
+  <body>
+    <div>
+      <section id="logo"><h2>archibold</h2><pre>
+
+                             _|        _|  _|                  _|        _|
+  _|_|_|  _|  _|_|   _|_|_|  _|_|_|        _|_|_|      _|_|    _|    _|_|_|
+_|    _|  _|_|     _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+_|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+  _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
+
+
+  by Andrea Giammarchi - <a href="https://twitter.com/WebReflection">@WebReflection</a>                             0.7.0
+
+      </pre></section>
+      <!--section id="update">
+        <h1><a href="#update">GNOME 3.20 Update Notice</a></h1>
+        <p>
+          If your touchpad cannot natural-scroll anymore, try to install libinput:
+        </p>
+        <pre><code>
+archy install xf86-input-libinput
+        </code></pre>
+      </section-->
+      <!--section id="update">
+        <h1><a href="#update">Update Notice</a></h1>
+        <p>
+          If you don't have <code>archy 0.2.1</code> or greater installed,
+          please do a manual upgrade before updating <em>archibold</em>.
+        </p>
+        <pre><code>
+sudo curl -L -s -o "$(which archy)" "http://archibold.io/sh/archy"
+        </code></pre>
+        <p>
+          This will ensure Syslinux is properly updated within EFI and secure boot systems.
+        </p>
+      </section -->
+      <section id="about">
+        <h1><a href="#about">About</a></h1>
+        <p>
+          <strong>archibold</strong> is a zero hassle OS installer and a simplified helper to install, search, update or maintain packages in Arch Linux.
+        </p>
+        <p>
+          Based on <a href="https://www.archlinux.org/">ArchLinux</a>
+          and latest <a href="http://www.gnome.org/">GNOME</a>,
+          <em>archibold</em> has been successfully installed in many platforms.
+        </p>
+        <p>
+          These could be old or modern PCs, and even developer boards, as long as drivers are supported.<br/>
+          Following an example of successful installations:
+        </p>
+        <ul>
+          <li><a href="http://www.up-board.org/">UP Board</a> with Intel® Atom x5-Z8350 CPU @ 1.44GHz x 4 (Secure boot ready)</li>
+          <li><a href="http://store.hp.com/us/en/pdp/Laptops/hp-envy---13t%C2%A0laptop-n8r87av-1">HP Envy</a> with Intel® Core™ i5-6200U CPU @ 2.80GHz x 4 (Secure boot + Skylake + HiDPi BrightView IPS 3200 x 1800)</li>
+          <li><a href="http://www.intel.com/content/www/us/en/compute-stick/intel-compute-stick.html">Intel Compute Stick</a> with Intel® Atom™ CPU Z3735F @ 1.33GHz x 4 (STCK1A8LFC installed with SWAP=1GiB GNOME=NOEXTRA while STCK1A32WFCR has room for defaults)</li>
+          <li><a href="http://www.dell.com/uk/business/p/xps-13-linux/pd">XPS 13 Developer Edition</a> with Intel® Core™ i7-5500U CPU @ 2.40GHz × 4 (<a href="http://webreflection.blogspot.co.uk/2015/07/archlinux-uefi-and-dell-xps-2015.html">blog post</a>)</li>
+          <li><a href="http://www.asus.com/uk/event/2015/Chromebook/#chromebox">ASUS Chromebox</a> with Intel® Celeron(R) 2955U @ 1.40GHz x 2 (requires UEFI=NO)</li>
+          <li><a href="http://www.gizmosphere.org/products/gizmo-2/">Gizmo 2</a> with AMD @ 1GHz x 2 (requires UEFI=NO EDD=NO SWAP=0)</li>
+          <li><a href="http://www.intel.co.uk/content/www/uk/en/nuc/nuc-kit-de3815tykhe.html">NUC</a> with Intel® Atom™ CPU E3815 @ 1.46GHz</li>
+          <li><a href="http://www.minnowboard.org/meet-minnowboard-max/">MinnowBoard MAX</a> with Intel® Atom™ CPU E3825 @ 1.33GHz x 2</li>
+          <li>ASUS Netbook with Intel® Celeron(R) CPU 847 @ 1.10GHz x 2</li>
+          <li><a href="http://shop.lenovo.com/gb/en/laptops/lenovo/yoga/yoga-3-pro/">Lenovo Yoga 3 Pro</a> with Intel® Processor 5Y70 CPU @ 1.10GHz × 4</li>
+          <li><a href="http://www.samsung.com/us/series-9-laptop/">Samsung serie 9</a> with Intel® Core™ i5-3317U CPU @ 1.70GHz × 4 (GPU Ivibridge Mobile)</li>
+          <li>Mac Mini Mid 2010 with Intel® Core™2 Duo CPU P8600 @ 2.40GHz x 2 (via nVidia neuveau)</li>
+        </ul>
+      </section>
+      <img src="img/disk-utils.png" alt="showcase disk utility"/>
+      <section id="supported-platform">
+        <h1><a href="#supported-platform">Supported Platforms</a></h1>
+        <p>
+          Currently, <a href="http://www.intel.com/">Intel®</a> or <a href="http://www.amd.com/">AMD</a> Hardware is the most supported one
+          thanks to its drivers availability.
+        </p>
+        <p>
+          Main limitations for ARM platforms are indeed GPU drivers,
+          most of the time closed source.<br/>
+          If your ARM device is so cool that it has HW Accelerated drivers, please let me know!<br/>
+          I'll do my best to support it seamlessly as any other Intel® device.
+        </p>
+        <h2 id="requirements">
+          <a href="#requirements">Requirements</a>
+        </h2>
+        <p>
+          Platform a part, an <strong>Internet connection</strong> is mandatory and there are few options.<br/>
+          Avoiding GNOME and SWAP, archibold fits into <strong>2GB</strong>.<br/>
+          Setting <code>SWAP=0</code> and keeping GNOME, <strong>4GB</strong> are more than enough.<br/>
+          For a fully functional Desktop environment, <strong>8GB of disk space</strong> would be enough.<br/>
+          Any extra space will be available and most common external Hard Drives are supported too.
+        </p>
+      </section>
+      <section id="secure-boot">
+        <h1><a href="#secure-boot">Secure Boot</a></h1>
+        <p>
+          Starting from version <code>0.6</code>, archibold supports secure boot. The very first time it boots in secure boot though, you need to add the hash looking for the file <strong>loader.efi</strong> at the end of the syslinux folder list.
+          Once such file hash has been added, you can restart the computer without needing to add that file anymore. Happy Secure Boot!
+        </p>
+      </section>
+      <section id="warning">
+        <h1><a href="#warning">Warning</a></h1>
+        <p>
+          This installer might compromise an entire disk, if used improperly, so it comes with <strong>no warranty</strong>.<br/>
+          Please be sure to understand each step before confirming anything during installation.<br/>
+          Feel free to search in <a href="https://bbs.archlinux.org/">ArchLinux forum</a> in case of doubts, usually all answers are already there.
+        </p>
+      </section>
+      <section id="how-to">
+        <h1><a href="#how-to">How To</a></h1>
+        <p>
+          As very first step, we need a bootable version of <a href="https://www.archlinux.org/download/">ArchLinux iso</a> through USB stick or DVD.<br/>
+          We can learn how to burn it in the <a href="https://wiki.archlinux.org/index.php/USB_flash_installation_media#BIOS_and_UEFI_Bootable_USB">dedicated page</a>.<br/>
+          Following the Linux/Mac summary where <code>/dev/sdX</code> is the USB path.
+        </p>
+        <pre><code># just bs=4M in Linux, older OSX has no M option
+dd if=~/Downloads/archlinux-2015.02.01-dual.iso of=/dev/sdX bs=4194304</code></pre>
+        <p>
+          Please note it might take 5 minutes or more to complete above operation, be patient.
+        </p>
+        <p>
+          Once <code>dd</code> has finished, we can use the USB stick from any USB port of the target machine.<br/>
+          Some target might require some extra step and it depends on the <strong>bios</strong>.<br/>
+          Usually keeping pressed <strong>Esc</strong>, <strong>F2</strong>, <strong>F10</strong>, or <strong>F12</strong>
+          during boot should help reaching the boot menu.
+        </p>
+        <p>
+          The boot option we are interested about is the <strong>UEFI ArchLinux</strong> one.<br/>
+          If everything goes OK, we should bootstrap into a terminal/console.
+        </p>
+        <p>
+          As <strong>extra requirement</strong> the target machine will need to be <strong>connected to the Internet</strong>.<br/>
+          The preferred connection type is via <strong>network cable</strong>, but we could use WiFi too.<br/>
+          However, WiFi initial configuration is a bit more advanced, I can give a hint thought:
+        </p>
+        <pre><code># verify wifi path
+iw dev # or ip addr
+
+# wifi path will look similar to wlp2s0
+# use such name after wifi-menu
+wifi-menu wlp2s0
+
+# choose your WiFi network and enter password
+
+# verify you are connected
+ping 8.8.8.8
+
+# PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
+# 64 bytes from 8.8.8.8: icmp_seq=1 ttl=53 time=8.15 ms
+# 64 bytes from 8.8.8.8: icmp_seq=2 ttl=53 time=9.36 ms
+# 64 bytes from 8.8.8.8: icmp_seq=3 ttl=53 time=7.92 ms
+# ...
+# press Ctrl+C to stop the ping
+
+# if not, try to start the service manually
+#&gt; netctl start wlp2s0-YourWiFi-NAME</code></pre>
+        <p>
+          Once we have a usable network, we can download the installer.
+        </p>
+        <pre><code>curl -L -O http://archibold.io/sh/install</code></pre>
+        <p>
+          The file <code>install</code> should be in the folder now.<br/>
+          Sometimes you need this operation twice (fancy DNS redirects).<br/>
+          Use <code>ls</code> to verify it's in the list or run pevious command again.<br/>
+          Before launching it, we need to understand how to configure it.
+        </p>
+        <h2 id="configuring-the-installer">
+          <a href="#configuring-the-installer">Configuring the installer</a>
+        </h2>
+        <p>
+          There are few options so far for this installer, all listed here:
+        </p>
+        <ul>
+          <li>
+            <strong>USER</strong>, mandatory user name. It must be lowercase!<br/>
+            Pick your twitter handler if you don't know which one to use.
+          </li>
+          <li>
+            <strong>DISK</strong>, mandatory destination path.<br/>
+            It must be the driver letter where <em>archibold</em> is going to be installed.<br/>
+            Please note <strong>this disk will be completely erased</strong> so be sure it's the right one.<br/>
+            In order to know which is the right target we can use <code>lsblk</code> or <code>fdisk -l</code>.<br/>
+            Be careful, the current booting ArchLinux will be listed too.
+          </li>
+          <li>
+            <strong>SWAP</strong>, optional amount, by default <code>2GiB</code>.<br/>
+            To avoid creation of a swap partition use <code>SWAP=0</code>.
+          </li>
+          <li>
+            <strong>PASSWD</strong> and <strong>UPASSWD</strong>, optional passwords to use for <em>root</em> or the chosen <code>USER</code>. If any of these two are specified, both root and user will have that password.<br/>
+            If none of these is specified, default password will be <code>root</code> and chosen <code>$USER</code>.<br/>
+            Examples:<pre><code># the root user will have root password
+# the archibold user will have archibold password
+DISK=/dev/sda USER=archibold sh install
+
+# both root and user will have 12345 password
+DISK=/dev/sda USER=archibold PASSWD=12345 sh install
+
+# root will have r00t password
+# archibold will have archib0ld password
+DISK=/dev/sda USER=archibold PASSWD=r00t UPASSWD=archib0ld sh install
+</code></pre>
+          </li>
+          <li>
+            <strong>GNOME</strong>, optional, if <code>GNOME=NO</code> or <code>GNOME=0</code> will skip the Desktop environment.
+            If <code>GNOME=EXTRA</code> is specified, the installation will include all GNOME extras.
+          </li>
+          <li>
+            <strong>LABEL</strong>, optional UEFI and hostname value, by default <strong>archibold</strong>.<br/>
+            Pick your favorite hostname and EFI label if you are into that sort of things. ;-)
+          </li>
+          <li>
+            <strong>UEFI</strong>, optional, if <code>UEFI=NO</code> will not use EFI partition.<br/>
+            This option is usually needed for a Chromebook or a Chromebox.<br/>
+            If needed, it could be forced as <code>UEFI=efi32</code> or <code>UEFI=efi64</code>,
+            otherwise it will be recognized automatically.
+          </li>
+          <li>
+            <strong>EDD</strong>, optional, if specified, it will set <code>edd=$EDD</code> at boot time.<br/>
+            This option is usually needed for Gizmo 2 BIOS, together with the <code>UEFI=NO</code> directive.<br/>
+            In this board case, <code>EDD=NO</code> or <code>EDD=off</code> is needed.
+          </li>
+          <li>
+            <strong>BOOT_LOUDLY</strong>, optional, if specified with any value will boot with all mesasges visible.<br/>
+            By default, archibold tries its best to boot quietly but sometimes you want/need to see what happens.<br/>
+            It is possible to eventually add <code>quiet splash loglevel=0 console=tty2</code> to the file <code>syslinux/syslinux.cfg</code>
+            after the <code>APPEND</code> directive at any time in the future.
+          </li>
+        </ul>
+        <p>
+          Once we understand the meaning of these variables, we can simply launch the installer as such:
+        </p>
+        <pre><code>DISK=/dev/sdX USER=archibold sh install</code></pre>
+        <p>
+          From now on, we can simply follow instructions. Here a summary of what we'll need to do:
+        </p>
+        <ul>
+          <li>
+            confirm provided details are those we meant, and press <strong>y</strong>
+          </li>
+          <li>
+            wait until everything has been installed, reaching <strong>CONGRATULATIONS</strong>.<br/>
+            Type at this point the following in console: <code>shutdown -h now</code> and remove the USB after.<br/>
+            We can reboot the device without any USB stick now, <strong>archibold</strong> has been installed!
+          </li>
+        </ul>
+      </section>
+      <img src="img/activity-launcher.png" alt="showcase activity launcher"/>
+      <section id="first-boot">
+        <h1><a href="#first-boot">First boot</a></h1>
+        <p>
+          Accordingly you choose GNOME or console, please follow these basic instructions.
+        </p>
+        <h2 id="first-boot-gnome">
+          <a href="#first-boot-gnome">GNOME</a>
+        </h2>
+        <p>
+          If everything worked smoothly, the first screen should show the <code>USER</code> name.<br/>
+          Clicking on it, will reveal the input to put the password asked during installation.<br/>
+          Write it down and reach the Desktop.
+        </p>
+        <p>
+          <strong>Settings</strong> are reachable through the top right corner.<br/>
+          One click and few essential options will show up already.
+        </p>
+        <img src="img/top-right.png" style="max-width:320px;" alt="settings preview"/>
+        <p>
+          <strong>Programs</strong> are reachable trough the top left corner, or using the Window/Start button.<br/>
+          We can simply start typing a program name, and this will be listed on the screen.
+        </p>
+        <h2 id="first-boot-console">
+          <a href="#first-boot-console">Non GNOME</a>
+        </h2>
+        <p>
+          In non-GNOME situation the main setup might be about wifi connection.
+          There are few steps to follow, quite well documented on ArchLinux wiki, and summarized in here.
+        </p>
+        <pre><code># read list of network interfaces
+ip addr
+
+# wifi usually starts with w, i.e.: wlp2s0
+# the following command will try to connect
+sudo wifi-menu wlp2s0
+
+# it might warn if it's the first time you use sudo
+
+# chose your network, set a password, and answer YES at the end
+# you now have a wlp2s0-YourWiFiSSID profile
+# we can use that any time we boot
+sudo netctl enable wlp2s0-YourWiFiSSID
+
+# if you are not sure about the name
+sudo netctl list
+
+</code></pre>
+        <p>
+          At this point every boot should try to reconnect to the chosen WiFi network.
+        </p>
+        <h2 id="hi-dpi">
+          <a href="#hi-dpi">HiDPi and 4K</a>
+        </h2>
+        <p>
+          There are few ways to solve HiDPi gotchas with GNOME.
+          You can either try to change scaling factor in GNOME Tweaks Tool, Window panel, or specify
+          a scaling factor directly in via <code>gsettings</code>.
+          Alternatively, you can also try to <code>export GDK_SCALE=2</code>.
+        </p>
+        <pre><code>gsettings set org.gnome.desktop.interface scaling-factor 2</code></pre>
+        <h2 id="maintenance">
+          <a href="#maintenance">Basic maintenance</a>
+        </h2>
+        <p>
+          In order to keep updated, install, or remove software, type <code>archy</code> once in the terminal:
+        </p><pre><code>$ archy
+
+ <strong>╔════════════════╗
+ ║  archy v0.3.0  ║
+ ╚════════════════╝</strong>
+ 
+ <strong>usage</strong>:
+
+  archy [clean|clear|reset-keys|update|upgrade] [aur]
+  archy [install|remove|search|uninstall] package-name
+  archy [archibold-boot-image|gnome-login-bg|show-gnome-settings|use]
+  archy [sha|sha1|sha224|sha256|sha384|sha512] file-name-or-string
+  archy [create-desktop-app 'App Name' '/path/to/exec-app']
+  archy [destroy-desktop-app exec-app]
+
+ <strong>list of simplified installations</strong>:
+
+  archy-android              # android-sdk and development
+  archy-broadcom-wl-dkms     # Broadcom wifi
+  archy-chromium             # Chromium with pepper-flash and DRM
+  archy-dropbox              # Dropbox client
+  archy-espruino-pico        # configure group and rules for pico
+  archy-fonts                # install common fonts (non GNOME only)
+  archy-fs-extra             # (ex)fat utilities
+  archy-git                  # git + ssh key configuration
+  archy-heroku               # configure heroku
+  archy-intel-cstick-wifi    # compute stick WiFi module
+  archy-node                 # nodejs + npm configuration
+  archy-pad                  # recognizes external devices (iOS)
+  archy-spotify              # install Spotify
+  archy-telegram             # install Telegram Messanger
+  archy-virtualbox           # configure Virtualbox
+
+</code></pre>
+        <h2 id="archibold-cli">
+          <a href="#archibold-cli">archy CLI (alias archibold)</a>
+        </h2>
+        <p>
+          The CLI file is installed by default but it's also possible to simply grab <code>./archy</code> cli only following these instructions.
+        </p><pre><code>curl -L -O http://archibold.io/sh/archy
+chmod +x archy
+sudo mv archy /usr/bin
+        </code></pre>
+        <p>
+          Following the explanation of current CLI commands
+        </p>
+        <ul>
+          <li><strong>archy clean/clear</strong> removes all cached old downloaded archives, freeing some space on the disk. It's suggested after successful upgrades, but not mandatory.</li>
+          <li><strong>archy reset-keys</strong> forces a clean up and regeneration of all packages keys and signatures. If <code>update</code> or <code>upgrade</code> fails, running the upfront should resolve the problem.</li>
+          <li><strong>archy update</strong> updates all installed packages, excluding those installed via AUR. If for some reason it fails, and it could happen if you haven't updated for a while, we can try to <code>archibold reset-keys</code> first and then update again.</li>
+          <li><strong>archy upgrade</strong> simply checks if there are new version of <code>archy</code> CLI and upgrades it. It updates also packages info.</li>
+          <li><strong>archy update aur</strong> updates all packages installed from AUR.</li>
+          <li><strong>archy install <i>package-name</i></strong> tries to install <i>package-name</i> from official repositories, falling back to AUR.</li>
+          <li><strong>archy remove/uninstall<i>package-name</i></strong> will remove and clean up the package.</li>
+          <li><strong>archy search <i>package-name</i></strong> is a way to look for <i>package-name</i> in both regular repositories and in AUR.</li>
+          <li><strong>archy archibold-boot-image</strong> creates again the initial boot splash screen in case you changed monitor or screen resolution. You can specify width and height too via <code>archibold resplash 800 600</code> to force that size. Please note that this will also update the <code>syslinux.cfg</code> file.</li>
+          <li><strong>archy gnome-login-bg</strong> will recompile GNOME style to include the background image on login screen.</li>
+          <li><strong>archy install archy-*</strong> will perform few operations needed to install packages that requires extra steps and all at once.</li>
+          <li><strong>archy show-gnome-settings</strong> will echo all known GNOME gsettings. Handy combined with <code>grep</code> to know, or set, defaults.</li>
+          <li><strong>archy use</strong> will change default version of Python. <coed>archibold use python2</coed> or <coed>archibold use python3</coed> will make the change permanent. In the future this will be used to change other defaults too.</li>
+        </ul>
+        <h2 id="suggested-settings">
+          <a href="#suggested-settings">Suggested Settings</a>
+        </h2>
+        <p>
+          Clicking the settings icon, here a suggested list of possible actions to take:
+        </p>
+        <ul>
+          <li>
+            <strong>touchpad settings</strong>, in case on laptop, click on Mouse &amp; Touchpad and switch everything on.
+          </li>
+          <li>
+            <strong>automatic login</strong>, actually not recommended, but easy to reach via Users.<br/>
+            We need to unlock the ON/OFF button and put the USER password. Lock again once done.
+          </li>
+        </ul>
+        <h2 id="suggested-tweaks">
+          <a href="#suggested-tweaks">Software Updates Tweaks</a>
+        </h2>
+        <p>
+          <em>archibold</em> comes with <strong>GNOME Software</strong> installed by default.<br/>
+          Simply press the special (Window/Command) key and type Software.<br/>
+          That is a specific UI in case you prefer graphical  updates.
+        </p>
+      </section>
+      <img src="img/dark-theme.png" alt="showcase dark theme"/>
+      <section id="browser">
+        <h1><a href="#browser">Browser</a></h1>
+        <p>
+          The default browser that works out of the box is <strong>Web</strong>, also known as Epiphany browser.<br/>
+          This is both a very beautiful and deadly simple to use browser.<br/>
+          It's also so sleek it has been used in <a href="http://www.raspbian.org/">Raspbian</a> as default browser for the <a href="http://www.raspberrypi.org/web-browser-released/">Raspberry Pi</a>.
+        </p>
+        <p>
+          However, many web developers do not test their sites in this browser.<br/>
+          As result, those sites might provide an annoying, or broken, experience.
+        </p>
+        <p>
+          If your favorite sites work already there's no need to change browser.<br/>
+          In all other cases, please follow these instructions.
+        </p>
+        <h2 id="chromium">
+          <a href="#chromium">Chromium</a>
+        </h2>
+        <p>
+          Thanks to its recent support for HiDPi, Chromium is now the <strong>best</strong> external <strong>browser</strong>.<br/>
+          You can write on the terminal either <code>archibold install chromium</code> to have just the browser,
+          or <code>archy install archy-chromium</code> to also have pepper-flash and widevine plugins from AUR.
+        </p>
+        <h2 id="firefox">
+          <a href="#firefox">Firefox</a>
+        </h2>
+        <p>
+          As alternative, and with also a decent HiDPI support, is <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>.<br/>
+          To install it, either use <code>Software</code> or launch the terminal and write <code>archy install firefox</code>.
+        </p>
+        <h3 id="hidpi-firefox">
+          <a href="#hidpi-firefox">HiDPI Firefox</a>
+        </h3>
+        <p>
+          If your device uses a HiDPi/retina like display, you might see everything too small.<br/>
+          Just type in the Firefox URL bar, as if it was a website, the following: <code>about:config</code>
+        </p>
+        <p>
+          Please <strong>be careful</strong>, there's a lot to configure here but we need to change only one value!
+        </p>
+        <p>
+          Search <em>pixel</em> and change the value of <code>layout.css.devPixelPerPx</code> to <strong>2</strong>.<br/>
+          Apply and eventually restart Firefox.
+        </p>
+      </section>
+      <section id="problem-solving">
+        <h1>
+          <a href="#problem-solving">Problem Solving &amp; Setup</a>
+        </h1>
+        <p>
+          Following a list of known gotchas that could make <em>archibold</em> journey not so nice.
+        </p>
+        <ul>
+          <li>
+            <strong>VirtualBox EFI Boot Loader</strong><br/>
+            If your VBox doesn't remember how to load archibold,
+            type the following on the EFI v2 Shell:
+            <pre><code>FS0:\syslinux\loader.efi</code></pre>
+            To make this change permanent you can create the structure VBox search by default.<br/>
+            Once in archibold, open a terminal session and:
+            <pre><code># create folder structure and copy the loader
+sudo mkdir -p /boot/EFI/BOOT
+sudo cp /boot/syslinux/loader.efi /boot/EFI/BOOT/bootx64.efi
+            </code></pre>
+            At this point <code>archy upgrade</code> would take care of copying over the loader if Syslinux got updated.<br/>
+            If you don't use <code>archy</code> please remember to do the same once you update your VM.
+          </li>
+          <li>
+            <strong>Broadcom WiFi</strong> problems. The hybrid driver works quite OK if patched.<br/>
+            In order to know which one you have, write this on the terminal: <code>lspci -nn</code><br/>
+            You should have a list of devices, one of them called Wireless Network/Adapter.<br/>
+            If you are sure you need such driver, you can simply type: <code>archibold install broadcom-wl-dkms</code> in the terminal, which is <a href="https://aur.archlinux.org/packages/broadcom-wl-dkms/">the suggested AUR</a> package to use for these kind of WiFi cards.
+          </li>
+          <li>
+            <strong>how to manually install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
+            A <i>way-too-quick</i> introduction would be the following, to be typed via the Terminal:
+            <pre><code># to update everything in the system
+sudo pacman -Syu
+
+# to search a specific package online
+sudo pacman -Ss <i>package-name</i>
+
+# to install a specific package
+sudo pacman -S <i>package-name</i>
+
+# to install a specific package
+# without reinstalling its dependencies
+sudo pacman -S --needed <i>package-name</i>
+
+# to know if a package is installed or search one locally
+sudo pacman -Qs <i>package-name</i>
+
+# to remove a package and its dependencies
+sudo pacman -Rsc <i>package-name</i>
+
+# to clean old packages cache
+sudo pacman -Sc</code></pre>
+          </li>
+          <li>
+            minimal dependencies from <strong>arch bootstrap</strong>:
+            <pre><code>pacman-key --init
+pacman-key --populate archlinux
+pacman -Syu --needed \
+  awk curl dosfstools grep parted sed sudo vi</code></pre>
+          </li>
+          <li>
+            common <strong>AUR packages</strong> for developers can be installed via <a href="#maintenance">archibold</a><br/>
+            If there's is nothing special to do, it is possible to use <code>archibold</code> to install other <a href="https://aur.archlinux.org/">AUR packages</a> too.
+          </li>
+          <!-- li>
+            the <strong>common home user setup</strong> script aim is to bootstrap a user environment with:<ul>
+              <li>libreoffice, for office like needs</li>
+              <li>exfat-utils, fuse-exfat, and dosfstools for common disks operations</li>
+              <li>firefox and flashplugin for web surfing</li>
+              <li>inkscape and gimp for graphic operations</li>
+              <li>skype and spotify for chats and music</li>
+              <li><a href="http://kodi.tv/about/">kodi</a> as multimedia center for pictures, audio, movies and more</li>
+            </ul>
+            In order to install home-setup, write this on the terminal:<pre><code>curl -L -O http://archibold.io/sh/home-setup.sh
+sh home-setup.sh
+rm home-setup.sh</code></pre>
+          </li>
+          <li>
+            the <strong>common developer setup</strong> script aim is to bootstrap a developer environment with:<ul>
+              <li>qt, git with setup and nodejs with npm setup for develpment</li>
+              <li>exfat-utils, fuse-exfat, and dosfstools for common disks operations</li>
+              <li>firefox and lynx for web surfing</li>
+              <li>virtualbox with automatic modprobe configuration</li>
+              <li>sublime-text-nightly and filezilla for common web development tasks (it needs a valid license)</li>
+              <li>inkscape and gimp for graphic operations</li>
+              <li>skype and spotify for chats and music</li>
+              <li>mariadb as common development database</li>
+            </ul>
+            In order to install dev-setup, write this on the terminal:<pre><code>curl -L -O http://archibold.io/sh/dev-setup.sh
+sh dev-setup.sh
+rm dev-setup.sh</code></pre>
+            Please follow instructions, when asked (GitHub add key and npm).
+          </li -->
+        </ul>
+      </section>
+      <section id="credits">
+        <h1>
+          <a href="#credits">Credits</a>
+        </h1>
+        <p>
+          I'd like to say all this is brought to you by me, truth is, I've basically done nothing here.<br/>
+          The community behind <strong>ArchLinux</strong> is one of the most active I know.<br/>
+          The quality of the documentation they produce is simply stunning and I <a href="https://www.archlinux.org/donate/">encourage you to donate</a>.
+        </p>
+        <p>
+          I also strongly suggest to <a href="http://www.gnome.org/friends/">become a friend of GNOME</a>.<br/>
+          These two projects are making Linux Desktop a reality.<br/>
+          You'll love <strong>GNOME</strong>, its interface, and all it has to offer.<br/>
+          You'll love how snappy, essential, and well documented is also ArchLinux.
+        </p>
+        <p>
+          Finally, I am not taking a cent here, this is rather me giving back what I've taken from them.<br/>
+          Stay tuned for future updates. You can also follow this project <a href="https://github.com/WebReflection/archibold.io">on GitHub</a>.<br/>
+          Best Regards, Andrea Giammarchi.
+        </p>
+      </section>
+      <footer><img src="img/archibold.png" alt="splash screen"/></footer>
+    </div>
+  </body>
+</html>
