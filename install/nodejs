@@ -1,0 +1,63 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+source <(curl -s archibold.io/require)
+
+require echomd
+
+echoWithHeader() {
+  echomd "
+# archibold.io
+$@
+"
+}
+
+askForUser() {
+  local choice
+  echo '  Would you like to register your user ? [y/n]
+'
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    npm adduser
+  fi
+}
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  clear
+  echoWithHeader '
+  Installing sudo'
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+clear
+echoWithHeader '
+  Installing dependencies'
+sudo pacman -S --needed --noconfirm npm nodejs > /dev/null 2>&1
+
+if [ ! -d ~/.npm-packages ]; then
+  clear
+  echoWithHeader '
+  Configuring npm prefix'
+  mkdir -p ~/.npm-packages/bin
+  npm config set prefix '~/.npm-packages'
+fi
+
+if [ "$NODE_PATH" = "" ]; then
+  clear
+  echoWithHeader '
+  Adding PATH and NODE_PATH information'
+  echo '
+# npm and nodejs global modules
+export PATH="$PATH:$HOME/.npm-packages/bin"
+export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+' >> ~/.bashrc
+  export PATH="$PATH:$HOME/.npm-packages/bin
+  export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+fi
+
+clear
+echoWithHeader '
+  #green(*✔*) *npm* successfully configured.'
+
+askForUser
