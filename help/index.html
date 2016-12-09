@@ -3,21 +3,23 @@
 #########################
 # archibold.io (C) 2016 #
 #########################
+# <script src="/help.js"></script>
+#########################
 
 source <(curl -s archibold.io/require)
 
 require echomd
 
-echomd '# archibold.io
+echomd '
+# archibold.io
 
- options
+ Options:
 
   * **require** utils via `source <(curl -s archibold.io/require)`
-  * **install** via `bash <(curl -s archibold.io/install/yaourt)`
-  * **help** via `curl -s archibold.io/help`
+  * **install** software via `bash <(curl -s archibold.io/install/$software)`
 
- to know more about available installers or utilities
+ To know the list of about available installers or utilities:
 
-  * curl -s archibold.io/install
-  * curl -s archibold.io/utils
+  * bash <(curl -Ls archibold.io/install)
+  * bash <(curl -Ls archibold.io/utils)
 '
