@@ -6,8 +6,25 @@ if [ "$(which yaourt 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/yaourt)
 fi
 
+askAboutRetina() {
+  local choice
+  echo '
+  Is this display retina like or HiDPi ? [y/n]
+'
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    cp /usr/share/applications/spotify.desktop ~/.local/share/applications/
+    sed -ie 's/Exec=spotify %U/Exec=spotify --force-device-scale-factor=2 %U/' ~/.local/share/applications/spotify.desktop
+    echo '
+  Please reboot before launching Spotify
+'
+  fi
+}
+
 yaourt -S --needed --noconfirm \
   ffmpeg-compat \
   libgcrypt15 \
   libcurl-compat \
   spotify
+
+askAboutRetina
