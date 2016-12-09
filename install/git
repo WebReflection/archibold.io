@@ -7,41 +7,85 @@ source <(curl -s archibold.io/require)
 require echomd
 require clip
 
+echoWithHeader() {
+  echomd "
+# archibold.io
+$@
+"
+}
+
+askForUser() {
+  local choice=
+  echoWithHeader "
+  Please write your GitHub *user name* and press enter
+"
+  read choice
+  if [ "$(echo $choice | sed -e 's/ *//g')" = "" ]; then
+    echo ''
+    echomd "  #red(*Nope*), the name is not valid, let's try again ... "
+    sleep 2 && clear && askForUser
+  else
+    GIT_USER=$choice
+  fi
+}
+
+askForEmail() {
+  local choice=
+  echoWithHeader "
+  Please write the *email* used by $GIT_USER
+"
+  read choice
+  if [ "$(echo $choice | sed -e 's/ *//g')" = "" ]; then
+    echo ''
+    echomd "  #red(*Nope*), the email is not valid, let's try again ... "
+    sleep 2 && clear && askForEmail
+  else
+    GIT_EMAIL=$choice
+  fi
+}
+
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  clear
+  echoWithHeader '
+  Installing sudo'
   bash <(curl -s archibold.io/install/sudo)
 fi
 
+
 # clip uses PyGtk to be compatible out of the box
 # with both Xorg and Wayland
-if [ "$(which python 2> /dev/null)" = "" ]; then
-  sudo pacman -S --needed --noconfirm python
-fi
-
 # gjs brings in all it needs to have GJS and PyGtk
 # while openssh is needed to generate SSH key
-sudo pacman -S --needed --noconfirm gjs openssh
+clear
+echoWithHeader '
+  Installing dependencies'
+sudo pacman -S --needed --noconfirm git gjs openssh python > /dev/null 2>&1
 
-if [ "$(which git 2> /dev/null)" = "" ]; then
-  sudo pacman -S --needed --noconfirm git
+if [ "$GIT_USER" = "" ]; then
+  clear
+  askForUser
 fi
 
-if [ "$GIT_USER" != "" ]; then
-  if [ "$GIT_EMAIL" != "" ]; then
-    git config --global user.name "$GIT_USER"
-    git config --global user.email "$GIT_EMAIL"
-    git config --global push.default simple
-    ssh-keygen -t rsa -C "$GIT_EMAIL"
-    eval "$(ssh-agent -s)"
-    ssh-add ~/.ssh/id_rsa
-    echo '
-Time to add your key in GitHub.'
-    read -n1 -r -p "Press any key to copy to clipboard" key
-    cat ~/.ssh/id_rsa.pub | clip
-    echo ''
-    echomd '#green(*✔*) *git* successfully configured.'
-    echo 'You can now add your key* in https://github.com/settings/ssh'
-    echo ' * the key can be pasted via Ctrl+v'
-    echo ''
-    exit 0
-  fi
+if [ "$GIT_EMAIL" = "" ]; then
+  clear
+  askForEmail
 fi
+
+git config --global user.name "$GIT_USER"
+git config --global user.email "$GIT_EMAIL"
+git config --global push.default simple
+if [ ! -f ~/.ssh/id_rsa ]; then
+  ssh-keygen -t rsa -C "$GIT_EMAIL"
+  eval "$(ssh-agent -s)"
+  ssh-add ~/.ssh/id_rsa
+fi
+
+clear
+echoWithHeader '
+  #green(*✔*) *git* successfully configured.
+
+  You can now add your key* in https://github.com/settings/ssh
+   * the key can be pasted via Ctrl+v
+'
+
+cat ~/.ssh/id_rsa.pub | clip
