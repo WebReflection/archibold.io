@@ -1,0 +1,49 @@
+html, body {
+  padding: 0;
+  margin: 0;
+  font-family: sans-serif;
+  color: #eeeeec;
+  background-color: #232729;
+  line-height: 1.5em;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  cursor: default;
+}
+
+h1 {
+  color: #232729;
+  background-color: #eeeeec;
+  margin-top: 24px;
+  margin-left: -16px;
+  font-size: 1.2em;
+  display: inline-block;
+}
+
+body, h1 {
+  padding: 0 16px;
+}
+
+p, ul {
+  margin-top: 0;
+}
+
+pre, code {
+  color: #dddddb;
+  background-color: #0b0c0c;
+  padding: 2px 6px;
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+  cursor: text;
+}
+
+pre > code {
+  padding: 0;
+}
+
+strong {
+  color: #dddddb;
+}

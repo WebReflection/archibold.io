@@ -3,8 +3,9 @@
 #########################
 # archibold.io (C) 2016 #
 #########################
-# <script defer src="/js/tinydown.js"></script>
-# <script defer src="/js/help.js"></script>
+# <link rel="styleSheet" href="/css/markdown.css"/>
+# <script defer src="//cdn.rawgit.com/showdownjs/showdown/1.5.1/dist/showdown.min.js"></script>
+# <script defer src="/js/transformer.js"></script>
 #########################
 
 source <(curl -s archibold.io/require)
@@ -14,13 +15,27 @@ require echomd
 echomd '
 # archibold.io
 
- Options:
+Options:
 
-  * **require** utils via `source <(curl -s archibold.io/require)`
   * **install** software via `bash <(curl -s archibold.io/install/$software)`
+  * **require** utils via `source <(curl -s archibold.io/require)`
 
- To know the list of about available installers or utilities:
+Following an example:
+
+```
+source <(curl -s archibold.io/require)
+require echomd
+require clip
+
+echomd "Copying to clipboard your name *$USER*"
+echo $USER | clip
+```
+
+To know the **list** of about available installers or utilities:
 
   * `bash <(curl -Ls archibold.io/install)`
   * `bash <(curl -Ls archibold.io/utils)`
+
+Please note the `-Ls` command in list cases is mandatory.
+
 '
