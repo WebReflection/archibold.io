@@ -1,28 +1,47 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+source <(curl -s archibold.io/require)
+
+require echomd
+require clip
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+# clip uses PyGtk to be compatible out of the box
+# with both Xorg and Wayland
+if [ "$(which python 2> /dev/null)" = "" ]; then
+  sudo pacman -S --needed --noconfirm python
+fi
+
+# gjs brings in all it needs to have GJS and PyGtk
+# while openssh is needed to generate SSH key
+sudo pacman -S --needed --noconfirm gjs openssh
+
+if [ "$(which git 2> /dev/null)" = "" ]; then
+  sudo pacman -S --needed --noconfirm git
+fi
+
 if [ "$GIT_USER" != "" ]; then
   if [ "$GIT_EMAIL" != "" ]; then
-    sudo pacman -S --needed --noconfirm git
     git config --global user.name "$GIT_USER"
     git config --global user.email "$GIT_EMAIL"
     git config --global push.default simple
-    sudo pacman -S --needed --noconfirm openssh xclip
     ssh-keygen -t rsa -C "$GIT_EMAIL"
     eval "$(ssh-agent -s)"
     ssh-add ~/.ssh/id_rsa
     echo '
 Time to add your key in GitHub.'
     read -n1 -r -p "Press any key to copy to clipboard" key
-    cat ~/.ssh/id_rsa.pub | xclip -selection clipboard
+    cat ~/.ssh/id_rsa.pub | clip
     echo ''
-    icho '[*][g]✔[/] [*]git[/] successfully configured.'
+    echomd '#green(*✔*) *git* successfully configured.'
     echo 'You can now add your key* in https://github.com/settings/ssh'
-    echo ' * the key will be available via Ctrl+v'
+    echo ' * the key can be pasted via Ctrl+v'
     echo ''
     exit 0
   fi
 fi
-echo ''
-icho '[*][r]x[/] unable to configure [*]git[/]'
-icho 'Please specify a [*]GIT_USER[/] and a [*]GIT_EMAIL[/] upfront.'
-echo 'GIT_USER="Name Surname" GIT_EMAIL="name@surname.com" archy install archy-git'
-echo ''
-exit 1

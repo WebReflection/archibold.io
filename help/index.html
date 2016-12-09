@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+source <(curl -s archibold.io/require)
+
+require echomd
+
+echomd '# archibold.io
+
+ options
+
+  * **require** utils via `source <(curl -s archibold.io/require)`
+  * **install** via `bash <(curl -s archibold.io/install/yaourt)`
+  * **help** via `curl -s archibold.io/help`
+
+ to know more about available installers or utilities
+
+  * curl -s archibold.io/install
+  * curl -s archibold.io/utils
+'
