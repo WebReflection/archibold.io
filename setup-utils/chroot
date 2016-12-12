@@ -17,7 +17,7 @@
 # INTEL
 #
 
-source <(curl -s archibold.io/partid)
+source <(curl -s archibold.io/utils/partid)
 
 cleanEfibootmgr() {
   local which="$1"
