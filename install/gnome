@@ -24,7 +24,7 @@ If your drivers works best in old Xorg, type *y*
 "
   read USE_WAYLAND
   if [ "$USE_WAYLAND" = "y" ] || [ "$USE_WAYLAND" = "Y" ]; then
-    echo 'WaylandEnable=false' >> /etc/gdm/custom.conf
+    sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
   fi
 fi
 
