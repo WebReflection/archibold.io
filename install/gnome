@@ -5,8 +5,12 @@
 source <(curl -s archibold.io/install/gpu)
 
 echoWithHeader "
-  Installing GNOME
+  Installing GNOME with GPU drivers:
+  $GPU_DRIVERS
 "
+
+sleep 2
+
 sudo pacman -S --needed --noconfirm \
     $GPU_DRIVERS \
     gnome gnome-software gnome-tweak-tool networkmanager xf86-input-libinput
