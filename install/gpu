@@ -1,0 +1,75 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+source <(curl -s archibold.io/require)
+
+require echomd
+
+echoWithHeader() {
+  clear
+  echomd "
+# archibold.io
+$@
+"
+}
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  echoWithHeader "
+  Installing sudo for $USER"
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+askAboutGPU() {
+  local choice=
+  if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep NVIDIA)" != "" ]; then
+    echoWithHeader "
+  Is the video card an *NVIDIA* one ? [y/n]
+"
+    read -n1 -s choice
+    if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+        GPU_DRIVERS="xf86-video-nouveau nvidia-utils"
+    fi
+  fi
+  if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
+    echoWithHeader "
+  Is the video card an *AMD* or *Radeon* one ? [y/n]
+"
+    read -n1 -s choice
+    if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+      echoWithHeader "
+  Is this a modern GPU compatible with Vulkan API ? [y/n]
+"
+      if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+        GPU_DRIVERS="xf86-video-amdgpu vulkan-radeon"
+      else
+        GPU_DRIVERS="xf86-video-ati"
+      fi
+    fi
+  fi
+  if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep Intel)" != "" ]; then
+    echoWithHeader "
+  Is the video card an *Intel* one ? [y/n]
+"
+    read -n1 -s choice
+    if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+        GPU_DRIVERS="xf86-video-intel vulkan-intel"
+    fi
+  fi
+  if [ "$GPU_DRIVERS" = "" ]; then
+    echoWithHeader "
+  Falling back to generic xf86-video-fbdev driver
+"
+    GPU_DRIVERS="xf86-video-fbdev"
+  fi
+}
+
+if [ "$GPU_DRIVERS" = "" ]; then
+  askAboutGPU
+fi
+
+echoWithHeader "
+  Installing GPU drivers:
+  $GPU_DRIVERS
+"
+sudo pacman -S --needed --noconfirm $GPU_DRIVERS

@@ -142,13 +142,8 @@ askAboutEDD() {
   echoWithHeader "
   Would you like to *disable EDD* ? [y/n]
 "
-  if [ "$INTEL" = "yes" ]; then
-    echomd "  If the target is this system, or any
-  *Intel* based one, *n* is the suggested choice"
-  else
-    echomd "  If the target is this system, or any
-  *AMD* based one, *n* is the suggested choice"
-  fi
+  echomd "  BIOS Enhanced Disk Drive Services
+  is usually available in modern systems."
   read -n1 -s choice
 
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
@@ -319,6 +314,7 @@ if [ "$UEFI" != "32" ] && [ "$UEFI" != "64" ] && [ "$UEFI" != "yes" ]; then
     UEFI=no
   fi
 fi
+
 if [ "$UEFI" = "32" ] || [ "$UEFI" = "64" ]; then
   UEFI="efi${UEFI}"
 else

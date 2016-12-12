@@ -2,11 +2,23 @@
 # archibold.io (C) 2016 #
 #########################
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
-fi
+source <(curl -s archibold.io/install/gpu)
 
-sudo pacman -S --needed gnome gnome-software gnome-tweak-tool networkmanager xf86-input-libinput
+echoWithHeader "
+  Installing GNOME
+"
+sudo pacman  --needed --noconfirm \
+    $GPU_DRIVERS \
+    gnome gnome-software gnome-tweak-tool networkmanager xf86-input-libinput
 
+echoWithHeader "
+  Enabling NetworkManager and GDM
+"
 sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
+
+if [ "$GPU_DRIVERS" = "xf86-video-fbdev" ] && [ -f /etc/gdm/custom.conf ] && [[ "$(cat /etc/gdm/custom.conf | grep -s "^WaylandEnable=false")" = "" ]]; then
+  echoWithHeader "
+  Enforcing X11 via GDM"
+  echo 'WaylandEnable=false' >> /etc/gdm/custom.conf
+fi
