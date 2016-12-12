@@ -15,8 +15,22 @@ sudo pacman -S --needed --noconfirm \
     $GPU_DRIVERS \
     gnome gnome-software gnome-tweak-tool networkmanager xf86-input-libinput
 
+
+if [ "$USE_WAYLAND" = "" ]; then
+  echoWithHeader "
+  Would you like to *disable Wayland* ? [y/*n*]
+
+If your drivers works best in old Xorg, type *y*
+"
+  read USE_WAYLAND
+  if [ "$USE_WAYLAND" = "y" ] || [ "$USE_WAYLAND" = "Y" ]; then
+    echo 'WaylandEnable=false' >> /etc/gdm/custom.conf
+  fi
+fi
+
 echoWithHeader "
   Enabling NetworkManager and GDM
 "
+
 sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
