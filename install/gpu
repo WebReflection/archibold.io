@@ -93,5 +93,3 @@ echoWithHeader "
   $GPU_DRIVERS
 "
 sudo pacman -S --needed --noconfirm $GPU_DRIVERS
-
-export GPU_DRIVERS="$GPU_DRIVERS"
