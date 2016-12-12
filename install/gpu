@@ -16,7 +16,8 @@ $@
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
   echoWithHeader "
-  Installing sudo for $USER"
+  Installing sudo for $USER
+"
   bash <(curl -s archibold.io/install/sudo)
 fi
 
@@ -58,9 +59,17 @@ askAboutGPU() {
   fi
   if [ "$GPU_DRIVERS" = "" ]; then
     echoWithHeader "
+  Is the target a *VirtualBox* like VM ? [y/n]
+"
+    read -n1 -s choice
+    if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+      GPU_DRIVERS="xf86-video-vesa"
+    else
+      echoWithHeader "
   Falling back to generic xf86-video-fbdev driver
 "
-    GPU_DRIVERS="xf86-video-fbdev"
+      GPU_DRIVERS="xf86-video-fbdev"
+    fi
   fi
 }
 
