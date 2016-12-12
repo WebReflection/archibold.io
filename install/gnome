@@ -20,9 +20,3 @@ echoWithHeader "
 "
 sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
-
-if [ "$GPU_DRIVERS" = "xf86-video-fbdev" ] && [ -f /etc/gdm/custom.conf ] && [[ "$(cat /etc/gdm/custom.conf | grep -s "^WaylandEnable=false")" = "" ]]; then
-  echoWithHeader "
-  Enforcing X11 via GDM"
-  echo 'WaylandEnable=false' >> /etc/gdm/custom.conf
-fi
