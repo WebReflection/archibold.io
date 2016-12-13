@@ -13,7 +13,7 @@ this.onload = function () {
   // write markdown instead of text
   document.body.innerHTML = (new showdown.Converter()).makeHtml(
     (document.body.textContent || document.body.innerText).replace(
-      /^[\s\S]+?echomd '([\s\S]+?)'.*$/, '$1'
+      /^[\s\S]+?echomd '([\s\S]+?)'[\s\S]*$/, '$1'
     )
   );
 
