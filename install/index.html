@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+####################
+# (C) archibold.io #
+####################
+# <link rel="styleSheet" href="/css/markdown.css"/>
+# <script defer src="//cdn.rawgit.com/showdownjs/showdown/1.5.1/dist/showdown.min.js"></script>
+# <script defer src="/js/transformer.js"></script><pre>
+####################
+
+echomd '
+# archibold.io
+
+Choose between these commands
+to install a basic Arch Linux
+
+```
+# direct base system
+bash <(curl -s archibold.io/base)
+
+# through this page
+bash <(curl -Ls archibold.io/install)
+```
+'
+
+bash <(curl -s archibold.io/base)
