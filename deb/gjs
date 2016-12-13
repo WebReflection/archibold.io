@@ -1,1 +1,12 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+yes y | sudo apt-get update
+yes y | sudo apt-get upgrade
 yes y | sudo apt-get install xcompmgr xorg gjs libwebkit2gtk-4.0 unclutter
+
+cd ~/
+curl -LO archibold.io/test/gjs/browser
+chmod a+x browser
+echo '~/browser' > ~/.xinitrc
