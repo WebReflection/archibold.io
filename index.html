@@ -272,7 +272,7 @@ ping 8.8.8.8
           Following a list of known gotchas that could make <em>archibold</em> journey not so nice.
         </p>
         <ul>
-          <li>
+          <!-- li>
             <strong>VirtualBox EFI Boot Loader</strong><br/>
             If your VBox doesn't remember how to load archibold,
             type the following on the EFI v2 Shell:
@@ -283,14 +283,10 @@ ping 8.8.8.8
 sudo mkdir -p /boot/EFI/BOOT
 sudo cp /boot/syslinux/loader.efi /boot/EFI/BOOT/bootx64.efi
             </code></pre>
-          </li>
-          <li>
+          </li -->
+          <!-- li>
             <strong>Broadcom WiFi</strong> problems. The hybrid driver works quite OK if patched and it's available via AUR.
-            <pre><code># create folder structure and copy the loader
-sudo mkdir -p /boot/EFI/BOOT
-sudo cp /boot/syslinux/loader.efi /boot/EFI/BOOT/bootx64.efi
-            </code></pre>
-          </li>
+          </li -->
           <li>
             <strong>how to manually install and remove software</strong>. Our best friend here is <a href="https://wiki.archlinux.org/index.php/pacman">pacman</a>!<br/>
             A <i>way-too-quick</i> introduction would be the following, to be typed via the Terminal:
