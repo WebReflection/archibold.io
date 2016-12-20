@@ -223,16 +223,18 @@ createPartitions() {
   BOOT=
   ROOT=
   for part in $(ls ${DISK}*); do
-    if [ "$part" != "$DISK" ]; then
-      if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
-        BOOT=$part
-      elif [ "$UEFI" = "no" ] && [ "$SWAP" = "0" ]; then
-        ROOT=$part
-      elif [ "$SWAP" != "0" ] && [ "$ROOT" = "" ]; then
-        SWAP=$part
-        ROOT=$part
-      else
-        ROOT=$part
+    if [[ "$DISK" =~ ^[a-z/]+([0-9]p)?[0-9]$ ]];
+      if [ "$part" != "$DISK" ]; then
+        if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
+          BOOT=$part
+        elif [ "$UEFI" = "no" ] && [ "$SWAP" = "0" ]; then
+          ROOT=$part
+        elif [ "$SWAP" != "0" ] && [ "$ROOT" = "" ]; then
+          SWAP=$part
+          ROOT=$part
+        else
+          ROOT=$part
+        fi
       fi
     fi
   done
