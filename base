@@ -223,7 +223,8 @@ createPartitions() {
   BOOT=
   ROOT=
   for part in $(ls ${DISK}*); do
-    if [[ "$DISK" =~ ^([a-z/]+[0-9]p|[a-z/]+)[0-9]$ ]]; then
+    if [[ "$part" =~ ^([a-z/]+[0-9]p|[a-z/]+)[0-9]$ ]]; then
+      echo $part
       if [ "$part" != "$DISK" ]; then
         if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
           BOOT=$part
@@ -238,6 +239,10 @@ createPartitions() {
       fi
     fi
   done
+  echo $BOOT
+  echo $SWAP
+  echo $ROOT
+  sleep 1
   if [ "$BOOT" != "" ]; then
     clear
     echoWithHeader "
