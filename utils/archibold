@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #########################
 # archibold.io (C) 2016 #
 #########################
@@ -35,4 +37,8 @@ archibold() {
         sudo mv archibold $TMP
       fi
       ;;
+    *)
+      echo ''
+    ;;
+  esac
 }
