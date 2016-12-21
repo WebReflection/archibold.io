@@ -58,7 +58,7 @@ archibold() {
   archibold *reset-keys*        #grey(earse and refresh db keys)
   archibold *update*            #grey(update all installed packages)
 
-  #green(Packages Options):     Coming Soon
+  #green(Packages Options):           Coming Soon
   archibold *search*  $SWNAME   #grey(search for generic software)
   archibold *install* $SWNAME   #grey(install generic software)
   archibold *remove*  $SWNAME   #grey(uninstall generic software)
