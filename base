@@ -95,7 +95,7 @@ askAboutUEFI() {
   compatible with *UEFI* ? [y/n]
 "
   if [ "$INTEL" != "yes" ]; then
-    echomd "  If the raget is this system
+    echomd "  If the target is this system
   then *n* is the suggested choice"
   fi
   read -n1 -s choice
@@ -109,15 +109,23 @@ askAboutUEFI() {
   This system is probably a *32 bit* one.'
     fi
     echo '  Which UEFI version would you like to use?'
-    echo '  Please type 32 or 64'
-    read -n2 -s -p '' choice
-    if [ "$choice" = "32" ] || [ "$choice" = "64" ]; then
-      UEFI="$choice"
+    echo ''
+    echo "  $(tput bold)1$(tput sgr0) 32 UEFI Compatible"
+    echo "  $(tput bold)2$(tput sgr0) 64 UEFI Compatible"
+
+    echo ''
+    read -n1 -s choice
+
+    if [ "$choice" = "1" ]; then
+      UEFI="32"
+    elif [ "$choice" = "2" ]; then
+      UEFI="64"
     else
       echo ''
       echomd "  #red(*Nope*), let's try again ... "
       sleep 2 && clear && askAboutUEFI
     fi
+
   else
     UEFI="no"
   fi

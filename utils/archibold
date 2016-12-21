@@ -17,7 +17,7 @@ archibold() {
       sudo pacman-optimize
       ;;
 
-    reset)
+    reset-keys)
       sudo dirmngr </dev/null
       sudo pacman -Sy --noconfirm
       sudo pacman-key -u
@@ -55,7 +55,7 @@ archibold() {
 
   #green(System Options):
   archibold *clean*             #grey(clean and optimize db cache)
-  archibold *reset*             #grey(earse and refresh db keys)
+  archibold *reset-keys*        #grey(earse and refresh db keys)
   archibold *update*            #grey(update all installed packages)
 
   #green(Packages Options):
