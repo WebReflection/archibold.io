@@ -6,7 +6,7 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
 
-cd tmp
+cd /tmp
 curl -LO archibold.io/utils/clip
 chmod a+x clip
 sudo mv clip /usr/bin

@@ -1,0 +1,12 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+if [ "$(which system 2> /dev/null)" = "" ] && "$(cat ~/.bashrc | grep 'alias system')" = "" ]; then
+  bash <(curl -s archibold.io/install/archibold)
+  echo 'alias system=archibold' >> ~/.bashrc
+fi
