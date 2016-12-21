@@ -26,11 +26,6 @@ archibold() {
       ;;
 
     update)
-      sudo pacman -Syu --noconfirm
-      sudo pacman-db-upgrade
-      if [ "$(which yaourt 2> /dev/null)" != "" ]; then
-        yaourt -Syu --aur --noconfirm
-      fi
       if [ "$(which archibold 2> /dev/null)" != "" ]; then
         TMP="$(which archibold)"
         cd /tmp
@@ -38,6 +33,11 @@ archibold() {
         echo 'archibold "$@"' >> archibold
         chmod a+x archibold
         sudo mv archibold $TMP
+      fi
+      sudo pacman -Syu --noconfirm
+      sudo pacman-db-upgrade
+      if [ "$(which yaourt 2> /dev/null)" != "" ]; then
+        yaourt -Syu --aur --noconfirm
       fi
       ;;
 
@@ -58,7 +58,7 @@ archibold() {
   archibold *reset-keys*        #grey(earse and refresh db keys)
   archibold *update*            #grey(update all installed packages)
 
-  #green(Packages Options):
+  #green(Packages Options):     Coming Soon
   archibold *search*  $SWNAME   #grey(search for generic software)
   archibold *install* $SWNAME   #grey(install generic software)
   archibold *remove*  $SWNAME   #grey(uninstall generic software)
