@@ -1,8 +1,0 @@
-#########################
-# archibold.io (C) 2016 #
-#########################
-
-cd /tmp
-curl -LO archibold.io/setup-utils/syslinux.cfg
-
-sed -ie "s/__APPEND__/asd/g" syslinux.cfg
