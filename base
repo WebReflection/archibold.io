@@ -230,7 +230,7 @@ createPartitions() {
   sleep 1
   clear
   echoWithHeader "
-  How *$DISK* is configured:
+  The *$DISK* will be partitioned as such:
 "
   BOOT=
   ROOT=
