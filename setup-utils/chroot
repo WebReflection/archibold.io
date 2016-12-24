@@ -120,4 +120,13 @@ if [ "$AUTOLOGIN" = "yes" ]; then
   chown -R $USER:users /home/$USER/.hushlogin
 fi
 
+# yaourt repo
+echo '
+[archlinuxfr]
+SigLevel = Never
+Server = http://repo.archlinux.fr/$arch
+' >> /etc/pacman.conf
+
+pacman -Sy
+
 exit
