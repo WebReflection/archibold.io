@@ -228,6 +228,9 @@ createPartitions() {
     sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100% > /dev/null 2>&1
   fi
   sleep 1
+  echoWithHeader "
+  How *$DISK* is configured:
+"
   BOOT=
   ROOT=
   for part in $(ls ${DISK}*); do
@@ -235,23 +238,23 @@ createPartitions() {
       if [ "$part" != "$DISK" ]; then
         if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
           BOOT=$part
-          echo "boot: $(tput bold)$BOOT$(tput sgr0)"
+          echo "  boot: $(tput bold)$BOOT$(tput sgr0)"
         elif [ "$UEFI" = "no" ] && [ "$SWAP" = "0" ]; then
           ROOT=$part
-          echo "root: $(tput bold)$ROOT$(tput sgr0)"
+          echo "  root: $(tput bold)$ROOT$(tput sgr0)"
         elif [ "$SWAP" != "0" ] && [ "$ROOT" = "" ]; then
           SWAP=$part
           ROOT=$part
-          echo "swap: $(tput bold)$SWAP$(tput sgr0)"
+          echo "  swap: $(tput bold)$SWAP$(tput sgr0)"
         else
           ROOT=$part
-          echo "root: $(tput bold)$ROOT$(tput sgr0)"
+          echo "  root: $(tput bold)$ROOT$(tput sgr0)"
           break
         fi
       fi
     fi
   done
-  sleep 3
+  sleep 5
   if [ "$BOOT" != "" ]; then
     clear
     echoWithHeader "
