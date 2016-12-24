@@ -377,6 +377,11 @@ fi
 if [ "$AUTOLOGIN" = "" ]; then
   clear && askAboutAUTOLOGIN
 fi
+
+if [ "$LANGUAGE" = "" ]; then
+  clear && askAboutLANGUAGE
+fi
+
 clear && createPartitions
 
 if [ -d archibold.env ]; then
@@ -387,10 +392,6 @@ sudo mount $ROOT archibold.env
 if [ "$BOOT" != "" ]; then
   sudo mkdir -p archibold.env/boot
   sudo mount $BOOT archibold.env/boot
-fi
-
-if [ "$LANGUAGE" = "" ]; then
-  clear && askAboutLANGUAGE
 fi
 
 clear
