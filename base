@@ -370,7 +370,8 @@ if [ "$QUIET" = "" ]; then
   clear && askAboutQUIET
 fi
 if [ "$QUIET" = "yes" ]; then
-  QUIET=" quiet splash loglevel=0 console=tty2"
+  # QUIET=" quiet splash loglevel=0 console=tty2"
+  QUIET=" quiet splash"
 else
   QUIET=""
 fi
