@@ -32,7 +32,7 @@ cleanEfibootmgr() {
 }
 
 # Locale
-cat /etc/locale.gen | sed -r "s/^#($LANGUAGE_.* UTF-8)/\1/" > /etc/locale.tmp
+cat /etc/locale.gen | sed -r "s/^#(${LANGUAGE}_.* UTF-8)/\1/" > /etc/locale.tmp
 mv /etc/locale.tmp /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
