@@ -290,6 +290,22 @@ askAboutQUIET() {
   fi
 }
 
+askAboutLANGUAGE() {
+  local choice=
+  echoWithHeader "
+  Which *language* do you need ?
+
+  Pleas specify just 2 chars like: en, de, it ..."
+  read -n1 -s choice
+  if [[ "$choice" =~ ^([a-z][a-z])$ ]]; then
+    LANGUAGE="$choice"
+  else
+    echo ''
+    echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
+    sleep 2 && clear && askAboutLANGUAGE
+  fi
+}
+
 askForUser() {
   local choice=
   echoWithHeader "
@@ -371,6 +387,10 @@ sudo mount $ROOT archibold.env
 if [ "$BOOT" != "" ]; then
   sudo mkdir -p archibold.env/boot
   sudo mount $BOOT archibold.env/boot
+fi
+
+if [ "$LANGUAGE" = "" ]; then
+  clear && askAboutLANGUAGE
 fi
 
 clear
