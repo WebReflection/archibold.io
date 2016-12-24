@@ -411,6 +411,7 @@ sleep 1
 echo "#!/usr/bin/env bash
 
 LABEL=archibold
+LANGUAGE=$LANGUAGE
 DISK=$DISK
 BOOT=$BOOT
 SWAP=$SWAP
