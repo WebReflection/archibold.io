@@ -2,7 +2,7 @@
 # archibold.io (C) 2016 #
 #########################
 
-if [ "$(which open 2> /dev/null)" = "" ] && "$(cat ~/.bashrc | grep 'alias open')" = "" ]; then
+if [ "$(which open 2> /dev/null)" = "" ] && [ "$(cat ~/.bashrc | grep 'alias open')" = "" ]; then
   echo 'alias open=xdg-open' >> ~/.bashrc
   source <(curl -s archibold.io/utils/open)
 fi
