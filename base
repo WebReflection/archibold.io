@@ -228,6 +228,7 @@ createPartitions() {
     sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100% > /dev/null 2>&1
   fi
   sleep 1
+  clear
   echoWithHeader "
   How *$DISK* is configured:
 "
@@ -254,7 +255,7 @@ createPartitions() {
       fi
     fi
   done
-  sleep 5
+  sleep 3
   if [ "$BOOT" != "" ]; then
     clear
     echoWithHeader "
