@@ -273,7 +273,12 @@ createPartitions() {
   clear
     echoWithHeader "
   creating *root* partition"
-  sudo bash -c "yes | mkfs.ext4 $ROOT"
+  if [ "$SWAP" = "0" && "$BOOT" = "" ]; then
+    echo '  disabling pure 64 mode'
+    sudo bash -c "yes | mkfs.ext4 -O ^64bit $ROOT"
+  else
+    sudo bash -c "yes | mkfs.ext4 $ROOT"
+  fi
   partid create $ROOT
   sleep 1
 }
