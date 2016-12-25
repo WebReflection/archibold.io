@@ -34,16 +34,17 @@ archibold() {
         chmod a+x archibold
         sudo mv archibold $TMP
       fi
-      sudo pacman -Syu --noconfirm
-      sudo pacman-db-upgrade
       if [ "$(which yaourt 2> /dev/null)" != "" ]; then
-        yaourt -Syu --aur --noconfirm
+        yaourt -Syua --noconfirm
+      else
+        sudo pacman -Syu --noconfirm
       fi
+      sudo pacman-db-upgrade
       ;;
 
     *)
       if [ "$(which echomd 2> /dev/null)" = "" ]; then
-        source <(curl -s archibold.io/util/echomd)
+        source <(curl -s archibold.io/utils/echomd)
       fi
       echomd '
 # archibold.io
