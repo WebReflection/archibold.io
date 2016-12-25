@@ -273,7 +273,7 @@ createPartitions() {
   clear
     echoWithHeader "
   creating *root* partition"
-  if [ "$SWAP" = "0" ] && [ "$BOOT" = "" ] && [ "$(uname -m)" = "x86_64" ]; then
+  if [ "$BOOT" = "" ] && [ "$(uname -m)" = "x86_64" ]; then
     echomd '  *disabling* pure *64bit* mode
 '
     sudo bash -c "yes | mkfs.ext4 -O ^64bit $ROOT"

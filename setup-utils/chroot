@@ -74,7 +74,7 @@ mv /etc/fstab.tmp /etc/fstab
 # UEFI
 echo ''
 # syslinux-install_update -iam (m for boot loader)
-syslinux-install_update -ia
+syslinux-install_update -iam
 echo ''
 sleep 1
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
