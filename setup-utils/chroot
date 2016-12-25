@@ -73,9 +73,6 @@ mv /etc/fstab.tmp /etc/fstab
 
 # UEFI
 echo ''
-# syslinux-install_update -iam (m for boot loader)
-syslinux-install_update -iam
-echo ''
 sleep 1
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   cleanEfibootmgr "$LABEL"
@@ -105,6 +102,10 @@ sed -ie "s/MENU COLOR title.*/MENU COLOR title 0 #000000 #00000000 std/" /boot/s
 sed -ie "s/MENU COLOR unsel.*/MENU COLOR unsel 0 #000000 #00000000 std/" /boot/syslinux/syslinux.cfg
 sleep 1
 
+# Syslinux
+echo ''
+syslinux-install_update -iam
+
 # Users
 echo -e "root
 root" | passwd
@@ -119,14 +120,5 @@ if [ "$AUTOLOGIN" = "yes" ]; then
   touch /home/$USER/.hushlogin
   chown -R $USER:users /home/$USER/.hushlogin
 fi
-
-# yaourt repo
-echo '
-[archlinuxfr]
-SigLevel = Never
-Server = http://repo.archlinux.fr/$arch
-' >> /etc/pacman.conf
-
-pacman -Sy
 
 exit
