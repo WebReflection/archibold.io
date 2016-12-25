@@ -7,6 +7,6 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
 fi
 
 cd /tmp
-curl -LO archibold.io/utils/clip
+curl -LOs archibold.io/utils/clip
 chmod a+x clip
 sudo mv clip /usr/bin

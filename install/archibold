@@ -7,7 +7,7 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
 fi
 
 cd /tmp
-curl -LO archibold.io/utils/archibold
+curl -LOs archibold.io/utils/archibold
 echo 'archibold "$@"' >> archibold
 chmod a+x archibold
 sudo mv archibold /usr/bin

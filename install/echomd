@@ -7,6 +7,6 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
 fi
 
 cd /tmp
-curl -LO archibold.io/utils/echomd
+curl -LOs archibold.io/utils/echomd
 chmod a+x echomd
 sudo mv echomd /usr/bin
