@@ -44,7 +44,7 @@ archibold() {
 
     *)
       if [ "$(which echomd 2> /dev/null)" = "" ]; then
-        source <(curl -s archibold.io/utils/echomd)
+        bash <(curl -s archibold.io/install/echomd)
       fi
       echomd '
 # archibold.io
