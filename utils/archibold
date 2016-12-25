@@ -29,7 +29,7 @@ archibold() {
       if [ "$(which archibold 2> /dev/null)" != "" ]; then
         TMP="$(which archibold)"
         cd /tmp
-        curl -LO archibold.io/utils/archibold
+        curl -s -LO archibold.io/utils/archibold
         echo 'archibold "$@"' >> archibold
         chmod a+x archibold
         sudo mv archibold $TMP
