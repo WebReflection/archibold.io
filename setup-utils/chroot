@@ -71,6 +71,10 @@ sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
 cat /etc/fstab | sed -r 's/^(# )?(\/etc|efivarfs).*//' > /etc/fstab.tmp
 mv /etc/fstab.tmp /etc/fstab
 
+# Syslinux
+echo ''
+syslinux-install_update -iam
+
 # UEFI
 echo ''
 sleep 1
@@ -101,10 +105,6 @@ sed -ie "s/MENU COLOR border.*/MENU COLOR border 30;40 #000000 #00000000 std/" /
 sed -ie "s/MENU COLOR title.*/MENU COLOR title 0 #000000 #00000000 std/" /boot/syslinux/syslinux.cfg
 sed -ie "s/MENU COLOR unsel.*/MENU COLOR unsel 0 #000000 #00000000 std/" /boot/syslinux/syslinux.cfg
 sleep 1
-
-# Syslinux
-echo ''
-syslinux-install_update -iam
 
 # Users
 echo -e "root
