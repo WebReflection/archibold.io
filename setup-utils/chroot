@@ -96,7 +96,7 @@ if [ "$INTEL" != "" ]; then
 fi
 sed -ie "s#TIMEOUT 50#TIMEOUT 10#" /boot/syslinux/syslinux.cfg
 sed -ie "s#UI menu.c32#UI menu.c32\nMENU ROWS 2\nMENU VSHIFT 8#" /boot/syslinux/syslinux.cfg
-sed -ie "s/MENU TITLE /#MENU TITLE/" /boot/syslinux/syslinux.cfg
+sed -ie "s/MENU TITLE /#MENU TITLE /" /boot/syslinux/syslinux.cfg
 sed -ie "s/MENU COLOR border.*/MENU COLOR border 30;40 #000000 #00000000 std/" /boot/syslinux/syslinux.cfg
 sed -ie "s/MENU COLOR title.*/MENU COLOR title 0 #000000 #00000000 std/" /boot/syslinux/syslinux.cfg
 sed -ie "s/MENU COLOR unsel.*/MENU COLOR unsel 0 #000000 #00000000 std/" /boot/syslinux/syslinux.cfg
