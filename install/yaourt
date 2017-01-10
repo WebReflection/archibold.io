@@ -7,11 +7,11 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
 fi
 
 if [ "$(cat /etc/pacman.conf | grep '\[archlinuxfr\]')" = "" ]; then
-  echo '
+  sudo bash -c "echo '
 [archlinuxfr]
 SigLevel = Never
 Server = http://repo.archlinux.fr/$arch
-' >> /etc/pacman.conf
+' >> /etc/pacman.conf"
   sudo pacman -Sy
 fi
 
