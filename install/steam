@@ -1,0 +1,15 @@
+#########################
+# archibold.io (C) 2017 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+sudo sed -ie "s|#\[multilib\]|\[multilib\]\nInclude = /etc/pacman.d/mirrorlist|" /etc/pacman.conf
+
+sudo pacman -S --needed --noconfirm steam \
+  lib32-libxtst lib32-libpulse lib32-openal \
+  lib32-nss lib32-gtk2 lib32-gtk3 \
+  lib32-libcanberra lib32-gconf \
+  lib32-dbus-glib lib32-libnm-glib lib32-libudev0-shim

@@ -22,7 +22,7 @@ installFromAUR() {
 }
 
 # if [ "$(cat /etc/pacman.conf | grep '\[archlinuxfr\]')" = "" ]; then
-#  sudo bash -c "echo '
+#   sudo bash -c "echo '
 # [archlinuxfr]
 # SigLevel = Never
 # Server = http://repo.archlinux.fr/$arch
@@ -37,6 +37,7 @@ sudo chown nobody:users /home/tmp-yaourt-install
 echo "
 $(tput bold)yaourt installer$(tput sgr0)
 "
+
 echo  " installing dependencies"
 sudo pacman -S --needed --noconfirm base-devel linux-headers git diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
 installFromAUR "package-query"
@@ -44,3 +45,4 @@ sync && sleep 1
 installFromAUR "yaourt"
 sync && sleep 1
 sudo rm -rf /home/tmp-yaourt-install
+'
