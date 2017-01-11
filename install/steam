@@ -12,4 +12,5 @@ sudo pacman -Sy --needed --noconfirm steam \
   lib32-libxtst lib32-libpulse lib32-openal \
   lib32-nss lib32-gtk2 lib32-gtk3 \
   lib32-libcanberra lib32-gconf \
-  lib32-dbus-glib lib32-libnm-glib lib32-libudev0-shim
+  lib32-dbus-glib lib32-libnm-glib lib32-libudev0-shim \
+  libpng12
