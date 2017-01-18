@@ -2,6 +2,10 @@
 # archibold.io (C) 2016 #
 #########################
 
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
 source <(curl -s archibold.io/install/gpu)
 
 echoWithHeader "
