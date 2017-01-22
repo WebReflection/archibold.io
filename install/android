@@ -1,0 +1,35 @@
+#########################
+# archibold.io (C) 2017 #
+#########################
+
+if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/yaourt)
+fi
+
+yaourt -S --needed --noconfirm \
+  jdk8-openjdk android-udev android-tools apache-ant \
+  android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
+
+sudo groupadd sdkusers
+sudo gpasswd -a $USER sdkusers
+
+if [ "$ANDROID_HOME" = "" ]; then
+  export ANDROID_HOME=/opt/android-sdk
+  echo '
+# needed by PhoneGap
+ANDROID_HOME=/opt/android-sdk
+PATH="$PATH:$ANDROID_HOME/tools"'>>~/.bashrc
+fi
+
+sudo chown -R :sdkusers /opt/android-sdk/
+sudo chmod -R g+w /opt/android-sdk/
+
+if [ ! -f /etc/udev/rules.d/51-android.rules ]; then
+  echo '
+SUBSYSTEM=="usb", ATTR{idVendor}=="[VENDOR ID]", MODE="0666"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_adb"
+SUBSYSTEM=="usb",ATTR{idVendor}=="[VENDOR ID]",ATTR{idProduct}=="[PRODUCT ID]",SYMLINK+="android_fastboot"
+'>>51-android.rules
+  sudo mv 51-android.rules /etc/udev/rules.d/
+  sudo udevadm control --reload-rules
+fi
