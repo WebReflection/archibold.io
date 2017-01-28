@@ -30,9 +30,12 @@ archibold() {
         TMP="$(which archibold)"
         cd /tmp
         curl -LOs archibold.io/utils/archibold
-        echo 'archibold "$@"' >> archibold
-        chmod a+x archibold
-        sudo mv archibold $TMP
+        if [ -f archibold ]; then
+          echo 'archibold "$@"' >> archibold
+          chmod a+x archibold
+          sudo mv archibold $TMP
+        fi
+        cd -
       fi
       if [ "$(which yaourt 2> /dev/null)" != "" ]; then
         yaourt -Syua --noconfirm
