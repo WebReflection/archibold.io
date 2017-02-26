@@ -17,8 +17,25 @@ archibold() {
   case $1 in
 
     clean)
+      sudo pacman -R --noconfirm $(sudo pacman -Qdtq)
       sudo pacman -Sc --noconfirm
       sudo pacman-optimize
+      ;;
+
+    install)
+      if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+        sudo pacman -S --needed --noconfirm $2
+      else
+        yaourt -S --needed --noconfirm $2
+      fi
+      ;;
+
+    remove)
+      if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+        sudo pacman -Rc $2
+      else
+        yaourt -Rc $2
+      fi
       ;;
 
     reset-keys)
@@ -83,7 +100,7 @@ bash <(curl -s archibold.io/install/$2)
   archibold *update*            #grey(update all installed packages)
   archibold *upgrade*           #grey(alias for update and clean)
 
-  #green(Packages Options):           Coming Soon
+  #green(Packages Options):
   archibold *search*  $SWNAME   #grey(search for generic software)
   archibold *install* $SWNAME   #grey(install generic software)
   archibold *remove*  $SWNAME   #grey(uninstall generic software)
