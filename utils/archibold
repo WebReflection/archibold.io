@@ -17,8 +17,16 @@ archibold() {
   case $1 in
 
     clean)
-      sudo pacman -R --noconfirm $(sudo pacman -Qdtq)
       sudo pacman -Sc --noconfirm
+      if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+        while [ "$(sudo pacman -Qdtq)" != "" ]; do
+          sudo pacman -R --noconfirm $(sudo pacman -Qdtq)
+        done
+      else
+        while [ "$(yaourt -Qdtq)" != "" ]; do
+          sudo pacman -R --noconfirm $(yaourt -Qdtq)
+        done
+      fi
       sudo pacman-optimize
       ;;
 
