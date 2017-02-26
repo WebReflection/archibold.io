@@ -8,6 +8,10 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/sudo)
 fi
 
+if [ "$(which echomd 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/echomd)
+fi
+
 archibold() {
   local TMP=
   case $1 in
@@ -23,6 +27,21 @@ archibold() {
       sudo pacman-key -u
       sudo pacman-key --populate archlinux
       sudo pacman-key --refresh-keys
+      ;;
+
+    search)
+      if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+        sudo pacman -Ss $2
+      else
+        yaourt -Ss $2
+      fi
+      TMP=$(curl -Ls archibold.io/install | grep $2)
+      if [ "$TMP" != "" ]; then
+        echomd "
+# archibold.io version
+bash <(curl -s archibold.io/install/$2)
+"
+      fi
       ;;
 
     update)
@@ -45,10 +64,11 @@ archibold() {
       sudo pacman-db-upgrade
       ;;
 
+    upgrade)
+      archibold update && archibold clean
+      ;;
+
     *)
-      if [ "$(which echomd 2> /dev/null)" = "" ]; then
-        bash <(curl -s archibold.io/install/echomd)
-      fi
       echomd '
 # archibold.io
 
@@ -61,6 +81,7 @@ archibold() {
   archibold *clean*             #grey(clean and optimize db cache)
   archibold *reset-keys*        #grey(earse and refresh db keys)
   archibold *update*            #grey(update all installed packages)
+  archibold *upgrade*           #grey(alias for update and clean)
 
   #green(Packages Options):           Coming Soon
   archibold *search*  $SWNAME   #grey(search for generic software)
