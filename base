@@ -260,7 +260,11 @@ createPartitions() {
     clear
     echoWithHeader "
   formatting *boot* partition"
-    sudo mkfs.vfat $BOOT
+    if [ "$UEFI" = "yes" ]; then
+      sudo mkfs.ext2 $BOOT
+    else
+      sudo mkfs.vfat $BOOT
+    fi
     sleep 1
   fi
   if [ "$SWAP" != "0" ]; then
