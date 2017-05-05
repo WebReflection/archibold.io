@@ -1,6 +1,6 @@
 #!/usr/bin/env gjs
 
-;(function (Gtk, Gdk, WebKit2) {'use strict';
+(function (Gtk, Gdk, WebKit2) {'use strict';
   Gtk.init(null);
   const
     Screen = Gdk.Screen.get_default(),

@@ -1,0 +1,20 @@
+#!/usr/bin/env gjs
+
+(function (Gtk){'use strict';
+  Gtk.init(null);
+  const
+    win = new Gtk.Window({
+      type : Gtk.WindowType.TOPLEVEL,
+      window_position: Gtk.WindowPosition.CENTER
+    })
+  ;
+
+  win.set_default_size(200, 80);
+  win.add(new Gtk.Label({label: 'Hello GJS!'}));
+  win.connect('show', () => {
+    win.set_keep_above(true);
+    Gtk.main();
+  });
+  win.connect('destroy', () => Gtk.main_quit());
+  win.show_all();
+}(imports.gi.Gtk));
