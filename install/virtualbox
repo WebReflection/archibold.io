@@ -1,0 +1,28 @@
+#########################
+# archibold.io (C) 2017 #
+#########################
+
+if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/yaourt)
+fi
+
+sudo pacman -S --needed --noconfirm \
+  linux-headers \
+  virtualbox virtualbox-host-modules-arch \
+  qt5-x11extras
+
+if [ ! -f /etc/modules-load.d/virtualbox.conf ]; then
+  echo 'vboxdrv
+vboxnetadp
+vboxnetflt
+vboxpci'>~/virtualbox.conf
+  sudo mv ~/virtualbox.conf /etc/modules-load.d/virtualbox.conf
+fi
+
+sudo modprobe vboxdrv
+sudo modprobe vboxnetadp
+sudo modprobe vboxnetflt
+sudo modprobe vboxpci
+sudo gpasswd -a $USER vboxusers
+
+yaourt -S --needed --noconfirm virtualbox-ext-oracle
