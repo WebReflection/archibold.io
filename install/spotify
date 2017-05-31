@@ -21,9 +21,6 @@ askAboutRetina() {
   fi
 }
 
-yaourt -S --needed --noconfirm \
-  libgcrypt15 \
-  libcurl-compat \
-  spotify
+yaourt -S --needed --noconfirm spotify
 
 askAboutRetina
