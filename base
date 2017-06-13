@@ -261,9 +261,9 @@ createPartitions() {
     echoWithHeader "
   formatting *boot* partition"
     if [ "$UEFI" = "yes" ]; then
-      sudo mkfs.ext2 $BOOT
+      sudo bash -c "yes y | mkfs.ext2 $BOOT"
     else
-      sudo mkfs.vfat $BOOT
+      sudo bash -c "yes y | mkfs.vfat $BOOT"
     fi
     sleep 1
   fi
@@ -271,7 +271,7 @@ createPartitions() {
     clear
     echoWithHeader "
   creating *swap* partition"
-    sudo mkswap $SWAP
+    sudo bash -c "yes y | mkswap $SWAP"
     sleep 1
   fi
   clear
@@ -280,9 +280,9 @@ createPartitions() {
   if [ "$BOOT" = "" ] && [ "$(uname -m)" = "x86_64" ]; then
     echomd '  *disabling* pure *64bit* mode
 '
-    sudo bash -c "yes | mkfs.ext4 -O ^64bit $ROOT"
+    sudo bash -c "yes y | mkfs.ext4 -O ^64bit $ROOT"
   else
-    sudo bash -c "yes | mkfs.ext4 $ROOT"
+    sudo bash -c "yes y | mkfs.ext4 $ROOT"
   fi
   partid create $ROOT
   sleep 1
