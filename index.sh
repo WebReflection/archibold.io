@@ -14,6 +14,7 @@ echo "#!/usr/bin/env bash
 ####################
 # (C) archibold.io #
 ####################
+# <script>document.documentElement.style.opacity=0</script>
 # <link rel='styleSheet' href='/css/markdown.css'/>
 # <script defer src='//cdn.rawgit.com/showdownjs/showdown/1.5.1/dist/showdown.min.js'></script>
 # <script defer src='/js/transformer.js'></script><pre>

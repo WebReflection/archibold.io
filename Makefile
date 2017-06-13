@@ -1,4 +1,4 @@
-.PHONY: build install utils
+.PHONY: build install utils patch
 
 build:
 	make install
@@ -9,3 +9,6 @@ install:
 
 utils:
 	DIR=utils bash index.sh
+
+patch:
+	DIR=patch bash index.sh

@@ -3,18 +3,24 @@ this.onload = function () {
 
   // keep styles in the page
   for (var
-    tmp = document.head || document.getElementsByTagName('head')[0],
-    el = document.getElementsByTagName('link'),
+    d = document,
+    html = d.documentElement.style,
+    head = d.head || d.getElementsByTagName('head')[0],
+    body = d.body,
+    el = d.getElementsByTagName('link'),
     i = 0; i < el.length; i++
   ) {
-    tmp.appendChild(el[i]);
+    head.appendChild(el[i]);
   }
 
   // write markdown instead of text
-  document.body.innerHTML = (new showdown.Converter()).makeHtml(
-    (document.body.textContent || document.body.innerText).replace(
+  body.innerHTML = (new showdown.Converter()).makeHtml(
+    (body.textContent || body.innerText).replace(
       /^[\s\S]*?echomd '([\s\S]+?)'[\s\S]*$/, '$1'
     )
   );
+
+  html.transition = 'opacity .8s ease-out';
+  setTimeout(function(){ html.opacity = 1; }, 200);
 
 };

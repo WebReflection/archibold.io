@@ -1,0 +1,25 @@
+#########################
+# archibold.io (C) 2017 #
+#########################
+
+# will bring in sudo and yaourt
+if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/yaourt)
+fi
+
+sudo pacman  -S --needed --noconfirm tlp thermald
+
+# Disable Suspend, broken on CherryTrail
+sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.target
+
+# Disable Sleep/Hybernate when Lid is Closed
+sudo sh -c 'echo -e "[Login]\nHandleLidSwitch=ignore\nHandleLidSwitchDocked=ignore" >> /etc/systemd/logind.conf'
+
+# Save internal memory
+sudo sed -i -e 's/errors=remount-ro 0/discard,noatime,errors=remount-ro 0/g' /etc/fstab
+
+yaourt -S --needed --noconfirm hid-asus-dkms-git
+
+echo 'rebooting ...'
+sync && sleep 15
+sudo reboot now
