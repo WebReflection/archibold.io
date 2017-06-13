@@ -16,7 +16,7 @@ sudo systemctl mask sleep.target suspend.target hibernate.target hybrid-sleep.ta
 sudo sh -c 'echo -e "[Login]\nHandleLidSwitch=ignore\nHandleLidSwitchDocked=ignore" >> /etc/systemd/logind.conf'
 
 # Save internal memory
-sudo sed -i -e 's/errors=remount-ro 0/discard,noatime,errors=remount-ro 0/g' /etc/fstab
+sudo sed -i -e 's/errors=remount-ro	0/discard,noatime,errors=remount-ro	0/g' /etc/fstab
 
 yaourt -S --needed --noconfirm hid-asus-dkms-git
 
