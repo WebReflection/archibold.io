@@ -6,9 +6,26 @@ if [ "$(which yaourt 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/yaourt)
 fi
 
-yaourt -S --needed --noconfirm \
-  jdk8-openjdk android-udev android-tools apache-ant \
-  android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
+askPlatform() {
+  local choice=
+  echo $1
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    yaourt -S --needed --noconfirm \
+      jdk8-openjdk android-udev apache-ant \
+      android-sdk-25.2.5 \
+      android-sdk-build-tools-25.0.1 \
+      android-platform-25 \
+      android-tools \
+      android-sdk-platform-tools
+  else
+    yaourt -S --needed --noconfirm \
+      jdk8-openjdk android-udev android-tools apache-ant \
+      android-sdk android-sdk-platform-tools android-sdk-build-tools android-platform
+  fi
+}
+
+askPlatform 'Would you like explicit platform 25? (NativeScript)'
 
 sudo groupadd sdkusers
 sudo gpasswd -a $USER sdkusers
