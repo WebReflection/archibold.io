@@ -45,9 +45,9 @@ archibold() {
 
     remove)
       if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-        sudo pacman -Rc $2
+        sudo pacman -Rs $2
       else
-        yaourt -Rc $2
+        yaourt -Rs $2
       fi
       ;;
 
