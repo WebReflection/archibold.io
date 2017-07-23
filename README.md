@@ -1,4 +1,4 @@
-### Using archibold require script
+### Using archibold require script [![donate](https://img.shields.io/badge/$-donate-ff69b4.svg?maxAge=2592000&style=flat)](https://github.com/WebReflection/donate)
 
 It is possible to write _Bash_ scripts capable of requiring modules, utilities, and software at runtime.
 
