@@ -43,6 +43,14 @@ archibold() {
       fi
       ;;
 
+    offline)
+      gsettings set org.gnome.software  download-updates false
+      ;;
+
+    online)
+      gsettings set org.gnome.software  download-updates true
+      ;;
+
     remove)
       if [ "$(which yaourt 2> /dev/null)" = "" ]; then
         sudo pacman -Rs $2
@@ -109,9 +117,10 @@ bash <(curl -s archibold.io/install/$2)
 
   #green(System Options):
   archibold *clean*             #grey(clean and optimize db cache)
+  archibold *offline*           #grey(disable GNOME Software updates)
+  archibold *online*            #grey(enable GNOME Software updates)
   archibold *reset-keys*        #grey(earse and refresh db keys)
   archibold *update*            #grey(update all installed packages)
-  archibold *upgrade*           #grey(alias for update and clean)
 
   #green(Packages Options):
   archibold *search*  $SWNAME   #grey(search for generic software)
