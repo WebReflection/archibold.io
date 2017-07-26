@@ -44,11 +44,15 @@ archibold() {
       ;;
 
     offline)
+      echomd "Current updates: **$(gsettings get org.gnome.software  download-updates)**"
       gsettings set org.gnome.software  download-updates false
+      echomd "Automatic updates now **disabled**".
       ;;
 
     online)
+      echomd "Current updates: **$(gsettings get org.gnome.software  download-updates)**"
       gsettings set org.gnome.software  download-updates true
+      echomd "Automatic updates now **enabled**".
       ;;
 
     remove)
