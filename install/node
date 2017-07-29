@@ -40,6 +40,8 @@ if [ ! -d ~/.npm-packages ]; then
   echoWithHeader '
   Configuring npm prefix'
   mkdir -p ~/.npm-packages/bin
+  sudo touch /usr/etc/npmrc
+  sudo chown $USER:users /usr/etc/npmrc
   npm config set prefix '~/.npm-packages'
 fi
 
