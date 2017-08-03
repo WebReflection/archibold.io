@@ -39,7 +39,7 @@ $(tput bold)yaourt installer$(tput sgr0)
 "
 
 echo  " installing dependencies"
-sudo pacman -S --needed --noconfirm base-devel binutils linux-headers git diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
+sudo pacman -Sy --needed --noconfirm base-devel binutils linux-headers git diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
 installFromAUR "package-query"
 sync && sleep 1
 installFromAUR "yaourt"
