@@ -86,6 +86,10 @@ bash <(curl -s archibold.io/install/$2)
       fi
       ;;
 
+    uninstall)
+      remove $2
+      ;;
+
     update)
       if [ "$(which archibold 2> /dev/null)" != "" ]; then
         TMP="$(which archibold)"
