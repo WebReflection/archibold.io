@@ -87,7 +87,7 @@ bash <(curl -s archibold.io/install/$2)
       ;;
 
     uninstall)
-      remove $2
+      archibold remove $2
       ;;
 
     update)
