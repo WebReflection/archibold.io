@@ -37,7 +37,7 @@ ExecStart=-/usr/sbin/agetty -nia alarm %I
 # install graphic drivers (watch out info about your card)
 pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
 
-# install weston compositor
+# install X11
 pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset
 
 # install alsa utils
