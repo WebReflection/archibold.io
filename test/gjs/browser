@@ -1,9 +1,12 @@
 #!/usr/bin/env gjs
 
+imports.gi.versions.Gtk = '3.0';
+
 (function (Gtk, Gdk, WebKit2) {'use strict';
   Gtk.init(null);
   const
     Screen = Gdk.Screen.get_default(),
+    BGCOLOR = param('bgcolor', '255,255,255'),
     FULLSCREEN = param('fullscreen', false) !== false,
     WIDTH = +param('width', FULLSCREEN ? Screen.get_width() : 480),
     HEIGHT = +param('height', FULLSCREEN ? Screen.get_height() : 320),
@@ -17,6 +20,11 @@
     wvSettings = webView.get_settings(),
     gtkSettings = Gtk.Settings.get_default();
   ;
+
+  const bg = new Gdk.RGBA();
+  print(`${/^\d+,\d+,\d+$/.test(BGCOLOR) ? 'rgb' : 'rgba'}(${BGCOLOR})`);
+  bg.parse(`${/^\d+,\d+,\d+$/.test(BGCOLOR) ? 'rgb' : 'rgba'}(${BGCOLOR})`);
+  webView.set_background_color(bg);
 
   window.set_default_size(WIDTH, HEIGHT);
   gtkSettings.gtk_application_prefer_dark_theme = true;
