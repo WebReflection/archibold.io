@@ -22,7 +22,7 @@ imports.gi.versions.Gtk = '3.0';
   ;
 
   const bg = new Gdk.RGBA();
-  bg.parse(`${/^\d+,\d+,\d+$/.test(BGCOLOR) ? 'rgb' : 'rgba'}(${BGCOLOR})`);
+  bg.parse((/^\d+,\d+,\d+$/.test(BGCOLOR) ? 'rgb' : 'rgba') + '(' + BGCOLOR + ')');
   webView.set_background_color(bg);
 
   window.set_default_size(WIDTH, HEIGHT);
