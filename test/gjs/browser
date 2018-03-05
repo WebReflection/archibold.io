@@ -8,6 +8,7 @@ imports.gi.versions.Gtk = '3.0';
     Screen = Gdk.Screen.get_default(),
     BGCOLOR = param('bgcolor', '255,255,255'),
     FULLSCREEN = param('fullscreen', false) !== false,
+    INSPECTOR = param('inspector', false) !== false,
     WIDTH = +param('width', FULLSCREEN ? Screen.get_width() : 480),
     HEIGHT = +param('height', FULLSCREEN ? Screen.get_height() : 320),
     window = new Gtk.Window({
@@ -29,11 +30,14 @@ imports.gi.versions.Gtk = '3.0';
   gtkSettings.gtk_application_prefer_dark_theme = true;
   gtkSettings.gtk_theme_name = 'Adwaita';
 
-  [
-    'enable_webgl',
-    'enable_webaudio',
-    'enable_accelerated_compositing'
-  ].forEach(function (key) {
+  [].concat(
+    INSPECTOR ? ['enable_developer_extras'] : [],
+    [
+      'enable_webgl',
+      'enable_webaudio',
+      'enable_accelerated_compositing'
+    ]
+  ).forEach(function (key) {
     wvSettings[key] = true;
   });
 
