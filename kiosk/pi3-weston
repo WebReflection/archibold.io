@@ -42,7 +42,7 @@ pacman -S --needed --noconfirm alsa-utils
 sleep 1
 
 # install Gtk via GJS bindings + standard themes
-pacman -S --needed --noconfirm gjs gnome-themes-standard
+pacman -S --needed --noconfirm gjs
 sleep 1
 
 # and also latest WebKit (it's really good!)
