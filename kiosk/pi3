@@ -28,18 +28,17 @@ sed -i "s/rootwait/rootwait cma=256MB/" /boot/boot.txt
 mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
 
 # automatic login
-echo "automatic login? [y/N]"; read -n1 -s choice;
-if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-  mkdir -p /etc/systemd/system/getty@tty1.service.d
-  echo "[Service]
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+echo "[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty -nia alarm %I
 ">/etc/systemd/system/getty@tty1.service.d/override.conf
-fi
-
 
 # install graphic drivers (watch out info about your card)
 pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
+
+# install X11
+pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset
 
 # install alsa utils
 pacman -S --needed --noconfirm alsa-utils
@@ -50,10 +49,8 @@ pacman -S --needed --noconfirm gjs gnome-themes-standard
 # and also latest WebKit (it's really good!)
 pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
 
-echo "gst-plugins-bad too? [y/N]"; read -n1 -s choice;
-if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-  pacman -S --needed --noconfirm gst-plugins-bad gst-libav
-fi
+# optional: contains non-free software
+# pacman -S --needed --noconfirm gst-libav
 
 # download a minimalistic full screen browser
 # curl -L bit.ly/2HPq5Nq -o browse ... or ...
@@ -68,28 +65,19 @@ ip addr>>www/index.html
 echo '</pre>'>>www/index.html
 chown -R alarm:alarm www
 
-echo "Wayland or Xorg? [w/X]"; read -n1 -s choice;
-if [ "$choice" = "w" ] || [ "$choice" = "W" ]; then
-  pacman -S --needed --noconfirm gdm weston
-  pacman enable gdm.service
-else
-  # install X11
-  pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset
-
-  # setup the xinitrc
-  echo "# avoid sleep
+# setup the xinitrc
+echo "# avoid sleep
 xset s off -dpms
 
 # browse a generic page
 ./.browse --fullscreen file:///home/alarm/www/index.html">.xinitrc
-  chown alarm:alarm .xinitrc
+chown alarm:alarm .xinitrc
 
-  # bootstrap xorg from .bashrc
-  echo '
+# bootstrap xorg from .bashrc
+echo '
 # startx on login
 [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1'>>.bashrc
-  chown alarm:alarm .bashrc
-fi
+chown alarm:alarm .bashrc
 
 # avoid initial message
 touch .hushlogin
