@@ -9,9 +9,11 @@ cd /home/alarm
 
 # update the system and the mirrors list
 pacman -Sy --needed --noconfirm pacman-mirrorlist
+sleep 1
 
 # update the rest of the software
 pacman -Su --noconfirm
+sleep 1
 
 # enable GPU memory and vc4
 echo "
@@ -29,21 +31,27 @@ mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
 
 # install graphic drivers (watch out info about your card)
 pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
+sleep 1
 
 # install Weston & GDM
-pacman -S --needed --noconfirm weston gdm
+pacman -S --needed --noconfirm weston
+sleep 1
 
 # install alsa utils
 pacman -S --needed --noconfirm alsa-utils
+sleep 1
 
 # install Gtk via GJS bindings + standard themes
 pacman -S --needed --noconfirm gjs gnome-themes-standard
+sleep 1
 
 # and also latest WebKit (it's really good!)
 pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
+sleep 1
 
 # optional: contains non-free software
 pacman -S --needed --noconfirm gst-libav
+sleep 1
 
 # download a minimalistic full screen browser
 # curl -L bit.ly/2HPq5Nq -o browse ... or ...
