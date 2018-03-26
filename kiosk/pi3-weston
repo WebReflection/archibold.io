@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+if [ "$USER" != "root" ]; then
+  echo "you need to be $(tput bold)root$(tput sgr0)";
+  exit 1;
+fi
+
+cd /home/alarm
+
+# update the system and the mirrors list
+pacman -Sy --needed --noconfirm pacman-mirrorlist
+
+# update the rest of the software
+pacman -Su --noconfirm
+
+# enable GPU memory and vc4
+echo "
+gpu_mem=256
+dispmanx_offline=1
+dtoverlay=vc4-fkms-v3d
+dtparam=audio=on
+">>/boot/config.txt
+
+# modify boot.scr to reserve cma memory and make the boot silent
+pacman -S --needed --noconfirm uboot-tools
+# sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=256MB/" /boot/boot.txt
+sed -i "s/rootwait/rootwait cma=256MB/" /boot/boot.txt
+mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
+
+# install graphic drivers (watch out info about your card)
+pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
+
+# install Weston & GDM
+pacman -S --needed --noconfirm weston gdm
+
+# install alsa utils
+pacman -S --needed --noconfirm alsa-utils
+
+# install Gtk via GJS bindings + standard themes
+pacman -S --needed --noconfirm gjs gnome-themes-standard
+
+# and also latest WebKit (it's really good!)
+pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
+
+# optional: contains non-free software
+pacman -S --needed --noconfirm gst-libav
+
+# download a minimalistic full screen browser
+# curl -L bit.ly/2HPq5Nq -o browse ... or ...
+curl -L archibold.io/test/gjs/browser -o .browse
+chmod a+x .browse
+chown alarm:alarm .browse
+
+# create www/index.html
+mkdir -p www
+echo '<!doctype html><h1>RPi3 Web Kiosk</h1><pre>'>www/index.html
+ip addr>>www/index.html
+echo '</pre>'>>www/index.html
+chown -R alarm:alarm www
+
+# optimize and reboot
+pacman-optimize
+
+reboot
