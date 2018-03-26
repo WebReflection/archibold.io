@@ -39,17 +39,14 @@ pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
 # install X11
 pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset
 
-# install fonts
-pacman -S --needed --noconfirm noto-fonts noto-fonts-emoji
+# install Weston
+pacman -S --needed --noconfirm weston
 
 # install qt5-webengine
 pacman -S --needed --noconfirm qt5-quickcontrols qt5-quickcontrols2 qt5-webengine
 
-# install alsa utils
-pacman -S --needed --noconfirm alsa-utils
-
 # download a minimalistic full screen browser
-curl -L http://benja.io/os/qml/browse -o .browse
+curl -L archibold.io/test/qml/browser -o .browse
 chmod a+x .browse
 chown alarm:alarm .browse
 
@@ -59,20 +56,6 @@ echo '<!doctype html><h1>RPi3 Web Kiosk</h1><pre>'>www/index.html
 ip addr>>www/index.html
 echo '</pre>'>>www/index.html
 chown -R alarm:alarm www
-
-# setup the xinitrc
-echo "# avoid sleep
-xset s off -dpms
-
-# browse a generic page
-./.browse file:///home/alarm/www/index.html">.xinitrc
-chown alarm:alarm .xinitrc
-
-# bootstrap xorg from .bashrc
-echo '
-# startx on login
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1'>>.bashrc
-chown alarm:alarm .bashrc
 
 # avoid initial message
 touch .hushlogin

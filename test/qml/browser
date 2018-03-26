@@ -1,0 +1,40 @@
+#!/usr/bin/env qml
+
+import QtQuick 2.10
+import QtQuick.Window 2.10
+import QtWebEngine 1.6
+
+Window {
+  // Component.onCompleted: { /* for debugging purpose */ }
+  modality: Qt.ApplicationModal
+  visible: true
+  visibility: Window.FullScreen
+  WebEngineView {
+    id: webView
+    anchors.fill: parent
+    focus: true
+    onFullScreenRequested: {
+      request.accept();
+    }
+    onNewViewRequested: function(request) {
+      request.openIn(webView);
+    }
+    onJavaScriptConsoleMessage: {
+      console.log("[" + sourceID + ":" + lineNumber + "]", message);
+    }
+    settings.accelerated2dCanvasEnabled: true
+    settings.allowGeolocationOnInsecureOrigins: true
+    settings.allowRunningInsecureContent: true
+    settings.autoLoadIconsForPage: false
+    settings.fullScreenSupportEnabled: true
+    settings.javascriptCanAccessClipboard: true
+    settings.javascriptCanOpenWindows: false
+    settings.localContentCanAccessFileUrls: true
+    settings.localContentCanAccessRemoteUrls: true
+    settings.webGLEnabled: true
+    url: Qt.application.arguments.pop()
+    // my improvised way to scale
+    zoomFactor: Math.max(1, Screen.pixelDensity / 5)
+  }
+}
+
