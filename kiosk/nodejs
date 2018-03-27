@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+
+# (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
+
+if [ "$USER" = "root" ]; then
+  echo "you need to be a user, not $(tput bold)root$(tput sgr0)"
+  exit 1
+fi
+
+IPV4="$(ip addr | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p')"
+if [ "$IPV4" != "" ]; then
+  echo "http://any-local-network-name/ ?"
+  read -p "default via $IPV4
+" IPV4_NAME
+  IPV4_NAME="$(echo $IPV4_NAME| xargs)"
+fi
+
+echo "any specific localhost:PORT ?"
+read -p "default 8080 mapped as 80
+" IPV4_PORT
+IPV4_PORT="$(echo $IPV4_PORT| xargs)"
+if [ "$IPV4_PORT" = "" ] || [ "$IPV4_PORT" = "80" ]; then
+  IPV4_PORT=8080
+fi
+
+echo "For temporary $(tput bold)root$(tput sgr0) access"
+su -c "
+pacman -Sy --needed --noconfirm nodejs npm
+
+echo '[Unit]
+Description=localhost 80 to $IPV4_PORT service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port $IPV4_PORT
+ExecStart=/usr/bin/iptables -t nat -I OUTPUT -p tcp -o lo --dport 80 -j REDIRECT --to-port $IPV4_PORT
+
+[Install]
+WantedBy=multi-user.target
+'>/etc/systemd/system/localhost-80to$IPV4_PORT.service
+systemctl enable localhost-80to$IPV4_PORT.service
+
+if [ "$IPV4_NAME" != "" ]; then
+  echo "$IPV4_NAME">/etc/hostname
+  dhcpcd -s $IPV4
+fi
+"
+
+mkdir -p ~/.npm-packages/bin
+npm config set prefix '~/.npm-packages'
+
+echo '
+# npm and nodejs global modules
+export PATH="$PATH:$HOME/.npm-packages/bin"
+export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+' >> ~/.bashrc
+
+echo "const express = require('express');
+const server = express();
+server.use(express.static(__dirname));
+server.listen($IPV4_PORT, () => {
+  const child = require('child_process').spawn(
+    require('path').join(__dirname, '.browse'),
+    [
+      '--fullscreen',
+      process.argv[2] || 'http://localhost:$IPV4_PORT/'
+    ],
+    {stdio: 'inherit'}
+  );
+  child.once('exit', code => process.exit(code || 0));
+  process.once('exit', () => child.kill());
+});
+">index.js
+
+npm init -y
+npm install express
+
+echo "If you'd like to start NodeJS on boot,"
+echo "use $(tput bold)npm start$(tput sgr0) in the .xinitrc"
+echo "instead of launching .browse directly"

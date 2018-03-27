@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
+
 if [ "$USER" != "root" ]; then
   echo "you need to be $(tput bold)root$(tput sgr0)";
   exit 1;
@@ -79,7 +81,8 @@ echo "# x11 configuration
 # avoid sleep
 xset s off -dpms
 
-# unclutter the cursor then browse a generic page
+# unclutter the cursor then browse a generic page *
+# * if you install nodejs bootstrap replace ./.browse ... with npm start
 unclutter &
 ./.browse --fullscreen file:///home/alarm/www/index.html">.xinitrc
 # in case you'd like to see if it's hardware accelerated
