@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+if [ "$USER" = "root" ]; then
+  echo "you need to be a user, not $(tput bold)root$(tput sgr0)"
+  exit 1
+fi
+
+echo 'for temporary root access'
+su -c '
+pacman -Sy --needed --noconfirm node npm
+
+echo "[Unit]
+Description=localhost 80 to 8080 service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+ExecStart=/usr/bin/iptables -t nat -I OUTPUT -p tcp -o lo --dport 80 -j REDIRECT --to-port 8080
+
+[Install]
+WantedBy=multi-user.target
+" >/etc/systemd/system/localhost-80to8080.service
+systemctl enable localhost-80to8080.service
+'
+
+mkdir -p ~/.npm-packages/bin
+npm config set prefix '~/.npm-packages'
+
+echo '
+# npm and nodejs global modules
+export PATH="$PATH:$HOME/.npm-packages/bin"
+export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+' >> ~/.bashrc

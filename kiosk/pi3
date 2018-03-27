@@ -13,18 +13,16 @@ pacman -Sy --needed --noconfirm pacman-mirrorlist
 # update the rest of the software
 pacman -Su --noconfirm
 
-# enable GPU memory and vc4
+# enable full kms driver and audio
 echo "
-gpu_mem=192
-dispmanx_offline=1
 dtoverlay=vc4-fkms-v3d
 dtparam=audio=on
 ">>/boot/config.txt
 
 # modify boot.scr to reserve cma memory and make the boot silent
 pacman -S --needed --noconfirm uboot-tools
-sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=192MB/" /boot/boot.txt
-# sed -i "s/rootwait/rootwait cma=192MB/" /boot/boot.txt
+sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=128MB@64MB/" /boot/boot.txt
+# sed -i "s/rootwait/rootwait cma=128MB@64MB/" /boot/boot.txt
 mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
 
 # automatic login
@@ -41,7 +39,7 @@ pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
 pacman -S --needed --noconfirm xorg-server xorg-xinit xf86-video-fbdev
 
 # install xorg utilities
-pacman -S --needed --noconfirm xorg-xset xorg-xrandr
+pacman -S --needed --noconfirm xorg-xset xorg-xrandr unclutter
 
 # install alsa utils
 pacman -S --needed --noconfirm alsa-utils
@@ -52,8 +50,11 @@ pacman -S --needed --noconfirm gjs gnome-themes-standard
 # and also latest WebKit (it's really good!)
 pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
 
-# optional: contains non-free software
-pacman -S --needed --noconfirm gst-libav
+# optional: gstreamer-vaapi for HW acceleration
+pacman -S --needed gstreamer-vaapi
+
+# optional: contains non-free software 
+pacman -S --needed --noconfirm gst-libav gst-plugins-ugly
 
 # download a minimalistic full screen browser
 # curl -L bit.ly/2HPq5Nq -o browse ... or ...
@@ -71,16 +72,19 @@ chown -R alarm:alarm www
 # setup the xinitrc
 echo "# x11 configuration
 
-# to change resolution (must be compatible with your screen)
+# to change resolution
+# (WIDTHxHEIGTH must be compatible with your screen)
 # xrandr -s 1280x720
 
 # avoid sleep
 xset s off -dpms
 
-# browse a generic page
+# unclutter the cursor then browse a generic page
+unclutter &
 ./.browse --fullscreen file:///home/alarm/www/index.html">.xinitrc
 # in case you'd like to see if it's hardware accelerated
 # ./.browse --bgcolor=0,0,0 --fullscreen https://threejs.org/examples/webgl_geometry_cube.html">.xinitrc
+# ./.browse --bgcolor=0,0,0 --fullscreen https://www.youtube.com/watch?v=IlVtF3dAyxs">.xinitrc
 chown alarm:alarm .xinitrc
 
 # bootstrap xorg from .bashrc

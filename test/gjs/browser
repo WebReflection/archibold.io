@@ -1,5 +1,7 @@
 #!/usr/bin/env gjs
 
+/*! (c) 2018 Andrea Giammarchi - @WebReflection - (ISC) */
+
 imports.gi.versions.Gtk = '3.0';
 
 (function (Gtk, Gdk, WebKit2) {'use strict';
@@ -9,6 +11,7 @@ imports.gi.versions.Gtk = '3.0';
     BGCOLOR = param('bgcolor', '255,255,255'),
     FULLSCREEN = param('fullscreen', false) !== false,
     INSPECTOR = param('inspector', false) !== false,
+    THEME = param('theme', 'Adwaita:dark'),
     WIDTH = +param('width', FULLSCREEN ? Screen.get_width() : 480),
     HEIGHT = +param('height', FULLSCREEN ? Screen.get_height() : 320),
     window = new Gtk.Window({
@@ -22,13 +25,17 @@ imports.gi.versions.Gtk = '3.0';
     gtkSettings = Gtk.Settings.get_default();
   ;
 
+  const bgColor = (/^\d+,\d+,\d+$/.test(BGCOLOR) ? 'rgb' : 'rgba') + '(' + BGCOLOR + ')';
   const bg = new Gdk.RGBA();
-  bg.parse((/^\d+,\d+,\d+$/.test(BGCOLOR) ? 'rgb' : 'rgba') + '(' + BGCOLOR + ')');
+  bg.parse(bgColor);
   webView.set_background_color(bg);
-
+  window.modify_bg(Gtk.StateType.NORMAL, Gdk.color_parse(bgColor)[1]);
   window.set_default_size(WIDTH, HEIGHT);
-  gtkSettings.gtk_application_prefer_dark_theme = true;
-  gtkSettings.gtk_theme_name = 'Adwaita';
+
+  const theme = THEME.split(':');
+  gtkSettings.gtk_theme_name = theme[0];
+  if (/dark/.test(theme[1]))
+    gtkSettings.gtk_application_prefer_dark_theme = true;
 
   [].concat(
     INSPECTOR ? ['enable_developer_extras'] : [],
