@@ -5,7 +5,7 @@ if [ "$USER" = "root" ]; then
   exit 1
 fi
 
-echo 'for temporary root access'
+echo "For temporary $(tput bold)root$(tput sgr0) access"
 su -c '
 pacman -Sy --needed --noconfirm nodejs npm
 
