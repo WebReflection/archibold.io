@@ -7,7 +7,7 @@ fi
 
 echo 'for temporary root access'
 su -c '
-pacman -Sy --needed --noconfirm node npm
+pacman -Sy --needed --noconfirm nodejs npm
 
 echo "[Unit]
 Description=localhost 80 to 8080 service
