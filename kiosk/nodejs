@@ -41,9 +41,10 @@ WantedBy=multi-user.target
 '>/etc/systemd/system/localhost-80to$IPV4_PORT.service
 systemctl enable localhost-80to$IPV4_PORT.service
 
-if [ "$IPV4_NAME" != "" ]; then
-  echo "$IPV4_NAME">/etc/hostname
-  dhcpcd -s $IPV4
+if [ "${IPV4_NAME}" != "" ]; then
+  echo "${IPV4_NAME}">/etc/hostname
+  sync
+  dhcpcd -s ${IPV4}
 fi
 "
 
@@ -52,7 +53,7 @@ npm config set prefix '~/.npm-packages'
 
 echo '
 # npm and nodejs global modules
-export PATH="$PATH:$HOME/.npm-packages/bin"
+export PATH="$PATH:$HOME/.npm-packages/bin" 
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
 
@@ -74,8 +75,17 @@ server.listen($IPV4_PORT, () => {
 ">index.js
 
 npm init -y
-npm install express
+sleep 1
+npm install --save express
 
+if [ -f wwww/index.html ]; then
+  cp wwww/index.html ./
+fi
+
+clear
 echo "If you'd like to start NodeJS on boot,"
+echo "write a package.json script named start,"
+echo "withuse $(tput bold)node insdex.js$(tput sgr0) in it, and"
 echo "use $(tput bold)npm start$(tput sgr0) in the .xinitrc"
 echo "instead of launching .browse directly"
+echo ""
