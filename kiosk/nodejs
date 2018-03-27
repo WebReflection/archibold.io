@@ -75,7 +75,7 @@ server.listen($IPV4_PORT, () => {
 ">index.js
 
 npm init -y
-sleep 1
+sync
 npm install --save express
 
 if [ -f wwww/index.html ]; then
