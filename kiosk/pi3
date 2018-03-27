@@ -53,7 +53,7 @@ pacman -S --needed --noconfirm gjs gnome-themes-standard
 pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
 
 # optional: gstreamer-vaapi for HW acceleration
-pacman -S --needed gstreamer-vaapi
+pacman -S --needed --noconfirm gstreamer-vaapi
 
 # optional: contains non-free software 
 pacman -S --needed --noconfirm gst-libav gst-plugins-ugly
