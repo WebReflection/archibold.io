@@ -15,7 +15,7 @@ pacman -Su --noconfirm
 
 # enable GPU memory and vc4
 echo "
-gpu_mem=256
+gpu_mem=192
 dispmanx_offline=1
 dtoverlay=vc4-fkms-v3d
 dtparam=audio=on
@@ -23,8 +23,8 @@ dtparam=audio=on
 
 # modify boot.scr to reserve cma memory and make the boot silent
 pacman -S --needed --noconfirm uboot-tools
-# sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=256MB/" /boot/boot.txt
-sed -i "s/rootwait/rootwait cma=256MB/" /boot/boot.txt
+sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=192MB/" /boot/boot.txt
+# sed -i "s/rootwait/rootwait cma=192MB/" /boot/boot.txt
 mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
 
 # automatic login
@@ -38,7 +38,10 @@ ExecStart=-/usr/sbin/agetty -nia alarm %I
 pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
 
 # install X11
-pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset
+pacman -S --needed --noconfirm xorg-server xorg-xinit xf86-video-fbdev
+
+# install xorg utilities
+pacman -S --needed --noconfirm xorg-xset xorg-xrandr
 
 # install alsa utils
 pacman -S --needed --noconfirm alsa-utils
@@ -50,7 +53,7 @@ pacman -S --needed --noconfirm gjs gnome-themes-standard
 pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
 
 # optional: contains non-free software
-# pacman -S --needed --noconfirm gst-libav
+pacman -S --needed --noconfirm gst-libav
 
 # download a minimalistic full screen browser
 # curl -L bit.ly/2HPq5Nq -o browse ... or ...
@@ -66,11 +69,18 @@ echo '</pre>'>>www/index.html
 chown -R alarm:alarm www
 
 # setup the xinitrc
-echo "# avoid sleep
+echo "# x11 configuration
+
+# to change resolution (must be compatible with your screen)
+# xrandr -s 1280x720
+
+# avoid sleep
 xset s off -dpms
 
 # browse a generic page
 ./.browse --fullscreen file:///home/alarm/www/index.html">.xinitrc
+# in case you'd like to see if it's hardware accelerated
+# ./.browse --bgcolor=0,0,0 --fullscreen https://threejs.org/examples/webgl_geometry_cube.html">.xinitrc
 chown alarm:alarm .xinitrc
 
 # bootstrap xorg from .bashrc
@@ -85,5 +95,4 @@ chown alarm:alarm .hushlogin
 
 # optimize and reboot
 pacman-optimize
-
 reboot
