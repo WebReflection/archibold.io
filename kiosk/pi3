@@ -9,11 +9,9 @@ fi
 
 cd /home/alarm
 
-# update the system and the mirrors list
-pacman -Sy --needed --noconfirm pacman-mirrorlist
-
-# update the rest of the software
-pacman -Su --noconfirm
+# install all dependencies and optimize
+bash <(curl -s archibold.io/kiosk/dependencies)
+pacman-optimize
 
 # enable full kms driver and audio
 echo "
@@ -33,30 +31,6 @@ echo "[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty -nia alarm %I
 ">/etc/systemd/system/getty@tty1.service.d/override.conf
-
-# install graphic drivers (watch out info about your card)
-pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver
-
-# install X11
-pacman -S --needed --noconfirm xorg-server xorg-xinit xf86-video-fbdev
-
-# install xorg utilities
-pacman -S --needed --noconfirm xorg-xset xorg-xrandr unclutter
-
-# install alsa utils
-pacman -S --needed --noconfirm alsa-utils
-
-# install Gtk via GJS bindings + standard themes
-pacman -S --needed --noconfirm gjs gnome-themes-standard
-
-# and also latest WebKit (it's really good!)
-pacman -S --needed --noconfirm webkit2gtk gst-plugins-base gst-plugins-good
-
-# optional: gstreamer-vaapi for HW acceleration
-pacman -S --needed --noconfirm gstreamer-vaapi
-
-# optional: contains non-free software 
-pacman -S --needed --noconfirm gst-libav gst-plugins-ugly
 
 # download a minimalistic full screen browser
 # curl -L bit.ly/2HPq5Nq -o browse ... or ...
@@ -100,6 +74,4 @@ chown alarm:alarm .bashrc
 touch .hushlogin
 chown alarm:alarm .hushlogin
 
-# optimize and reboot
-pacman-optimize
 reboot
