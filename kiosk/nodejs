@@ -89,10 +89,6 @@ npm init -y
 sync
 npm install --save express
 
-if [ -f wwww/index.html ]; then
-  cp wwww/index.html ./
-fi
-
 clear
 echo "If you'd like to start NodeJS on boot,"
 echo "use $(tput bold)node index.js$(tput sgr0) in the .xinitrc"
