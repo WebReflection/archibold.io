@@ -7,8 +7,9 @@ pacman -Su --noconfirm
 pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver \
                                xorg-server xorg-xinit xf86-video-fbdev \
                                xorg-xset xorg-xrandr unclutter \
-                               alsa-utils \
+                               alsa-utils libcanberra-gstreamer libcanberra-pulse \
                                gjs gnome-themes-standard \
                                webkit2gtk gst-plugins-base gst-plugins-good \
                                gstreamer-vaapi \
-                               gst-libav gst-plugins-ugly
+                               gst-libav gst-plugins-ugly \
+                               geoip
