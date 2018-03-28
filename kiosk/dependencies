@@ -12,5 +12,3 @@ pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver \
                                webkit2gtk gst-plugins-base gst-plugins-good \
                                gstreamer-vaapi \
                                gst-libav gst-plugins-ugly
-pacman-optimize
-reboot
