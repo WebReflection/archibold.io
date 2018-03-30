@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+#########################
+# (c) archibold.io 2018 #
+#########################
+
+args=""
+for arg in "${@:2}"; do
+  args="${args} \"$(echo "${arg}" | sed 's/[`$"\\]/\\\0/g')\""
+done
+su -c "${1}${args}"

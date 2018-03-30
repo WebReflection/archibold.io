@@ -1,0 +1,8 @@
+#########################
+# (c) archibold.io 2018 #
+#########################
+
+cd /tmp
+curl -LOs archibold.io/utils/so
+chmod a+x so
+su -c 'mv so /usr/bin'
