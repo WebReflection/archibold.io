@@ -6,7 +6,7 @@
 
 if [ "${1}" = "" ]; then
   echo ""
-  echo "The $(tput bold)so$(tput sgr0) utility, by archibold.io"
+  echo "The $(tput bold)so$(tput sgr0) utility, by https://archibold.io"
   echo "A minimalistic Bash based sudo alternative."
   echo ""
   echo "  so echo 'an echo test as root'"
