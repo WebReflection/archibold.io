@@ -36,10 +36,12 @@ archibold() {
         if [ "$(which $2 2> /dev/null)" = "" ]; then
           bash <(curl -s archibold.io/install/$2)
         fi
-      elif [ "$(which yaourt 2> /dev/null)" = "" ]; then
-        sudo pacman -S --needed --noconfirm $2
       else
-        yaourt -S --needed --noconfirm $2
+        if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+          sudo pacman -S --needed --noconfirm $2
+        else
+          yaourt -S --needed --noconfirm $2
+        fi
       fi
       ;;
 
