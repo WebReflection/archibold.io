@@ -51,11 +51,16 @@ fi
 mkdir -p ~/.npm-packages/bin
 npm config set prefix '~/.npm-packages'
 
+cp ~/.bashrc ~/.bashrc.bck
 echo '
 # npm and nodejs global modules
 export PATH="$PATH:$HOME/.npm-packages/bin" 
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
-' >> ~/.bashrc
+' > ~/.bashrc
+
+cat ~/.bashrc.bck >> ~/.bashrc
+sync
+rm ~/.bashrc.bck
 
 echo "#!/usr/bin/env node
 
