@@ -96,7 +96,7 @@ bash <(curl -s archibold.io/install/$2)
         cd /tmp
         curl -LOs archibold.io/utils/archibold
         if [ -f archibold ]; then
-          echo 'archibold "$@"' >> archibold
+          # echo 'archibold "$@"' >> archibold
           chmod a+x archibold
           sudo mv archibold $TMP
         fi
