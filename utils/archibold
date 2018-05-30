@@ -28,7 +28,6 @@ archibold() {
           yaourt -R --noconfirm $(yaourt -Qdtq)
         done
       fi
-      sudo pacman-optimize
       ;;
 
     install)

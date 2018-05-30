@@ -11,7 +11,6 @@ cd /home/alarm
 
 # install all dependencies and optimize
 bash <(curl -s archibold.io/kiosk/dependencies)
-pacman-optimize
 
 # enable full kms driver and audio
 echo "
