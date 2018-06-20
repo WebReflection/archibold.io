@@ -1,0 +1,20 @@
+#########################
+# archibold.io (C) 2018 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s archibold.io/install/sudo)
+fi
+
+if [ -d /etc/pacman.d/gnupg ]; then
+  sudo rm -R /etc/pacman.d/gnupg/
+fi
+
+if [ -d /root/.gnupg ]; then
+  sudo rm -R /root/.gnupg/
+fi
+
+yes y | sudo gpg --refresh-keys
+yes y | sudo pacman-key --init
+yes y | sudo pacman-key --populate
+yes y | sudo pacman-key --refresh-keys
