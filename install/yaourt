@@ -45,4 +45,3 @@ sync && sleep 1
 installFromAUR "yaourt"
 sync && sleep 1
 sudo rm -rf /home/tmp-yaourt-install
-'
