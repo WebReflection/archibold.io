@@ -18,3 +18,4 @@ yes y | sudo gpg --refresh-keys
 yes y | sudo pacman-key --init
 yes y | sudo pacman-key --populate
 yes y | sudo pacman-key --refresh-keys
+sudo pacman -Sc --noconfirm
