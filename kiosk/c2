@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
+
+if [ "$USER" != "root" ]; then
+  echo "you need to be $(tput bold)root$(tput sgr0)";
+  exit 1;
+fi
+
+usermod -a -G video alarm
+
+pacman-key --init
+pacman-key --populate archlinuxarm
+
+pacman -Syu --needed --noconfirm \
+  xorg-server xorg-xinit xorg-xset xorg-xrandr \
+  xterm unclutter \
+  xf86-video-odroid-c2 # xf86-video-fbturbo-git
+
+echo '
+if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+  for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+    [ -x "$f" ] && . "$f"
+  done
+  unset f
+fi
+xset s off -dpms' > .xinitrc
+chown alarm:alarm .xinitrc
+
+# automatic login
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+echo "[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia alarm %I
+">/etc/systemd/system/getty@tty1.service.d/override.conf
+
+reboot
