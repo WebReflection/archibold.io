@@ -1,0 +1,11 @@
+# curl -L bit.ly/2HPq5Nq -o browse ... or ...
+curl -L archibold.io/test/gjs/browser -o .browse
+chmod a+x .browse
+chown alarm:alarm .browse
+
+# create www/index.html
+mkdir -p www
+echo '<!doctype html><h1>Web Kiosk</h1><pre>'>www/index.html
+ip addr>>www/index.html
+echo '</pre>'>>www/index.html
+chown -R alarm:alarm www

@@ -2,11 +2,7 @@
 
 # (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
 
-pacman -Sy --needed --noconfirm pacman-mirrorlist
-pacman -Su --noconfirm
-pacman -S --needed --noconfirm mesa libva-vdpau-driver libva-mesa-driver \
-                               xorg-server xorg-xinit xf86-video-fbdev \
-                               xorg-xset xorg-xrandr unclutter \
+pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset xorg-xrandr unclutter \
                                alsa-utils libcanberra-gstreamer libcanberra-pulse \
                                gjs gnome-themes-extra \
                                webkit2gtk gst-plugins-base gst-plugins-good \

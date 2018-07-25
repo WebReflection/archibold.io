@@ -8,9 +8,10 @@ if [ "$USER" != "root" ]; then
 fi
 
 cd /home/alarm
+usermod -a -G video alarm
 
-# install all dependencies and optimize
-bash <(curl -s archibold.io/kiosk/dependencies)
+# bootstrap pacman
+bash <(curl -s archibold.io/kiosk/_/init)
 
 # enable full kms driver and audio
 echo "
@@ -29,60 +30,24 @@ else
   sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=128MB@64MB/" /boot/cmdline.txt
 fi
 
+# install specific driver
+pacman -S --needed --noconfirm \
+  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev
+
+# install all dependencies and optimize
+bash <(curl -s archibold.io/kiosk/_/dependencies)
+
 # automatic login
-mkdir -p /etc/systemd/system/getty@tty1.service.d
-echo "[Service]
-ExecStart=
-ExecStart=-/usr/sbin/agetty -nia alarm %I
-">/etc/systemd/system/getty@tty1.service.d/override.conf
+bash <(curl -s archibold.io/kiosk/_/login)
 
 # download a minimalistic full screen browser
-# curl -L bit.ly/2HPq5Nq -o browse ... or ...
-curl -L archibold.io/test/gjs/browser -o .browse
-chmod a+x .browse
-chown alarm:alarm .browse
-
-# create www/index.html
-mkdir -p www
-echo '<!doctype html><h1>Web Pi Kiosk</h1><pre>'>www/index.html
-ip addr>>www/index.html
-echo '</pre>'>>www/index.html
-chown -R alarm:alarm www
+bash <(curl -s archibold.io/kiosk/_/browser)
 
 # setup the xinitrc
-echo "# x11 configuration
-
-# to change resolution *
-# * WIDTHxHEIGTH must be compatible with your screen
-# xrandr -s 1280x720
-
-# if not working, try to add hdmi
-# values in the /boot/config.txt
-# https://www.raspberrypi.org/documentation/configuration/config-txt/video.md
-
-# hdmi_group=1
-# hdmi_mode=3
-# hdmi_mode=4
-
-# avoid sleep
-xset s off -dpms
-
-# unclutter the cursor then browse a generic page *
-# * if you install nodejs bootstrap replace ./.browse ... with npm start
-unclutter &
-./.browse --fullscreen file:///home/alarm/www/index.html
-
-# in case you'd like to see if it's hardware accelerated, try one of these
-# ./.browse --bgcolor=0,0,0 --fullscreen https://threejs.org/examples/webgl_geometry_cube.html
-# ./.browse --bgcolor=0,0,0 --fullscreen https://www.youtube.com/watch?v=IlVtF3dAyxs
-">.xinitrc
-chown alarm:alarm .xinitrc
+bash <(curl -s archibold.io/kiosk/_/xinitrc)
 
 # bootstrap xorg from .bashrc
-echo '
-# startx on login
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1'>>.bashrc
-chown alarm:alarm .bashrc
+bash <(curl -s archibold.io/kiosk/_/bashrc)
 
 # avoid initial message
 touch .hushlogin

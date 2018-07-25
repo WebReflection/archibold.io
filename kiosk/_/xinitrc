@@ -1,0 +1,27 @@
+echo "# x11 configuration
+
+# to change resolution *
+# * WIDTHxHEIGTH must be compatible with your screen
+# xrandr -s 1280x720
+
+# if not working, try to add hdmi
+# values in the /boot/config.txt
+# https://www.raspberrypi.org/documentation/configuration/config-txt/video.md
+
+# hdmi_group=1
+# hdmi_mode=3
+# hdmi_mode=4
+
+# avoid sleep
+xset s off -dpms
+
+# unclutter the cursor then browse a generic page *
+# * if you install nodejs bootstrap replace ./.browse ... with npm start
+unclutter &
+./.browse --fullscreen file:///home/alarm/www/index.html
+
+# in case you'd like to see if it's hardware accelerated, try one of these
+# ./.browse --bgcolor=0,0,0 --fullscreen https://threejs.org/examples/webgl_geometry_cube.html
+# ./.browse --bgcolor=0,0,0 --fullscreen https://www.youtube.com/watch?v=IlVtF3dAyxs
+">.xinitrc
+chown alarm:alarm .xinitrc

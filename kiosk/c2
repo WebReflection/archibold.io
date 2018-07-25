@@ -7,31 +7,33 @@ if [ "$USER" != "root" ]; then
   exit 1;
 fi
 
+cd /home/alarm
 usermod -a -G video alarm
 
-pacman-key --init
-pacman-key --populate archlinuxarm
+# bootstrap pacman
+bash <(curl -s archibold.io/kiosk/_/init)
 
-pacman -Syu --needed --noconfirm \
-  xorg-server xorg-xinit xorg-xset xorg-xrandr \
-  xterm unclutter \
-  xf86-video-odroid-c2 # xf86-video-fbturbo-git
+# install specific driver
+pacman -S --needed --noconfirm \
+  odroid-c2-libgl-fb xf86-video-fbturbo-odroid-c2-git
 
-echo '
-if [ -d /etc/X11/xinit/xinitrc.d ] ; then
-  for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
-    [ -x "$f" ] && . "$f"
-  done
-  unset f
-fi
-xset s off -dpms' > .xinitrc
-chown alarm:alarm .xinitrc
+# install all dependencies and optimize
+bash <(curl -s archibold.io/kiosk/_/dependencies)
 
 # automatic login
-mkdir -p /etc/systemd/system/getty@tty1.service.d
-echo "[Service]
-ExecStart=
-ExecStart=-/usr/sbin/agetty -nia alarm %I
-">/etc/systemd/system/getty@tty1.service.d/override.conf
+bash <(curl -s archibold.io/kiosk/_/login)
+
+# download a minimalistic full screen browser
+bash <(curl -s archibold.io/kiosk/_/browser)
+
+# setup the xinitrc
+bash <(curl -s archibold.io/kiosk/_/xinitrc)
+
+# bootstrap xorg from .bashrc
+bash <(curl -s archibold.io/kiosk/_/bashrc)
+
+# avoid initial message
+touch .hushlogin
+chown alarm:alarm .hushlogin
 
 reboot

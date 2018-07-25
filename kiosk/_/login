@@ -1,0 +1,6 @@
+# automatic login
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+echo "[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia alarm %I
+">/etc/systemd/system/getty@tty1.service.d/override.conf
