@@ -11,7 +11,7 @@ cd /home/alarm
 usermod -a -G video alarm
 
 # bootstrap pacman
-bash <(curl -s archibold.io/kiosk/_/init)
+bash <(curl -s archibold.io/kiosk/utils/init)
 
 # enable full kms driver and audio
 echo "
@@ -35,19 +35,19 @@ pacman -S --needed --noconfirm \
   mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev
 
 # install all dependencies and optimize
-bash <(curl -s archibold.io/kiosk/_/dependencies)
+bash <(curl -s archibold.io/kiosk/utils/dependencies)
 
 # automatic login
-bash <(curl -s archibold.io/kiosk/_/login)
+bash <(curl -s archibold.io/kiosk/utils/login)
 
 # download a minimalistic full screen browser
-bash <(curl -s archibold.io/kiosk/_/browser)
+bash <(curl -s archibold.io/kiosk/utils/browser)
 
 # setup the xinitrc
-bash <(curl -s archibold.io/kiosk/_/xinitrc)
+bash <(curl -s archibold.io/kiosk/utils/xinitrc)
 
 # bootstrap xorg from .bashrc
-bash <(curl -s archibold.io/kiosk/_/bashrc)
+bash <(curl -s archibold.io/kiosk/utils/bashrc)
 
 # avoid initial message
 touch .hushlogin

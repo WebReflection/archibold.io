@@ -11,26 +11,26 @@ cd /home/alarm
 usermod -a -G video alarm
 
 # bootstrap pacman
-bash <(curl -s archibold.io/kiosk/_/init)
+bash <(curl -s archibold.io/kiosk/utils/init)
 
 # install specific driver
 pacman -S --needed --noconfirm \
   odroid-c2-libgl-fb xf86-video-fbturbo-odroid-c2-git
 
 # install all dependencies and optimize
-bash <(curl -s archibold.io/kiosk/_/dependencies)
+bash <(curl -s archibold.io/kiosk/utils/dependencies)
 
 # automatic login
-bash <(curl -s archibold.io/kiosk/_/login)
+bash <(curl -s archibold.io/kiosk/utils/login)
 
 # download a minimalistic full screen browser
-bash <(curl -s archibold.io/kiosk/_/browser)
+bash <(curl -s archibold.io/kiosk/utils/browser)
 
 # setup the xinitrc
-bash <(curl -s archibold.io/kiosk/_/xinitrc)
+bash <(curl -s archibold.io/kiosk/utils/xinitrc)
 
 # bootstrap xorg from .bashrc
-bash <(curl -s archibold.io/kiosk/_/bashrc)
+bash <(curl -s archibold.io/kiosk/utils/bashrc)
 
 # avoid initial message
 touch .hushlogin
