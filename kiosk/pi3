@@ -21,7 +21,10 @@ dtparam=audio=on
 
 if [ -f /boot/boot.txt ]; then
   # modify boot.scr to reserve cma memory and make the boot silent
-  pacman -S --needed --noconfirm uboot-tools
+  while ! pacman -S --needed --noconfirm uboot-tools
+  do
+    :
+  done
   sed -i "s/rootwait/rootwait quiet loglevel=0 splash cma=128MB@64MB/" /boot/boot.txt
   # sed -i "s/rootwait/rootwait cma=128MB@64MB/" /boot/boot.txt
   mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
@@ -31,8 +34,11 @@ else
 fi
 
 # install specific driver
-pacman -S --needed --noconfirm \
+while ! pacman -S --needed --noconfirm \
   mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev
+do
+  :
+done
 
 # install all dependencies and optimize
 bash <(curl -s archibold.io/kiosk/utils/dependencies)

@@ -25,7 +25,10 @@ fi
 
 echo "For temporary $(tput bold)root$(tput sgr0) access"
 su -c "
-pacman -Sy --needed --noconfirm nodejs npm
+while ! pacman -Sy --needed --noconfirm nodejs npm
+do
+  :
+done
 
 echo '[Unit]
 Description=localhost 80 to $IPV4_PORT service

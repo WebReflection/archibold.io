@@ -2,10 +2,14 @@
 
 # (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
 
-pacman -S --needed --noconfirm xorg-server xorg-xinit xorg-xset xorg-xrandr unclutter \
-                               alsa-utils libcanberra-gstreamer libcanberra-pulse \
-                               gjs gnome-themes-extra \
-                               webkit2gtk gst-plugins-base gst-plugins-good \
-                               gstreamer-vaapi \
-                               gst-libav gst-plugins-ugly \
-                               geoip
+while ! pacman -S --needed --noconfirm \
+                              xorg-server xorg-xinit xorg-xset xorg-xrandr unclutter \
+                              alsa-utils libcanberra-gstreamer libcanberra-pulse \
+                              gjs gnome-themes-extra \
+                              webkit2gtk gst-plugins-base gst-plugins-good \
+                              gstreamer-vaapi \
+                              gst-libav gst-plugins-ugly \
+                              geoip
+do
+  :
+done

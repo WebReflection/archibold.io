@@ -14,8 +14,11 @@ usermod -a -G video alarm
 bash <(curl -s archibold.io/kiosk/utils/init)
 
 # install specific driver
-pacman -S --needed --noconfirm \
+while ! pacman -S --needed --noconfirm \
   odroid-c2-libgl-fb xf86-video-fbturbo-odroid-c2-git
+do
+  :
+done
 
 # install all dependencies and optimize
 bash <(curl -s archibold.io/kiosk/utils/dependencies)
