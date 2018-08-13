@@ -17,7 +17,12 @@ sleep 2
 
 sudo pacman -S --needed --noconfirm \
     $GPU_DRIVERS \
-    gnome gnome-tweak-tool networkmanager fwupd xf86-input-libinput
+    gdm gnome-shell gnome-terminal gnome-control-center gnome-tweak-tool \
+    gnome-settings-daemon gnome-keyring gnome-disk-utility \
+    gnome-system-monitor gnome-backgrounds gnome-calculator \
+    gnome-screenshot gnome-photos \
+    networkmanager network-manager-applet polkit-gnome \
+    xf86-input-libinput ttf-dejav
 
 
 if [ "$USE_WAYLAND" = "" ]; then

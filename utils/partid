@@ -20,9 +20,9 @@ partid() {
       cat /proc/sys/kernel/random/uuid
     else
       if [ "$(which sudo 2> /dev/null)" = "" ]; then
-        tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
+        yes y | tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
       else
-        sudo tune2fs -U $(cat /proc/sys/kernel/random/uuid) "$2"
+        sudo bash -c "yes y | tune2fs -U $(cat /proc/sys/kernel/random/uuid) $2"
       fi
     fi
     return
