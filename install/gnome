@@ -17,7 +17,7 @@ sleep 2
 
 sudo pacman -S --needed --noconfirm \
     $GPU_DRIVERS \
-    gnome gnome-tweak-tool networkmanager xf86-input-libinput
+    gnome gnome-tweak-tool networkmanager fwupd xf86-input-libinput
 
 
 if [ "$USE_WAYLAND" = "" ]; then
