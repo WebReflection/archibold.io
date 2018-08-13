@@ -21,27 +21,27 @@ installFromAUR() {
   echo " $(tput bold)$(pacman -Q ${package})$(tput sgr0) successfully installed"
 }
 
-# if [ "$(cat /etc/pacman.conf | grep '\[archlinuxfr\]')" = "" ]; then
-#   sudo bash -c "echo '
-# [archlinuxfr]
-# SigLevel = Never
-# Server = http://repo.archlinux.fr/$arch
-# ' >> /etc/pacman.conf"
-#   sudo pacman -Sy
-# fi
-#
-# sudo pacman -Sy --needed --noconfirm base-devel yaourt
-
-sudo mkdir -p /home/tmp-yaourt-install
-sudo chown ${USER}:users /home/tmp-yaourt-install
-echo "
+if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+  sudo mkdir -p /home/tmp-yaourt-install
+  sudo chown ${USER}:users /home/tmp-yaourt-install
+  echo "
 $(tput bold)yaourt installer$(tput sgr0)
 "
 
-echo  " installing dependencies"
-sudo pacman -Sy --needed --noconfirm base-devel binutils linux-headers git diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
-installFromAUR "package-query"
-sync && sleep 1
-installFromAUR "yaourt"
-sync && sleep 1
-sudo rm -rf /home/tmp-yaourt-install
+  echo  " installing dependencies"
+  echo  " ( this might take a while )"
+  sudo pacman -Sy --needed --noconfirm base-devel binutils linux-headers git diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
+  installFromAUR "package-query"
+  sync && sleep 1
+  installFromAUR "yaourt"
+  sync && sleep 1
+  sudo rm -rf /home/tmp-yaourt-install
+fi
+
+echo "
+Would you like to install $(tput bold)pamac-aur$(tput sgr0) ? [y/n]
+"
+read -n1 -s TMP
+if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
+  yaourt -S --needed --noconfirm pamac-aur
+fi
