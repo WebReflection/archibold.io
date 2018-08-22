@@ -22,8 +22,7 @@ sudo pacman -S --needed --noconfirm \
     gnome-system-monitor gnome-backgrounds gnome-calculator \
     gnome-screenshot gnome-photos \
     networkmanager network-manager-applet polkit-gnome \
-    xf86-input-libinput ttf-dejav
-
+    xf86-input-libinput ttf-dejavu noto-fonts noto-fonts-emoji
 
 if [ "$USE_WAYLAND" = "" ]; then
   echoWithHeader "
