@@ -15,9 +15,6 @@ askAboutRetina() {
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
     cp /usr/share/applications/spotify.desktop ~/.local/share/applications/
     sed -ie 's/Exec=spotify %U/Exec=spotify --force-device-scale-factor=2 %U/' ~/.local/share/applications/spotify.desktop
-    echo '
-  Please reboot before launching Spotify
-'
   fi
 }
 

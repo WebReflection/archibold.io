@@ -21,7 +21,7 @@ sudo pacman -S --needed --noconfirm \
     gnome-terminal gnome-control-center gnome-tweak-tool \
     gnome-settings-daemon gnome-keyring gnome-disk-utility \
     gnome-system-monitor gnome-backgrounds gnome-calculator \
-    gnome-screenshot gnome-photos \
+    gnome-screenshot gnome-photos evince \
     networkmanager network-manager-applet polkit-gnome \
     xf86-input-libinput ttf-dejavu noto-fonts noto-fonts-emoji
 
