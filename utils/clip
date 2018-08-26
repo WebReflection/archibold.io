@@ -3,11 +3,10 @@
 # python 3 print compatible function for python2 too
 from __future__ import print_function
 
-# sys for i/o and Gobject Introspection
+# sys for i/o and GLib Introspection
 import sys, gi
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GObject
-
+from gi.repository import Gtk, Gdk, GLib
 
 class Clip(Gtk.Window):
 
@@ -20,23 +19,22 @@ class Clip(Gtk.Window):
         # so that every method needs async operations
 
     def get_text(self):
-        GObject.timeout_add(100, self._get_text)
+        GLib.timeout_add(100, self._get_text)
 
     def set_text(self, text):
         self.text = text
-        GObject.timeout_add(100, self._set_text)
+        GLib.timeout_add(100, self._set_text)
 
     def _get_text(self):
         self.clipboard.request_text(self._on_text)
 
     def _on_text(self, widget, text):
         print(text)
-        GObject.timeout_add(100, Gtk.main_quit)
+        GLib.timeout_add(100, Gtk.main_quit)
 
     def _set_text(self):
         self.clipboard.set_text(self.text, -1)
-        GObject.timeout_add(100, Gtk.main_quit)
-
+        GLib.timeout_add(100, Gtk.main_quit)
 
 def main():
 
@@ -56,7 +54,6 @@ def main():
 
     clip.show()
     Gtk.main()
-
 
 if __name__ == "__main__":
     main()
