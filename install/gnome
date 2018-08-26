@@ -17,7 +17,8 @@ sleep 2
 
 sudo pacman -S --needed --noconfirm \
     $GPU_DRIVERS \
-    gdm gnome-shell gnome-terminal gnome-control-center gnome-tweak-tool \
+    gdm gnome-shell gnome-shell-extensions \
+    gnome-terminal gnome-control-center gnome-tweak-tool \
     gnome-settings-daemon gnome-keyring gnome-disk-utility \
     gnome-system-monitor gnome-backgrounds gnome-calculator \
     gnome-screenshot gnome-photos \
