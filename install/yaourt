@@ -43,5 +43,6 @@ Would you like to install $(tput bold)pamac-aur$(tput sgr0) ? [y/n]
 "
 read -n1 -s TMP
 if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
+  yaourt -S --needed --noconfirm gobject-introspection
   yaourt -S --needed --noconfirm pamac-aur
 fi
