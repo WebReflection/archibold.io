@@ -30,7 +30,10 @@ $(tput bold)pakku installer$(tput sgr0)
 
   echo  " installing dependencies"
   echo  " ( this might take a while )"
-  sudo pacman -Sy --needed --noconfirm base-devel binutils linux-headers git nim diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
+  sudo pacman -Sy --needed --noconfirm \
+        base-devel binutils linux-headers git \
+        gobject-introspection nim \
+        diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
   installFromAUR "pakku"
   sync && sleep 1
   sudo rm -rf /home/tmp-pakku-install
@@ -41,6 +44,5 @@ Would you like to install $(tput bold)pamac-aur$(tput sgr0) ? [y/n]
 "
 read -n1 -s TMP
 if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
-  pakku -S --needed --noconfirm gobject-introspection
   pakku -S --needed --noconfirm pamac-aur
 fi
