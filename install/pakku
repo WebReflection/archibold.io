@@ -36,13 +36,22 @@ $(tput bold)pakku installer$(tput sgr0)
         diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
   installFromAUR "pakku"
   sync && sleep 1
+  if [ "$(which pakku 2> /dev/null)" = "" ]; then
+    echo ""
+    echo "Something went wrong, package not installed."
+    echo "Folder: /home/tmp-pakku-install"
+    echo ""
+    exit 1
+  fi
   sudo rm -rf /home/tmp-pakku-install
 fi
 
-echo "
+if [ "$(which pamac 2> /dev/null)" = "" ]; then
+  echo "
 Would you like to install $(tput bold)pamac-aur$(tput sgr0) ? [y/n]
 "
-read -n1 -s TMP
-if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
-  pakku -S --needed --noconfirm pamac-aur
+  read -n1 -s TMP
+  if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
+    pakku -S --needed --noconfirm pamac-aur
+  fi
 fi
