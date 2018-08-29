@@ -16,7 +16,9 @@ installFromAUR() {
   echo " creating ${package} package"
   sudo -H -u ${USER} sh -c "cd ${folder}/${package}; makepkg -Asfc --needed --noconfirm"
   echo " installing ${package}"
+  cd ${folder}
   sudo pacman -U --needed --noconfirm ${folder}/${package}/${package}*.pkg.tar.xz
+  cd -
   sync && sleep 1
   echo " $(tput bold)$(pacman -Q ${package})$(tput sgr0) successfully installed"
 }
