@@ -23,6 +23,7 @@ sudo pacman -S --needed --noconfirm \
     gnome-system-monitor gnome-backgrounds gnome-calculator \
     gnome-screenshot gnome-photos evince \
     networkmanager network-manager-applet polkit-gnome \
+    xdg-utils xdg-user-dirs-gtk xdg-desktop-portal-gtk \
     xf86-input-libinput ttf-dejavu noto-fonts noto-fonts-emoji
 
 if [ "$USE_WAYLAND" = "" ]; then
