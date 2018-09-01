@@ -8,7 +8,8 @@ fi
 
 sudo sed -ie "s|#\[multilib\]|\[multilib\]\nInclude = /etc/pacman.d/mirrorlist|" /etc/pacman.conf
 
-sudo pacman -Sy --needed --noconfirm steam \
+sudo pacman -Sy --needed --noconfirm \
+  steam steam-native-runtime \
   lib32-libxtst lib32-libpulse lib32-openal \
   lib32-nss lib32-gtk2 lib32-gtk3 \
   lib32-libcanberra lib32-gconf \
