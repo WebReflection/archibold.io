@@ -6,5 +6,5 @@ if [ "$(which yaourt 2> /dev/null)" = "" ]; then
   bash <(curl -s archibold.io/install/yaourt)
 fi
 
-yaourt -S --needed --noconfirm chromium chromium-widevine
+yaourt -S --needed --noconfirm chromium chromium-widevine chrome-gnome-shell
 # pepper-flash
