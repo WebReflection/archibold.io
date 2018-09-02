@@ -4,7 +4,7 @@
 # archibold.io (C) 2016 #
 #########################
 
-source <(curl -s archibold.io/require)
+source <(curl -s https://archibold.io/require)
 
 require echomd
 require partid
@@ -435,7 +435,7 @@ QUIET='$QUIET'
 INTEL='$INTEL'
 
 " > /tmp/install
-curl -Ls -o /tmp/install-chroot archibold.io/setup-utils/chroot
+curl -Ls -o /tmp/install-chroot https://archibold.io/setup-utils/chroot
 cat /tmp/install-chroot >> /tmp/install
 rm /tmp/install-chroot
 sudo chmod a+x /tmp/install

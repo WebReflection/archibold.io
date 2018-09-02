@@ -11,7 +11,7 @@ cd /home/alarm
 usermod -a -G video alarm
 
 # bootstrap pacman
-bash <(curl -s archibold.io/kiosk/utils/init)
+bash <(curl -s https://archibold.io/kiosk/utils/init)
 
 # install specific driver
 while ! pacman -S --needed --noconfirm \
@@ -21,19 +21,19 @@ do
 done
 
 # install all dependencies and optimize
-bash <(curl -s archibold.io/kiosk/utils/dependencies)
+bash <(curl -s https://archibold.io/kiosk/utils/dependencies)
 
 # automatic login
-bash <(curl -s archibold.io/kiosk/utils/login)
+bash <(curl -s https://archibold.io/kiosk/utils/login)
 
 # download a minimalistic full screen browser
-bash <(curl -s archibold.io/kiosk/utils/browser)
+bash <(curl -s https://archibold.io/kiosk/utils/browser)
 
 # setup the xinitrc
-bash <(curl -s archibold.io/kiosk/utils/xinitrc)
+bash <(curl -s https://archibold.io/kiosk/utils/xinitrc)
 
 # bootstrap xorg from .bashrc
-bash <(curl -s archibold.io/kiosk/utils/bashrc)
+bash <(curl -s https://archibold.io/kiosk/utils/bashrc)
 
 # avoid initial message
 touch .hushlogin

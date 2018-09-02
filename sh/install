@@ -121,7 +121,7 @@ if [ "$HEIGHT" = "" ]; then
 fi
 
 # require common utils
-curl -LO http://archibold.io/sh/utils
+curl -LO https://archibold.io/sh/utils
 sync
 sleep 1
 . ./utils
@@ -487,7 +487,7 @@ if [ '$UEFI' != 'NO' ]; then
 fi
 
 if [ '$GNOME' != 'NO' ]; then
-  curl -L -O http://archibold.io/sh/open
+  curl -L -O https://archibold.io/sh/open
   chmod a+x open
   mv open /usr/bin
   sync
@@ -526,7 +526,7 @@ LABEL arch
 ' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 
   pacman -Syu --needed --noconfirm inkscape
-  curl -L -O http://archibold.io/img/archibold.svg
+  curl -L -O https://archibold.io/img/archibold.svg
   inkscape \
     --export-png=archibold.png \
     --export-width=$WIDTH \
@@ -645,8 +645,8 @@ fi
 
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
-# sudo -u $USER curl -L -O http://archibold.io/sh/archibold
-sudo -u $USER curl -L -O http://archibold.io/sh/archy
+# sudo -u $USER curl -L -O https://archibold.io/sh/archibold
+sudo -u $USER curl -L -O https://archibold.io/sh/archy
 # chmod a+x archibold
 chmod a+x archy
 # mv archibold /usr/bin

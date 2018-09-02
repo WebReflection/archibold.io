@@ -3,7 +3,7 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 if [ -d /etc/pacman.d/gnupg ]; then

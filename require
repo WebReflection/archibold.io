@@ -6,9 +6,9 @@ require() {
   local pkg="$1"
   local tmp=$(type -t $pkg)
   if [ "$tmp" != "function" ] && [ "$tmp" != "file" ]; then
-    if curl --output /dev/null --silent --head --fail "archibold.io/utils/$pkg"; then
+    if curl --output /dev/null --silent --head --fail "https://archibold.io/utils/$pkg"; then
       tmp=$(mktemp /tmp/archibold.XXXXXXXX)
-      curl -Lso $tmp archibold.io/utils/$pkg
+      curl -Lso $tmp https://archibold.io/utils/$pkg
       if [[ "$(cat $tmp | grep -sn '^#!/usr/bin/env ')" =~ ^1:#* ]]; then
         chmod a+x $tmp
         pkg="$pkg(){ $tmp \"\$@\"; }"
@@ -16,9 +16,9 @@ require() {
         echo "$pkg" > $tmp
       fi
       source $tmp
-    elif curl --output /dev/null --silent --head --fail "archibold.io/install/$pkg"; then
+    elif curl --output /dev/null --silent --head --fail "https://archibold.io/install/$pkg"; then
       echo -e "Installing \x1B[1m$pkg\x1B[22m"
-      bash <(curl -s archibold.io/install/$pkg)
+      bash <(curl -s https://archibold.io/install/$pkg)
     else
       echo -e "\x1B[1m\x1B[31mError\x1B[39m\x1B[22m: unable to import \x1B[1m$pkg\x1B[22m"
       exit 1

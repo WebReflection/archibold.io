@@ -8,7 +8,7 @@
 # <script defer src="/js/transformer.js"></script><pre>
 ####################
 
-source <(curl -s archibold.io/require)
+source <(curl -s https://archibold.io/require)
 
 require echomd
 
@@ -19,14 +19,14 @@ echomd '
 
 Options:
 
-  * **require** _utils_ via `source <(curl -s archibold.io/require)`
-  * **install** _software_ via `bash <(curl -s archibold.io/install/$software)`
-  * **install** basic **Arch Linux** via `bash <(curl -s archibold.io/base)`
+  * **require** _utils_ via `source <(curl -s https://archibold.io/require)`
+  * **install** _software_ via `bash <(curl -s https://archibold.io/install/$software)`
+  * **install** basic **Arch Linux** via `bash <(curl -s https://archibold.io/base)`
 
 Following an example:
 
 ```
-source <(curl -s archibold.io/require)
+source <(curl -s https://archibold.io/require)
 require echomd
 require clip
 
@@ -36,8 +36,8 @@ echo $USER | clip
 
 To know the **list** of about available software or utilities:
 
-  * `bash <(curl -Ls archibold.io/install)`
-  * `bash <(curl -Ls archibold.io/utils)`
+  * `bash <(curl -Ls https://archibold.io/install)`
+  * `bash <(curl -Ls https://archibold.io/utils)`
 
 Please note the `-Ls` command in list cases is mandatory.
 

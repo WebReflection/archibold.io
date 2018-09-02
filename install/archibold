@@ -3,11 +3,11 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 cd /tmp
-curl -LOs archibold.io/utils/archibold
+curl -LOs https://archibold.io/utils/archibold
 echo 'archibold "$@"' >> archibold
 chmod a+x archibold
 sudo mv archibold /usr/bin

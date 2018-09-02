@@ -3,6 +3,6 @@
 #########################
 
 cd /tmp
-curl -LOs archibold.io/utils/so
+curl -LOs https://archibold.io/utils/so
 chmod a+x so
 su -c 'mv so /usr/bin'

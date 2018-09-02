@@ -4,5 +4,5 @@
 
 if [ "$(which open 2> /dev/null)" = "" ] && [ "$(cat ~/.bashrc | grep 'alias open')" = "" ]; then
   echo 'alias open=xdg-open' >> ~/.bashrc
-  source <(curl -s archibold.io/utils/open)
+  source <(curl -s https://archibold.io/utils/open)
 fi

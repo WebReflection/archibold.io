@@ -1,5 +1,5 @@
 # curl -L bit.ly/2HPq5Nq -o browse ... or ...
-curl -L archibold.io/test/gjs/browser -o .browse
+curl -L https://archibold.io/test/gjs/browser -o .browse
 chmod a+x .browse
 chown alarm:alarm .browse
 

@@ -5,11 +5,11 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 if [ "$(which echomd 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/echomd)
+  bash <(curl -s https://archibold.io/install/echomd)
 fi
 
 archibold() {
@@ -33,7 +33,7 @@ archibold() {
     install)
       if [ "$2" = "yaourt" ]; then
         if [ "$(which $2 2> /dev/null)" = "" ]; then
-          bash <(curl -s archibold.io/install/$2)
+          bash <(curl -s https://archibold.io/install/$2)
         fi
       elif [ "$(which yaourt 2> /dev/null)" = "" ]; then
         sudo pacman -S --needed --noconfirm $2
@@ -76,11 +76,11 @@ archibold() {
       else
         yaourt -Ss $2
       fi
-      TMP=$(curl -Ls archibold.io/install | grep $2)
+      TMP=$(curl -Ls https://archibold.io/install | grep $2)
       if [ "$TMP" != "" ]; then
         echomd "
 # archibold.io version
-bash <(curl -s archibold.io/install/$2)
+bash <(curl -s https://archibold.io/install/$2)
 "
       fi
       ;;
@@ -93,7 +93,7 @@ bash <(curl -s archibold.io/install/$2)
       if [ "$(which archibold 2> /dev/null)" != "" ]; then
         TMP="$(which archibold)"
         cd /tmp
-        curl -LOs archibold.io/utils/archibold
+        curl -LOs https://archibold.io/utils/archibold
         if [ -f archibold ]; then
           # echo 'archibold "$@"' >> archibold
           chmod a+x archibold

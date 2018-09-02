@@ -3,7 +3,7 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 sudo pacman -Syu --needed --noconfirm xorg-server xorg-xinit xf86-video-fbdev xterm xorg-xset xorg-xrandr unclutter

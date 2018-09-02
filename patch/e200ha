@@ -4,7 +4,7 @@
 
 # will bring in sudo and yaourt
 if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/yaourt)
+  bash <(curl -s https://archibold.io/install/yaourt)
 fi
 
 sudo pacman  -S --needed --noconfirm tlp thermald alsa-utils

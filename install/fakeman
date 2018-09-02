@@ -3,10 +3,10 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 cd /tmp
-curl -LOs archibold.io/utils/fakeman
+curl -LOs https://archibold.io/utils/fakeman
 chmod a+x fakeman
 sudo mv fakeman /usr/bin

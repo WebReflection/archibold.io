@@ -7,6 +7,6 @@ yes y | sudo apt-get upgrade
 yes y | sudo apt-get install xcompmgr xorg xserver-xorg-video-fbdev gjs libwebkit2gtk-4.0 unclutter
 
 cd ~/
-curl -LO archibold.io/test/gjs/browser
+curl -LO https://archibold.io/test/gjs/browser
 chmod a+x browser
 echo '~/browser' > ~/.xinitrc

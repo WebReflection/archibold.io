@@ -20,7 +20,7 @@ echo "#!/usr/bin/env bash
 # <script defer src='/js/transformer.js'></script><pre>
 ####################
 
-source <(curl -s archibold.io/require)
+source <(curl -s https://archibold.io/require)
 
 require echomd
 

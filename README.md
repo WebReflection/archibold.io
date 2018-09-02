@@ -9,7 +9,7 @@ Following an example of how to use `require` within a bash script.
 
 ```sh
 # include archibold.io require
-source <(curl -s archibold.io/require)
+source <(curl -s https://archibold.io/require)
 
 # require utilities or specific software
 require echomd
@@ -21,5 +21,5 @@ echomd 'Hello *archibold.io* !!!'
 Please note **install** scripts are independent and can be used directly via
 
 ```
-bash <(curl -s archibold.io/install/yaourt)
+bash <(curl -s https://archibold.io/install/yaourt)
 ```

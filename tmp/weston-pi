@@ -5,10 +5,10 @@
 set -e
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s archibold.io/install/sudo)
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
-source <(curl -s archibold.io/require)
+source <(curl -s https://archibold.io/require)
 require fakeman
 
 addVideoGroup() {

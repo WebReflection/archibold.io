@@ -2,15 +2,15 @@
 <html lang="en-US">
   <head>
     <title>archibold</title>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta httpsequiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimal-ui">
     <meta property="og:site_name" content="archibold">
-    <meta property="og:url" content="http://archibold.io">
+    <meta property="og:url" content="https://archibold.io">
     <meta property="og:title" content="archibold, by Andrea Giammarchi">
-    <meta property="og:image" content="http://archibold.io/img/archibold.jpg">
-    <meta name="twitter:image" content="http://archibold.io/img/archibold.jpg">
+    <meta property="og:image" content="https://archibold.io/img/archibold.jpg">
+    <meta name="twitter:image" content="https://archibold.io/img/archibold.jpg">
     <meta name="twitter:card" content="summary">
-    <meta name="twitter:url" content="http://archibold.io">
+    <meta name="twitter:url" content="https://archibold.io">
     <meta name="twitter:title" content="archibold">
     <meta name="twitter:description" content="archibold, by Andrea Giammarchi">
     <meta name="twitter:site" content="@WebReflection">
@@ -137,7 +137,7 @@ archy install xf86-input-libinput
           please do a manual upgrade before updating <em>archibold</em>.
         </p>
         <pre><code>
-sudo curl -L -s -o "$(which archy)" "http://archibold.io/sh/archy"
+sudo curl -L -s -o "$(which archy)" "https//archibold.io/sh/archy"
         </code></pre>
         <p>
           This will ensure Syslinux is properly updated within EFI and secure boot systems.
@@ -150,7 +150,7 @@ sudo curl -L -s -o "$(which archy)" "http://archibold.io/sh/archy"
         </p>
         <p>
           Based on <a href="https://www.archlinux.org/">ArchLinux</a>
-          and latest <a href="http://www.gnome.org/">GNOME</a>,
+          and latest <a href="https//www.gnome.org/">GNOME</a>,
           <em>archibold</em> has been successfully installed in many platforms.
         </p>
         <p>
@@ -158,17 +158,17 @@ sudo curl -L -s -o "$(which archy)" "http://archibold.io/sh/archy"
           Following an example of successful installations:
         </p>
         <ul>
-          <li><a href="http://www.up-board.org/">UP Board</a> with Intel® Atom x5-Z8350 CPU @ 1.44GHz x 4 (Secure boot ready)</li>
-          <li><a href="http://store.hp.com/us/en/pdp/Laptops/hp-envy---13t%C2%A0laptop-n8r87av-1">HP Envy</a> with Intel® Core™ i5-6200U CPU @ 2.80GHz x 4 (Secure boot + Skylake + HiDPi BrightView IPS 3200 x 1800)</li>
-          <li><a href="http://www.intel.com/content/www/us/en/compute-stick/intel-compute-stick.html">Intel Compute Stick</a> with Intel® Atom™ CPU Z3735F @ 1.33GHz x 4 (STCK1A8LFC installed with SWAP=1GiB GNOME=NOEXTRA while STCK1A32WFCR has room for defaults)</li>
-          <li><a href="http://www.dell.com/uk/business/p/xps-13-linux/pd">XPS 13 Developer Edition</a> with Intel® Core™ i7-5500U CPU @ 2.40GHz × 4 (<a href="http://webreflection.blogspot.co.uk/2015/07/archlinux-uefi-and-dell-xps-2015.html">blog post</a>)</li>
-          <li><a href="http://www.asus.com/uk/event/2015/Chromebook/#chromebox">ASUS Chromebox</a> with Intel® Celeron(R) 2955U @ 1.40GHz x 2 (requires UEFI=NO)</li>
-          <li><a href="http://www.gizmosphere.org/products/gizmo-2/">Gizmo 2</a> with AMD @ 1GHz x 2 (requires UEFI=NO EDD=NO SWAP=0)</li>
-          <li><a href="http://www.intel.co.uk/content/www/uk/en/nuc/nuc-kit-de3815tykhe.html">NUC</a> with Intel® Atom™ CPU E3815 @ 1.46GHz</li>
-          <li><a href="http://www.minnowboard.org/meet-minnowboard-max/">MinnowBoard MAX</a> with Intel® Atom™ CPU E3825 @ 1.33GHz x 2</li>
+          <li><a href="https//www.up-board.org/">UP Board</a> with Intel® Atom x5-Z8350 CPU @ 1.44GHz x 4 (Secure boot ready)</li>
+          <li><a href="https//store.hp.com/us/en/pdp/Laptops/hp-envy---13t%C2%A0laptop-n8r87av-1">HP Envy</a> with Intel® Core™ i5-6200U CPU @ 2.80GHz x 4 (Secure boot + Skylake + HiDPi BrightView IPS 3200 x 1800)</li>
+          <li><a href="https//www.intel.com/content/www/us/en/compute-stick/intel-compute-stick.html">Intel Compute Stick</a> with Intel® Atom™ CPU Z3735F @ 1.33GHz x 4 (STCK1A8LFC installed with SWAP=1GiB GNOME=NOEXTRA while STCK1A32WFCR has room for defaults)</li>
+          <li><a href="https//www.dell.com/uk/business/p/xps-13-linux/pd">XPS 13 Developer Edition</a> with Intel® Core™ i7-5500U CPU @ 2.40GHz × 4 (<a href="https//webreflection.blogspot.co.uk/2015/07/archlinux-uefi-and-dell-xps-2015.html">blog post</a>)</li>
+          <li><a href="https//www.asus.com/uk/event/2015/Chromebook/#chromebox">ASUS Chromebox</a> with Intel® Celeron(R) 2955U @ 1.40GHz x 2 (requires UEFI=NO)</li>
+          <li><a href="https//www.gizmosphere.org/products/gizmo-2/">Gizmo 2</a> with AMD @ 1GHz x 2 (requires UEFI=NO EDD=NO SWAP=0)</li>
+          <li><a href="https//www.intel.co.uk/content/www/uk/en/nuc/nuc-kit-de3815tykhe.html">NUC</a> with Intel® Atom™ CPU E3815 @ 1.46GHz</li>
+          <li><a href="https//www.minnowboard.org/meet-minnowboard-max/">MinnowBoard MAX</a> with Intel® Atom™ CPU E3825 @ 1.33GHz x 2</li>
           <li>ASUS Netbook with Intel® Celeron(R) CPU 847 @ 1.10GHz x 2</li>
-          <li><a href="http://shop.lenovo.com/gb/en/laptops/lenovo/yoga/yoga-3-pro/">Lenovo Yoga 3 Pro</a> with Intel® Processor 5Y70 CPU @ 1.10GHz × 4</li>
-          <li><a href="http://www.samsung.com/us/series-9-laptop/">Samsung serie 9</a> with Intel® Core™ i5-3317U CPU @ 1.70GHz × 4 (GPU Ivibridge Mobile)</li>
+          <li><a href="https//shop.lenovo.com/gb/en/laptops/lenovo/yoga/yoga-3-pro/">Lenovo Yoga 3 Pro</a> with Intel® Processor 5Y70 CPU @ 1.10GHz × 4</li>
+          <li><a href="https//www.samsung.com/us/series-9-laptop/">Samsung serie 9</a> with Intel® Core™ i5-3317U CPU @ 1.70GHz × 4 (GPU Ivibridge Mobile)</li>
           <li>Mac Mini Mid 2010 with Intel® Core™2 Duo CPU P8600 @ 2.40GHz x 2 (via nVidia neuveau)</li>
         </ul>
       </section>
@@ -176,7 +176,7 @@ sudo curl -L -s -o "$(which archy)" "http://archibold.io/sh/archy"
       <section id="supported-platform">
         <h1><a href="#supported-platform">Supported Platforms</a></h1>
         <p>
-          Currently, <a href="http://www.intel.com/">Intel®</a> or <a href="http://www.amd.com/">AMD</a> Hardware is the most supported one
+          Currently, <a href="https//www.intel.com/">Intel®</a> or <a href="https//www.amd.com/">AMD</a> Hardware is the most supported one
           thanks to its drivers availability.
         </p>
         <p>
@@ -262,7 +262,7 @@ ping 8.8.8.8
         <p>
           Once we have a usable network, we can download the installer.
         </p>
-        <pre><code>curl -L -O http://archibold.io/sh/install</code></pre>
+        <pre><code>curl -L -O https//archibold.io/sh/install</code></pre>
         <p>
           The file <code>install</code> should be in the folder now.<br/>
           Sometimes you need this operation twice (fancy DNS redirects).<br/>
@@ -455,7 +455,7 @@ sudo netctl list
         </h2>
         <p>
           The CLI file is installed by default but it's also possible to simply grab <code>./archy</code> cli only following these instructions.
-        </p><pre><code>curl -L -O http://archibold.io/sh/archy
+        </p><pre><code>curl -L -O https//archibold.io/sh/archy
 chmod +x archy
 sudo mv archy /usr/bin
         </code></pre>
@@ -507,7 +507,7 @@ sudo mv archy /usr/bin
         <p>
           The default browser that works out of the box is <strong>Web</strong>, also known as Epiphany browser.<br/>
           This is both a very beautiful and deadly simple to use browser.<br/>
-          It's also so sleek it has been used in <a href="http://www.raspbian.org/">Raspbian</a> as default browser for the <a href="http://www.raspberrypi.org/web-browser-released/">Raspberry Pi</a>.
+          It's also so sleek it has been used in <a href="https//www.raspbian.org/">Raspbian</a> as default browser for the <a href="https//www.raspberrypi.org/web-browser-released/">Raspberry Pi</a>.
         </p>
         <p>
           However, many web developers do not test their sites in this browser.<br/>
@@ -618,9 +618,9 @@ pacman -Syu --needed \
               <li>firefox and flashplugin for web surfing</li>
               <li>inkscape and gimp for graphic operations</li>
               <li>skype and spotify for chats and music</li>
-              <li><a href="http://kodi.tv/about/">kodi</a> as multimedia center for pictures, audio, movies and more</li>
+              <li><a href="https//kodi.tv/about/">kodi</a> as multimedia center for pictures, audio, movies and more</li>
             </ul>
-            In order to install home-setup, write this on the terminal:<pre><code>curl -L -O http://archibold.io/sh/home-setup.sh
+            In order to install home-setup, write this on the terminal:<pre><code>curl -L -O https//archibold.io/sh/home-setup.sh
 sh home-setup.sh
 rm home-setup.sh</code></pre>
           </li>
@@ -635,7 +635,7 @@ rm home-setup.sh</code></pre>
               <li>skype and spotify for chats and music</li>
               <li>mariadb as common development database</li>
             </ul>
-            In order to install dev-setup, write this on the terminal:<pre><code>curl -L -O http://archibold.io/sh/dev-setup.sh
+            In order to install dev-setup, write this on the terminal:<pre><code>curl -L -O https//archibold.io/sh/dev-setup.sh
 sh dev-setup.sh
 rm dev-setup.sh</code></pre>
             Please follow instructions, when asked (GitHub add key and npm).
@@ -652,7 +652,7 @@ rm dev-setup.sh</code></pre>
           The quality of the documentation they produce is simply stunning and I <a href="https://www.archlinux.org/donate/">encourage you to donate</a>.
         </p>
         <p>
-          I also strongly suggest to <a href="http://www.gnome.org/friends/">become a friend of GNOME</a>.<br/>
+          I also strongly suggest to <a href="https//www.gnome.org/friends/">become a friend of GNOME</a>.<br/>
           These two projects are making Linux Desktop a reality.<br/>
           You'll love <strong>GNOME</strong>, its interface, and all it has to offer.<br/>
           You'll love how snappy, essential, and well documented is also ArchLinux.

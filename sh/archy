@@ -610,7 +610,7 @@ vboxpci'>~/virtualbox.conf
       TMP="$(which archy)"
       if [ "$TMP" != "" ]; then
         WIDTH=$(cat $TMP)
-        sudo curl -L -s -o "$TMP" "http://archibold.io/sh/archy"
+        sudo curl -L -s -o "$TMP" "https://archibold.io/sh/archy"
         sudo chmod +x $TMP
         if [[ $? -ne 0 ]] ; then
           icho " [*][r]x[/] [*]unable to update archy[/]"

@@ -649,7 +649,7 @@ LABEL arch
 ' > $SYSLINUX_ROOT/syslinux/syslinux.cfg
 
   pacman -Syu --needed --noconfirm inkscape
-  curl -L -O http://archibold.io/img/archibold.svg
+  curl -L -O https://archibold.io/img/archibold.svg
   inkscape \
     --export-png=archibold.png \
     --export-width=$WIDTH \
@@ -772,8 +772,8 @@ fi
 
 cd /home/$USER
 sudo -u $USER touch /home/$USER/.hushlogin
-# sudo -u $USER curl -L -O http://archibold.io/sh/archibold
-sudo -u $USER curl -L -O http://archibold.io/sh/archy
+# sudo -u $USER curl -L -O https://archibold.io/sh/archibold
+sudo -u $USER curl -L -O https://archibold.io/sh/archy
 # chmod +x archibold
 chmod +x archy
 # mv archibold /usr/bin
@@ -787,7 +787,7 @@ if [ '$DEBUG' = 'YES' ]; then
 fi
 
 if [ '$SETUP' != '' ]; then
-  curl -L -O http://archibold.io/sh/$SETUP-setup.sh
+  curl -L -O https://archibold.io/sh/$SETUP-setup.sh
   sh setup.sh
   rm setup.sh
 fi

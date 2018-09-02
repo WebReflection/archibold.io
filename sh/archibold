@@ -7,7 +7,7 @@
 #     _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
 #
 #
-#     by Andrea Giammarchi - @WebReflection - http://archibold.io/
+#     by Andrea Giammarchi - @WebReflection - https://archibold.io/
 
 aurinstallation() {
   local name=$1
