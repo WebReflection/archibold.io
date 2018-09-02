@@ -24,7 +24,7 @@ sudo pacman -S --needed --noconfirm \
     gnome-screenshot gnome-photos evince \
     networkmanager network-manager-applet polkit-gnome \
     xdg-utils xdg-user-dirs-gtk xdg-desktop-portal-gtk \
-    eog totem gnome-calendar \
+    eog totem \
     xf86-input-libinput \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
 
