@@ -6,6 +6,15 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/install/sudo)
 fi
 
+if [ "$USE_WAYLAND" = "" ]; then
+  echo "
+  Would you like to disable Wayland ? [y/N]
+
+Only if your drivers work best in legacy Xorg, type y
+"
+  read -n1 -s USE_WAYLAND
+fi
+
 source <(curl -s https://archibold.io/install/gpu)
 
 echoWithHeader "
@@ -13,17 +22,7 @@ echoWithHeader "
   $GPU_DRIVERS
 "
 
-if [ "$USE_WAYLAND" = "" ]; then
-  echo "
-  Would you like to disable Wayland ? [y/N]
-
-If your drivers works best in old Xorg, type y
-"
-  read -n1 -s USE_WAYLAND
-fi
-
 sudo pacman -S --needed --noconfirm \
-    $GPU_DRIVERS \
     gnome \
     xf86-input-libinput \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
