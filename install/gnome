@@ -15,6 +15,14 @@ Only if your drivers work best in legacy Xorg, type y
   read -n1 -s USE_WAYLAND
 fi
 
+if [ "$USE_GNOME_SOFTWARE" = "" ]; then
+  echo "
+  Would you like to use GNOME Software ? [y/N]
+
+"
+  read -n1 -s USE_GNOME_SOFTWARE
+fi
+
 source <(curl -s https://archibold.io/install/gpu)
 
 echoWithHeader "
@@ -27,6 +35,25 @@ sudo pacman -S --needed --noconfirm \
     xf86-input-libinput \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
 
+echoWithHeader "
+  Enabling NetworkManager and GDM
+"
+
+sudo systemctl enable NetworkManager
+sudo systemctl enable gdm
+
+if [ "$USE_WAYLAND" != "y" ] || [ "$USE_WAYLAND" != "Y" ]; then
+  echoWithHeader "
+  Removing unnecessary software
+"
+  sudo pacman -Rs --noconfirm gnome-software gnome-boxes
+fi
+
+if [ "$USE_WAYLAND" = "y" ] || [ "$USE_WAYLAND" = "Y" ]; then
+  sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
+fi
+
+## old minimal setup (not really worth it)
 # sudo pacman -S --needed --noconfirm \
 #     gdm gnome-shell gnome-shell-extensions \
 #     gnome-terminal gnome-control-center gnome-tweak-tool \
@@ -38,15 +65,3 @@ sudo pacman -S --needed --noconfirm \
 #     eog totem \
 #     xf86-input-libinput \
 #     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
-
-
-if [ "$USE_WAYLAND" = "y" ] || [ "$USE_WAYLAND" = "Y" ]; then
-  sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
-fi
-
-echoWithHeader "
-  Enabling NetworkManager and GDM
-"
-
-sudo systemctl enable NetworkManager
-sudo systemctl enable gdm
