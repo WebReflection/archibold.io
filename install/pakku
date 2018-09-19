@@ -28,6 +28,13 @@ if [ "$(which pakku 2> /dev/null)" = "" ]; then
 $(tput bold)pakku installer$(tput sgr0)
 "
 
+  if [ "$(which pamac 2> /dev/null)" = "" ]; then
+  echo "
+ Would you like to install $(tput bold)pamac$(tput sgr0) too ? [y/n]
+"
+  read -n1 -s INSTALL_PAMAC
+fi
+
   echo  " installing dependencies"
   echo  " ( this might take a while )"
   sudo pacman -Sy --needed --noconfirm \
@@ -46,12 +53,6 @@ $(tput bold)pakku installer$(tput sgr0)
   sudo rm -rf /home/tmp-pakku-install
 fi
 
-if [ "$(which pamac 2> /dev/null)" = "" ]; then
-  echo "
-Would you like to install $(tput bold)pamac-aur$(tput sgr0) ? [y/n]
-"
-  read -n1 -s TMP
-  if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
-    pakku -S --needed --noconfirm pamac-aur
-  fi
+if [ "$INSTALL_PAMAC" = "y" ] || [ "$INSTALL_PAMAC" = "Y" ]; then
+  pakku -S --needed --noconfirm pamac-aur
 fi
