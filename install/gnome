@@ -32,7 +32,7 @@ echoWithHeader "
 
 sudo pacman -S --needed --noconfirm \
     gnome \
-    xf86-input-libinput \
+    xf86-input-libinput xsel \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
 
 echoWithHeader "

@@ -5,7 +5,6 @@
 source <(curl -s https://archibold.io/require)
 
 require echomd
-require clip
 
 echoWithHeader() {
   echomd "
@@ -51,11 +50,10 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/install/sudo)
 fi
 
+if [ "$(which xsel 2> /dev/null)" = "" ]; then
+  sudo pacman -S --needed xsel
+fi
 
-# clip uses PyGtk to be compatible out of the box
-# with both Xorg and Wayland
-# gjs brings in all it needs to have GJS and PyGtk
-# while openssh is needed to generate SSH key
 clear
 echoWithHeader '
   Installing dependencies'
@@ -88,6 +86,6 @@ echoWithHeader '
    * the key can be pasted via Ctrl+v
 '
 
-cat ~/.ssh/id_rsa.pub | clip
+cat ~/.ssh/id_rsa.pub | xsel --clipboard --input
 
 cat ~/.ssh/id_rsa.pub

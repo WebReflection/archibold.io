@@ -1,59 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env bash
 
-# python 3 print compatible function for python2 too
-from __future__ import print_function
+#########################
+# archibold.io (C) 2018 #
+#########################
 
-# sys for i/o and GLib Introspection
-import sys, gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk, Gdk, GLib
-
-class Clip(Gtk.Window):
-
-    def __init__(self):
-        Gtk.Window.__init__(self, decorated=False, opacity=0)
-        self.set_default_size(0, 0)
-        self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
-        self.clipboard.wait_for_text()
-        # for some reason this is not enough
-        # so that every method needs async operations
-
-    def get_text(self):
-        GLib.timeout_add(100, self._get_text)
-
-    def set_text(self, text):
-        self.text = text
-        GLib.timeout_add(100, self._set_text)
-
-    def _get_text(self):
-        self.clipboard.request_text(self._on_text)
-
-    def _on_text(self, widget, text):
-        print(text)
-        GLib.timeout_add(100, Gtk.main_quit)
-
-    def _set_text(self):
-        self.clipboard.set_text(self.text, -1)
-        GLib.timeout_add(100, Gtk.main_quit)
-
-def main():
-
-    text = ""
-    if sys.stdin.isatty():
-        text = " ".join(sys.argv[1:])
-    else:
-        for line in sys.stdin.read():
-            text = text + line
-
-    clip = Clip()
-
-    if len(text) == 0:
-        clip.get_text()
-    else:
-        clip.set_text(text)
-
-    clip.show()
-    Gtk.main()
-
-if __name__ == "__main__":
-    main()
+# if there are no arguments
+if [ $# -eq 0 ]; then
+  # if there is nothing piped
+  if [ -t 0 ]; then
+    # show the clipboard content
+    xsel --clipboard --output
+  else
+    # pipe any input into the clipboard
+    cat | xsel --clipboard --input
+  fi
+# pipe all arguments into the clipboard
+else
+  echo "$@" | xsel --clipboard --input
+fi
