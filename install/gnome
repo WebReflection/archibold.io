@@ -31,7 +31,7 @@ echoWithHeader "
 "
 
 sudo pacman -S --needed --noconfirm \
-    gnome \
+    gnome gnome-tweaks \
     xf86-input-libinput xsel \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
 
