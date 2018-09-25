@@ -10,7 +10,8 @@ if [ "$USE_WAYLAND" = "" ]; then
   echo "
   Would you like to disable Wayland ? [y/N]
 
-Only if your drivers work best in legacy Xorg, type y
+Only if your drivers work best in legacy Xorg,
+or you are installing on Virtual Box, type y
 "
   read -n1 -s USE_WAYLAND
 fi
