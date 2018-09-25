@@ -42,7 +42,7 @@ echoWithHeader "
 sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
 
-if [ "$USE_WAYLAND" != "y" ] || [ "$USE_WAYLAND" != "Y" ]; then
+if [ "$USE_GNOME_SOFTWARE" != "y" ] || [ "$USE_GNOME_SOFTWARE" != "Y" ]; then
   echoWithHeader "
   Removing unnecessary software
 "
