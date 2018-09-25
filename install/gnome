@@ -6,20 +6,21 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/install/sudo)
 fi
 
-if [ "$USE_WAYLAND" = "" ]; then
+if [ "$DISABLE_WAYLAND" = "" ]; then
   echo "
   Would you like to disable Wayland ? [y/N]
 
 Only if your drivers work best in legacy Xorg,
 or you are installing on Virtual Box, type y
 "
-  read -n1 -s USE_WAYLAND
+  read -n1 -s DISABLE_WAYLAND
 fi
 
 if [ "$USE_GNOME_SOFTWARE" = "" ]; then
   echo "
   Would you like to use GNOME Software ? [y/N]
 
+You can always use discover or pamac instead.
 "
   read -n1 -s USE_GNOME_SOFTWARE
 fi
@@ -50,7 +51,7 @@ if [ "$USE_GNOME_SOFTWARE" != "y" ] || [ "$USE_GNOME_SOFTWARE" != "Y" ]; then
   sudo pacman -Rs --noconfirm gnome-software gnome-boxes
 fi
 
-if [ "$USE_WAYLAND" = "y" ] || [ "$USE_WAYLAND" = "Y" ]; then
+if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
   sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
 fi
 
