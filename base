@@ -258,7 +258,7 @@ createPartitions() {
   if [ "$ROOT" = "" ]; then
     echo 'unable to find the partition'
     exit 1
-  then
+  fi
   sleep 3
   if [ "$BOOT" != "" ]; then
     clear
