@@ -259,6 +259,10 @@ createPartitions() {
     echo 'unable to find the partition'
     exit 1
   fi
+  clear
+  echo "$BOOT"
+  echo "$SWAP"
+  echo "$ROOT"
   sleep 3
   if [ "$BOOT" != "" ]; then
     clear
