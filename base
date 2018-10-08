@@ -235,7 +235,7 @@ createPartitions() {
   BOOT=
   ROOT=
   for part in $(ls ${DISK}*); do
-    if [[ "$part" =~ ^([a-z/]+[0-9]p|[a-z/]+)[0-9]$ ]]; then
+    if [[ "$part" =~ ^([a-z/]+[0-9][pn]|[a-z/]+)[0-9]$ ]]; then
       if [ "$part" != "$DISK" ]; then
         if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
           BOOT=$part
@@ -255,6 +255,10 @@ createPartitions() {
       fi
     fi
   done
+  if [ "$ROOT" = "" ]; then
+    echo 'unable to find the partition'
+    exit 1
+  then
   sleep 3
   if [ "$BOOT" != "" ]; then
     clear
