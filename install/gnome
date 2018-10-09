@@ -33,7 +33,7 @@ echoWithHeader "
 "
 
 sudo pacman -S --needed --noconfirm \
-    gnome gnome-tweaks gnome-packagekit \
+    gnome gnome-tweaks gnome-packagekit gnome-software-packagekit-plugin \
     xf86-input-libinput xsel \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
 
