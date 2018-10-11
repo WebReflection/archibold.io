@@ -41,6 +41,7 @@ askAboutGPU() {
       echoWithHeader "
   Is this a modern GPU compatible with Vulkan API ? [y/n]
 "
+      read -n1 -s choice
       if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
         GPU_DRIVERS="xf86-video-amdgpu vulkan-radeon"
       else
