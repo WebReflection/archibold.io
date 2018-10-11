@@ -93,3 +93,5 @@ echoWithHeader "
   $GPU_DRIVERS
 "
 sudo pacman -S --needed --noconfirm $GPU_DRIVERS
+
+sudo pacman -S --needed --noconfirm libva-mesa-driver libva-vdpau-driver mesa-vdpau
