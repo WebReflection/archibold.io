@@ -69,7 +69,7 @@ setup_dxvk64
 
 # deps from https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=wine-staging-vulkan-git
 pakku -S --needed --noconfirm \
-  attr ib32-attr \
+  attr lib32-attr \
   fontconfig lib32-fontconfig \
   lcms2 lib32-lcms2 \
   libxml2 lib32-libxml2 \
@@ -99,16 +99,16 @@ pakku -S --needed --noconfirm \
   v4l-utils lib32-v4l-utils \
   alsa-lib lib32-alsa-lib \
   libxcomposite lib32-libxcomposite \
-  mesa ib32-mesa \
+  mesa lib32-mesa \
   libgl lib32-libgl \
   opencl-icd-loader lib32-opencl-icd-loader \
   libxslt lib32-libxslt \
   libpulse lib32-libpulse \
   libva lib32-libva \
-  gtk3 ib32-gtk3 \
+  gtk3 lib32-gtk3 \
   gst-plugins-base-libs lib32-gst-plugins-base-libs \
   vulkan-icd-loader lib32-vulkan-icd-loader \
-  sdl2 ib32-sdl2 \
+  sdl2 lib32-sdl2 \
   samba \
   opencl-headers \
   giflib lib32-giflib \
@@ -128,10 +128,10 @@ pakku -S --needed --noconfirm \
   opencl-icd-loader lib32-opencl-icd-loader \
   libxslt lib32-libxslt \
   libva lib32-libva \
-  gtk3 ib32-gtk3 \
+  gtk3 lib32-gtk3 \
   gst-plugins-base-libs lib32-gst-plugins-base-libs \
   vulkan-icd-loader lib32-vulkan-icd-loader \
-  sdl2 ib32-sdl2 \
+  sdl2 lib32-sdl2 \
   cups \
   samba \
   dosbox
