@@ -10,7 +10,7 @@ askAboutGPU() {
 "
     read -n1 -s choice
     if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-        GPU_DRIVERS="xf86-video-nouveau nvidia-utils vulkan-icd-loader"
+        GPU_DRIVERS="xf86-video-nouveau nvidia-utils"
     fi
   fi
   if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
@@ -24,9 +24,9 @@ askAboutGPU() {
 "
       read -n1 -s choice
       if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-        GPU_DRIVERS="xf86-video-amdgpu vulkan-radeon vulkan-radeon-icd-loader lib32-vulkan-radeon"
+        GPU_DRIVERS="xf86-video-amdgpu vulkan-radeon lib32-vulkan-radeon"
       else
-        GPU_DRIVERS="xf86-video-ati vulkan-icd-loader"
+        GPU_DRIVERS="xf86-video-ati"
       fi
     fi
   fi
@@ -36,7 +36,7 @@ askAboutGPU() {
 "
     read -n1 -s choice
     if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-        GPU_DRIVERS="xf86-video-intel vulkan-intel vulkan-icd-loader"
+        GPU_DRIVERS="xf86-video-intel vulkan-intel lib32-vulkan-intel"
     fi
   fi
 }
@@ -51,8 +51,8 @@ fi
 
 pakku -S --needed --noconfirm \
   wine-staging wine-mono wine_gecko \
+  vulkan-icd-loader lib32-vulkan-icd-loader \
   $GPU_DRIVERS \
-  lib32-vulkan-icd-loader \
   dxvk-wine32-git dxvk-wine64-git \
   lib32-alsa-lib lib32-alsa-plugins \
   lib32-libpulse lib32-alsa-oss \
