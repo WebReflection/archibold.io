@@ -10,7 +10,7 @@ askAboutGPU() {
 "
     read -n1 -s choice
     if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-        GPU_DRIVERS="xf86-video-nouveau nvidia-utils"
+        GPU_DRIVERS="xf86-video-nouveau nvidia-utils lib32-nvidia-340xx-utils"
     fi
   fi
   if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
