@@ -53,7 +53,7 @@ pakku -S --needed --noconfirm \
   wine-staging wine-mono wine_gecko \
   vulkan-icd-loader lib32-vulkan-icd-loader \
   $GPU_DRIVERS \
-  dxvk-wine32-git dxvk-wine64-git \
+  dxvk-wine64-git \
   lib32-alsa-lib lib32-alsa-plugins \
   lib32-libpulse lib32-alsa-oss \
   lib32-openal \
@@ -64,7 +64,6 @@ pakku -S --needed --noconfirm \
   lib32-gnutls \
   lib32-gst-plugins-base lib32-gst-plugins-good
 
-setup_dxvk32
 setup_dxvk64
 
 # deps from https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=wine-staging-vulkan-git
