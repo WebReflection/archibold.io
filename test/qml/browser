@@ -1,12 +1,14 @@
 #!/usr/bin/env qml
 
-import QtQuick 2.10
-import QtQuick.Window 2.10
-import QtWebEngine 1.6
+import QtQuick 2.11
+import QtQuick.Window 2.11
+import QtWebEngine 1.7
 
 Window {
   // Component.onCompleted: { /* for debugging purpose */ }
   modality: Qt.ApplicationModal
+  width: Screen.width
+  height: Screen.height
   visible: true
   visibility: Window.FullScreen
   WebEngineView {
@@ -33,8 +35,7 @@ Window {
     settings.localContentCanAccessRemoteUrls: true
     settings.webGLEnabled: true
     url: Qt.application.arguments.pop()
-    // my improvised way to scale
-    zoomFactor: Math.max(1, Screen.pixelDensity / 5)
+    // zoomFactor: Math.max(1, Screen.pixelDensity / 5)
   }
 }
 
