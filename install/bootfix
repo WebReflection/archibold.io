@@ -1,0 +1,102 @@
+bootctl --path=/boot install
+
+findTheDisk() {
+  local i=0
+  local choice=
+  local disks=
+  local disk=
+  echo '
+  Please select the disk you would like to use
+  to install Arch Linux (pick a number).
+
+  *Please note:* #red(all data) in the chosen disk will be #red(lost).'
+
+  for disk in $(lsblk --output NAME); do
+    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+      ((i=i+1))
+      disks="$disks $disk"
+      printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(grabDiskSize /dev/$disk)
+    fi
+  done
+
+  echo ''
+  read -n1 -s choice
+
+  if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
+    i=0
+    for disk in $disks; do
+      ((i=i+1))
+      if [ "$i" = "$choice" ]; then
+        DISK="/dev/$disk"
+      fi
+    done
+  else
+    echomd "  #red(*Nope*), let's try again ... "
+    sleep 2 && clear && findTheDisk
+  fi
+}
+
+createPartitions() {
+  local part=
+  BOOT=
+  ROOT=
+  for part in $(ls ${DISK}*); do
+    if [[ "$part" =~ ^([a-z/]+([0-9]n)?[0-9]p|[a-z/]+)[0-9]$ ]]; then
+      if [ "$part" != "$DISK" ]; then
+        if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
+          BOOT=$part
+          echo "  boot: $(tput bold)$BOOT$(tput sgr0)"
+        elif [ "$UEFI" = "no" ] && [ "$SWAP" = "0" ]; then
+          ROOT=$part
+          echo "  root: $(tput bold)$ROOT$(tput sgr0)"
+        elif [ "$SWAP" != "0" ] && [ "$ROOT" = "" ]; then
+          SWAP=$part
+          ROOT=$part
+          echo "  swap: $(tput bold)$SWAP$(tput sgr0)"
+        else
+          ROOT=$part
+          echo "  root: $(tput bold)$ROOT$(tput sgr0)"
+          break
+        fi
+      fi
+    fi
+  done
+  if [ "$ROOT" = "" ]; then
+    echo 'unable to find the partition'
+    exit 1
+  fi
+  echo "mounting $BOOT"
+  mount $BOOT /boot 2> /dev/null
+  echo "configuring $ROOT"
+  sleep 2
+}
+
+clear && findTheDisk
+
+UCODE=''
+UCODE_STRING=''
+if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
+  UCODE='intel-ucode'
+fi
+elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
+  UCODE='amd-ucode'
+fi
+if [ "$UCODE" != "" ]; then
+  UCODE_STRING="initrd  /${UCODE}.img
+"
+  echo -e "
+  installing $(tput bold)${UCODE}$(tput sgr0)
+"
+  pacman -S --needed --noconfirm $UCODE > /dev/null 2>&1
+fi
+
+PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+
+echo "title   ArchLinux
+linux   /vmlinuz-linux
+${UCODE_STRING}initrd  /initramfs-linux.img
+options root=PARTUUID=${PARTUUID} rw" > /boot/loader/entries/arch.conf
+sleep 1
+
+echo "removing syslinux from the system"
+pacman -Rsc --noconfirm syslinux
