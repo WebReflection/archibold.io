@@ -111,3 +111,7 @@ rm /bootfix
 ' > bootfix/bootfix
 
 arch-chroot bootfix /bootfix
+
+echo "
+$(tput bold)OK$(tput sgr0), you can reboot now
+"
