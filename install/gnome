@@ -35,7 +35,7 @@ echoWithHeader "
 sudo pacman -S --needed --noconfirm \
     gnome gnome-tweaks \
     xf86-input-libinput xsel \
-    ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
+    ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra
 
 echoWithHeader "
   Enabling NetworkManager and GDM
@@ -69,4 +69,4 @@ fi
 #     xdg-utils xdg-user-dirs-gtk xdg-desktop-portal-gtk \
 #     eog totem \
 #     xf86-input-libinput \
-#     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji
+#     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra

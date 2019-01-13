@@ -1,0 +1,464 @@
+#!/usr/bin/env bash
+
+#########################
+# archibold.io (C) 2016 #
+#########################
+
+source <(curl -s https://archibold.io/require)
+
+require echomd
+require partid
+
+echoWithHeader() {
+  echomd "
+# archibold.io
+$@
+"
+}
+
+updateSystemTime() {
+  echoWithHeader '
+  Welcome to Archibold installer.
+  As first step, we are going to update
+  the current system time.'
+
+  if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
+    sudo ntpdate pool.ntp.org
+    sudo timedatectl set-local-rtc 1
+  fi
+}
+
+updatePacman() {
+  echoWithHeader '
+  The pacman manager, known as *pacman*,
+  might need some update too.'
+
+  sudo pacman -Sy
+  sudo pacman-db-upgrade
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinux
+}
+
+grabDiskSize() {
+  local found=0
+  local size=
+  for size in $(lsblk --output SIZE $1); do
+    if [ "$found" = "0" ]; then
+      found=1
+    else
+      echo $size
+      return
+    fi
+  done
+}
+
+findTheDisk() {
+  local i=0
+  local choice=
+  local disks=
+  local disk=
+  echoWithHeader '
+  Please select the disk you would like to use
+  to install Arch Linux (pick a number).
+
+  *Please note:* #red(all data) in the chosen disk will be #red(lost).'
+
+  for disk in $(lsblk --output NAME); do
+    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+      ((i=i+1))
+      disks="$disks $disk"
+      printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(grabDiskSize /dev/$disk)
+    fi
+  done
+
+  echo ''
+  read -n1 -s choice
+
+  if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
+    i=0
+    for disk in $disks; do
+      ((i=i+1))
+      if [ "$i" = "$choice" ]; then
+        DISK="/dev/$disk"
+      fi
+    done
+  else
+    echomd "  #red(*Nope*), let's try again ... "
+    sleep 2 && clear && findTheDisk
+  fi
+}
+
+askAboutUEFI() {
+  local choice=
+  echoWithHeader "
+  Is *${DISK}* installed for a system
+  compatible with *UEFI* ? [y/n]
+"
+  if [ "$INTEL" != "yes" ]; then
+    echomd "  If the target is this system
+  then *n* is the suggested choice"
+  fi
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    clear
+    if [ "$(uname -m)" = "x86_64" ]; then
+      echoWithHeader '
+  This system is probably a *64 bit* one.'
+    else
+      echoWithHeader '
+  This system is probably a *32 bit* one.'
+    fi
+    echo '  Which UEFI version would you like to use?'
+    echo ''
+    echo "  $(tput bold)1$(tput sgr0) 32 UEFI Compatible"
+    echo "  $(tput bold)2$(tput sgr0) 64 UEFI Compatible"
+
+    echo ''
+    read -n1 -s choice
+
+    if [ "$choice" = "1" ]; then
+      UEFI="32"
+    elif [ "$choice" = "2" ]; then
+      UEFI="64"
+    else
+      echo ''
+      echomd "  #red(*Nope*), let's try again ... "
+      sleep 2 && clear && askAboutUEFI
+    fi
+
+  else
+    UEFI="no"
+  fi
+
+}
+
+askAboutUEFILike() {
+  local choice=
+  echoWithHeader "
+  Would you like regardless an *UEFI* like
+  partition *boot structure* ? [y/n]"
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    UEFI=yes
+  fi
+
+}
+
+askAboutEDD() {
+  local choice=
+  echoWithHeader "
+  Would you like to *disable EDD* ? [y/n]
+"
+  echomd "  BIOS Enhanced Disk Drive Services
+  is usually available in modern systems."
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    EDD=" edd=off"
+  fi
+}
+
+askAboutSWAP() {
+  local choice=
+  echoWithHeader "
+  How much *swap* do you need?
+
+  Please specify an amount and press enter.
+
+  Valid options can be 0, 100M or 1G or 2Gi, etc"
+  read choice
+
+  SWAP=$(echo $choice | sed -r 's/^([0-9]+[A-Z]i)[bB]$/\1/' | numfmt --from=auto)
+  if [[ $? -ne 0 ]] ; then
+    echo ''
+    echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
+    sleep 2 && clear && askAboutSWAP
+  fi
+
+}
+
+askAboutAUTOLOGIN() {
+  local choice=
+  echoWithHeader "
+  Would you like $USER to *automatic login* ? [y/n]
+
+  If you are planning to install a Desktop environment later on,
+  the suggested choice is *n*"
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    AUTOLOGIN="yes"
+  fi
+}
+
+createPartitions() {
+  local start=2048s
+  local part=
+  echoWithHeader "
+  Preparing *$DISK*"
+  sudo dd if=/dev/zero of=$DISK bs=1 count=2048 > /dev/null 2>&1
+  sleep 1
+  if [ "$UEFI" = "no" ] || [ "$UEFI" = "yes" ]; then
+    echomd '  with an *msdos* label'
+    echo ''
+    sudo parted --script $DISK mklabel msdos > /dev/null 2>&1
+  else
+    echomd '  with UEFI *gpt* label'
+    echo ''
+    sudo parted --script $DISK mklabel gpt > /dev/null 2>&1
+  fi
+  if [ "$UEFI" != "no" ]; then
+    echomd '  with 128MiB *boot* partition'
+    echo ''
+    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 128MiB > /dev/null 2>&1
+    sudo parted $DISK set 1 boot on
+    start=128MiB
+  fi
+  if [ "$SWAP" = "0" ]; then
+    echomd '  *without swap* partition'
+    echo ''
+    sudo parted --script --align optimal $DISK mkpart primary ext4 $start 100% > /dev/null 2>&1
+  else
+    echomd "  with *$(numfmt --to=si $SWAP) swap* partition"
+    ((SWAP=SWAP+134217728))
+    SWAP=$(numfmt --to=si $SWAP)
+    echo ''
+    sudo parted --script --align optimal $DISK mkpart primary linux-swap $start $SWAP > /dev/null 2>&1
+    sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100% > /dev/null 2>&1
+  fi
+  sleep 1
+  clear
+  echoWithHeader "
+  The *$DISK* will be partitioned as such:
+"
+  BOOT=
+  ROOT=
+  for part in $(ls ${DISK}*); do
+    if [[ "$part" =~ ^([a-z/]+([0-9]n)?[0-9]p|[a-z/]+)[0-9]$ ]]; then
+      if [ "$part" != "$DISK" ]; then
+        if [ "$UEFI" != "no" ] && [ "$BOOT" = "" ]; then
+          BOOT=$part
+          echo "  boot: $(tput bold)$BOOT$(tput sgr0)"
+        elif [ "$UEFI" = "no" ] && [ "$SWAP" = "0" ]; then
+          ROOT=$part
+          echo "  root: $(tput bold)$ROOT$(tput sgr0)"
+        elif [ "$SWAP" != "0" ] && [ "$ROOT" = "" ]; then
+          SWAP=$part
+          ROOT=$part
+          echo "  swap: $(tput bold)$SWAP$(tput sgr0)"
+        else
+          ROOT=$part
+          echo "  root: $(tput bold)$ROOT$(tput sgr0)"
+          break
+        fi
+      fi
+    fi
+  done
+  if [ "$ROOT" = "" ]; then
+    echo 'unable to find the partition'
+    exit 1
+  fi
+  clear
+  echo "$BOOT"
+  echo "$SWAP"
+  echo "$ROOT"
+  sleep 3
+  if [ "$BOOT" != "" ]; then
+    clear
+    echoWithHeader "
+  formatting *boot* partition"
+    if [ "$UEFI" = "yes" ]; then
+      sudo bash -c "mkfs.ext2 -F $BOOT"
+    else
+      sudo bash -c "mkfs.vfat $BOOT"
+    fi
+    sleep 1
+  fi
+  if [ "$SWAP" != "0" ]; then
+    clear
+    echoWithHeader "
+  creating *swap* partition"
+    sudo bash -c "yes y | mkswap $SWAP"
+    sleep 1
+  fi
+  clear
+    echoWithHeader "
+  creating *root* partition"
+  if [ "$BOOT" = "" ] && [ "$(uname -m)" = "x86_64" ]; then
+    echomd '  *disabling* pure *64bit* mode
+'
+    sudo bash -c "mkfs.ext4 -F -O ^64bit $ROOT"
+  else
+    sudo bash -c "mkfs.ext4 -F $ROOT"
+  fi
+  partid create $ROOT
+  sleep 1
+}
+
+askAboutQUIET() {
+  local choice=
+  echoWithHeader "
+  Would you like a *quiet boot* ? [y/n]"
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    QUIET=yes
+  else
+    QUIET=no
+  fi
+}
+
+askAboutLANGUAGE() {
+  local choice=
+  echoWithHeader "
+  Which *language* do you need ?
+
+  Pleas specify just 2 chars like: en, de, it ...
+"
+  read choice
+  if [[ "$choice" =~ ^([a-z][a-z])$ ]]; then
+    LANGUAGE="$choice"
+  else
+    echo ''
+    echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
+    sleep 2 && clear && askAboutLANGUAGE
+  fi
+}
+
+askForUser() {
+  local choice=
+  echoWithHeader "
+  Which *user name* would you like to use ?
+  Write one and press enter.
+
+  Please note *only lowercase* letters are valid."
+  read choice
+  if [ "$choice" = "root" ] || [ "$(echo $choice | sed -e 's/[a-z]//g')" != "" ]; then
+    echo ''
+    echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
+    sleep 2 && clear && askForUser
+  else
+    USER=$choice
+  fi
+}
+
+# The Archibold Installer
+clear && updateSystemTime && sleep 1
+clear && updatePacman && sleep 1
+
+if [ "$INTEL" = "" ] && [ "$(lscpu | grep GenuineIntel)" != "" ]; then
+  INTEL="yes"
+fi
+
+if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
+  clear && askForUser
+fi
+if [ "$DISK" = "" ]; then
+  clear && findTheDisk
+fi
+
+sudo umount ${DISK}* 2> /dev/null
+
+if [ "$UEFI" != "32" ] && [ "$UEFI" != "64" ] && [ "$UEFI" != "yes" ]; then
+  if [ "$UEFI" = "" ]; then
+    clear && askAboutUEFI
+    if [ "$UEFI" = "no" ]; then
+      clear && askAboutUEFILike
+    fi
+  else
+    UEFI=no
+  fi
+fi
+
+if [ "$UEFI" = "32" ] || [ "$UEFI" = "64" ]; then
+  UEFI="efi${UEFI}"
+else
+  if [ "$EDD" = "" ]; then
+    clear && askAboutEDD
+  else
+    EDD=" edd=$EDD"
+  fi
+fi
+
+if [ "$SWAP" = "" ]; then
+  clear && askAboutSWAP
+fi
+
+if [ "$QUIET" = "" ]; then
+  clear && askAboutQUIET
+fi
+if [ "$QUIET" = "yes" ]; then
+  # QUIET=" quiet splash loglevel=0 console=tty2"
+  QUIET=" quiet splash"
+else
+  QUIET=""
+fi
+
+if [ "$AUTOLOGIN" = "" ]; then
+  clear && askAboutAUTOLOGIN
+fi
+
+if [ "$LANGUAGE" = "" ]; then
+  clear && askAboutLANGUAGE
+fi
+
+clear && createPartitions
+
+if [ -d archibold.env ]; then
+  sudo rm -rf archibold.env
+fi
+mkdir archibold.env
+sudo mount $ROOT archibold.env
+if [ "$BOOT" != "" ]; then
+  sudo mkdir -p archibold.env/boot
+  sudo mount $BOOT archibold.env/boot
+fi
+
+clear
+echoWithHeader "
+  Bootstrapping *Arch Linux* via
+  pacstrap arch-install-scripts base gptfdisk syslinux
+"
+sleep 1
+sudo pacstrap archibold.env arch-install-scripts base gptfdisk syslinux
+
+clear
+echoWithHeader "
+  Creating basic installation via *arch-chroot*
+"
+sleep 1
+echo "#!/usr/bin/env bash
+
+LABEL=archibold
+LANGUAGE=$LANGUAGE
+DISK=$DISK
+BOOT=$BOOT
+SWAP=$SWAP
+ROOT=$ROOT
+UEFI=$UEFI
+USER=$USER
+AUTOLOGIN=$AUTOLOGIN
+EDD='$EDD'
+QUIET='$QUIET'
+
+" > /tmp/install
+curl -Ls -o /tmp/install-chroot https://archibold.io/setup-utils/chrootd
+cat /tmp/install-chroot >> /tmp/install
+rm /tmp/install-chroot
+sudo chmod a+x /tmp/install
+sudo mv /tmp/install archibold.env/archibold.install
+sudo arch-chroot archibold.env /archibold.install
+sudo umount ${DISK}* 2> /dev/null
+sleep 5
+clear
+echoWithHeader "
+  Congratulations. Arch Linux is ready.
+
+  Configured users: passwords are
+
+    *root*: *root*
+    *$USER*: *$USER*
+
+  Please type #green(shutdown -h now) and
+  remove the media after.
+"
