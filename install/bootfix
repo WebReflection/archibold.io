@@ -130,6 +130,10 @@ rm /bootfix
 
 sudo arch-chroot bootfix /bootfix
 
+sleep 2
+
+umount ${DISK}* 2> /dev/null
+
 echo "
 $(tput bold)OK$(tput sgr0), you can reboot now
 "
