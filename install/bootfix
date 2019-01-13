@@ -31,7 +31,7 @@ findTheDisk() {
       fi
     done
   else
-    echomd "  #red(*Nope*), let's try again ... "
+    echo "  $(tput bold)Nope$(tput sgr0), let's try again ... "
     sleep 2 && clear && findTheDisk
   fi
 }
