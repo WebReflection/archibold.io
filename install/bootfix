@@ -76,12 +76,15 @@ findRootAndMount() {
 }
 
 clear && findTheDisk
+sleep 1
 
 echo "umount ${DISK}"
 umount ${DISK}* 2> /dev/null
+sleep 1
 
 echo "finding partitions"
 findRootAndMount
+sleep 1
 
 PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
 if [ "$PARTUUID" = "" ]; then
@@ -94,6 +97,7 @@ echo "mounting ${ROOT}"
 mount $ROOT bootfix
 echo "mounting ${BOOT}"
 mount $BOOT bootfix/boot
+sleep 1
 
 UCODE=''
 if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
@@ -102,6 +106,7 @@ elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
   UCODE='amd-ucode'
 fi
 
+echo 'preparing the patch'
 echo "#!/usr/bin/env bash
 UCODE_STRING=''
 if [ '${UCODE}' != '' ]; then
@@ -123,16 +128,19 @@ sleep 1
 
 echo 'removing syslinux from the system'
 pacman -Rsc --noconfirm syslinux
+sleep 1
 
 rm /bootfix
 " > bootfix/bootfix
+sleep 1
 
 sudo arch-chroot bootfix /bootfix
-
-sleep 2
+sleep 1
 
 umount ${DISK}* 2> /dev/null
+sleep 1
 
 echo "
 $(tput bold)OK$(tput sgr0), you can reboot now
 "
+sleep 1
