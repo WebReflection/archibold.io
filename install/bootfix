@@ -1,5 +1,3 @@
-bootctl --path=/boot install
-
 findTheDisk() {
   local i=0
   local choice=
@@ -36,7 +34,7 @@ findTheDisk() {
   fi
 }
 
-createPartitions() {
+findRootAndMount() {
   local part=
   BOOT=
   ROOT=
@@ -65,21 +63,30 @@ createPartitions() {
     echo 'unable to find the partition'
     exit 1
   fi
-  echo "mounting $BOOT"
-  mount $BOOT /boot 2> /dev/null
-  echo "configuring $ROOT"
-  sleep 2
 }
 
 clear && findTheDisk
 
-UCODE=''
-UCODE_STRING=''
+echo "umount ${DISK}"
+umount ${DISK}* 2> /dev/null
+
+echo "finding partitions"
+findRootAndMount
+
+mkdir -p bootfix
+echo "mounting ${ROOT}"
+mount $ROOT bootfix
+echo "mounting ${BOOT}"
+mount $BOOT bootfix/boot
+
+echo '#!/usr/bin/env bash
+UCODE=
+UCODE_STRING=
 if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
-  UCODE='intel-ucode'
+  UCODE=intel-ucode
 fi
 elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
-  UCODE='amd-ucode'
+  UCODE=amd-ucode
 fi
 if [ "$UCODE" != "" ]; then
   UCODE_STRING="initrd  /${UCODE}.img
@@ -92,6 +99,8 @@ fi
 
 PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
 
+bootctl --path=/boot install
+
 echo "title   ArchLinux
 linux   /vmlinuz-linux
 ${UCODE_STRING}initrd  /initramfs-linux.img
@@ -100,3 +109,8 @@ sleep 1
 
 echo "removing syslinux from the system"
 pacman -Rsc --noconfirm syslinux
+
+rm /bootfix
+' > bootfix/bootfix
+
+arch-chroot bootfix /bootfix
