@@ -83,45 +83,50 @@ umount ${DISK}* 2> /dev/null
 echo "finding partitions"
 findRootAndMount
 
+PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+if [ "$PARTUUID" = "" ]; then
+  echo 'unable to find the partition ID'
+  exit 1
+fi
+
 mkdir -p bootfix
 echo "mounting ${ROOT}"
 mount $ROOT bootfix
 echo "mounting ${BOOT}"
 mount $BOOT bootfix/boot
 
-echo '#!/usr/bin/env bash
-UCODE=
-UCODE_STRING=
+UCODE=''
 if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
-  UCODE=intel-ucode
+  UCODE='intel-ucode'
 fi
 elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
-  UCODE=amd-ucode
-fi
-if [ "$UCODE" != "" ]; then
-  UCODE_STRING="initrd  /${UCODE}.img
-"
-  echo -e "
-  installing $(tput bold)${UCODE}$(tput sgr0)
-"
-  pacman -S --needed --noconfirm $UCODE > /dev/null 2>&1
+  UCODE='amd-ucode'
 fi
 
-PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+echo "#!/usr/bin/env bash
+UCODE_STRING=''
+if [ '${UCODE}' != '' ]; then
+  UCODE_STRING='initrd  /${UCODE}.img
+'
+  echo -e '
+  installing $(tput bold)${UCODE}$(tput sgr0)
+'
+  pacman -S --needed --noconfirm ${UCODE} > /dev/null 2>&1
+fi
 
 bootctl --path=/boot install
 
-echo "title   ArchLinux
+echo 'title   ArchLinux
 linux   /vmlinuz-linux
-${UCODE_STRING}initrd  /initramfs-linux.img
-options root=PARTUUID=${PARTUUID} rw" > /boot/loader/entries/arch.conf
+\${UCODE_STRING}initrd  /initramfs-linux.img
+options root=PARTUUID=${PARTUUID} rw' > /boot/loader/entries/arch.conf
 sleep 1
 
-echo "removing syslinux from the system"
+echo 'removing syslinux from the system'
 pacman -Rsc --noconfirm syslinux
 
 rm /bootfix
-' > bootfix/bootfix
+" > bootfix/bootfix
 
 sudo arch-chroot bootfix /bootfix
 
