@@ -2,8 +2,13 @@
 # archibold.io (C) 2016 #
 #########################
 
-if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/yaourt)
+AUR=pakku
+if [ "$(which pakku 2> /dev/null)" = "" ]; then
+  if [ "$(which yaourt 2> /dev/null)" = "" ]; then
+    bash <(curl -s https://archibold.io/install/pakku)
+  else
+    AUR=yaourt
+  fi
 fi
 
 askAboutRetina() {
@@ -18,6 +23,6 @@ askAboutRetina() {
   fi
 }
 
-yaourt -S --needed --noconfirm spotify
+$AUR -S --needed --noconfirm spotify
 
 askAboutRetina
