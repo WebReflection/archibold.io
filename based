@@ -94,38 +94,9 @@ askAboutUEFI() {
   Is *${DISK}* installed for a system
   compatible with *UEFI* ? [y/n]
 "
-  if [ "$INTEL" != "yes" ]; then
-    echomd "  If the target is this system
-  then *n* is the suggested choice"
-  fi
   read -n1 -s choice
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-    clear
-    if [ "$(uname -m)" = "x86_64" ]; then
-      echoWithHeader '
-  This system is probably a *64 bit* one.'
-    else
-      echoWithHeader '
-  This system is probably a *32 bit* one.'
-    fi
-    echo '  Which UEFI version would you like to use?'
-    echo ''
-    echo "  $(tput bold)1$(tput sgr0) 32 UEFI Compatible"
-    echo "  $(tput bold)2$(tput sgr0) 64 UEFI Compatible"
-
-    echo ''
-    read -n1 -s choice
-
-    if [ "$choice" = "1" ]; then
-      UEFI="32"
-    elif [ "$choice" = "2" ]; then
-      UEFI="64"
-    else
-      echo ''
-      echomd "  #red(*Nope*), let's try again ... "
-      sleep 2 && clear && askAboutUEFI
-    fi
-
+    UEFI="64"
   else
     UEFI="no"
   fi

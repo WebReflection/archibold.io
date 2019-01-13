@@ -25,6 +25,8 @@ You can always use discover or pamac instead.
   read -n1 -s USE_GNOME_SOFTWARE
 fi
 
+echo "please wait for the GPU setup ..."
+
 source <(curl -s https://archibold.io/install/gpu)
 
 echoWithHeader "

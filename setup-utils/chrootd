@@ -122,4 +122,8 @@ if [ "$AUTOLOGIN" = "yes" ]; then
   chown -R $USER:users /home/$USER/.hushlogin
 fi
 
+curl -LOs https://archibold.io/utils/so
+chmod a+x so
+mv so /usr/bin
+
 exit
