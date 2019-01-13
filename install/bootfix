@@ -4,10 +4,7 @@ findTheDisk() {
   local disks=
   local disk=
   echo '
-  Please select the disk you would like to use
-  to install Arch Linux (pick a number).
-
-  *Please note:* #red(all data) in the chosen disk will be #red(lost).'
+  Please select the disk you would like to fix:'
 
   for disk in $(lsblk --output NAME); do
     if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
@@ -29,7 +26,7 @@ findTheDisk() {
       fi
     done
   else
-    echo "  $(tput bold)Nope$(tput sgr0), let's try again ... "
+    echo "  Nope, let's try again ... "
     sleep 2 && clear && findTheDisk
   fi
 }
@@ -59,8 +56,8 @@ findRootAndMount() {
       fi
     fi
   done
-  if [ "$ROOT" = "" ]; then
-    echo 'unable to find the partition'
+  if [ "$ROOT" = "" ] || [ "$BOOT" = "" ]; then
+    echo 'unable to find the partitions'
     exit 1
   fi
 }
