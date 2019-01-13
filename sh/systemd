@@ -1,0 +1,634 @@
+#!/usr/bin/env bash
+
+ARCHIBOLD='0.7.1'
+
+clear
+
+echo ''
+echo "SAY
+SAY                                _|        _|  _|                  _|        _|
+SAY     _|_|_|  _|  _|_|   _|_|_|  _|_|_|        _|_|_|      _|_|    _|    _|_|_|
+SAY   _|    _|  _|_|     _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+SAY   _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|
+SAY     _|_|_|  _|         _|_|_|  _|    _|  _|  _|_|_|      _|_|    _|    _|_|_|
+SAY
+SAY
+SAY     by Andrea Giammarchi - @WebReflection                            v${ARCHIBOLD}
+SAY
+">archibold.header
+
+cat archibold.header | sed -e 's/SAY  / /g' | sed -e 's/SAY//g'
+
+if [ "$AMD" = "1" ]; then
+  EDD=NO
+  UEFI=NO
+  SWAP=0
+fi
+
+# GPU card checks
+if [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep Intel)" != "" ]; then
+  GPU='Intel'
+  GPU_DRIVERS='xf86-video-intel libva-intel-driver'
+elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep NVIDIA)" != "" ]; then
+  GPU='nVidia'
+  GPU_DRIVERS='xf86-video-nouveau mesa-libgl'
+elif [ "$(lspci -v -s `lspci | awk '/VGA/{print $1}'` | grep AMD)" != "" ]; then
+  GPU='Radeon'
+  GPU_DRIVERS='xf86-video-amdgpu mesa-libgl libva-mesa-driver'
+fi
+
+UCODE=''
+if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
+  UCODE='intel-ucode'
+fi
+elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
+  UCODE='amd-ucode'
+fi
+
+UCODE_STRING=''
+if [ "$UCODE"  != "" ]; then
+  UCODE_STRING="initrd  /${UCODE}.img
+"
+fi
+
+if [ "$GPU" = "" ]; then
+  GPU='Mesa Framebuffer'
+  GPU_DRIVERS='xf86-video-fbdev'
+fi
+
+# DISK checks
+if [ "$DISK" = "" ]; then
+  echo 'please specify a DISK target (i.e. DISK=/dev/sdb)'
+  echo '(use lsblk or fdisk -l to know which one could be OK)'
+  exit 1
+fi
+
+# SWAP checks
+if [ "$SWAP" = "" ]; then
+  SWAP=2GiB
+fi
+
+# EDD check
+if [ "$EDD" = "NO" ]; then
+  EDD=off
+fi
+
+# USER checks
+if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
+  echo 'please specify a USER name in lower case (i.e. archibold)'
+  exit 1
+fi
+
+# PASSWD and UPASSWD checks
+if [ "$PASSWD" = "" ]; then
+  if [ "$UPASSWD" = "" ]; then
+    PASSWD=root
+  else
+    PASSWD="$UPASSWD"
+  fi
+else
+  if [ "$UPASSWD" = "" ]; then
+    UPASSWD="$PASSWD"
+  fi
+fi
+if [ "$UPASSWD" = "" ]; then
+  UPASSWD="$USER"
+fi
+
+# UEFI architecture check
+if [ "$UEFI" != "NO" ]; then
+  if [ "$UEFI" != "" ] && [ "$UEFI" != "efi64" ] && [ "$UEFI" != "efi32" ]; then
+    echo "valid UEFI are efi64 or efi32, not $UEFI"
+    exit 1
+  else
+    if [ "$(uname -m)" = "x86_64" ]; then
+      UEFI=efi64
+    else
+      UEFI=efi32
+    fi
+  fi
+fi
+
+# LABEL check
+if [ "$LABEL" = "" ]; then
+  LABEL="archibold"
+fi
+
+# adjust local time
+ntpdate pool.ntp.org
+timedatectl set-local-rtc 1
+
+set -e
+
+pacman -Sy --noconfirm
+pacman-db-upgrade
+pacman-key --init
+pacman-key --populate archlinux
+
+# find current resolution
+pacman -S --needed --noconfirm fbset
+if [ "$WIDTH" = "" ]; then
+  WIDTH=$(fbset | grep 'mode ' | sed -e 's/mode "//' | sed -e 's/x.*//')
+fi
+if [ "$HEIGHT" = "" ]; then
+  HEIGHT=$(fbset | grep 'mode ' | sed -e 's/mode "[0-9]*x//' | sed -e 's/"//')
+fi
+
+# require common utils
+curl -LO https://archibold.io/sh/utils
+sync
+sleep 1
+. ./utils
+
+clear # after previous operations
+
+cat archibold.header | sed -e 's/SAY  / /g' | sed -e 's/SAY//g'
+
+# print summary
+echo ' - - - - - - - - - - - - - - '
+echo ' SUMMARY '
+echo ' - - - - - - - - - - - - - - '
+echo "  installing archibold $ARCHIBOLD"
+echo "  for users/passwords"
+echo "    root/${PASSWD}"
+echo "    ${USER}/${UPASSWD}"
+echo "  on disk $DISK"
+if [ "$UCODE" != "" ]; then
+  echo "  with $UCODE"
+fi
+if [ "$SWAP" = "0" ]; then
+  echo "  without swap"
+else
+  echo "  with $SWAP of swap"
+fi
+if [ "$UEFI" = "NO" ]; then
+  SYSLINUX_BOOT='/boot'
+  SYSLINUX_ROOT='/boot'
+  echo "  without EFI"
+else
+  SYSLINUX_BOOT=''
+  SYSLINUX_ROOT='/boot'
+  if [ "$VBOX" != "" ]; then
+    echo "  booting VirtualBox"
+  else
+    echo "  using $UEFI"
+  fi
+  echo "  with label $LABEL"
+  clean_efibootmgr "$LABEL"
+fi
+
+if [ "$VBOX" != "" ]; then
+  SYSLINUX_EFI="/EFI"
+  SYSLINUX_VESA="$SYSLINUX_EFI/BOOT"
+else
+  SYSLINUX_EFI="$SYSLINUX_BOOT"
+  SYSLINUX_VESA="$SYSLINUX_EFI/syslinux"
+fi
+
+if [ "$GNOME" = "0" ]; then
+  GNOME="NO"
+fi
+if [ "$GNOME" = "NO" ]; then
+  echo "  without GNOME"
+else
+  if [ "$GNOME" = "EXTRA" ]; then
+    echo "  with GNOME and all extras"
+  else
+    echo "  with GNOME"
+  fi
+  echo "  with GPU $GPU"
+  echo "  and resolution ${WIDTH}x${HEIGHT}"
+fi
+if [ "$EDD" != "" ]; then
+  echo "  with EDD $EDD"
+fi
+echo ' - - - - - - - - - - - - - - '
+
+echo "verifying $DISK"
+POSSIBLEDISKS=($(get_drives $DISK))
+
+if [[ $? -ne 0 ]] ; then
+  echo " ${DISK} is not valid"
+  exit 1
+fi
+
+for CHOICE in $POSSIBLEDISKS; do
+  if [ "$(df | grep $CHOICE)" != "" ]; then
+    echo "unmounting $CHOICE"
+    umount $CHOICE
+    if [[ $? -ne 0 ]] ; then
+      icho "  [*][r][WARNING][/] unable to install in ${CHOICE}"
+      exit 1
+    fi
+  fi
+done
+
+icho "[*][y][WARNING][/] disk $DISK will be completely [*]erased[/]."
+read -n1 -r -p "Is it OK to proceed? [y/n]" CHOICE
+
+if [[ $? -ne 0 ]] ; then
+  echo ''
+  echo '... be careful with these scripts ;-)'
+  exit 1
+fi
+
+if [ "$CHOICE" != "y" ]; then
+  echo ''
+  echo 'nothing to do then, bye bye'
+  exit 1
+fi
+
+dd if=/dev/zero of=$DISK bs=1 count=2048
+
+sync
+sleep 2
+
+if [ "$UEFI" = "NO" ]; then
+  PARTED_START_AT="2048s"
+  sudo parted --script $DISK mklabel msdos
+else
+  PARTED_START_AT="100M"
+  sudo parted --script $DISK mklabel gpt
+  sudo parted --script --align optimal $DISK mkpart primary fat16 2048s $PARTED_START_AT
+  sudo parted $DISK set 1 boot on
+fi
+
+if [ "$SWAP" = "0" ]; then
+  sudo parted --script --align optimal $DISK mkpart primary ext4 $PARTED_START_AT 100%
+else
+  sudo parted --script --align optimal $DISK mkpart primary linux-swap $PARTED_START_AT $SWAP
+  sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100%
+fi
+
+sync
+
+POSSIBLEDISKS=($(get_drives $DISK))
+
+if [[ $? -ne 0 ]] ; then
+  icho "  [*][r][WARNING][/] unable to install in ${POSSIBLEDISKS[*]}"
+  exit 1
+fi
+
+EFI=
+ROOT=
+
+if [ "$UEFI" = "NO" ]; then
+  if [ "$SWAP" != "0" ]; then
+    SWAP="${POSSIBLEDISKS[0]}"
+    ROOT="${POSSIBLEDISKS[1]}"
+  else
+    ROOT="${POSSIBLEDISKS[0]}"
+  fi
+else
+  EFI="${POSSIBLEDISKS[0]}"
+  if [ "$SWAP" != "0" ]; then
+    SWAP="${POSSIBLEDISKS[1]}"
+    ROOT="${POSSIBLEDISKS[2]}"
+  else
+    ROOT="${POSSIBLEDISKS[1]}"
+  fi
+fi
+
+if [ "$SWAP" != "0" ]; then
+  mkswap $SWAP
+  swapon $SWAP
+fi
+
+sync
+
+if [ "$UEFI" != "NO" ]; then
+  mkfs.vfat $EFI
+fi
+
+if [ "$AMD" = "1" ]; then
+  yes | mkfs.ext4 -O ^64bit $ROOT
+else
+  yes | mkfs.ext4 $ROOT
+fi
+
+sync
+
+ROOT_UUID="$(cat /proc/sys/kernel/random/uuid)"
+tune2fs -U $ROOT_UUID $ROOT
+sync
+sleep 2
+
+# show info
+if [ "$UEFI" != "NO" ]; then
+  EFI_UUID="$(get_partid 'vfat' $EFI)"
+  echo "EFI:             ${EFI} ${EFI_UUID}"
+fi
+
+if [ "$SWAP" != "0" ]; then
+  SWAP_UUID="$(get_partid 'swap' $SWAP)"
+  echo "SWAP:            ${SWAP} ${SWAP_UUID}"
+fi
+
+echo "ROOT:            ${ROOT} ${ROOT_UUID}"
+
+if [ "$UEFI" != "NO" ]; then
+  if [ "$EFI_UUID" = "" ]; then
+    icho "  [*][r][WARNING][/] unable to retrieve UUID for ${EFI}"
+    exit 1
+  fi
+fi
+if [ "$ROOT_UUID" = "" ]; then
+  icho "  [*][r][WARNING][/] unable to retrieve UUID for ${ROOT}"
+  exit 1
+fi
+
+PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+
+if [ "$PARTUUID" = "" ]; then
+  icho "  [*][r][WARNING][/] unable to retrieve PARTUUID for ${ROOT}"
+  exit 1
+fi
+
+sleep 5
+
+
+mkdir -p archibold
+
+# TODO: using UUID, is this still neede?
+# temporary hack to test boot from SD
+# and system in the EMMC
+# needed to be done upfront:
+#   1. create a primary ext4 partition in /dev/emmcblk0
+#   2. mkfs.ext4 /dev/emmcblk0p1
+#   3. specify such partition before running this installer
+if [ "$EXP_USE_EMMC" != "" ]; then
+  sudo mount $EXP_USE_EMMC archibold
+  sudo mkdir -p "archibold$SYSLINUX_ROOT"
+  sudo mount $ROOT "archibold$SYSLINUX_ROOT"
+  SYSLINUX_BOOT=''
+else
+  sudo mount $ROOT archibold
+  if [ "$UEFI" != "NO" ]; then
+    sudo mkdir -p "archibold/boot"
+    sudo mount $EFI "archibold/boot"
+  fi
+fi
+sync
+
+TOPACKSTRAP="base sudo gptfdisk arch-install-scripts ${UCODE}"
+if [ "$UEFI" != "NO" ]; then
+  TOPACKSTRAP="$TOPACKSTRAP efibootmgr efitools"
+fi
+
+if [ "$GNOME" != "NO" ]; then
+  TOPACKSTRAP="$TOPACKSTRAP networkmanager"
+else
+  TOPACKSTRAP="$TOPACKSTRAP dialog wpa_supplicant iw"
+fi
+
+sudo pacstrap archibold $TOPACKSTRAP
+sync
+
+# create fstab for reliable boot sequence
+echo "
+# root
+UUID=$ROOT_UUID	/         	ext4      	rw,relatime,discard,data=ordered	0 1
+" > archibold.fstab
+if [ "$UEFI" != "NO" ]; then
+echo "
+# boot
+UUID=$EFI_UUID      	/boot     	vfat      	rw,relatime,fmask=0022,dmask=0022,codepage=437,iocharset=iso8859-1,shortname=mixed,errors=remount-ro	0 2
+" >> archibold.fstab
+fi
+if [ "$SWAP" != "0" ]; then
+echo "
+# swap
+UUID=$SWAP_UUID      	none     	swap      	defaults	0 0
+" >> archibold.fstab
+fi
+
+mv archibold.fstab archibold/etc/fstab
+cat archibold/etc/fstab
+
+APPEND="options root=PARTUUID=${PARTUUID} rw"
+if [ "$BOOT_LOUDLY" = "" ]; then
+  APPEND="$APPEND quiet splash loglevel=0 console=tty2"
+fi
+if [ "$EDD" != "" ]; then
+  APPEND="$APPEND edd=$EDD"
+fi
+
+echo "#!/usr/bin/env bash
+
+DISK='$DISK'
+USER='$USER'
+EFI='$EFI'
+ROOT='$ROOT'
+LABEL='$LABEL'
+LOCALE='$LOCALE'
+PARTUUID='$PARTUUID'
+
+echo '
+en_US.UTF-8 UTF-8
+en_GB.UTF-8 UTF-8
+' >> /etc/locale.gen
+
+if [ '$LOCALE' != '' ]; then
+  echo '$LOCALE.UTF-8 UTF-8' >> /etc/locale.gen
+fi
+
+locale-gen
+locale > /etc/locale.conf
+
+if [ '$LOCALE' != '' ]; then
+  echo '
+LANG=$LOCALE.UTF-8
+LC_TIME=$LOCALE.UTF-8
+'>>/etc/locale.conf
+else
+  echo '
+LANG=en_US.UTF-8
+LC_TIME=en_US.UTF-8
+'>>/etc/locale.conf
+fi
+
+hwclock --systohc --utc
+
+if [ '$(uname -m)' = 'x86_64' ]; then
+  echo '
+[multilib]
+Include = /etc/pacman.d/mirrorlist' >> /etc/pacman.conf
+  sync
+fi
+
+pacman -Syu --noconfirm archlinux-keyring
+pacman-db-upgrade
+pacman-key --init
+pacman-key --populate archlinux
+
+echo '###############
+##   root    ##
+###############'
+echo -e '$PASSWD
+$PASSWD' | passwd
+
+useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+echo '##################
+## $USER ##
+##################'
+echo -e '$UPASSWD
+$UPASSWD' | passwd $USER
+
+echo '%wheel ALL=(ALL) ALL' >> /etc/sudoers
+echo '
+# password once asked never expires
+Defaults env_reset, timestamp_timeout=-1
+' >> /etc/sudoers
+
+if [ -f /etc/systemd/system/getty.target.wants/getty@tty1.service ]; then
+  sed -i -e 's/ExecStart=-\/sbin\/agetty.*/ExecStart=-\/sbin\/agetty -n -i -a $USER %I \$TERM/' /etc/systemd/system/getty.target.wants/getty@tty1.service
+else
+  mkdir -p /etc/systemd/system/getty@tty1.service.d
+echo '[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -n -i -a $USER %I'>/etc/systemd/system/getty@tty1.service.d/autologin.conf
+fi
+
+sync
+
+free -h
+
+if [ '$GNOME' != 'NO' ]; then
+  systemctl enable NetworkManager.service
+fi
+
+bootctl --path=/boot install
+
+echo 'title   ${LABEL}
+linux   /vmlinuz-linux
+${UCODE_STRING}initrd  /initramfs-linux.img
+${APPEND}' > /boot/loader/entries/arch.conf
+
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ systemd-boot ]' TMP
+fi
+
+if [ '$GNOME' != 'NO' ]; then
+  curl -L -O https://archibold.io/sh/open
+  chmod a+x open
+  mv open /usr/bin
+  sync
+  pacman -Syu --needed --noconfirm \
+    $GPU_DRIVERS \
+    libva-mesa-driver mesa-vdpau \
+    xf86-input-evdev xf86-input-libinput \
+    xorg-server xorg-xinit xorg-server-xwayland \
+    gnome gnome-calendar gnome-tweak-tool \
+    gstreamer-vaapi gst-libav \
+    alsa-utils xdg-utils \
+    hunspell-en \
+    file-roller \
+    bluez bluez-utils gnome-bluetooth gnome-user-share \
+    ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-extra
+
+  systemctl enable gdm.service
+  systemctl enable bluetooth.service
+
+  sudo -u $USER mkdir -p /home/$USER/.config/gtk-3.0
+  sudo -u $USER touch /home/$USER/.config/gtk-3.0/settings.ini
+  sudo -u $USER echo '[Settings]
+gtk-application-prefer-dark-theme=1' >> /home/$USER/.config/gtk-3.0/settings.ini
+
+  sync
+
+  if [ '$GNOME' = 'EXTRA' ]; then
+    pacman -Syu --needed --noconfirm gnome-extra
+  fi
+
+  sudo -u $USER echo '# new tabs, same dir
+[[ -s /etc/profile.d/vte.sh ]] && . /etc/profile.d/vte.sh' >> /home/$USER/.bashrc
+
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.background picture-uri '/usr/share/backgrounds/gnome/Sandstone.jpg'
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.screensaver picture-uri '/usr/share/backgrounds/gnome/Godafoss_Iceland.jpg'
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.datetime automatic-timezone true
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.interface clock-show-date true
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.background show-desktop-icons true
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+  # sudo -u $USER dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad disable-while-typing true
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
+  sudo -u $USER dbus-launch gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+  sudo -u $USER dbus-launch gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
+  sudo -u $USER dbus-launch gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
+  sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webaudio true
+  sudo -u $USER dbus-launch gsettings set org.gnome.Epiphany.web enable-webgl true
+  # sudo -u $USER xdg-mime default org.gnome.Nautilus.desktop inode/directory
+fi
+
+sync
+
+mkinitcpio -p linux
+
+sync
+
+sleep 3
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after mkinitcpio ]' TMP
+fi
+
+cd /home/$USER
+sudo -u $USER touch /home/$USER/.hushlogin
+# sudo -u $USER curl -L -O https://archibold.io/sh/archibold
+sudo -u $USER curl -L -O https://archibold.io/sh/archy
+# chmod a+x archibold
+chmod a+x archy
+# mv archibold /usr/bin
+mv archy /usr/bin
+ln -s /usr/bin/archy /usr/bin/archibold
+sync
+
+rm /archibold
+if [ '$DEBUG' = 'YES' ]; then
+  read -n1 -r -p '[ after cleanup ]' TMP
+fi
+
+# echo '$LABEL' >> /etc/hostname
+hostnamectl set-hostname '$LABEL'
+
+if [ '$GNOME' != 'NO' ]; then
+  echo '[keyfile]
+hostname=$LABEL
+'>>/etc/NetworkManager/NetworkManager.conf
+  # /usr/bin/archy gnome-login-bg '/usr/share/backgrounds/gnome/Godafoss_Iceland.jpg'
+fi
+
+if [ '$UEFI' = 'NO' ]; then
+  if [ '$SAVE_FSTAB_INFO' = '1' ]; then
+    fdisk -l > /info/fdisk-chroot
+    genfstab -U -p / > /info/genfstab-chroot
+  fi
+fi
+
+rm /archibold
+
+exit
+">archibold.bash
+
+sudo mv archibold.bash archibold/archibold
+sudo chmod +x archibold/archibold
+rm archibold.header
+
+sudo arch-chroot archibold /archibold
+
+icho "
+
+[*]CONGRATULATIONS[/]
+
+archibold is ready to go!
+
+- - - - - - - - - - - - -
+
+please write the following in the console:
+
+[*]shutdown -h now[/]
+
+and remove the CD/USB stick after
+
+bye bye
+"
+
+
