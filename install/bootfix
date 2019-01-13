@@ -132,9 +132,10 @@ sleep 1
 
 rm /bootfix
 " > bootfix/bootfix
+chmod a+x bootfix/bootfix
 sleep 1
 
-sudo arch-chroot bootfix /bootfix
+arch-chroot bootfix /bootfix
 sleep 1
 
 umount ${DISK}* 2> /dev/null
