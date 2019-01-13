@@ -84,7 +84,6 @@ sleep 1
 
 echo "finding partitions"
 findRootAndMount
-sleep 1
 
 PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
 if [ "$PARTUUID" = "" ]; then
@@ -100,35 +99,34 @@ mount $BOOT bootfix/boot
 sleep 1
 
 UCODE=''
+UCODE_STRING=''
 if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
   UCODE='intel-ucode'
 elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
   UCODE='amd-ucode'
 fi
+if [ "${UCODE}" != "" ]; then
+  UCODE_STRING="initrd  /${UCODE}.img
+"
+fi
 
 echo 'preparing the patch'
 echo "#!/usr/bin/env bash
-UCODE_STRING=''
 if [ '${UCODE}' != '' ]; then
-  UCODE_STRING='initrd  /${UCODE}.img
-'
-  echo -e '
-  installing $(tput bold)${UCODE}$(tput sgr0)
-'
   pacman -S --needed --noconfirm ${UCODE} > /dev/null 2>&1
+  sleep 1
 fi
 
 bootctl --path=/boot install
 
 echo 'title   ArchLinux
 linux   /vmlinuz-linux
-\${UCODE_STRING}initrd  /initramfs-linux.img
+${UCODE_STRING}initrd  /initramfs-linux.img
 options root=PARTUUID=${PARTUUID} rw' > /boot/loader/entries/arch.conf
 sleep 1
 
 echo 'removing syslinux from the system'
 pacman -Rsc --noconfirm syslinux
-sleep 1
 
 rm /bootfix
 " > bootfix/bootfix
