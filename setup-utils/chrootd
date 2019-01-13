@@ -47,7 +47,6 @@ UCODE=''
 UCODE_STRING=''
 if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
   UCODE='intel-ucode'
-fi
 elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
   UCODE='amd-ucode'
 fi
