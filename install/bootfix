@@ -1,3 +1,16 @@
+grabDiskSize() {
+  local found=0
+  local size=
+  for size in $(lsblk --output SIZE $1); do
+    if [ "$found" = "0" ]; then
+      found=1
+    else
+      echo $size
+      return
+    fi
+  done
+}
+
 findTheDisk() {
   local i=0
   local choice=
