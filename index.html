@@ -146,6 +146,14 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|     
           Previously a <em>one-shot</em> <a href="https://www.gnome.org/">GNOME</a> on Arch Linux automatic installation procedure,
           archibold has evolved into a <a href="https://github.com/WebReflection/archibold.io/tree/gh-pages">fully GitHub hosted</a> Open Source service based on <code>curl</code> requests.
         </p>
+        <h2 id="bootfix">
+          <a href="#bootfix">Syslinux boot failure</a>
+        </h2>
+        <p>
+          If after an update your system doesn't boot anymore, try switching to systemd-boot instead, like latest archibold does too.
+          Simply start your PC through an ArchLinux ISO and type the following to fix your boot.
+        </p>
+        <pre><code>bash <(curl -s archibold.io/install/bootfix)</code></pre>
         <h2 id="using-utilities">
           <a href="#using-utilities">Using Utilities</a>
         </h2>
@@ -173,8 +181,8 @@ server
         <pre><code># install Chromium, Widevine and Pepperflash
 bash <(curl -s https://archibold.io/install/chromium)
 
-# install yaourt
-bash <(curl -s https://archibold.io/install/yaourt)
+# install pakku (or yaourt)
+bash <(curl -s https://archibold.io/install/pakku)
 </code></pre>
         <h2 id="base-install">
           <a href="#base-install">Installing basic Arch Linux from scratch</a>
