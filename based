@@ -4,6 +4,12 @@
 # archibold.io (C) 2016 #
 #########################
 
+# first ting: update the time or HTTPS won't work
+if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
+  sudo ntpdate pool.ntp.org
+  sudo timedatectl set-local-rtc 1
+fi
+
 source <(curl -s https://archibold.io/require)
 
 require echomd
@@ -18,14 +24,7 @@ $@
 
 updateSystemTime() {
   echoWithHeader '
-  Welcome to Archibold installer.
-  As first step, we are going to update
-  the current system time.'
-
-  if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
-    sudo ntpdate pool.ntp.org
-    sudo timedatectl set-local-rtc 1
-  fi
+  Welcome to Archibold installer.'
 }
 
 updatePacman() {

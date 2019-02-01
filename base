@@ -4,6 +4,11 @@
 # archibold.io (C) 2016 #
 #########################
 
+echo 'You are using a deprecated version of the installer'
+echo 'Please consider using archibold.io/based instead'
+
+sleep 3
+
 source <(curl -s https://archibold.io/require)
 
 require echomd
