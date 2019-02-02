@@ -1,0 +1,16 @@
+#########################
+# archibold.io (C) 2019 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/sudo)
+fi
+
+if [ "$(which pakku 2> /dev/null)" != "" ]; then
+  pakku -S --needed --noconfirm pamac-aur
+elif [ "$(which yaourt 2> /dev/null)" != "" ]; then
+  yaourt -S --needed --noconfirm pamac-aur
+else
+  source <(curl -s https://archibold.io/install/pakku)
+  pakku -S --needed --noconfirm pamac-aur
+fi

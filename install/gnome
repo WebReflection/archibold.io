@@ -61,6 +61,11 @@ if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
   sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
 fi
 
+echoWithHeader "
+  Installing common filesystem utilities (read/write)
+"
+source <(curl -s https://archibold.io/install/fsutils)
+
 ## old minimal setup (not really worth it)
 # sudo pacman -S --needed --noconfirm \
 #     gdm gnome-shell gnome-shell-extensions \

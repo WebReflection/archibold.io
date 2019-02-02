@@ -1,0 +1,141 @@
+#########################
+# archibold.io (C) 2016 #
+#########################
+#
+# arch-chroot env
+#
+# LABEL
+# LANGUAGE
+# DISK
+# BOOT
+# SWAP
+# ROOT
+# UEFI
+# USER
+# PASSWORD
+# AUTOLOGIN
+# EDD
+# QUIET
+#
+
+source <(curl -s https://archibold.io/utils/partid)
+
+cleanEfibootmgr() {
+  local which="$1"
+  local prev=
+  for entry in $(efibootmgr); do
+    if [ "$entry" = "$which" ]; then
+      efibootmgr -b "${prev:4:-1}" -B
+    fi
+    prev="$entry"
+  done
+}
+
+# Locale
+cat /etc/locale.gen | sed -r "s/^#(${LANGUAGE}_.* UTF-8)/\1/" > /etc/locale.tmp
+echo 'en_US.UTF-8 UTF-8' >> /etc/locale.tmp
+mv /etc/locale.tmp /etc/locale.gen
+locale-gen
+locale > /etc/locale.conf
+
+# Hardware basic needs
+echo -e "
+  installing $(tput bold)wifi tools$(tput sgr0)
+"
+pacman -S --needed --noconfirm dialog wpa_supplicant iw > /dev/null 2>&1
+
+UCODE=''
+UCODE_STRING=''
+if [ "$(cat /proc/cpuinfo | grep GenuineIntel)" != "" ]; then
+  UCODE='intel-ucode'
+elif [ "$(cat /proc/cpuinfo | grep AuthenticAMD)" != "" ]; then
+  UCODE='amd-ucode'
+fi
+if [ "$UCODE" != "" ]; then
+  UCODE_STRING="initrd  /${UCODE}.img
+"
+  echo -e "
+  installing $(tput bold)${UCODE}$(tput sgr0)
+"
+  pacman -S --needed --noconfirm $UCODE > /dev/null 2>&1
+fi
+
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  echo -e "
+  installing $(tput bold)UEFI$(tput sgr0) tools
+"
+  pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
+  # TODO: is it needed ?
+fi
+
+# Create clean fstab
+if [ "$SWAP" != "0" ]; then
+  swapon $SWAP
+fi
+genfstab -U -p / > /etc/fstab
+if [ "$BOOT" != "" ]; then
+  sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
+fi
+if [ "$SWAP" != "0" ]; then
+  sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
+fi
+sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
+cat /etc/fstab | sed -r 's/^(# )?(\/etc|efivarfs).*//' > /etc/fstab.tmp
+mv /etc/fstab.tmp /etc/fstab
+
+PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+APPEND="options root=PARTUUID=${PARTUUID} rw"
+if [ "$BOOT_LOUDLY" = "" ]; then
+  APPEND="$APPEND quiet splash loglevel=0 console=tty2"
+fi
+if [ "$EDD" != "" ]; then
+  APPEND="$APPEND edd=$EDD"
+fi
+
+# UEFI
+echo ''
+sleep 1
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  cleanEfibootmgr "$LABEL"
+fi
+sleep 1
+
+bootctl --path=/boot install
+
+echo "title   ${LABEL}
+linux   /vmlinuz-linux
+${UCODE_STRING}initrd  /initramfs-linux.img
+${APPEND}" > /boot/loader/entries/arch.conf
+sleep 1
+
+# Users
+echo -e "$PASSWORD
+$PASSWORD" | passwd
+
+useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+echo -e "$PASSWORD
+$PASSWORD" | passwd $USER
+
+# Automatic login
+if [ "$AUTOLOGIN" = "yes" ]; then
+  sed -ie "s#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#" /etc/systemd/system/getty.target.wants/getty@tty1.service
+  touch /home/$USER/.hushlogin
+  chown -R $USER:users /home/$USER/.hushlogin
+fi
+
+curl -LOs https://archibold.io/utils/so
+chmod a+x so
+mv so /usr/bin
+
+echo "
+ Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
+"
+  read -n1 -s INSTALL_GNOME
+
+if [ "$INSTALL_GNOME" = "y" ] || [ "$INSTALL_GNOME" = "Y" ]; then
+  cp /usr/bin/so /usr/bin/sudo
+  bash <(curl -s https://archibold.io/install/gnome)
+  rm /usr/bin/sudo
+fi
+
+exit
