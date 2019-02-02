@@ -38,7 +38,8 @@ sudo pacman -S --needed --noconfirm \
     gnome gnome-tweaks \
     xf86-input-libinput xsel \
     cups system-config-printer \
-    ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra
+    ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra \
+    bluez bluez-utils
 
 echoWithHeader "
   Enabling NetworkManager and GDM
