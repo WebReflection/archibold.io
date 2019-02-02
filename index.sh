@@ -25,9 +25,8 @@ source <(curl -s https://archibold.io/require)
 require echomd
 
 clear
-
-echomd '" > $DIR/index.html
-
+" > $DIR/index.html
+echo 'echomd "' >> $DIR/index.html
 echo "# archibold.io/$DIR" >> $DIR/index.html
 for f in $(ls $DIR); do
   if [ "$f" != "index.html" ]; then
@@ -38,5 +37,4 @@ for f in $(ls $DIR); do
     fi
   fi
 done
-
-echo "'" >> $DIR/index.html
+echo '"' >> $DIR/index.html
