@@ -31,8 +31,7 @@ echomd '" > $DIR/index.html
 echo "# archibold.io/$DIR" >> $DIR/index.html
 for f in $(ls $DIR); do
   if [ "$f" != "index.html" ]; then
-    echo "
-**$f**" >> $DIR/index.html
+    echo "**$f**" >> $DIR/index.html
     if [ -f info/$f ]; then
       cat info/$f >> $DIR/index.html
       echo '' >> $DIR/index.html

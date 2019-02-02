@@ -146,14 +146,6 @@ _|    _|  _|       _|        _|    _|  _|  _|    _|  _|    _|  _|  _|    _|     
           Previously a <em>one-shot</em> <a href="https://www.gnome.org/">GNOME</a> on Arch Linux automatic installation procedure,
           archibold has evolved into a <a href="https://github.com/WebReflection/archibold.io/tree/gh-pages">fully GitHub hosted</a> Open Source service based on <code>curl</code> requests.
         </p>
-        <h2 id="bootfix">
-          <a href="#bootfix">Syslinux boot failure</a>
-        </h2>
-        <p>
-          If after an update your system doesn't boot anymore, try switching to systemd-boot instead, like latest archibold does too.
-          Simply start your PC through an ArchLinux ISO and type the following to fix your boot.
-        </p>
-        <pre><code>bash <(curl -s archibold.io/install/bootfix)</code></pre>
         <h2 id="using-utilities">
           <a href="#using-utilities">Using Utilities</a>
         </h2>
@@ -199,7 +191,7 @@ bash <(curl -s https://archibold.io/install/pakku)
           It is now possible to simply type the following:
         </p>
         <pre><code># install from scratch Arch Linux
-bash <(curl -s https://archibold.io/based)</code></pre>
+bash <(curl -s https://archibold.io/get)</code></pre>
         <p>
           After you've booted Arch Linux through its image,
           the command will start installing Arch Linux from the scratch in such machine or,
@@ -272,7 +264,7 @@ ping 8.8.8.8
         <p>
           Once we have a usable network, we can use the installer.
         </p>
-        <pre><code>bash <(curl -s https://archibold.io/based)</code></pre>
+        <pre><code>bash <(curl -s https://archibold.io/get)</code></pre>
         <p>
           Follow instructions and you'll be ready in 10 minutes.
         </p>
@@ -329,6 +321,14 @@ sudo pacman -Rsc <i>package-name</i>
 sudo pacman -Sc</code></pre>
           </li>
         </ul>
+        <h2 id="bootfix">
+          <a href="#bootfix">Legacy Installer: Syslinux boot failure</a>
+        </h2>
+        <p>
+          If after an update your system doesn't boot anymore, try switching to systemd-boot instead, like latest archibold does too.
+          Simply start your PC through an ArchLinux ISO and type the following to fix your boot.
+        </p>
+        <pre><code>bash <(curl -s archibold.io/install/bootfix)</code></pre>
       </section>
     </div>
   </body>
