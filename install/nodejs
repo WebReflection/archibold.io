@@ -33,17 +33,14 @@ fi
 clear
 echoWithHeader '
   Installing dependencies'
-sudo pacman -S --needed --noconfirm npm nodejs python2 > /dev/null 2>&1
+sudo pacman -S --needed --noconfirm npm nodejs > /dev/null 2>&1
 
 if [ ! -d ~/.npm-packages ]; then
   clear
   echoWithHeader '
   Configuring npm prefix'
   mkdir -p ~/.npm-packages/bin
-  sudo touch /usr/etc/npmrc
-  sudo chown $USER:users /usr/etc/npmrc
   npm config set prefix '~/.npm-packages'
-  npm config set python "$(which python2)"
 fi
 
 if [ "$NODE_PATH" = "" ]; then

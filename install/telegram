@@ -1,9 +1,0 @@
-#########################
-# archibold.io (C) 2016 #
-#########################
-
-if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/yaourt)
-fi
-
-yaourt -S --needed --noconfirm telegram-desktop-bin

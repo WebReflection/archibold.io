@@ -1,9 +1,9 @@
 #########################
-# archibold.io (C) 2017 #
+# archibold.io (C) 2019 #
 #########################
 
-if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/yaourt)
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 sudo pacman -S --needed --noconfirm \
@@ -25,4 +25,10 @@ sudo modprobe vboxnetflt
 sudo modprobe vboxpci
 sudo gpasswd -a $USER vboxusers
 
-yaourt -S --needed --noconfirm virtualbox-ext-oracle
+if [ "$(which pakku 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/pakku)
+  pakku -S --needed --noconfirm virtualbox-ext-oracle
+elif [ "$(which yaourt 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/yaourt)
+  yaourt -S --needed --noconfirm virtualbox-ext-oracle
+fi
