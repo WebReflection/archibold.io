@@ -22,6 +22,9 @@ unclutter &
 
 # in case you'd like to see if it's hardware accelerated, try one of these
 # ./.browse --bgcolor=0,0,0 --fullscreen https://threejs.org/examples/webgl_geometry_cube.html
-# ./.browse --bgcolor=0,0,0 --fullscreen https://www.youtube.com/watch?v=IlVtF3dAyxs
+# ./.browse --fullscreen https://www.youtube.com/watch?v=IlVtF3dAyxs
+# ./.browse --fullscreen https://smashcat.org/av/canvas_test/
+# ./.browse --fullscreen https://webkit.org/blog-files/3d-transforms/poster-circle.html
+# ./.browse --fullscreen http://demo.kaazing.com/racer/
 ">.xinitrc
 chown alarm:alarm .xinitrc
