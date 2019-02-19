@@ -35,7 +35,7 @@ fi
 
 # install specific driver
 while ! pacman -S --needed --noconfirm \
-  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev
+  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev mesa-vdpau
 do
   :
 done
