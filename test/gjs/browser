@@ -42,6 +42,7 @@ imports.gi.versions.Gtk = '3.0';
     [
       'enable_webgl',
       'enable_webaudio',
+      'enable_accelerated_2d_canvas',
       'enable_accelerated_compositing'
     ]
   ).forEach(function (key) {
