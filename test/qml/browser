@@ -1,11 +1,14 @@
 #!/usr/bin/env qml
 
-import QtQuick 2.11
-import QtQuick.Window 2.11
-import QtWebEngine 1.7
+import QtQuick 2.12
+import QtQuick.Window 2.12
+import QtWebEngine 1.8
 
 Window {
-  // Component.onCompleted: { /* for debugging purpose */ }
+  Component.onCompleted: {
+    const {arguments} = Qt.application;
+    webView.url = arguments[arguments.length - 1];
+  }
   modality: Qt.ApplicationModal
   width: Screen.width
   height: Screen.height
@@ -34,8 +37,6 @@ Window {
     settings.localContentCanAccessFileUrls: true
     settings.localContentCanAccessRemoteUrls: true
     settings.webGLEnabled: true
-    url: Qt.application.arguments.pop()
     // zoomFactor: Math.max(1, Screen.pixelDensity / 5)
   }
 }
-
