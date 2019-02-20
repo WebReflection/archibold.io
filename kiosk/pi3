@@ -40,7 +40,7 @@ hdmi_mode=4
 [pi1]
 [pi2]
 arm_freq=1000
-gpu_freq=500 
+gpu_freq=500
 sdram_freq=500
 over_voltage=6
 [pi3]
@@ -49,7 +49,7 @@ gpu_freq=500
 sdram_freq=500
 over_voltage=5
 [pi3+]
-arm_freq=1500 
+arm_freq=1500
 gpu_freq=500
 sdram_freq=560
 over_voltage=5
