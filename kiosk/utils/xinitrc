@@ -4,14 +4,6 @@ echo "# x11 configuration
 # * WIDTHxHEIGTH must be compatible with your screen
 # xrandr -s 1280x720
 
-# if not working, try to add hdmi
-# values in the /boot/config.txt
-# https://www.raspberrypi.org/documentation/configuration/config-txt/video.md
-
-# hdmi_group=1
-# hdmi_mode=3
-# hdmi_mode=4
-
 # avoid sleep
 xset s off -dpms
 

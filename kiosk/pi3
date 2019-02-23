@@ -32,8 +32,8 @@ dtparam=spi=on
 # Enable 1Wire functionality
 dtoverlay=w1-gpio,gpiopin=7
 # Force 720p
-hdmi_group=1
-hdmi_mode=4
+# hdmi_group=1
+# hdmi_mode=4
 # Overclock
 [pi0]
 [pi0w]
