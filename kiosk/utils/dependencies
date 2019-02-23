@@ -4,6 +4,7 @@
 
 while ! pacman -S --needed --noconfirm \
                               xorg-server xorg-xinit xorg-xset xorg-xrandr unclutter \
+                              xf86-video-fbturbo \
                               alsa-utils libcanberra-gstreamer libcanberra-pulse \
                               gjs gnome-themes-extra \
                               webkit2gtk gst-plugins-base gst-plugins-good \
