@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+# (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
+
+while ! pacman -S --needed --noconfirm \
+                              weston \
+                              alsa-utils libcanberra-gstreamer libcanberra-pulse \
+                              gjs gnome-themes-extra \
+                              webkit2gtk gst-plugins-base gst-plugins-good \
+                              gstreamer-vaapi \
+                              gst-libav gst-plugins-ugly \
+                              geoip
+do
+  :
+done

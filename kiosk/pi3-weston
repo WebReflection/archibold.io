@@ -1,0 +1,83 @@
+#!/usr/bin/env bash
+
+# (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
+
+if [ "$USER" != "root" ]; then
+  echo "you need to be $(tput bold)root$(tput sgr0)";
+  exit 1;
+fi
+
+cd /home/alarm
+usermod -a -G video alarm
+
+# bootstrap pacman
+bash <(curl -s https://archibold.io/kiosk/utils/init)
+
+echo "
+dtoverlay=vc4-fkms-v3d
+gpu_mem_256=128
+gpu_mem_512=196
+gpu_mem_1024=384
+dtparam=audio=on
+dtoverlay=sdtweak,overclock_50=80
+dtparam=i2c_arm=on,i2c_arm_baudrate=400000
+dtparam=i2c1=on,i2c1_baudrate=50000
+dtparam=spi=on
+dtoverlay=w1-gpio,gpiopin=7
+[pi3]
+arm_freq=1350
+gpu_freq=500
+sdram_freq=500
+over_voltage=5
+[pi3+]
+arm_freq=1500
+gpu_freq=500
+sdram_freq=560
+over_voltage=5
+[all]
+avoid_warnings=1
+disable_splash=1
+boot_delay=0
+">>/boot/config.txt
+
+if [ -f /boot/boot.txt ]; then
+  # modify boot.scr to reserve cma memory and make the boot silent
+  while ! pacman -S --needed --noconfirm uboot-tools
+  do
+    :
+  done
+  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@196MB/" /boot/boot.txt
+  # sed -i "s/rootwait/rootwait cma=384MB@196MB/" /boot/boot.txt
+  mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
+else
+  # modify cmdline.txt mostly to make the boot silent (cma might be ignored)
+  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@196MB/" /boot/cmdline.txt
+fi
+
+# install specific driver
+while ! pacman -S --needed --noconfirm \
+  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev mesa-vdpau
+do
+  :
+done
+
+# install all dependencies and optimize
+bash <(curl -s https://archibold.io/kiosk/utils/dependencies-weston)
+
+# automatic login
+bash <(curl -s https://archibold.io/kiosk/utils/login)
+
+# download a minimalistic full screen browser
+bash <(curl -s https://archibold.io/kiosk/utils/browser)
+
+# setup the xinitrc
+bash <(curl -s https://archibold.io/kiosk/utils/weston)
+
+# bootstrap xorg from .bashrc
+bash <(curl -s https://archibold.io/kiosk/utils/bashrc)
+
+# avoid initial message
+touch .hushlogin
+chown alarm:alarm .hushlogin
+
+reboot

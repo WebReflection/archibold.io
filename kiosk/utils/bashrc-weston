@@ -1,0 +1,4 @@
+echo '
+# startx on login
+[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && weston-launch > /dev/null 2>&1'>>.bashrc
+chown alarm:alarm .bashrc
