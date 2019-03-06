@@ -36,7 +36,7 @@ $(tput bold)pakku installer$(tput sgr0)
   echo  " ( this might take a while )"
   sudo pacman -Sy --needed --noconfirm \
         base-devel binutils linux-headers git \
-        gobject-introspection nim \
+        go \
         diffstat chrpath wget cpio pv > /dev/null 2>&1
   installFromAUR "pakku"
   sync && sleep 1
