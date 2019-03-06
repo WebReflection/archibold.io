@@ -1,48 +1,42 @@
 #########################
-# archibold.io (C) 2016 #
+# archibold.io (C) 2019 #
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/sudo)
+  if [ "$(which so 2> /dev/null)" = "" ]; then
+    bash <(curl -s https://archibold.io/install/sudo)
+  else
+    alias sudo=so
+  fi
 fi
 
-installFromAUR() {
-  local package="$1"
-  local folder="/home/tmp-yaourt-install"
-  echo  " downloading ${package}"
-  sudo -H -u ${USER} sh -c "cd ${folder}; curl -LOs https://aur.archlinux.org/cgit/aur.git/snapshot/${package}.tar.gz"
-  echo " extracting ${package}"
-  sudo -H -u ${USER} sh -c "cd ${folder}; tar -xzf ${package}.tar.gz"
-  echo " creating ${package} package"
-  sudo -H -u ${USER} sh -c "cd ${folder}/${package}; makepkg -Asfc --needed --noconfirm"
-  echo " installing ${package}"
-  sudo pacman -U --needed --noconfirm ${folder}/${package}/${package}*.pkg.tar.xz
-  sync && sleep 1
-  echo " $(tput bold)$(pacman -Q ${package})$(tput sgr0) successfully installed"
-}
-
 if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  sudo mkdir -p /home/tmp-yaourt-install
-  sudo chown ${USER}:users /home/tmp-yaourt-install
   echo "
 $(tput bold)yaourt installer$(tput sgr0)
 "
-
   echo  " installing dependencies"
   echo  " ( this might take a while )"
-  sudo pacman -Sy --needed --noconfirm base-devel binutils linux-headers git diffstat chrpath wget cpio pv yajl > /dev/null 2>&1
-  installFromAUR "package-query"
-  sync && sleep 1
-  installFromAUR "yaourt"
-  sync && sleep 1
-  sudo rm -rf /home/tmp-yaourt-install
-fi
+  sudo pacman -Sy --needed --noconfirm base-devel binutils diffutils gettext linux-headers git diffstat chrpath wget cpio pv yajl
+  mkdir -p /home/tmp-yaourt-install
 
-echo "
-Would you like to install $(tput bold)pamac-aur$(tput sgr0) ? [y/n]
-"
-read -n1 -s TMP
-if [ "$TMP" = "y" ] || [ "$TMP" = "Y" ]; then
-  yaourt -S --needed --noconfirm gobject-introspection
-  yaourt -S --needed --noconfirm pamac-aur
+  rm -rf /home/tmp-yaourt-install/*
+  cd /home/tmp-yaourt-install
+  pkgname=package-query
+  pkgver=1.9
+  curl -LO https://mir.archlinux.fr/releases/$pkgname/$pkgname-$pkgver.tar.gz
+  tar -xzf ./$pkgname-$pkgver.tar.gz
+  cd $pkgname-$pkgver
+  ./configure --localstatedir=/var --prefix=/usr --sysconfdir=/etc --with-aur-url=https://aur.archlinux.org
+  make
+  sudo make install
+
+  rm -rf /home/tmp-yaourt-install/*
+  cd /home/tmp-yaourt-install
+  pkgname=yaourt
+  pkgver=1.9
+  curl -LO https://github.com/archlinuxfr/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.gz
+  tar -xzf ./$pkgname-$pkgver.tar.gz
+  cd $pkgname-$pkgver
+  make PREFIX=/usr sysconfdir=/etc localstatedir=/var
+  sudo make PREFIX=/usr sysconfdir=/etc localstatedir=/var install
 fi
