@@ -17,10 +17,10 @@ $(tput bold)yaourt installer$(tput sgr0)
   echo  " installing dependencies"
   echo  " ( this might take a while )"
   sudo pacman -Sy --needed --noconfirm base-devel binutils diffutils gettext linux-headers git diffstat chrpath wget cpio pv yajl
-  mkdir -p /home/tmp-yaourt-install
+  mkdir -p ~/tmp-yaourt
 
-  rm -rf /home/tmp-yaourt-install/*
-  cd /home/tmp-yaourt-install
+  rm -rf ~/tmp-yaourt/*
+  cd ~/tmp-yaourt
   pkgname=package-query
   pkgver=1.9
   curl -LO https://mir.archlinux.fr/releases/$pkgname/$pkgname-$pkgver.tar.gz
@@ -30,8 +30,8 @@ $(tput bold)yaourt installer$(tput sgr0)
   make
   sudo make install
 
-  rm -rf /home/tmp-yaourt-install/*
-  cd /home/tmp-yaourt-install
+  rm -rf ~/tmp-yaourt/*
+  cd ~/tmp-yaourt
   pkgname=yaourt
   pkgver=1.9
   curl -LO https://github.com/archlinuxfr/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.gz
@@ -39,4 +39,6 @@ $(tput bold)yaourt installer$(tput sgr0)
   cd $pkgname-$pkgver
   make PREFIX=/usr sysconfdir=/etc localstatedir=/var
   sudo make PREFIX=/usr sysconfdir=/etc localstatedir=/var install
+
+  rm -rf ~/tmp-yaourt
 fi
