@@ -74,7 +74,7 @@ bash <(curl -s https://archibold.io/kiosk/utils/browser)
 bash <(curl -s https://archibold.io/kiosk/utils/weston)
 
 # bootstrap xorg from .bashrc
-bash <(curl -s https://archibold.io/kiosk/utils/bashrc)
+bash <(curl -s https://archibold.io/kiosk/utils/bashrc-weston)
 
 # avoid initial message
 touch .hushlogin

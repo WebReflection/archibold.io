@@ -7,7 +7,7 @@ idle-time=0
 require-input=false
 
 [shell]
-client=/home/alarm/.xinitrc
+client=/home/alarm/.weston
 animation=none
 close-animation=none
 startup-animation=none
@@ -16,7 +16,8 @@ locking=false
 chown alarm:alarm .config/weston.ini
 
 
-echo "# x11 configuration
+echo "#!/usr/bin/env bash
+
 # xrandr -s 1280x720
 # xset s off -dpms
 # unclutter &
@@ -28,5 +29,6 @@ echo "# x11 configuration
 # ./.browse --fullscreen https://smashcat.org/av/canvas_test/
 # ./.browse --fullscreen https://webkit.org/blog-files/3d-transforms/poster-circle.html
 # ./.browse --fullscreen http://demo.kaazing.com/racer/
-">.xinitrc
-chown alarm:alarm .xinitrc
+">.weston
+chmod a+x .weston
+chown alarm:alarm .weston
