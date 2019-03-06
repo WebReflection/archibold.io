@@ -25,11 +25,11 @@ installFromAUR() {
   echo " $(tput bold)$(pacman -Q ${package})$(tput sgr0) successfully installed"
 }
 
-if [ "$(which pakku 2> /dev/null)" = "" ]; then
+if [ "$(which yay 2> /dev/null)" = "" ]; then
   sudo mkdir -p /home/tmp-yay-install
   sudo chown ${USER}:users /home/tmp-yay-install
   echo "
-$(tput bold)pakku installer$(tput sgr0)
+$(tput bold)yay installer$(tput sgr0)
 "
 
   echo  " installing dependencies"
@@ -38,9 +38,9 @@ $(tput bold)pakku installer$(tput sgr0)
         base-devel binutils linux-headers git \
         go \
         diffstat chrpath wget cpio pv > /dev/null 2>&1
-  installFromAUR "pakku"
+  installFromAUR "yay"
   sync && sleep 1
-  if [ "$(which pakku 2> /dev/null)" = "" ]; then
+  if [ "$(which yay 2> /dev/null)" = "" ]; then
     echo ""
     echo "Something went wrong, package not installed."
     echo "Folder: /home/tmp-yay-install"
