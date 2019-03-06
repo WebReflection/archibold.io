@@ -3,11 +3,17 @@
 #########################
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/sudo)
+  if [ "$(which so 2> /dev/null)" = "" ]; then
+    bash <(curl -s https://archibold.io/install/sudo)
+  else
+    alias sudo=so
+  fi
 fi
 
 if [ "$(which pakku 2> /dev/null)" != "" ]; then
   pakku -S --needed --noconfirm pamac-aur
+elif [ "$(which yay 2> /dev/null)" != "" ]; then
+  yay -S --needed --noconfirm pamac-aur
 elif [ "$(which yaourt 2> /dev/null)" != "" ]; then
   yaourt -S --needed --noconfirm pamac-aur
 else
