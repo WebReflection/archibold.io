@@ -2,21 +2,13 @@
 # archibold.io (C) 2019 #
 #########################
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  if [ "$(which so 2> /dev/null)" = "" ]; then
-    bash <(curl -s https://archibold.io/install/sudo)
-  else
-    alias sudo=so
-  fi
-fi
-
 if [ "$(which yaourt 2> /dev/null)" = "" ]; then
   echo "
 $(tput bold)yaourt installer$(tput sgr0)
 "
   echo  " installing dependencies"
   echo  " ( this might take a while )"
-  sudo pacman -Sy --needed --noconfirm base-devel binutils diffutils gettext linux-headers git diffstat chrpath wget cpio pv yajl
+  su -c 'pacman -Sy --needed --noconfirm base-devel binutils diffutils gettext linux-headers git diffstat chrpath wget cpio pv yajl'
   mkdir -p ~/tmp-yaourt
 
   rm -rf ~/tmp-yaourt/*
@@ -28,7 +20,7 @@ $(tput bold)yaourt installer$(tput sgr0)
   cd $pkgname-$pkgver
   ./configure --localstatedir=/var --prefix=/usr --sysconfdir=/etc --with-aur-url=https://aur.archlinux.org
   make
-  sudo make install
+  su -c 'make install'
 
   rm -rf ~/tmp-yaourt/*
   cd ~/tmp-yaourt
@@ -38,7 +30,7 @@ $(tput bold)yaourt installer$(tput sgr0)
   tar -xzf ./$pkgname-$pkgver.tar.gz
   cd $pkgname-$pkgver
   make PREFIX=/usr sysconfdir=/etc localstatedir=/var
-  sudo make PREFIX=/usr sysconfdir=/etc localstatedir=/var install
+  su -c 'make PREFIX=/usr sysconfdir=/etc localstatedir=/var install'
 
   rm -rf ~/tmp-yaourt
 fi
