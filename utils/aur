@@ -17,7 +17,7 @@ elif [ "$USER" = "root" ]; then
   echo ""
 else
   echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
-  su -c 'pacman -Sy --needed --noconfirm base-devel git'
+  su -c 'pacman -Sy --needed --noconfirm base-devel binutils linux-headers git'
   rm -rf ~/tmp-${1}
   mkdir -p ~/tmp-${1}
   cd ~/tmp-${1}
