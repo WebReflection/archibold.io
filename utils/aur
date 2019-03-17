@@ -29,6 +29,10 @@ else
   makepkg -Asfc --needed --noconfirm
   if [ "$(ls ${1}*.tar.xz 2> /dev/null)" != "" ]; then
     su -c "pacman -U --noconfirm $(ls ${1}*.tar.xz)"
+  else
+    echo ""
+    echo "$(tput bold)Error$(tput sgr0): ${1}*.tar.xz not found"
+    echo ""
   fi
   rm -rf ~/tmp-${1}
 fi
