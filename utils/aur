@@ -13,14 +13,11 @@ if [ "${1}" = "" ]; then
   echo ""
 elif [ "$USER" = "root" ]; then
   echo ""
-  echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)
+  echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
   echo ""
 else
-  if [ "$(which git 2> /dev/null)" = "" ]; then
-    echo ""
-    echo "Installing $(tput bold)git$(tput sgr0)"
-    su -c 'pacman -Sy --needed --noconfirm git'
-  fi
+  echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
+  su -c 'pacman -Sy --needed --noconfirm base-devel git'
   rm -rf ~/tmp-${1}
   mkdir -p ~/tmp-${1}
   cd ~/tmp-${1}
