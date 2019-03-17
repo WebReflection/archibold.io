@@ -16,8 +16,11 @@ elif [ "$USER" = "root" ]; then
   echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
   echo ""
 else
-  echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
-  su -c 'pacman -Sy --needed --noconfirm base-devel git'
+  if [ ! -f ~/.archibold-aur ]; then
+    date > ~/.archibold-aur
+    echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
+    su -c 'pacman -Sy --needed --noconfirm base-devel git'
+  fi
   rm -rf ~/tmp-${1}
   mkdir -p ~/tmp-${1}
   cd ~/tmp-${1}
