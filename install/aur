@@ -1,0 +1,8 @@
+#########################
+# (c) archibold.io 2019 #
+#########################
+
+cd /tmp
+curl -LOs https://archibold.io/utils/aur
+chmod a+x aur
+su -c 'mv aur /usr/bin'

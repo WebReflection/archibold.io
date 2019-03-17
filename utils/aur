@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+#########################
+# (c) archibold.io 2019 #
+#########################
+
+if [ "${1}" = "" ]; then
+  echo ""
+  echo "The $(tput bold)aur$(tput sgr0) utility, by https://archibold.io"
+  echo "A minimalistic AUR installer alternative."
+  echo ""
+  echo "  aur pakku"
+  echo ""
+elif [ "$USER" = "root" ]; then
+  echo ""
+  echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)
+  echo ""
+else
+  if [ "$(which git 2> /dev/null)" = "" ]; then
+    echo ""
+    echo "Installing $(tput bold)git$(tput sgr0)"
+    su -c 'pacman -Sy --needed --noconfirm git'
+  fi
+  rm -rf ~/tmp-${1}
+  mkdir -p ~/tmp-${1}
+  cd ~/tmp-${1}
+  git clone https://aur.archlinux.org/${1}.git
+  cd ${1}
+  makepkg -Asfc --needed --noconfirm
+  su -c "pacman -U --noconfirm $(ls ${1}*.tar.xz)"
+  rm -rf ~/tmp-${1}
+fi
