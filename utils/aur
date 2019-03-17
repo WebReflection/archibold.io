@@ -27,6 +27,8 @@ else
   git clone https://aur.archlinux.org/${1}.git
   cd ${1}
   makepkg -Asfc --needed --noconfirm
-  su -c "pacman -U --noconfirm $(ls ${1}*.tar.xz)"
+  if [ "$(ls ${1}*.tar.xz 2> /dev/null)" != "" ]; then
+    su -c "pacman -U --noconfirm $(ls ${1}*.tar.xz)"
+  fi
   rm -rf ~/tmp-${1}
 fi
