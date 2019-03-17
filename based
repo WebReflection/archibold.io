@@ -421,7 +421,6 @@ echo "going to arch-chroot into archibold folder"
 sleep 5
 sudo arch-chroot archibold.env /archibold.install
 rm -rf archibold.env/archibold.install
-sudo umount ${DISK}* 2> /dev/null
 sleep 5
 clear
 echoWithHeader "
@@ -435,3 +434,5 @@ echoWithHeader "
   Please type #green(shutdown -h now) and
   remove the media after.
 "
+sync
+sudo umount ${DISK}* 2> /dev/null
