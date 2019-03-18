@@ -4,35 +4,52 @@
 # (c) archibold.io 2019 #
 #########################
 
-if [ "${1}" = "" ]; then
-  echo ""
-  echo "The $(tput bold)aur$(tput sgr0) utility, by https://archibold.io"
-  echo "A minimalistic AUR installer alternative."
-  echo ""
-  echo "  aur pakku"
-  echo ""
-elif [ "$USER" = "root" ]; then
-  echo ""
-  echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
-  echo ""
-else
-  if [ ! -f ~/.archibold-aur ]; then
-    date > ~/.archibold-aur
-    echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
-    su -c 'pacman -Sy --needed --noconfirm base-devel git'
+aur() {
+  local pkg="${1}"
+  local preserve="${2}"
+  if [ "${pkg}" = "--preserve" ]; then
+    pkg="${preserve}"
+    preserve="--preserve"
   fi
-  rm -rf ~/tmp-${1}
-  mkdir -p ~/tmp-${1}
-  cd ~/tmp-${1}
-  git clone https://aur.archlinux.org/${1}.git
-  cd ${1}
-  makepkg -Asfc --needed --noconfirm
-  if [ "$(ls ${1}*.tar.xz 2> /dev/null)" != "" ]; then
-    su -c "pacman -U --noconfirm $(ls ${1}*.tar.xz)"
+  if [ "${pkg}" = "" ]; then
+    echo ""
+    echo "The $(tput bold)aur$(tput sgr0) utility, by https://archibold.io"
+    echo "A minimalistic AUR installer alternative."
+    echo ""
+    echo "  aur pakku"
+    echo "  aur --preserve wpewebkit"
+    echo ""
+    echo "Use --preserve to avoid removing the folder once built."
+    ecgi ""
+  elif [ "$USER" = "root" ]; then
+    echo ""
+    echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
+    echo ""
   else
+    if [ ! -f ~/.archibold-aur ]; then
+      date > ~/.archibold-aur
+      echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
+      su -c 'pacman -Sy --needed --noconfirm base-devel git'
+    fi
+    rm -rf ~/tmp-${pkg}
+    mkdir -p ~/tmp-${pkg}
+    cd ~/tmp-${pkg}
+    git clone https://aur.archlinux.org/${pkg}.git
+    cd ${pkg}
+    makepkg -Asfc --needed --noconfirm
     echo ""
-    echo "$(tput bold)Error$(tput sgr0): ${1}*.tar.xz not found"
+    if [ "$(ls ${pkg}*.pkg.tar.xz 2> /dev/null)" != "" ]; then
+      echo "$(tput bold)Created$(tput sgr0): ~/tmp-${pkg}/${pkg}/$(ls ${pkg}*.pkg.tar.xz)"
+      sleep 1
+      su -c "pacman -U --noconfirm $(ls ${pkg}*.pkg.tar.xz)"
+    else
+      echo "$(tput bold)Error$(tput sgr0): ${pkg}*.tar.xz not found"
+    fi
     echo ""
+    if [ "${preserve}" != "--preserve" ]; then
+      rm -rf ~/tmp-${pkg}
+    fi
   fi
-  rm -rf ~/tmp-${1}
-fi
+}
+
+aur "${1}" "${2}"
