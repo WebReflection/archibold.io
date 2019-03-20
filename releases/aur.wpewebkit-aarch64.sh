@@ -87,4 +87,4 @@ makepkg --printsrcinfo > .SRCINFO
 git add -f PKGBUILD .SRCINFO
 git commit -m "Updating ${pkgname}"
 git push
-
+rm -rf ~/aur/${pkgname}
