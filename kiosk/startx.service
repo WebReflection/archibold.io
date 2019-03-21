@@ -1,0 +1,8 @@
+[Service]
+Environment="DISPLAY=:0"
+ExecStart=/usr/bin/startx
+Restart=always
+User=alarm
+
+[Install]
+WantedBy = graphical.target
