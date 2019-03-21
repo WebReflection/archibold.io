@@ -8,11 +8,11 @@ getHash() {
 }
 
 maintainer='Andrea Giammarchi <andrea.giammarchi@gmail.com>'
-pkgbase=cairo-gl
+pkgbase=cairo-glesv2
 pkgname=${pkgbase}-aarch64
 pkgver=1.17.2
 pkgrel=8
-pkgdesc='Cairo vector graphics library (gl version)'
+pkgdesc='Cairo vector graphics library (glesv2 version)'
 pkgfile=
 for file in $(ls ${pkgname}-${pkgver}*.pkg.tar.xz); do
     pkgfile="${file}"
