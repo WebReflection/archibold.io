@@ -49,15 +49,21 @@ touch .hushlogin
 chown alarm:alarm .hushlogin
 
 # configure boot & GPU options
-echo -e "Is this a $(tput bold)Raspberry Pi 3$(tput sgr0) ? [y/n]
+echo -e "Is this a $(tput bold)Raspberry Pi 3/3+$(tput sgr0) ? [y/N]
 "
   read -n1 -s raspberrypi
   if [ "$raspberrypi" = "y" ] || [ "$raspberrypi" = "Y" ]; then
     raspberrypi=""
-    echo -e "Would you like $(tput bold)linux-aarch64-raspberrypi-bin$(tput sgr0) ? [Y/n]
-"
+    echo -e "Would you like $(tput bold)linux-aarch64-raspberrypi-bin$(tput sgr0) ?
+
+It uses defaults from Raspbian so touch screen and other stuff might work better.
+You can always install it later on if you think it's needed.
+
+  yay -S linux-aarch64-raspberrypi-bin
+
+Would you like to install it now? [y/N]"
     read -n1 -s raspberrypi
-    if [ "$raspberrypi" != "n" ]; then
+    if [ "$raspberrypi" = "y" ] || [ "$raspberrypi" = "Y" ]; then
       yes y | yay -S --needed linux-aarch64-raspberrypi-bin
     fi
     bash <(curl -s https://archibold.io/kiosk/pi3-boot)

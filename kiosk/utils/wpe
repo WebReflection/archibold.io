@@ -29,7 +29,9 @@ echo '#!/usr/bin/env bash
 WEB_PAGE=file:///home/alarm/www/index.html
 # WEB_PAGE=https://webkit.org/blog-files/3d-transforms/poster-circle.html
 # WEB_PAGE=https://webglsamples.org/dynamic-cubemap/dynamic-cubemap.html
+# WEB_PAGE=https://alteredqualia.com/three/examples/webgl_pasta.html
 # WEB_PAGE=https://threejs.org/examples/webgl_geometry_cube.html
+# WEB_PAGE=https://webglsamples.org/aquarium/aquarium.html
 # WEB_PAGE=https://www.youtube.com/watch?v=IlVtF3dAyxs
 # WEB_PAGE=https://smashcat.org/av/canvas_test/
 

@@ -7,15 +7,14 @@ if [ "$USER" != "root" ]; then
   exit 1;
 fi
 
-echo "
-dtoverlay=vc4-fkms-v3d
+echo "dtoverlay=vc4-fkms-v3d
 #dtoverlay=sdtweak,overclock_50=80
 #dtoverlay=w1-gpio,gpiopin=7
 
 #gpu_mem_256=128
 #gpu_mem_512=196
 #gpu_mem_1024=384
-gpu_mem=128
+#gpu_mem=128
 
 dtparam=audio=on
 dtparam=spi=on
@@ -39,7 +38,7 @@ dtparam=spi=on
 avoid_warnings=1
 disable_splash=1
 boot_delay=0
-">>/boot/config.txt
+">boot/config.txt
 
 if [ -f /boot/boot.txt ]; then
   # modify boot.scr to reserve cma memory and make the boot silent
@@ -47,10 +46,10 @@ if [ -f /boot/boot.txt ]; then
   do
     :
   done
-  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=128MB@64MB/" /boot/boot.txt
-  # sed -i "s/rootwait/rootwait cma=128MB@64MB/" /boot/boot.txt
+  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@64MB/" /boot/boot.txt
+  # sed -i "s/rootwait/rootwait cma=384MB@64MB/" /boot/boot.txt
   mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
 else
   # modify cmdline.txt mostly to make the boot silent (cma might be ignored)
-  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=128MB@64MB/" /boot/cmdline.txt
+  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@64MB/" /boot/cmdline.txt
 fi
