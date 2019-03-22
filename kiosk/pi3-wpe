@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# (c) 2018 Andrea Giammarchi - @WebReflection - (ISC)
+# (c) 2019 Andrea Giammarchi - @WebReflection - (ISC)
 
 if [ "$USER" != "root" ]; then
   echo "you need to be $(tput bold)root$(tput sgr0)";
@@ -13,8 +13,13 @@ usermod -a -G video alarm
 # bootstrap pacman
 bash <(curl -s https://archibold.io/kiosk/utils/init)
 
-# configure boot & GPU options
-bash <(curl -s https://archibold.io/kiosk/pi3-boot)
+# install wpe for arch64
+curl -LO https://archibold.io/kiosk/utils/wpe-aarch64
+mv wpe-aarch64 wpe-install
+chmod a+x wpe-install
+chown alarm:alarm wpe-install
+echo -e "Please run $(tput bold)./wpe-install$(tput sgr0)"
+rm wpe-install
 
 # install specific driver
 while ! pacman -S --needed --noconfirm \
@@ -24,22 +29,25 @@ do
 done
 
 # install all dependencies and optimize
-bash <(curl -s https://archibold.io/kiosk/utils/dependencies-weston)
+bash <(curl -s https://archibold.io/kiosk/utils/dependencies-wpe)
 
 # automatic login
 bash <(curl -s https://archibold.io/kiosk/utils/login)
 
 # download a minimalistic full screen browser
-bash <(curl -s https://archibold.io/kiosk/utils/browser)
+bash <(curl -s https://archibold.io/kiosk/utils/index)
 
-# setup the xinitrc
-bash <(curl -s https://archibold.io/kiosk/utils/weston)
+# setup the weston-config
+bash <(curl -s https://archibold.io/kiosk/utils/wpe)
 
 # bootstrap xorg from .bashrc
-bash <(curl -s https://archibold.io/kiosk/utils/bashrc-weston)
+bash <(curl -s https://archibold.io/kiosk/utils/bashrc-wpe)
 
 # avoid initial message
 touch .hushlogin
 chown alarm:alarm .hushlogin
+
+# configure boot & GPU options
+bash <(curl -s https://archibold.io/kiosk/pi3-boot)
 
 reboot

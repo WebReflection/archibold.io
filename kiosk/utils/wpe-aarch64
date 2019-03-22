@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+echo -e "installing minimal $(tput bold)aur$(tput sgr0) utility"
+echo -e "\e[2mroot password required$(tput sgr0)"
+bash <(curl -s https://archibold.io/install/aur)
+
+echo -e "installing $(tput bold)yay$(tput sgr0) AUR manager"
+echo -e "\e[2mroot password required$(tput sgr0)"
+aur yay
+
+yay -S --needed --noconfirm cairo-glesv2-aarch64 wpewebkit-gl-aarch64 cog
+
+if [ "$(basename $0)" = "wpe-install" ]; then
+  echo -e "Please type $(tput bold)exit$(tput sgr0)"
+  exit
+fi

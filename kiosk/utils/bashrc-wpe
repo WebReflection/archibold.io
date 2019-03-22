@@ -1,0 +1,4 @@
+echo '
+# startx on login
+[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && weston --socket=wpe --width=1280 --height=720 > /dev/null 2>&1'>>.bashrc
+chown alarm:alarm .bashrc

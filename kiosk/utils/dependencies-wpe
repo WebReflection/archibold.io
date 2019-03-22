@@ -4,12 +4,12 @@
 
 while ! pacman -S --needed --noconfirm \
                               weston \
+                              xorg-server xorg-xinit xorg-xset xorg-xrandr \
                               alsa-utils libcanberra-gstreamer libcanberra-pulse \
-                              gjs gnome-themes-extra \
-                              webkit2gtk gst-plugins-base gst-plugins-good \
+                              gst-plugins-base gst-plugins-good \
                               gstreamer-vaapi \
-                              gst-libav gst-plugins-ugly \
-                              geoip
+                              gst-libav gst-plugins-ugly gst-plugins-bad \
+                              geoip geoclue
 do
   :
 done

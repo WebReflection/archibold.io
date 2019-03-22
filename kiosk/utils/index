@@ -1,0 +1,6 @@
+# create www/index.html
+mkdir -p www
+echo '<!doctype html><h1>Web Kiosk</h1><pre>'>www/index.html
+ip addr>>www/index.html
+echo '</pre>'>>www/index.html
+chown -R alarm:alarm www

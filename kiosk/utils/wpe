@@ -1,0 +1,33 @@
+mkdir -p .config
+chown alarm:alarm .config
+
+echo "[core]
+xwayland=true
+idle-time=0
+
+[shell]
+client=/usr/bin/startx
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+">.config/weston.ini
+chown alarm:alarm .config/weston.ini
+
+
+echo "#!/usr/bin/env bash
+
+xrandr -s 1280x720
+xset s off -dpms
+
+WEB_PAGE=file:///home/alarm/www/index.html
+# WEB_PAGE=https://threejs.org/examples/webgl_geometry_cube.html
+# WEB_PAGE=https://www.youtube.com/watch?v=IlVtF3dAyxs
+# WEB_PAGE=https://smashcat.org/av/canvas_test/
+# WEB_PAGE=https://webkit.org/blog-files/3d-transforms/poster-circle.html
+# WEB_PAGE=http://demo.kaazing.com/racer/
+
+WAYLAND_DISPLAY=wpe COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo $WEB_PAGE
+">.xinitrc
+chmod a+x .xinitrc
+chown alarm:alarm .xinitrc
