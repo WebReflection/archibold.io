@@ -1,11 +1,17 @@
 #!/usr/bin/env bash
 
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  echo -e "installing $(tput bold)sudo$(tput sgr0)"
+  bash <(curl -s https://archibold.io/install/sudo)
+fi
+
 echo -e "installing minimal $(tput bold)aur$(tput sgr0) utility"
 echo -e "\e[2mroot password required$(tput sgr0)"
 bash <(curl -s https://archibold.io/install/aur)
 
 echo -e "installing $(tput bold)yay$(tput sgr0) AUR manager"
-echo -e "\e[2mroot password required$(tput sgr0)"
+echo -e "\e[2mroot password required first$(tput sgr0)"
+echo -e "\e[2malarm password for sudo required after$(tput sgr0)"
 aur yay
 
 yay -S --needed --noconfirm cairo-glesv2-aarch64 wpewebkit-gl-aarch64 cog
