@@ -49,8 +49,19 @@ touch .hushlogin
 chown alarm:alarm .hushlogin
 
 # configure boot & GPU options
-if [ -f /boot/boot.txt ]; then
-  bash <(curl -s https://archibold.io/kiosk/pi3-boot)
-fi
+echo -e "Is this a $(tput bold)Raspberry Pi 3$(tput sgr0) ? [y/n]
+"
+  read -n1 -s raspberrypi
+  if [ "$raspberrypi" = "y" ] || [ "$raspberrypi" = "Y" ]; then
+    raspberrypi=""
+    echo -e "Would you like $(tput bold)linux-aarch64-raspberrypi-bin$(tput sgr0) ? [Y/n]
+"
+    read -n1 -s raspberrypi
+    if [ "$raspberrypi" != "n" ]; then
+      yes y | yay -S --needed linux-aarch64-raspberrypi-bin
+    fi
+    bash <(curl -s https://archibold.io/kiosk/pi3-boot)
+  fi
 
-reboot
+echo -e "$(tput bold)WPE Kiosk$(tput sgr0) installation completed"
+echo -e "feel free to type reboot"
