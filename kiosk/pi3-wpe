@@ -49,6 +49,8 @@ touch .hushlogin
 chown alarm:alarm .hushlogin
 
 # configure boot & GPU options
-bash <(curl -s https://archibold.io/kiosk/pi3-boot)
+if [ -f /boot/boot.txt ]; then
+  bash <(curl -s https://archibold.io/kiosk/pi3-boot)
+fi
 
 reboot

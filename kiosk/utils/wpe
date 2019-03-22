@@ -6,7 +6,7 @@ xwayland=true
 idle-time=0
 
 [shell]
-client=/usr/bin/startx
+client=/home/alarm/wpe
 animation=none
 close-animation=none
 startup-animation=none
@@ -14,11 +14,17 @@ locking=false
 ">.config/weston.ini
 chown alarm:alarm .config/weston.ini
 
+echo '# change resolution as you need
+WIDTH=1280
+HEIGHT=720
 
-echo "#!/usr/bin/env bash
-
-xrandr -s 1280x720
+xrandr -s ${WIDTH}x${HEIGHT}
 xset s off -dpms
+weston --socket=wpe --width=${WIDTH} --height=${HEIGHT}
+'>.xinitrc
+chown alarm:alarm .xinitrc
+
+echo '#!/usr/bin/env bash
 
 WEB_PAGE=file:///home/alarm/www/index.html
 # WEB_PAGE=https://threejs.org/examples/webgl_geometry_cube.html
@@ -28,6 +34,6 @@ WEB_PAGE=file:///home/alarm/www/index.html
 # WEB_PAGE=http://demo.kaazing.com/racer/
 
 WAYLAND_DISPLAY=wpe COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo $WEB_PAGE
-">.xinitrc
-chmod a+x .xinitrc
-chown alarm:alarm .xinitrc
+'>wpe
+chmod a+x wpe
+chown alarm:alarm wpe
