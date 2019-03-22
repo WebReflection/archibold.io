@@ -11,10 +11,10 @@ echo "dtoverlay=vc4-fkms-v3d
 #dtoverlay=sdtweak,overclock_50=80
 #dtoverlay=w1-gpio,gpiopin=7
 
-#gpu_mem_256=128
-#gpu_mem_512=196
-#gpu_mem_1024=384
-#gpu_mem=128
+gpu_mem=128
+gpu_mem_256=128
+gpu_mem_512=196
+gpu_mem_1024=384
 
 dtparam=audio=on
 dtparam=spi=on
@@ -38,7 +38,7 @@ dtparam=spi=on
 avoid_warnings=1
 disable_splash=1
 boot_delay=0
-">>boot/config.txt
+">boot/config.txt
 
 if [ -f /boot/boot.txt ]; then
   # modify boot.scr to reserve cma memory and make the boot silent
