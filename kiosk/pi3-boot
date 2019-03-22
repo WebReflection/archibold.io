@@ -46,10 +46,10 @@ if [ -f /boot/boot.txt ]; then
   do
     :
   done
-  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@64MB/" /boot/boot.txt
-  # sed -i "s/rootwait/rootwait cma=384MB@64MB/" /boot/boot.txt
+  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=256MB@64MB/" /boot/boot.txt
+  # sed -i "s/rootwait/rootwait cma=256MB@64MB/" /boot/boot.txt
   mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
 else
   # modify cmdline.txt mostly to make the boot silent (cma might be ignored)
-  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@64MB/" /boot/cmdline.txt
+  sed -i "s/rootwait/rootwait quiet loglevel=0 cma=256MB@64MB/" /boot/cmdline.txt
 fi
