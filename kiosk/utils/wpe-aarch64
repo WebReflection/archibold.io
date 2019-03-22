@@ -5,16 +5,23 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/install/sudo)
 fi
 
-echo -e "installing minimal $(tput bold)aur$(tput sgr0) utility"
-echo -e "\e[2mroot password required$(tput sgr0)"
-bash <(curl -s https://archibold.io/install/aur)
+if [ "$(which yay 2> /dev/null)" = "" ]; then
+  if [ "$(which aur 2> /dev/null)" = "" ]; then
+    echo ""
+    echo -e "installing minimal $(tput bold)aur$(tput sgr0) utility"
+    echo -e "\e[2mroot password required$(tput sgr0)"
+    bash <(curl -s https://archibold.io/install/aur)
+  fi
+  echo ""
+  echo -e "installing $(tput bold)yay$(tput sgr0) AUR manager"
+  echo -e "\e[2mroot password required first$(tput sgr0)"
+  echo -e "\e[2malarm password for sudo required after$(tput sgr0)"
+  aur yay
+fi
 
-echo -e "installing $(tput bold)yay$(tput sgr0) AUR manager"
-echo -e "\e[2mroot password required first$(tput sgr0)"
-echo -e "\e[2malarm password for sudo required after$(tput sgr0)"
-aur yay
-
-yay -S --needed --noconfirm cairo-glesv2-aarch64 wpewebkit-gl-aarch64 cog
+yes y | yay -S --needed cairo-glesv2-aarch64
+yes y | yay -S --needed wpewebkit-gl-aarch64
+yay -S --needed --noconfirm cog
 
 if [ "$(basename $0)" = "wpe-install" ]; then
   echo -e "Please type $(tput bold)exit$(tput sgr0)"
