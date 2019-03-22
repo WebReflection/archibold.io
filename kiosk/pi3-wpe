@@ -19,6 +19,7 @@ mv wpe-aarch64 wpe-install
 chmod a+x wpe-install
 chown alarm:alarm wpe-install
 echo -e "Please run $(tput bold)./wpe-install$(tput sgr0)"
+su alarm
 rm wpe-install
 
 # install specific driver
