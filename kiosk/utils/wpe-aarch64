@@ -23,7 +23,7 @@ yes y | yay -S --needed cairo-glesv2-aarch64
 yes y | yay -S --needed wpewebkit-gl-aarch64
 yes y | yay -S --needed cog-wpe-gl
 
-if [ "$(basename $0)" = "wpe-install" ]; then
+if [ "$(basename $0)" = "wpe-install" ] && [ -f $0 ]; then
   echo -e "Please type $(tput bold)exit$(tput sgr0)"
   exit
 fi
