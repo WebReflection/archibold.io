@@ -70,4 +70,4 @@ Would you like to install it now? [y/N]"
   fi
 
 echo -e "$(tput bold)WPE Kiosk$(tput sgr0) installation completed"
-echo -e "feel free to type reboot"
+echo -e "feel free to type: $(tput bold)reboot$(tput sgr0)"
