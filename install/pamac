@@ -2,21 +2,27 @@
 # archibold.io (C) 2019 #
 #########################
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  if [ "$(which so 2> /dev/null)" = "" ]; then
-    bash <(curl -s https://archibold.io/install/sudo)
-  else
-    alias sudo=so
-  fi
+if [ "$(which aur 2> /dev/null)" = "" ]; then
+  source <(curl -s https://archibold.io/utils/aur)
 fi
 
-if [ "$(which pakku 2> /dev/null)" != "" ]; then
-  pakku -S --needed --noconfirm pamac-aur
-elif [ "$(which yay 2> /dev/null)" != "" ]; then
-  yay -S --needed --noconfirm pamac-aur
-elif [ "$(which yaourt 2> /dev/null)" != "" ]; then
-  yaourt -S --needed --noconfirm pamac-aur
-else
-  source <(curl -s https://archibold.io/install/pakku)
-  pakku -S --needed --noconfirm pamac-aur
-fi
+aur pamac-aur
+
+# if [ "$(which sudo 2> /dev/null)" = "" ]; then
+#   if [ "$(which so 2> /dev/null)" = "" ]; then
+#     bash <(curl -s https://archibold.io/install/sudo)
+#   else
+#     alias sudo=so
+#   fi
+# fi
+# 
+# if [ "$(which pakku 2> /dev/null)" != "" ]; then
+#   pakku -S --needed --noconfirm pamac-aur
+# elif [ "$(which yay 2> /dev/null)" != "" ]; then
+#   yay -S --needed --noconfirm pamac-aur
+# elif [ "$(which yaourt 2> /dev/null)" != "" ]; then
+#   yaourt -S --needed --noconfirm pamac-aur
+# else
+#   source <(curl -s https://archibold.io/install/pakku)
+#   pakku -S --needed --noconfirm pamac-aur
+# fi
