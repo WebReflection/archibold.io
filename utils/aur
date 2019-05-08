@@ -29,7 +29,7 @@ aur() {
     if [ ! -f ~/.archibold-aur ]; then
       date > ~/.archibold-aur
       echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
-      su -c 'pacman -Sy --needed --noconfirm base-devel git'
+      su -c 'pacman -S --needed --noconfirm base-devel git'
     fi
     rm -rf ~/tmp-${pkg}
     mkdir -p ~/tmp-${pkg}
