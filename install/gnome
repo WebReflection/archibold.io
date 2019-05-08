@@ -35,11 +35,20 @@ echoWithHeader "
 "
 
 sudo pacman -S --needed --noconfirm \
-    gnome gnome-tweaks \
+    alsa-utils pulseaudio \
     xf86-input-libinput xsel \
     cups system-config-printer \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra \
     bluez bluez-utils
+
+GNOME=""
+for pkg in $(sudo pacman -Sg gnome); do
+  if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
+    GNOME="${GNOME} ${pkg}"
+  fi
+done
+
+sudo pacman -S --needed --noconfirm gnome-tweaks $GNOME
 
 echoWithHeader "
   Enabling NetworkManager and GDM
@@ -48,14 +57,9 @@ echoWithHeader "
 sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
 
-if [ "$USE_GNOME_SOFTWARE" != "y" ] || [ "$USE_GNOME_SOFTWARE" != "Y" ]; then
-  echoWithHeader "
-  Removing unnecessary software
-"
-  sudo pacman -Rs --noconfirm gnome-software gnome-boxes
-else
+if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
   sudo pacman -S --needed --noconfirm \
-    gnome-packagekit gnome-software-packagekit-plugin flatpak
+    gnome-software gnome-packagekit gnome-software-packagekit-plugin flatpak
 fi
 
 if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
