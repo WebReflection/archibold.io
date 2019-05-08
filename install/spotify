@@ -2,15 +2,6 @@
 # archibold.io (C) 2016 #
 #########################
 
-AUR=pakku
-if [ "$(which pakku 2> /dev/null)" = "" ]; then
-  if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-    bash <(curl -s https://archibold.io/install/pakku)
-  else
-    AUR=yaourt
-  fi
-fi
-
 askAboutRetina() {
   local choice
   echo '
@@ -23,6 +14,10 @@ askAboutRetina() {
   fi
 }
 
-$AUR -S --needed --noconfirm spotify
+if [ "$(which aur 2> /dev/null)" = "" ]; then
+  source <(curl -s https://archibold.io/utils/aur)
+fi
+
+aur spotify
 
 askAboutRetina

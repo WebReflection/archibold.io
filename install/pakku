@@ -1,51 +1,9 @@
 #########################
-# archibold.io (C) 2016 #
+# archibold.io (C) 2019 #
 #########################
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  if [ "$(which so 2> /dev/null)" = "" ]; then
-    bash <(curl -s https://archibold.io/install/sudo)
-  else
-    alias sudo=so
-  fi
+if [ "$(which aur 2> /dev/null)" = "" ]; then
+  source <(curl -s https://archibold.io/utils/aur)
 fi
 
-installFromAUR() {
-  local package="$1"
-  local folder="/home/tmp-pakku-install"
-  echo  " downloading ${package}"
-  sudo -H -u ${USER} sh -c "cd ${folder}; curl -LOs https://aur.archlinux.org/cgit/aur.git/snapshot/${package}.tar.gz"
-  echo " extracting ${package}"
-  sudo -H -u ${USER} sh -c "cd ${folder}; tar -xzf ${package}.tar.gz"
-  echo " creating ${package} package"
-  sudo -H -u ${USER} sh -c "cd ${folder}/${package}; makepkg -Asfc --needed --noconfirm"
-  echo " installing ${package}"
-  sudo pacman -U --needed --noconfirm ${folder}/${package}/${package}*.pkg.tar.xz
-  sync && sleep 1
-  echo " $(tput bold)$(pacman -Q ${package})$(tput sgr0) successfully installed"
-}
-
-if [ "$(which pakku 2> /dev/null)" = "" ]; then
-  sudo mkdir -p /home/tmp-pakku-install
-  sudo chown ${USER}:users /home/tmp-pakku-install
-  echo "
-$(tput bold)pakku installer$(tput sgr0)
-"
-
-  echo  " installing dependencies"
-  echo  " ( this might take a while )"
-  sudo pacman -Sy --needed --noconfirm \
-        base-devel binutils linux-headers git \
-        gobject-introspection nim \
-        diffstat chrpath wget cpio pv > /dev/null 2>&1
-  installFromAUR "pakku"
-  sync && sleep 1
-  if [ "$(which pakku 2> /dev/null)" = "" ]; then
-    echo ""
-    echo "Something went wrong, package not installed."
-    echo "Folder: /home/tmp-pakku-install"
-    echo ""
-    exit 1
-  fi
-  sudo rm -rf /home/tmp-pakku-install
-fi
+aur yay

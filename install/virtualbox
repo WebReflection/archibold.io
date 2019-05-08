@@ -25,10 +25,8 @@ sudo modprobe vboxnetflt
 sudo modprobe vboxpci
 sudo gpasswd -a $USER vboxusers
 
-if [ "$(which pakku 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/pakku)
-  pakku -S --needed --noconfirm virtualbox-ext-oracle
-elif [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/yaourt)
-  yaourt -S --needed --noconfirm virtualbox-ext-oracle
+if [ "$(which aur 2> /dev/null)" = "" ]; then
+  source <(curl -s https://archibold.io/utils/aur)
 fi
+
+aur virtualbox-ext-oracle
