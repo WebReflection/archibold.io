@@ -2,35 +2,9 @@
 # archibold.io (C) 2019 #
 #########################
 
-if [ "$(which yaourt 2> /dev/null)" = "" ]; then
-  echo "
-$(tput bold)yaourt installer$(tput sgr0)
-"
-  echo  " installing dependencies"
-  echo  " ( this might take a while )"
-  su -c 'pacman -Sy --needed --noconfirm base-devel binutils diffutils gettext linux-headers git diffstat chrpath wget cpio pv yajl'
-  mkdir -p ~/tmp-yaourt
-
-  rm -rf ~/tmp-yaourt/*
-  cd ~/tmp-yaourt
-  pkgname=package-query
-  pkgver=1.9
-  curl -LO https://mir.archlinux.fr/releases/$pkgname/$pkgname-$pkgver.tar.gz
-  tar -xzf ./$pkgname-$pkgver.tar.gz
-  cd $pkgname-$pkgver
-  ./configure --localstatedir=/var --prefix=/usr --sysconfdir=/etc --with-aur-url=https://aur.archlinux.org
-  make
-  su -c 'make install'
-
-  rm -rf ~/tmp-yaourt/*
-  cd ~/tmp-yaourt
-  pkgname=yaourt
-  pkgver=1.9
-  curl -LO https://github.com/archlinuxfr/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.gz
-  tar -xzf ./$pkgname-$pkgver.tar.gz
-  cd $pkgname-$pkgver
-  make PREFIX=/usr sysconfdir=/etc localstatedir=/var
-  su -c 'make PREFIX=/usr sysconfdir=/etc localstatedir=/var install'
-
-  rm -rf ~/tmp-yaourt
+if [ "$(which aur 2> /dev/null)" = "" ]; then
+  source <(curl -s https://archibold.io/utils/aur)
 fi
+
+aur package-query
+aur yaourt
