@@ -20,7 +20,7 @@ aur() {
     echo "  aur --preserve wpewebkit"
     echo ""
     echo "Use --preserve to avoid removing the folder once built."
-    ecgi ""
+    echo ""
   elif [ "$USER" = "root" ]; then
     echo ""
     echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
