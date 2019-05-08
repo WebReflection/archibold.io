@@ -34,13 +34,6 @@ echoWithHeader "
   $GPU_DRIVERS
 "
 
-sudo pacman -S --needed --noconfirm \
-    alsa-utils pulseaudio \
-    xf86-input-libinput xsel \
-    cups system-config-printer \
-    ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra \
-    bluez bluez-utils
-
 GNOME=""
 for pkg in $(sudo pacman -Sg gnome); do
   if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
@@ -48,14 +41,14 @@ for pkg in $(sudo pacman -Sg gnome); do
   fi
 done
 
-sudo pacman -S --needed --noconfirm gnome-tweaks $GNOME
-
-echoWithHeader "
-  Enabling NetworkManager and GDM
-"
-
-sudo systemctl enable NetworkManager
-sudo systemctl enable gdm
+sudo pacman -S --needed --noconfirm \
+  alsa-utils pulseaudio \
+  xf86-input-libinput xsel \
+  cups system-config-printer simple-scan \
+  ttf-dejavu ttf-liberation ttf-freefont \
+  ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra \
+  bluez bluez-utils \
+  gnome-tweaks chrome-gnome-shell $GNOME
 
 if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
   sudo pacman -S --needed --noconfirm \
@@ -67,19 +60,29 @@ if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
 fi
 
 echoWithHeader "
+  Enabling NetworkManager and GDM
+"
+
+sudo systemctl enable NetworkManager
+sudo systemctl enable gdm
+
+echoWithHeader "
   Installing common filesystem utilities (read/write)
 "
 source <(curl -s https://archibold.io/install/fsutils)
 
-## old minimal setup (not really worth it)
-# sudo pacman -S --needed --noconfirm \
-#     gdm gnome-shell gnome-shell-extensions \
-#     gnome-terminal gnome-control-center gnome-tweak-tool \
-#     gnome-settings-daemon gnome-keyring gnome-disk-utility \
-#     gnome-system-monitor gnome-backgrounds gnome-calculator \
-#     gnome-screenshot gnome-photos evince \
-#     networkmanager network-manager-applet polkit-gnome \
-#     xdg-utils xdg-user-dirs-gtk xdg-desktop-portal-gtk \
-#     eog totem \
-#     xf86-input-libinput \
-#     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-emoji noto-fonts-extra
+echoWithHeader "
+  Setting up some glorious GNOME feature
+"
+
+# switch on dark mode, it's absolutely worth it
+sudo gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+
+# see min/max buttons on every widget
+sudo gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+
+# center new windows
+sudo gsettings set org.gnome.mutter center-new-windows true
+gsettings set org.gnome.mutter center-new-windows true
