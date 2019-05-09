@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 #########################
 # (c) archibold.io 2019 #
@@ -45,10 +45,11 @@ aur() {
     else
       echo "$(tput bold)Error$(tput sgr0): ${pkg}*.tar.xz not found"
     fi
-    echo ""
     if [ "${preserve}" != "--preserve" ]; then
+      echo "cleaning up"
       rm -rf ~/tmp-${pkg}
     fi
+    echo ""
   fi
 }
 
