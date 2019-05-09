@@ -173,8 +173,23 @@ server
         <pre><code># install Chromium, Widevine and Pepperflash
 bash <(curl -s https://archibold.io/install/chromium)
 
-# install pakku (or yaourt)
+# install pakku (or pamac, or yay, or yaourt)
 bash <(curl -s https://archibold.io/install/pakku)
+</code></pre>
+        <h2 id="aur-install">
+          <a href="#aur-install">Installing AUR Packages</a>
+        </h2>
+        <p>
+          There is a little helper that performs the most basic AUR operations to install a package.
+        </p>
+        <pre><code># install the utility
+bash <(curl -s https://archibold.io/install/aur)
+
+# or use it as one-off
+source <(curl -s https://archibold.io/utils/aur)
+
+# install pakku (or pamac, or yay, or yaourt)
+aur pakku
 </code></pre>
         <h2 id="base-install">
           <a href="#base-install">Installing basic Arch Linux from scratch</a>
