@@ -13,13 +13,14 @@ aur() {
   fi
   if [ "${pkg}" = "" ]; then
     echo ""
-    echo "The $(tput bold)aur$(tput sgr0) utility, by https://archibold.io"
-    echo "A minimalistic AUR installer alternative."
+    echo "The $(tput bold)aur$(tput sgr0) utility, from https://archibold.io"
+    echo "$(tput dim)A minimalistic AUR installer alternative.$(tput sgr0)"
     echo ""
     echo "  aur pakku"
     echo "  aur --preserve wpewebkit"
     echo ""
-    echo "Use --preserve to avoid removing the folder once built."
+    echo "$(tput dim)Use $(tput sgr0)--preserve$(tput dim) to avoid removing the folder once built,"
+    echo "which is specially useful when things don't go as expected.$(tput sgr0)"
     echo ""
   elif [ "$USER" = "root" ]; then
     echo ""
