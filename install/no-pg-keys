@@ -1,0 +1,29 @@
+#########################
+# archibold.io (C) 2019 #
+#########################
+
+# inspired by https://askubuntu.com/questions/929744/how-to-remap-key-in-ubuntu-17-10-wayland-up-key-to-shift
+
+cd ~/
+
+echo '#!/usr/bin/sh
+
+setkeycodes 0xe049 105
+setkeycodes 0xe051 106
+'>.no-pg-keys
+
+chmod a+x .no-pg-keys
+
+echo "[Unit]
+Description=No PgUp / PgDn keys
+
+[Service]
+User=root
+Type=simple
+ExecStart=$(pwd)/.no-pg-keys
+
+[Install]
+WantedBy=multi-user.target
+">no-pg-keys.service
+
+su -c "mv no-pg-keys.service /etc/systemd/system/ && systemctl enable no-pg-keys && systemctl start no-pg-keys && systemctl status no-pg-keys"
