@@ -86,3 +86,9 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,m
 # center new windows
 sudo gsettings set org.gnome.mutter center-new-windows true
 gsettings set org.gnome.mutter center-new-windows true
+
+# automatic date and time
+if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+  sudo timedatectl set-ntp 1
+  timedatectl set-ntp 1
+fi
