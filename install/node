@@ -13,9 +13,19 @@ $@
 "
 }
 
+askForNVM() {
+  local choice
+  echo '  Would you like to use NVM ? [y/N]
+'
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash
+  fi
+}
+
 askForUser() {
   local choice
-  echo '  Would you like to register your user ? [y/n]
+  echo '  Would you like to register your user ? [y/N]
 '
   read -n1 -s choice
   if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
@@ -35,25 +45,46 @@ echoWithHeader '
   Installing dependencies'
 sudo pacman -S --needed --noconfirm npm nodejs > /dev/null 2>&1
 
-if [ ! -d ~/.npm-packages ]; then
+clear
+echoWithHeader '
+  Node Version Manager'
+askForNVM ''
+
+
+if [ ! -d ~/.nvm ] && [ ! -d ~/.npm-packages ]; then
   clear
   echoWithHeader '
   Configuring npm prefix'
   mkdir -p ~/.npm-packages/bin
   npm config set prefix '~/.npm-packages'
+  sleep 2
 fi
 
 if [ "$NODE_PATH" = "" ]; then
   clear
   echoWithHeader '
   Adding PATH and NODE_PATH information'
-  echo '
+  if [ ! -d ~/.nvm ]; then
+    echo '
 # npm and nodejs global modules
 export PATH="$PATH:$HOME/.npm-packages/bin"
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
-  export PATH="$PATH:$HOME/.npm-packages/bin
-  export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+    export PATH="$PATH:$HOME/.npm-packages/bin
+    export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+  else
+    echo '
+# npm and nodejs global modules
+export NPM_CONFIG_PREFIX="$NVM_DIR/versions/node/system"
+export PATH="$PATH:$NPM_CONFIG_PREFIX/bin"
+export NODE_PATH="$NODE_PATH:$NPM_CONFIG_PREFIX/lib/node_modules"
+' >> ~/.bashrc
+    NVM_DIR="~/.nvm"
+    export NPM_CONFIG_PREFIX="$NVM_DIR/versions/node/system"
+    export PATH="$PATH:$NPM_CONFIG_PREFIX/bin"
+    export NODE_PATH="$NODE_PATH:$NPM_CONFIG_PREFIX/lib/node_modules"
+  fi
+  sleep 2
 fi
 
 clear
