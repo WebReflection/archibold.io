@@ -5,11 +5,21 @@
 #########################
 
 aur() {
-  local pkg="${1}"
-  local preserve="${2}"
-  if [ "${pkg}" = "--preserve" ]; then
-    pkg="${preserve}"
+  local pkg=""
+  local preserve=""
+  local skippgp=""
+  if [ "${3}" = "--no-pgp" ] || [ "${2}" = "--no-pgp" ] || [ "${1}" = "--no-pgp" ]; then
+    skippgp="--skippgpcheck"
+  fi
+  if [ "${3}" = "--preserve" ] || [ "${2}" = "--preserve" ] || [ "${1}" = "--preserve" ]; then
     preserve="--preserve"
+  fi
+  pkg="${1}"
+  if [ "${pkg}" = "--no-pgp" ] || [ "${pkg}" = "--preserve" ]; then
+    pkg="${2}"
+    if [ "${pkg}" = "--no-pgp" ] || [ "${pkg}" = "--preserve" ]; then
+      pkg="${3}"
+    fi
   fi
   if [ "${pkg}" = "" ]; then
     echo ""
@@ -18,9 +28,12 @@ aur() {
     echo ""
     echo "  aur pakku"
     echo "  aur --preserve wpewebkit"
+    echo "  aur --no-pgp expressvpn"
     echo ""
     echo "$(tput dim)Use $(tput sgr0)--preserve$(tput dim) to avoid removing the folder once built,"
     echo "which is specially useful when things don't go as expected.$(tput sgr0)"
+    echo ""
+    echo "$(tput dim)Use $(tput sgr0)--no-pgp$(tput dim) to ignore PGP keys $(tput sgr0)at your own risk"
     echo ""
   elif [ "$USER" = "root" ]; then
     echo ""
@@ -37,7 +50,7 @@ aur() {
     cd ~/tmp-${pkg}
     git clone https://aur.archlinux.org/${pkg}.git
     cd ${pkg}
-    makepkg -Asfc --needed --noconfirm
+    makepkg -Asfc --needed --noconfirm ${skippgp}
     echo ""
     if [ "$?" = "0" ] && [ "$(ls ${pkg}*.pkg.tar.xz 2> /dev/null)" != "" ]; then
       echo "$(tput bold)Created$(tput sgr0): ~/tmp-${pkg}/${pkg}/$(ls ${pkg}*.pkg.tar.xz)"
@@ -54,4 +67,4 @@ aur() {
   fi
 }
 
-aur "${1}" "${2}"
+aur "${1}" "${2}" "${3}"
