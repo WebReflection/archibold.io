@@ -8,4 +8,4 @@ fi
 
 sudo pacman -S --needed --noconfirm \
   ttf-dejavu ttf-liberation \
-  noto-fonts noto-fonts-emoji
+  ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra

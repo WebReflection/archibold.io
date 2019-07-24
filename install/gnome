@@ -45,8 +45,6 @@ sudo pacman -S --needed --noconfirm \
   alsa-utils pulseaudio \
   xf86-input-libinput xsel \
   cups system-config-printer simple-scan \
-  ttf-dejavu ttf-liberation ttf-freefont \
-  ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra \
   bluez bluez-utils \
   gnome-tweaks chrome-gnome-shell $GNOME
 
@@ -67,9 +65,16 @@ sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
 
 echoWithHeader "
+  Installing common fonts
+"
+
+bash <(curl -s https://archibold.io/install/fonts)
+
+echoWithHeader "
   Installing common filesystem utilities (read/write)
 "
-source <(curl -s https://archibold.io/install/fsutils)
+
+bash <(curl -s https://archibold.io/install/fsutils)
 
 echoWithHeader "
   Setting up some glorious GNOME feature
