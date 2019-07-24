@@ -18,6 +18,6 @@ if [ "$(which aur 2> /dev/null)" = "" ]; then
   source <(curl -s https://archibold.io/utils/aur)
 fi
 
-aur spotify
+aur spotify --no-pgp
 
 askAboutRetina
