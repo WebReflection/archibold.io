@@ -73,4 +73,7 @@ done
 # startx on login
 echo '
 # startx on login
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1'>>.bashrc
+[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1
+'>>.bashrc
+
+rm bootstrap
