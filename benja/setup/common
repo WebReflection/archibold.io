@@ -6,8 +6,6 @@ cd ~/
 touch .hushlogin
 
 # ArchLinux initialization + update
-sudo pacman-key --init
-sudo pacman-key --populate archlinuxarm
 sudo pacman -Sy
 while ! sudo pacman -Syu --noconfirm
 do

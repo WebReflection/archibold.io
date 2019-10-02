@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  echo "Installing sudo: root password (root) required few times
+"
+  su -c "
+pacman-key --init
+pacman-key --populate archlinuxarm
+bash <(curl -s https://archibold.io/install/sudo)
+"
+else
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinuxarm
+fi
+
 # first ting: update the time or HTTPS won't work
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
   sudo ntpdate pool.ntp.org
