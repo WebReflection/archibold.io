@@ -1,6 +1,6 @@
-pacman -Sy
 pacman-key --init
 pacman-key --populate archlinuxarm
+pacman -Sy
 while ! pacman -Syu --noconfirm
 do
   :

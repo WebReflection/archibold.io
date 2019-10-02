@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+cd ~/
+
+# avoid initial message
+touch .hushlogin
+
+# ArchLinux initialization + update
+sudo pacman-key --init
+sudo pacman-key --populate archlinuxarm
+sudo pacman -Sy
+while ! sudo pacman -Syu --noconfirm
+do
+  :
+done
+
+# automatic login
+echo "[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia ${USER} %I
+">override.conf
+
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo mv override.conf /etc/systemd/system/getty@tty1.service.d/
+
+# setup app folder
+if [ ! -f /etc/systemd/system/app-disk.service ]; then
+  mkdir -p ${HOME}/app
+  echo "[Unit]
+Description=app ${HOME}/app disk
+
+[Service]
+User=root
+Type=simple
+ExecStart=/usr/bin/mount /dev/mmcblk0p3 ${HOME}/app -o uid=${USER},gid=users,umask=0022
+
+[Install]
+WantedBy=multi-user.target
+">${HOME}/app/app-disk.service
+  echo "#!/usr/bin/env bash
+mv ${HOME}/app/app-disk.service /etc/systemd/system/app-disk.service
+systemctl enable app-disk.service
+systemctl start app-disk.service
+rm ${HOME}/app/bash
+">${HOME}/app/bash
+  sync
+  sudo bash ${HOME}/app/bash
+fi

@@ -1,1 +1,7 @@
 #!/usr/bin/env bash
+
+# first ting: update the time or HTTPS won't work
+if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
+  sudo ntpdate pool.ntp.org
+  sudo timedatectl set-local-rtc 1
+fi

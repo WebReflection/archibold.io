@@ -70,8 +70,8 @@ if [ "$NODE_PATH" = "" ]; then
 export PATH="$PATH:$HOME/.npm-packages/bin"
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
-    export PATH="$PATH:$HOME/.npm-packages/bin
-    export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+    export PATH="$PATH:$HOME/.npm-packages/bin"
+    export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
   else
     echo '
 # npm and nodejs global modules
