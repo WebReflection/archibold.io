@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+source <(curl -s https://archibold.io/benja/logo)
+source <(curl -s https://archibold.io/require)
+
+require echomd
+
+echoWithLogo() {
+  echomd "${BENJA_LOGO}
+$@"
+}
+
+findTheDisk() {
+  local i=0
+  local choice=
+  local disks=
+  local disk=
+  echoWithLogo '# Select SD Card
+  Please select the disk you would like to use
+  to install Arch Linux (pick a number).'
+
+  for disk in $(lsblk --output NAME); do
+    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+      ((i=i+1))
+      disks="$disks $disk"
+      printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(grabDiskSize /dev/$disk)
+    fi
+  done
+
+  echo ''
+  read -n1 -s choice
+
+  if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
+    i=0
+    for disk in $disks; do
+      ((i=i+1))
+      if [ "$i" = "$choice" ]; then
+        BENJA_DISK="/dev/$disk"
+      fi
+    done
+  else
+    echomd "  #red(*Nope*), let's try again ... "
+    sleep 2 && clear && findTheDisk
+  fi
+}
+
+grabDiskSize() {
+  local found=0
+  local size=
+  for size in $(lsblk --output SIZE $1); do
+    if [ "$found" = "0" ]; then
+      found=1
+    else
+      echo $size
+      return
+    fi
+  done
+}
+
+targetPlatform() {
+  local choice=
+  echoWithLogo '# Target Platform
+  Please select the SBC you would like to use.
+
+  *1* Raspberry Pi 2
+  *2* Raspberry Pi 3
+  *3* Raspberry Pi 4
+'
+  read -n1 -s choice
+
+  if [ "$choice" = "1" ]; then
+    BENJA_SETUP="rpi2"
+    BENJA_SBC="Raspberry Pi 2"
+    BENJA_ARCHIVE="ArchLinuxARM-rpi-2-latest.tar.gz"
+  elif [ "$choice" = "2" ]; then
+    BENJA_SETUP="rpi3"
+    BENJA_SBC="Raspberry Pi 3"
+    BENJA_ARCHIVE="ArchLinuxARM-rpi-3-latest.tar.gz"
+  elif [ "$choice" = "3" ]; then
+    BENJA_SETUP="rpi4"
+    BENJA_SBC="Raspberry Pi 4"
+    BENJA_ARCHIVE="ArchLinuxARM-rpi-4-latest.tar.gz"
+  else
+    echomd "  #red(*Nope*), let's try again ... "
+    sleep 2 && clear && targetPlatform
+  fi
+}
+
+createPartitions() {
+  local DISK=$1
+  local ROOT_SIZE=$2
+  sudo parted --script $DISK mklabel msdos
+  sudo parted --script --align optimal $DISK mkpart primary fat32 2048s 200M
+  sudo parted --script --align optimal $DISK mkpart primary ext4 200M $ROOT_SIZE
+  sudo parted --script --align optimal $DISK mkpart primary fat32 $ROOT_SIZE 100%
+  sudo parted --script $DISK set 1 boot on
+  sudo parted --script $DISK set 2 hidden
+}
+
+getPartitions() {
+  local DISK=$1
+  local POSSIBLEDISKS=$(ls ${DISK}*)
+  local BOOT=""
+  local ROOT=""
+  local APP=""
+  local CHOICE=""
+  for CHOICE in $POSSIBLEDISKS; do
+    if [ "$CHOICE" != "$DISK" ]; then
+      if [ "$BOOT" = "" ]; then
+        BOOT="$CHOICE"
+      else
+        if [ "$ROOT" = "" ]; then
+          ROOT="$CHOICE"
+        else
+          APP="$CHOICE"
+        fi
+      fi
+    fi
+  done
+  echo "${BOOT} ${ROOT} ${APP}"
+}
+
+formatPartitions() {
+  local DISK=$1
+  local BOOT=$2
+  local ROOT=$3
+  local APP=$4
+
+  sudo mkfs.vfat "$BOOT"
+  sudo mkfs.vfat "$APP"
+  sudo dosfslabel "$APP" APP
+  yes | sudo mkfs.ext4 "$ROOT"
+}
+
+installOS() {
+  local ARCHIVE="$1"
+  local DISK=$2
+  local BOOT=$3
+  local ROOT=$4
+
+  mkdir -p boot
+  mkdir -p root
+  sudo mount "$BOOT" boot
+  sudo mount "$ROOT" root
+  sudo bsdtar -xpf "$ARCHIVE" -C root
+  sync
+  sudo mv root/boot/* boot
+  sync
+}
