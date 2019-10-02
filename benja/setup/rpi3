@@ -25,9 +25,9 @@ fi
 
 sudo usermod -a -G video ${USER}
 
-bash <(curl -s https://archibold.io/benja/setup/_common)
-bash <(curl -s https://archibold.io/benja/setup/_xorg)
-bash <(curl -s https://archibold.io/benja/setup/_npm)
+bash <(curl -s https://archibold.io/benja/setup/benja_common)
+bash <(curl -s https://archibold.io/benja/setup/benja_xorg)
+bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 
 echo "dtoverlay=vc4-fkms-v3d
 
