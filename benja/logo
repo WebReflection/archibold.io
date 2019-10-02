@@ -1,0 +1,9 @@
+
+export BENJA_LOGO='
+ #black(┌────────────────┐)
+ #black(│) *#blue(╔╗ ╔═╗╔╗╔ ╦╔═╗)* #black(│) -Bootable-
+ #black(│) *#cyan(╠╩╗║╣ ║║║ ║╠═╣)* #black(│) -Electron-
+ #black(│) *#magenta(╚═╝╚═╝╝╚╝╚╝╩ ╩)* #black(│) -Node JS App-
+ #black(└────────────────┘)
+   -https://archibold.io/benja-
+'
