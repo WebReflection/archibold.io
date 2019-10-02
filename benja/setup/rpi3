@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  echo "Installing sudo: root password (root) required few times
-"
-  su -c "
+  echo -e "Installing \x1B[1msudo\x1B[22m"
+  echo "root" | su -c "
 pacman-key --init
 pacman-key --populate archlinuxarm
 bash <(curl -s https://archibold.io/install/sudo)
 "
+
+  if [ "$(which sudo 2> /dev/null)" = "" ]; then
+    echo -e "Unable to install \x1B[1msudo\x1B[22m"
+    exit 1
+  fi
 else
   sudo pacman-key --init
   sudo pacman-key --populate archlinuxarm
 fi
 
-# first ting: update the time or HTTPS won't work
+# first thing: update the time or HTTPS won't work
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
   sudo ntpdate pool.ntp.org
   sudo timedatectl set-local-rtc 1
@@ -21,9 +25,9 @@ fi
 
 sudo usermod -a -G video ${USER}
 
-bash <(curl -s https://archibold.io/benja/setup/common)
-bash <(curl -s https://archibold.io/benja/setup/xorg)
-bash <(curl -s https://archibold.io/benja/setup/npm)
+bash <(curl -s https://archibold.io/benja/setup/_common)
+bash <(curl -s https://archibold.io/benja/setup/_xorg)
+bash <(curl -s https://archibold.io/benja/setup/_npm)
 
 echo "dtoverlay=vc4-fkms-v3d
 
@@ -41,7 +45,7 @@ disable_splash=1
 boot_delay=0
 ">config.txt
 
-sudo mv config.txt /boot/
+sudo mv config.txt /boot/ 2> /dev/null
 
 if [ -f /boot/boot.txt ]; then
   # modify boot.scr to reserve cma memory and make the boot silent
@@ -65,3 +69,8 @@ while ! sudo pacman -S --needed --noconfirm \
 do
   :
 done
+
+# startx on login
+echo '
+# startx on login
+[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1'>>.bashrc
