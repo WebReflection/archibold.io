@@ -10,7 +10,7 @@ findTheDisk
 
 if [ ! -f "${BENJA_ARCHIVE}" ]; then
   clear
-  echoWithLogo "# Downloading ${BENJA_ARCHIVE}
+  echoWithLogo "# Downloading ${BENJA_SBC} Archive
 "
 
   curl -LO "http://os.archlinuxarm.org/os/${BENJA_ARCHIVE}"

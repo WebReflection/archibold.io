@@ -9,7 +9,7 @@ addGroup() {
       exit 0
     fi
   done
-  su -c "gpasswd -a $USER wheel"
+  sudo gpasswd -a $USER wheel
 }
 
 if [ "$USER" = "root" ]; then
@@ -18,7 +18,7 @@ if [ "$USER" = "root" ]; then
 else
   echo -e "Please enter the \x1B[1mroot\x1B[22m password"
   su -c '# install sudo
-pacman -Sy --needed --noconfirm sudo &> /dev/null
+pacman -Sy --needed --noconfirm sudo
 
 if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
   echo "

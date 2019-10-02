@@ -2,7 +2,8 @@
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
   echo -e "Installing \x1B[1msudo\x1B[22m"
-  echo "root" | su -c "
+  export TMP_ROOT_PASSWORD=root
+  echo $TMP_ROOT_PASSWORD | su -c "
 pacman-key --init
 pacman-key --populate archlinuxarm
 bash <(curl -s https://archibold.io/install/sudo)
