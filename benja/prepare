@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-# source <(curl -s https://archibold.io/benja/utils)
-source ./utils
+source <(curl -s https://archibold.io/benja/utils)
 
 clear
 targetPlatform
@@ -26,7 +25,6 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
   * formatting
   * copy files over
 "
-
 BENJA_SD_SIZE=$(sudo fdisk -s $BENJA_DISK)
 BENJA_ROOT_SIZE="6800000"
 if [ $BENJA_ROOT_SIZE \> $BENJA_SD_SIZE ]; then
@@ -44,7 +42,6 @@ echomd "*SD Card info*
   disk *${BENJA_DISK}* will be completely *erased*
   #red(all data) in it will be #red(lost)
 "
-
 read -n1 -r -p "$(echomd " erase *${BENJA_DISK}* ? [y/N]")" CHOICE
 
 if [[ $? -ne 0 ]] || [ "$CHOICE" != "y" ]; then
@@ -59,11 +56,8 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   * partitioning
 "
-
 sudo umount $BENJA_DISK* 2> /dev/null
-sleep 1
 createPartitions "${BENJA_DISK}" "$BENJA_ROOT_SIZE"
-sleep 1
 
 clear
 echoWithLogo "# Preparing ${BENJA_SBC} Card
@@ -71,7 +65,6 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
   * partitioning ✔
   * formatting
 "
-
 BENJA_SDCARD_PARTITIONS=($(getPartitions $BENJA_DISK))
 formatPartitions "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
 
@@ -84,17 +77,36 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   This operation might take a while, please wait
 "
-
 mkdir -p ~/tmp-mounting-point
 cd ~/tmp-mounting-point
 installOS "$BENJA_ARCHIVE_PATH" "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
 cd -
 sync
-cd root/home/alarm
+cd ~/tmp-mounting-point/root/home/alarm
+
+clear
+echoWithLogo "# Preparing ${BENJA_SBC} Card
+
+  * partitioning ✔
+  * formatting ✔
+  * copy files over ✔
+
+  Downloading bootstrap
+"
 curl -LO "https://archibold.io/benja/setup/${BENJA_SETUP}"
 mv "${BENJA_SETUP}" bootstrap
 chmod a+x bootstrap
 cd -
+
+clear
+echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
+
+  * plugin the SD card into the ${BENJA_SBC}
+  * login via user *alarm* and password *alarm*
+  * type *./bootstrap* once logged in
+
+  Thank you for using B.E.N.J.A.
+"
 sync
 sudo umount $BENJA_DISK* 2> /dev/null
 sleep 1
