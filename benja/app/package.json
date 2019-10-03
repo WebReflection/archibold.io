@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "electron index.js"
+    "start": "electron --no-sandbox index.js"
   },
   "dependencies": {
     "benja": "latest",
