@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-if [ "$(which xhost 2> /dev/null)" != "" ]; then
-  xhost +local:
-fi
+# to change resolution *
+# * WIDTHxHEIGTH must be compatible with your screen
+# xrandr -s 1280x720
 
-if [ "$(which xset 2> /dev/null)" != "" ]; then
-  xset s off -dpms
-fi
+xhost +local:
+
+xset s off -dpms
 
 if [ -f ~/.Xdefaults ]; then
    xrdb -merge ~/.Xdefaults
