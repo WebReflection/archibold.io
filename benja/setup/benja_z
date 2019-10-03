@@ -10,7 +10,7 @@ if [ ! -f ~/app/package.json ]; then
   curl -LOs "https://archibold.io/benja/app/logo-light.svg"
   touch reload
   mkdir -p node_modules
-  npm install --production
+  npm install --production --no-bin-links
   cd -
   sleep 1
 fi

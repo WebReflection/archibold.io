@@ -11,7 +11,7 @@ if [ -f ~/app/package.json ]; then
   if [ ! -d node_modules ]; then
     touch reload
     mkdir -p node_modules
-    npm install --production
+    npm install --production --no-bin-links
   fi
   if [ "$(which unclutter 2> /dev/null)" = "" ]; then
     npm start
