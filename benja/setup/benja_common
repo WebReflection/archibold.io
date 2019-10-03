@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  echo -e "installing \x1B[1msudo\x1B[22m"
+  echo root | su -c "
+pacman-key --init
+pacman-key --populate archlinuxarm
+bash <(curl -s https://archibold.io/install/sudo)
+"
+  if [ "$(which sudo 2> /dev/null)" = "" ]; then
+    echo -e "Unable to install \x1B[1msudo\x1B[22m"
+    exit 1
+  fi
+else
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinuxarm
+fi
+
+# first thing: update the time or HTTPS won't work
+if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
+  echo "updating time"
+  sudo ntpdate pool.ntp.org
+  sudo timedatectl set-local-rtc 1
+fi
+
+sudo usermod -a -G wheel,storage,power,video ${USER}
+
 cd ~/
 
 # avoid initial message
