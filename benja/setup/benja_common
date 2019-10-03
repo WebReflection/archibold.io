@@ -7,7 +7,7 @@ touch .hushlogin
 
 # ArchLinux initialization + update
 sudo pacman -Sy
-while ! sudo pacman -Syu --needed --noconfirm \
+while ! sudo pacman -Su --needed --noconfirm \
   dhcpcd openssh cpupower \
   ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
   iptables dialog wpa_supplicant openssh libnotify \
