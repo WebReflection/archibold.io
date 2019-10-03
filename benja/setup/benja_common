@@ -9,7 +9,7 @@ touch .hushlogin
 sudo pacman -Sy
 while ! sudo pacman -Syu --needed --noconfirm \
   dhcpcd openssh cpupower \
-  ttf-dejavu noto-fonts noto-fonts-emoji \
+  ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \
   gnome-themes-standard adwaita-icon-theme \
