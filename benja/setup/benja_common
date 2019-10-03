@@ -27,7 +27,7 @@ done
 if [ "$BENJA_LOGO" = "" ]; then
   echo "adding logo"
   curl -s https://archibold.io/benja/logo >> .bashrc
-  echo 'echo -e "$BENJA_LOGO"' >> .bashrc
+  echo 'echomd "$BENJA_LOGO"' >> .bashrc
   sleep 1
 fi
 
@@ -115,4 +115,9 @@ if [ "$(cat /etc/systemd/logind.conf | grep 'HandleSuspendKey=ignore')" = "" ]; 
   sudo sh -c 'echo "HandleSuspendKey=ignore">>/etc/systemd/logind.conf'
   sudo sh -c 'echo "HandleLidSwitch=ignore">>/etc/systemd/logind.conf'
   sleep 1
+fi
+
+if [ "$(which echomd 2> /dev/null)" = "" ]; then
+  echo "installing echomd"
+  bash <(curl -s https://archibold.io/install/echomd)
 fi

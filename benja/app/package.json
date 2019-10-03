@@ -5,10 +5,10 @@
     "start": "electron index.js"
   },
   "dependencies": {
-    "benja": "latest"
+    "benja": "latest",
+    "express": "latest"
   },
   "devDependencies": {
-    "electron": "latest",
-    "tiny-cdn": "latest"
+    "electron": "latest"
   }
 }
