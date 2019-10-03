@@ -2,12 +2,7 @@
 
 while ! sudo pacman -S --needed --noconfirm \
   xorg-server xorg-xinit xorg-xset xorg-xrandr xorg-server-xwayland \
-  xterm unclutter \
-  alsa-utils libcanberra-gstreamer libcanberra-pulse \
-  gst-plugins-base gst-plugins-good \
-  gstreamer-vaapi \
-  gst-libav gst-plugins-ugly \
-  geoip geoclue
+  xterm unclutter
 do
   :
 done

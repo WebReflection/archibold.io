@@ -13,9 +13,12 @@ while ! sudo pacman -Syu --needed --noconfirm \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \
   gnome-themes-standard adwaita-icon-theme \
-  gst-plugins-base gst-plugins-good gst-libav \
+  gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
   libva-vdpau-driver libva-mesa-driver \
-  gconf nss pulseaudio pulseaudio-alsa gperf libexif
+  gconf nss pulseaudio pulseaudio-alsa gperf libexif \
+  alsa-utils libcanberra-gstreamer libcanberra-pulse \
+  gstreamer-vaapi \
+  geoip geoip-database-extra geoclue
 do
   :
 done
