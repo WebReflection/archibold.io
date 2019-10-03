@@ -74,6 +74,9 @@ done
 echo '
 # startx on login
 [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx > /dev/null 2>&1
+
+# or show the logo
+echomd "$BENJA_LOGO"
 '>>.bashrc
 
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

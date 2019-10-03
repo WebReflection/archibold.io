@@ -27,7 +27,6 @@ done
 if [ "$BENJA_LOGO" = "" ]; then
   echo "adding logo"
   curl -s https://archibold.io/benja/logo >> .bashrc
-  echo 'echomd "$BENJA_LOGO"' >> .bashrc
   sleep 1
 fi
 

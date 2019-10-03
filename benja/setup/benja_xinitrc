@@ -6,6 +6,10 @@ if [ "$(which xset 2> /dev/null)" != "" ]; then
   xset s off -dpms
 fi
 
+if [ -f ~/.Xdefaults ]; then
+   xrdb -merge ~/.Xdefaults
+fi
+
 if [ -f ~/app/package.json ]; then
   cd ~/app
   if [ ! -d node_modules ]; then

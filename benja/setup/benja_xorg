@@ -7,6 +7,12 @@ do
   :
 done
 
+# dark theme
+echo 'xterm*background: black
+xterm*foreground: lightgray
+xterm*font: DejaVu Sans Mono:pixelsize=10
+'>>~/.Xdefaults
+
 # Xorg / xinit conifg
 curl -LO https://archibold.io/benja/setup/benja_xinitrc
 mv benja_xinitrc .xinitrc
