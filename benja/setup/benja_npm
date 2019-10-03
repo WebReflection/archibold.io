@@ -8,6 +8,14 @@ mkdir -p ~/.npm-packages/bin
 npm config set prefix '~/.npm-packages'
 npm config set package-lock false
 
+# configure npm and sudo
+if [ "$(cat /etc/sudoers | grep /usr/bin/npm)" = "" ]; then
+  echo "
+# BENJA rules
+${USER} ALL=NOPASSWD: /usr/bin/npm
+" >>/etc/sudoers
+fi
+
 echo '
 # npm and nodejs global modules
 export PATH="$PATH:$HOME/.npm-packages/bin"

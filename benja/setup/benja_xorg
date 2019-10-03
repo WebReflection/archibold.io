@@ -10,6 +10,8 @@ done
 # dark theme
 echo 'xterm*background: black
 xterm*foreground: lightgray
+xterm*faceName: DejaVu Sans Mono
+xterm*renderFont: true
 '>>~/.Xdefaults
 
 # Xorg / xinit conifg

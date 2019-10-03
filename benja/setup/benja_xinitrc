@@ -19,11 +19,7 @@ if [ -f ~/app/package.json ]; then
     mkdir -p node_modules
     npm install --production --no-bin-links
   fi
-  if [ "$(which unclutter 2> /dev/null)" = "" ]; then
-    npm start
-  else
-    unclutter -idle 0 & npm start
-  fi
+  unclutter -idle 0 & sudo npm start
 else
   cd ~/
   if [ -f ~/app/package.jsno ]; then
@@ -32,7 +28,7 @@ else
     mv ~/app/package.jsoff ~/app/package.json
   fi
   if [ "$(which weston-terminal 2> /dev/null)" = "" ]; then
-    xterm -en en_US.UTF-8 -maximized
+    unclutter -idle 0 & xterm -en en_US.UTF-8 -maximized
   else
     weston-terminal --fullscreen
   fi

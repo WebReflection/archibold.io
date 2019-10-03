@@ -7,7 +7,6 @@ pacman-key --init
 pacman-key --populate archlinuxarm
 bash <(curl -s https://archibold.io/install/sudo)
 "
-
   if [ "$(which sudo 2> /dev/null)" = "" ]; then
     echo -e "Unable to install \x1B[1msudo\x1B[22m"
     exit 1

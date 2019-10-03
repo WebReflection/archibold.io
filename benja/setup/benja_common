@@ -25,10 +25,12 @@ done
 
 # default locale
 sudo sh -c "echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen"
+sudo sh -c "echo 'LOCALE=en_US.UTF-8'>>/etc/locale.conf"
 sudo sh -c "echo 'LANG=en_US.UTF-8'>>/etc/locale.conf"
-sudo localectl set-locale LANG=en_US.UTF-8
+sudo sh -c "echo 'LC_TIME=en_US.UTF-8'>>/etc/locale.conf"
+sudo sh -c "localectl set-locale LANG=en_US.UTF-8"
 sudo locale-gen
-sudo locale > /etc/locale.conf
+sudo sh -c 'locale > /etc/locale.conf'
 
 # add logo to .bashrc
 if [ "$BENJA_LOGO" = "" ]; then
