@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-xhost +local:
+if [ "$(which xhost 2> /dev/null)" != "" ]; then
+  xhost +local:
+fi
 
 if [ "$(which xset 2> /dev/null)" != "" ]; then
   xset s off -dpms
@@ -30,7 +32,7 @@ else
     mv ~/app/package.jsoff ~/app/package.json
   fi
   if [ "$(which weston-terminal 2> /dev/null)" = "" ]; then
-    xterm -maximized
+    xterm -en en_US.UTF-8 -maximized
   else
     weston-terminal --fullscreen
   fi
