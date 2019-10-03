@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+if [ ! -f ~/app/package.json ]; then
+  echo ' installing electron app'
+  cd ~/app
+  curl -LOs "https://archibold.io/benja/app/index.js"
+  curl -LOs "https://archibold.io/benja/app/index.html"
+  curl -LOs "https://archibold.io/benja/app/package.json"
+  curl -LOs "https://archibold.io/benja/app/logo-dark.svg"
+  curl -LOs "https://archibold.io/benja/app/logo-light.svg"
+  touch reload
+  mkdir -p node_modules
+  npm install --production
+  cd -
+  sleep 1
+fi
+
+# cleanup and optimize
+echo "clean up and optimize"
+sudo pacman -Sc --noconfirm
+sudo pacman-optimize
+
+echo "boost CPU performance"
+sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
+sudo systemctl enable cpupower.service
+sudo systemctl start cpupower.service
+
+echo "enable common services"
+sudo systemctl enable sshd
+sudo systemctl enable dhcpcd
+
+rm -f ~/bootstrap
+
+reboot

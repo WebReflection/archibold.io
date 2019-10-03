@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+xhost +local:
+
+if [ "$(which xset 2> /dev/null)" != "" ]; then
+  xset s off -dpms
+fi
+
+if [ -f ~/app/package.json ]; then
+  cd ~/app
+  if [ ! -d node_modules ]; then
+    touch reload
+    mkdir -p node_modules
+    npm install --production
+  fi
+  if [ "$(which unclutter 2> /dev/null)" = "" ]; then
+    npm start
+  else
+    unclutter -idle 0 & npm start
+  fi
+else
+  cd ~/
+  if [ -f ~/app/package.jsno ]; then
+    mv ~/app/package.jsno ~/app/package.json
+  elif [ -f ~/app/package.jsoff ]; then
+    mv ~/app/package.jsoff ~/app/package.json
+  fi
+  if [ "$(which weston-terminal 2> /dev/null)" = "" ]; then
+    xterm -maximized
+  else
+    weston-terminal --fullscreen
+  fi
+fi

@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-sudo pacman -S --needed --noconfirm npm nodejs
+sudo pacman -S --needed --noconfirm \
+  npm nodejs \
+  c-ares ffmpeg gtk3 http-parser libevent libnghttp2 libxslt libxss minizip nss re2 snappy
 
 mkdir -p ~/.npm-packages/bin
 npm config set prefix '~/.npm-packages'

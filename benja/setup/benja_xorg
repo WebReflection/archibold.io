@@ -1,30 +1,17 @@
 #!/usr/bin/env bash
 
 while ! sudo pacman -S --needed --noconfirm \
-  xorg-server xorg-xinit xorg-xset xorg-xrandr unclutter \
+  xorg-server xorg-xinit xorg-xset xorg-xrandr xorg-server-xwayland \
+  xterm unclutter \
   alsa-utils libcanberra-gstreamer libcanberra-pulse \
   gst-plugins-base gst-plugins-good \
   gstreamer-vaapi \
   gst-libav gst-plugins-ugly \
-  geoip geoclue \
-  c-ares ffmpeg gtk3 http-parser libevent libnghttp2 libxslt libxss minizip nss re2 snappy
+  geoip geoclue
 do
   :
 done
 
 # Xorg / xinit conifg
-echo "# x11 configuration
-
-# to change resolution *
-# * WIDTHxHEIGTH must be compatible with your screen
-# xrandr -s 1280x720
-
-cd ~/app
-
-# avoid sleep
-xset s off -dpms
-
-# unclutter the cursor then browse a generic page
-unclutter & npm start
-">.xinitrc
-chown ${USER}:${USER} .xinitrc
+curl -LO https://archibold.io/benja/setup/benja_xinitrc
+mv benja_xinitrc .xinitrc

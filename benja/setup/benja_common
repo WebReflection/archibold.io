@@ -7,10 +7,26 @@ touch .hushlogin
 
 # ArchLinux initialization + update
 sudo pacman -Sy
-while ! sudo pacman -Syu --noconfirm
+while ! sudo pacman -Syu --needed --noconfirm \
+  dhcpcd openssh cpupower \
+  ttf-dejavu noto-fonts noto-fonts-emoji \
+  iptables dialog wpa_supplicant openssh libnotify \
+  base-devel git diffstat chrpath wget cpio pv \
+  gnome-themes-standard adwaita-icon-theme \
+  gst-plugins-base gst-plugins-good gst-libav \
+  libva-vdpau-driver libva-mesa-driver \
+  gconf nss pulseaudio pulseaudio-alsa gperf libexif
 do
   :
 done
+
+# add logo to .bashrc
+if [ "$BENJA_LOGO" = "" ]; then
+  echo "adding logo"
+  curl -s https://archibold.io/benja/logo >> .bashrc
+  sleep 1
+fi
+
 
 # automatic login
 echo "[Service]
@@ -23,6 +39,7 @@ sudo mv override.conf /etc/systemd/system/getty@tty1.service.d/
 
 # setup app folder
 if [ ! -f /etc/systemd/system/app-disk.service ]; then
+  echo "setting ~/app folder"
   mkdir -p ${HOME}/app
   echo "[Unit]
 Description=app ${HOME}/app disk
@@ -43,4 +60,55 @@ rm ${HOME}/app/bash
 ">${HOME}/app/bash
   sync
   sudo bash ${HOME}/app/bash
+  sleep 1
+fi
+
+# configure 80 to 8080 redirect
+if [ ! -f /etc/systemd/system/redirect80to8080.service ]; then
+  echo "setting port 80 to 8080 redirects"
+  echo "[Unit]
+Description=Redirect 80 to 8080 service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
+ExecStart=/usr/bin/iptables -t nat -I OUTPUT -p tcp -o lo --dport 80 -j REDIRECT --to-port 8080
+
+[Install]
+WantedBy=multi-user.target
+" >redirect80to8080.service
+  sudo mv redirect80to8080.service /etc/systemd/system/
+  sudo systemctl enable redirect80to8080.service
+  sleep 1
+fi
+
+# configure rmate
+if [ ! -f /usr/bin/rmate ]; then
+  echo "adding rmate"
+  curl -LOs 'https://raw.githubusercontent.com/WebReflection/rmate/master/rmate'
+  chmod a+x rmate
+  sudo mv rmate /usr/bin/rmate
+  sleep 1
+fi
+
+# configure hostname
+if [ ! -f /etc/hostname ] || [ "$(cat /etc/hostname | grep ${USER}.local)" = "" ]; then
+  echo "configuring hostname"
+  if [ -f /etc/hostname ]; then
+    cat /etc/hostname > hostname
+  fi
+  echo "${USER}.local" >> hostname
+  sudo mv hostname /etc/
+  sudo hostnamectl set-hostname "${USER}.local"
+  sudo sed -i "s/localhost\$/localhost$(printf '\t')${USER}.local/g" /etc/hosts
+  sleep 1
+fi
+
+# attempt to avoid suspend mode when on terminal
+if [ "$(cat /etc/systemd/logind.conf | grep 'HandleSuspendKey=ignore')" = "" ]; then
+  echo "ignoring suspend on terminal"
+  sudo sh -c 'echo "HandleSuspendKey=ignore">>/etc/systemd/logind.conf'
+  sudo sh -c 'echo "HandleLidSwitch=ignore">>/etc/systemd/logind.conf'
+  sleep 1
 fi
