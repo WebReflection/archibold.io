@@ -2,10 +2,14 @@
 require(process.cwd() + '/node_modules/benja').paths();
 
 // basic static server
+const compression = require('compression');
 const express = require('express');
 const server = express();
-server.use(express.static('.'));
-server.listen(8080);
+server
+  // comment out next line to stress the CPU less
+  .use(compression())
+  .use(express.static('.'))
+  .listen(8080);
 
 // electron app
 const electron = require('electron');
