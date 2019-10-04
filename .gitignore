@@ -1,5 +1,8 @@
 test.sh
 benja/*.tar.gz
+benja/node_modules/
+benja/docs/package-lock.json
+benja/docs/node_modules/
 benja/app/node_modules/
 benja/app/reload
 benja/app/package-lock.json
