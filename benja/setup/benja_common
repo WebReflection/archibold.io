@@ -45,6 +45,12 @@ do
   :
 done
 
+if [ "$TMP_TIME_UPDATED" != "true" ]; then
+  echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
+  echo root | su -c "ntpdate pool.ntp.org
+timedatectl set-local-rtc 1"
+fi
+
 # default locale
 sudo sh -c "echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen"
 sudo sh -c "echo 'LOCALE=en_US.UTF-8'>>/etc/locale.conf"
