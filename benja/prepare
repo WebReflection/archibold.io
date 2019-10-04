@@ -95,6 +95,9 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 "
 echo '#!/usr/bin/env bash
 
+echo "BENJA setup starting in 5 seconds"
+sleep 5
+
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
   echo root | su -c "ntpdate pool.ntp.org
