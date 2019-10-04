@@ -29,6 +29,9 @@ echo "enable common services"
 sudo systemctl enable sshd
 sudo systemctl enable dhcpcd
 
+rm -f ~/.bash_history
+touch ~/.bash_history
+
 rm -f ~/bootstrap
 
 reboot

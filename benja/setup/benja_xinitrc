@@ -1,35 +1,51 @@
 #!/usr/bin/env bash
 
+if [ "$(which xhost 2> /dev/null)" != "" ]; then
+  xhost +local:
+fi
+
 # to change resolution *
 # * WIDTHxHEIGTH must be compatible with your screen
 # xrandr -s 1280x720
 
-xhost +local:
-
-xset s off -dpms
-
-if [ -f ~/.Xdefaults ]; then
-   xrdb -merge ~/.Xdefaults
-fi
-
-if [ -f ~/app/package.json ]; then
-  cd ~/app
+checkModules() {
   if [ ! -d node_modules ]; then
     touch reload
     mkdir -p node_modules
     npm install --production --no-bin-links
   fi
-  unclutter -idle 0 & sudo npm start
-else
-  cd ~/
+}
+
+changePackage() {
   if [ -f ~/app/package.jsno ]; then
     mv ~/app/package.jsno ~/app/package.json
   elif [ -f ~/app/package.jsoff ]; then
     mv ~/app/package.jsoff ~/app/package.json
   fi
-  if [ "$(which weston-terminal 2> /dev/null)" = "" ]; then
-    unclutter -idle 0 & xterm -en en_US.UTF-8 -maximized
+}
+
+if [ -f ~/.config/weston.ini ]; then
+  if [ -f ~/app/package.json ]; then
+    cd ~/app
+    checkModules
+    sudo npm start
   else
+    cd ~/
+    changePackage
     weston-terminal --fullscreen
+  fi
+else
+  xset s off -dpms
+  if [ -f ~/.Xdefaults ]; then
+    xrdb -merge ~/.Xdefaults
+  fi
+  if [ -f ~/app/package.json ]; then
+    cd ~/app
+    checkModules
+    unclutter -idle 0 & sudo npm start
+  else
+    cd ~/
+    changePackage
+    unclutter -idle 0 & xterm -en en_US.UTF-8 -maximized
   fi
 fi

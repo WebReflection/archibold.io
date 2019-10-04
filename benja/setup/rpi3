@@ -1,8 +1,27 @@
 #!/usr/bin/env bash
 
 bash <(curl -s https://archibold.io/benja/setup/benja_common)
-bash <(curl -s https://archibold.io/benja/setup/benja_xorg)
 bash <(curl -s https://archibold.io/benja/setup/benja_npm)
+
+# install specific GPU / Xorg driver
+while ! sudo pacman -S --needed --noconfirm \
+  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbturbo mesa-vdpau
+do
+  :
+done
+
+# use startx to autologin and start the session
+bash <(curl -s https://archibold.io/benja/setup/benja_xorg)
+bash <(curl -s https://archibold.io/benja/setup/benja_autologin)
+echo '
+# startx on login
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+  exec startx > /dev/null 2>&1
+else
+  source .logo
+  echomd "$BENJA_LOGO"
+fi
+'>>.bashrc
 
 echo "dtoverlay=vc4-fkms-v3d
 
@@ -37,23 +56,5 @@ if [ -f /boot/cmdline.txt ]; then
   # modify cmdline.txt mostly to make the boot silent (cma might be ignored)
   sudo sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/" /boot/cmdline.txt
 fi
-
-# install specific GPU / Xorg driver
-while ! sudo pacman -S --needed --noconfirm \
-  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev mesa-vdpau
-do
-  :
-done
-
-# startx on login
-echo '
-# startx on login
-if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-  exec startx > /dev/null 2>&1
-else
-  source .logo
-  echomd "$BENJA_LOGO"
-fi
-'>>.bashrc
 
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

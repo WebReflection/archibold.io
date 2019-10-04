@@ -1,24 +1,28 @@
 #!/usr/bin/env bash
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  echo -e "installing \x1B[1msudo\x1B[22m"
-  echo root | su -c "
+echo root | su -c "
 pacman-key --init
 pacman-key --populate archlinuxarm
-bash <(curl -s https://archibold.io/install/sudo)
 "
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  echo -e "installing \x1B[1msudo\x1B[22m"
+  echo root | su -c "bash <(curl -s https://archibold.io/install/sudo)"
   if [ "$(which sudo 2> /dev/null)" = "" ]; then
     echo -e "Unable to install \x1B[1msudo\x1B[22m"
     exit 1
   fi
-else
-  sudo pacman-key --init
-  sudo pacman-key --populate archlinuxarm
 fi
 
-sudo usermod -a -G wheel,storage,power,video ${USER}
+echo 'alarm' | sudo -S usermod -a -G wheel,storage,power,video ${USER}
 
 cd ~/
+
+# basic bashrc configuration
+echo '
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+shopt -s histappend                      # append to historyinstead of overwriting it
+' >> ~/.bashrc
 
 # avoid initial message
 touch .hushlogin
@@ -64,13 +68,6 @@ if [ "$GTK_THEME" = "" ]; then
   echo "GTK_THEME='${GTK_THEME}'">>.bashrc
   sleep 1
 fi
-
-# automatic login
-sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
-sudo sh -c "echo '[Service]
-ExecStart=
-ExecStart=-/usr/sbin/agetty -nia ${USER} %I
-'>/etc/systemd/system/getty@tty1.service.d/override.conf"
 
 # setup app folder
 if [ ! -f /etc/systemd/system/app-disk.service ]; then

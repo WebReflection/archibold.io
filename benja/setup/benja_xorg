@@ -17,3 +17,4 @@ xterm*renderFont: true
 # Xorg / xinit conifg
 curl -LO https://archibold.io/benja/setup/benja_xinitrc
 mv benja_xinitrc .xinitrc
+chmod a+x .xinitrc

@@ -1,0 +1,6 @@
+# automatic login
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo sh -c "echo '[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia ${USER} %I
+'>/etc/systemd/system/getty@tty1.service.d/override.conf"
