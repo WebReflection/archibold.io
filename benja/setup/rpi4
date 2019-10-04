@@ -5,7 +5,7 @@ bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 
 # install specific GPU / Xorg driver
 while ! sudo pacman -S --needed --noconfirm \
-  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbturbo mesa-vdpau
+  mesa libva-vdpau-driver libva-mesa-driver xf86-video-fbdev mesa-vdpau
 do
   :
 done
