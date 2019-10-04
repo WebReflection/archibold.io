@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:400,300,700" rel="stylesheet" type="text/css">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.4.0/styles/atelier-cave-dark.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="../css/main.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../css/docs.css" media="screen">
+    <!--[if lt IE 9]>
+    <script defer src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Benja OS</title>
+  </head>
+  <body>
+    <header>
+      <a href="../" title="Home Page"><img class="no-us" alt="BENJA" src="../img/benja-dark.svg" onerror="this.src=this.src.replace('.svg','.png')" height="128px"></a>
+      <h1>
+        Documentation
+      </h1>
+      <h2>
+        <strong>B</strong><span>ootable</span>
+        <strong>E</strong><span>lectron</span>
+        <strong>N</strong><span>ode</span>
+        <strong>J</strong><span>S</span>
+        <strong>A</strong><span>pplication</span>
+      </h2>
+    </header>
+    <main><section>
+<p>This page contains most basic information about BENJA and its usage.
+Please note that every supported board might have slightly different setup,
+hardware acceleration capabilities, or setup.</p>
+<h3 id="how-to-create-the-b-e-n-j-a-environment">How to create the B.E.N.J.A. environment</h3>
+<p>All you need to do, is type the following in your ArchLinux terminal, and follow the instructions:</p>
+<pre><code class="lang-sh hljs sh"><span class="line">bash &lt;(curl -s https://archibold.io/benja/prepare)</span></code></pre><h3 id="how-to-develop">How to Develop</h3>
+<p>Creating applications is as easy as writing the following from the <code>APP</code> disk folder:</p>
+<pre><code class="lang-sh hljs sh"><span class="line">$ npm start</span></code></pre><p>This is indeed exactly what gets executed once Benja OS starts.
+If your computer works, the target board will work too!</p>
+<p>But how about editing remotely so you don’t have to keep removing and putting back the SD card?</p>
+<p>As simple as writing:</p>
+<pre><code class="lang-sh hljs sh"><span class="line">$ ssh alarm@192.168.1.X</span>
+<span class="line">password: alarm</span></code></pre><p>At this point you can use <code>nano ~/app/index.js</code> to edit that file or, if your IDE supports it, you can use <a href="https://github.com/textmate/rmate#rmate">rmate</a> which is already available in Benja OS.</p>
+<p>This gives you the ability to also test directly GPIO related operations through the board.</p>
+<h3 id="how-to-reload-the-app">How to reload the App</h3>
+<p>There are at least a couple of ways to do it: remotely and directly through the app.
+The default app example uses a watcher on its main <code>index.js</code> file:</p>
+<pre><code class="lang-js hljs js"><span class="line"><span class="hljs-comment">// for debugging purpose, it might be handy to be able</span></span>
+<span class="line"><span class="hljs-comment">// to reload the window simply via `touch ~/app/reload`</span></span>
+<span class="line"><span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>).watch(<span class="hljs-string">'reload'</span>, () =&gt; app.quit());</span></code></pre><p>Once logged in via <code>ssh</code> all you need to do is to write the following:</p>
+<pre><code class="lang-sh hljs sh"><span class="line">touch ~/app/reload</span></code></pre><p>This will quit the app and thanks to BenjaOS configuration it will also restart it.
+Alternatively you could put a simple script on the page such:</p>
+<pre><code class="lang-html hljs html"><span class="line"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"></span>
+<span class="line"><span class="hljs-comment">// set double click handler and reload the page if triggered</span></span>
+<span class="line"><span class="hljs-built_in">document</span>.documentElement.ondblclick = <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> location.reload();</span>
+<span class="line"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span></span></code></pre><p>It could be any sort of event, or a combination of keys, a gesture, a button.
+Bear in mind you could even <code>spawn</code> a <code>reboot</code> via <em>bash</em> or shell, or even invoke a <code>shutdown -h now</code>: you have full control.</p>
+<h3 id="how-to-load-the-app-remotely">How to load the app remotely</h3>
+<p>By default, BenjaOS redirects to port <code>8080</code> all calls to port <code>80</code>, making it simple to use from your browser the same <code>index.html</code>.
+Write <code>http://192.168.1.X</code> on your browser, being sure the it is the one assigned to your board, and verify everything is OK.</p>
+<p>However, if you plug the SD card into your laptop, you can simply run <code>npm start</code> on <em>BENJA-APP</em> folder and develop directly in there.
+<code>Ctrl + Shift + I</code> to eventually bring up the console and debug like any other HTML page.</p>
+<h3 id="how-to-not-boot-the-app">How to not boot the App</h3>
+<p>If you’d like to play around with Arch Linux instead
+of booting the app, you can either rename <code>~/app/package.json</code>
+into <code>~/app/package.jsno</code> or <code>~/app/package.jsoff</code>,
+or you could remove it or rename it differently, like <code>~/app/package.nope</code>.</p>
+<p>This will inform Benja OS that it should just boot in the first available terminal, either on Weston or X11. </p>
+<h3 id="how-to-install-app-dependencies">How to install App dependencies</h3>
+<p>If you remove the folder <code>~/app/node_modules</code>, Benja will install production dependencies automatically next time it starts.</p>
+<p>This is handy if you have one project that might have dependencies that might conflict with those your computer architecture might encounter.</p>
+<p>In general though, it is strongly suggested to use dependencies that are cross platform friendly,
+and install those requiring builds and node-gyp as global module (also due the fact exacutables are not installed through a runtime mounted folder).</p>
+<h3 id="how-to-include-node-modules">How to include node modules</h3>
+<p>Due some limitation with current Electron paths, your application might need to include the <a href="https://www.npmjs.com/package/benja">benja module</a> on top.</p>
+<pre><code class="lang-js hljs js"><span class="line"><span class="hljs-comment">// on top of index.js or index.html</span></span>
+<span class="line"><span class="hljs-comment">// to have access to both local and global modules</span></span>
+<span class="line"><span class="hljs-built_in">require</span>(process.cwd() + <span class="hljs-string">'/node_modules/benja'</span>).paths();</span></code></pre><p>In alternative, you need to specify manually paths via:</p>
+<pre><code class="lang-js hljs js"><span class="line">[].push.apply(</span>
+<span class="line"><i> </i><i> </i><span class="hljs-built_in">require</span>(<span class="hljs-string">'module'</span>).globalPaths,</span>
+<span class="line"><i> </i><i> </i>[process.cwd() + <span class="hljs-string">'/node_modules'</span>]</span>
+<span class="line"><i> </i><i> </i>.concat(process.env.NODE_PATH.split(<span class="hljs-string">':'</span>).filter(<span class="hljs-function"><span class="hljs-params">p</span> =&gt;</span> <span class="hljs-number">0</span> &lt; p.length))</span>
+<span class="line">);</span></code></pre><h3 id="how-to-update-b-e-n-j-a-os">How to Update Benja OS</h3>
+<p>Bening simply a specially configured Arch Linux OS,
+all you need to update the system is the following:</p>
+<pre><code class="lang-sh hljs sh"><span class="line"><span class="hljs-comment"># updates ArchLinux to the latest</span></span>
+<span class="line">sudo pacman -Syu</span>
+<span class="line"></span>
+<span class="line"><span class="hljs-comment"># update Electron and global modules to the latest</span></span>
+<span class="line">npm update -g</span></code></pre></section></main>
+    <footer>
+      <h6>&copy; 2016 - 2019 <a href="//twitter.com/WebReflection">@WebReflection</a> - <a href="//github.com/WebReflection/archibold.io/tree/gh-pages/benja">Benja on GitHub</a></h6>
+    </footer>
+  </body>
+</html>
