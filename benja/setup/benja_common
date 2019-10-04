@@ -71,8 +71,7 @@ fi
 if [ "$GTK_THEME" = "" ]; then
   echo "using Adwaita:dark theme"
   export GTK_THEME="Adwaita:dark"
-  echo "GTK_THEME='${GTK_THEME}'">>.bashrc
-  sleep 1
+  echo "export GTK_THEME=\"${GTK_THEME}\"">>.bashrc
 fi
 
 # setup app folder
