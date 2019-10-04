@@ -95,7 +95,8 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 "
 echo '#!/usr/bin/env bash
 
-echo "BENJA setup starting in 3 seconds"
+echo ""
+echo -e "\x1B[1mBENJA setup\x1B[22m starting in 3 seconds"
 sleep 3
 
 if ! curl --output /dev/null --silent --fail -r 0-0 "http://archibold.io/"; then
