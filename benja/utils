@@ -142,7 +142,7 @@ installOS() {
   mkdir -p root
   sudo mount "$BOOT" boot
   sudo mount "$ROOT" root
-  sudo bsdtar -xpf "$ARCHIVE" -C root
+  sudo bsdtar -xvpf "$ARCHIVE" -C root
   sync
   sudo mv root/boot/* boot
   sync
