@@ -5,13 +5,13 @@ Please choose your wifi and write its password when/if asked.
 Please ignore possible info coming up during this process.
 "
 sleep 3
-wifi-menu
+echo root | su -c "wifi-menu"
 echo "
 trying to configure the wifi automatically
 "
 WLAN=$(netctl list)
 if [ "$WLAN" != "" ]; then
-  netctl enable "${WLAN:2}"
+  echo root | su -c "netctl enable ${WLAN:2}"
   echo "wifi ${WLAN:2} enabled"
 else
   echo "unable to configure the wifi"

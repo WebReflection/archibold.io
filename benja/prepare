@@ -108,14 +108,14 @@ echo ""
 echo -e "\x1B[1mBENJA setup\x1B[22m starting in 3 seconds"
 sleep 3
 
-if ! curl --output /dev/null --silent --fail -r 0-0 "http://archibold.io/"; then
+if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
   ./wifi-setup
-fi
-
-if ! curl --output /dev/null --silent --fail -r 0-0 "http://archibold.io/"; then
-  echo "Unable to reach the internet."
-  echo "Try ./wifi-setup or attach a network cable."
-  exit 1
+  sleep 3
+  if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
+    echo "Unable to reach the internet."
+    echo "Try ./wifi-setup or connect to a network."
+    exit 1
+  fi
 fi
 
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
