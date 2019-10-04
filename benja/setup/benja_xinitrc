@@ -6,7 +6,9 @@ fi
 
 # to change resolution *
 # * WIDTHxHEIGTH must be compatible with your screen
-# xrandr -s 1280x720
+# if [ "$(which xhost 2> /dev/null)" != "" ]; then
+#  xrandr -s 1280x720
+# fi
 
 checkModules() {
   if [ ! -d node_modules ]; then
