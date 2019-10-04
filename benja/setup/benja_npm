@@ -12,7 +12,7 @@ npm config set prefix '~/.npm-packages'
 npm config set package-lock false
 
 # configure npm and sudo
-if [ "$(cat /etc/sudoers | grep /usr/bin/npm)" = "" ]; then
+if [ "$(sudo cat /etc/sudoers | grep /usr/bin/npm)" = "" ]; then
   sudo sh -c "echo '
 # sudo npm
 ${USER} ALL=NOPASSWD: /usr/bin/npm
