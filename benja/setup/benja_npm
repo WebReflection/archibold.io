@@ -19,13 +19,13 @@ ${USER} ALL=NOPASSWD: /usr/bin/npm
 '>>/etc/sudoers"
 fi
 
-echo '
-# npm and nodejs global modules
-export PATH="$PATH:$HOME/.npm-packages/bin"
-export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
-' >> ~/.bashrc
+export PATH="${PATH}:${HOME}/.npm-packages/bin"
+export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
 
-export PATH="$PATH:$HOME/.npm-packages/bin"
-export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
+echo "
+# npm and nodejs global modules
+export PATH=\"$PATH\"
+export NODE_PATH=\"$NODE_PATH\"
+" >> ~/.bashrc
 
 npm i -g electron johnny-five
