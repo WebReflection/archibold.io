@@ -45,7 +45,7 @@ app.once('ready', () => {
  // .loadURL('http://get.webgl.org/');
     // stress WebGL
  // .loadURL('https://threejs.org/examples/webgl_geometry_cube.html');
-
+ // .loadURL('https://webglsamples.org/dynamic-cubemap/dynamic-cubemap.html');
 
   // for debugging purpose, it might be handy to be able
   // to reload the app simply via `touch ~/app/reload`
