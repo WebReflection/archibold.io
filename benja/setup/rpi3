@@ -57,4 +57,9 @@ if [ -f /boot/cmdline.txt ]; then
   sudo sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/" /boot/cmdline.txt
 fi
 
+# raspi-io
+echo -e "root
+root" | aur python-pigpio-git
+npm i -g -f raspi-io
+
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

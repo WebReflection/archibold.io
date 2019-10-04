@@ -91,7 +91,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
   * formatting ✔
   * copy files over ✔
 
-  Downloading bootstrap
+  Downloading bootstrap, wifi-setup, and aur
 "
 echo '#!/usr/bin/env bash
 
@@ -118,8 +118,19 @@ fi
 curl -s "https://archibold.io/benja/setup/${BENJA_SETUP}" >> bootstrap
 chmod a+x bootstrap
 
+echo '
+if [ -f bootstrap ]; then
+  ./bootstrap
+fi
+'>>.bashrc
+
 curl -s "https://archibold.io/benja/setup/benja_wifi" > wifi-setup
 chmod a+x wifi-setup
+
+curl -LOs https://archibold.io/utils/aur
+chmod a+x aur
+sudo mv aur ~/tmp-mounting-point/root/usr/bin/
+sleep 2
 cd -
 
 clear
@@ -127,7 +138,7 @@ echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
 
   * plugin the SD card into the ${BENJA_SBC}
   * login via user *alarm* and password *alarm*
-  * type *./bootstrap* once logged in
+  * wait until the system reboots
 
   Thank you for using B.E.N.J.A.
 "

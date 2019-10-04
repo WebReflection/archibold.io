@@ -9,6 +9,7 @@
     "express": "latest"
   },
   "devDependencies": {
-    "electron": "latest"
+    "electron": "latest",
+    "johnny-five": "johnny-five"
   }
 }

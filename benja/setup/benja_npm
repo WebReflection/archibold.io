@@ -25,4 +25,4 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 export PATH="$PATH:$HOME/.npm-packages/bin"
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 
-npm i -g electron
+npm i -g electron johnny-five

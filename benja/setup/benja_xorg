@@ -8,8 +8,8 @@ do
 done
 
 # dark theme
-echo 'xterm*background: black
-xterm*foreground: lightgray
+echo '*background: black
+*foreground: lightgray
 xterm*faceName: DejaVu Sans Mono
 xterm*renderFont: true
 '>>~/.Xdefaults
