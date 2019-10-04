@@ -1,29 +1,118 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>B.E.N.J.A.</title>
-  <style>
-  body {
-    font-family: sans-serif;
-  }
-  h1 {
-    font-size: 1.2em;
-  }
-  pre .comment {
-    opacity: 0.5;
-  }
-  </style>
-</head>
-<body>
-  <h1>
-    The <acronym title="Do It Yourself">DIY</acronym> Script
-    To Setup <acronym title="Bootable Electron Node JS Application">BENJA</acronym>
-  </h1>
-  <pre>
-    <span class="comment"># type the following in console and follow instructions</span>
-    bash &lt;(curl -s https://archibold.io/benja/prepare)
-  </pre>
-</body>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta property="og:title" name="twitter:title" itemprop="name" content="B.E.N.J.A.">
+    <meta property="og:description" name="twitter:description" itemprop="description" content="An HW Accelerated IoT oriented Web Kiosk for Makers">
+    <meta property="og:image" name="twitter:image:src" itemprop="image" content="img/benja.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:site" content="@WebReflection">
+    <meta name="twitter:creator" content="@WebReflection">
+    <meta property="og:url" content="https://archibold.io/benja/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Benja OS">
+    <link href="//cdnjs.cloudflare.com/ajax/libs/normalize/4.1.1/normalize.min.css" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Lato:400,300,700" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" href="css/main.css" media="screen">
+    <!--[if lt IE 9]>
+    <script defer src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <script defer src="//cdnjs.cloudflare.com/ajax/libs/ie8/0.4.1/ie8.js"></script>
+    <![endif]-->
+    <script defer src="//cdnjs.cloudflare.com/ajax/libs/dom4/1.8.3/dom4.js"></script>
+    <script defer src="js/main.js"></script>
+    <title>Benja OS</title>
+  </head>
+  <body>
+    <header>
+      <img class="no-us" alt="BENJA" src="img/benja-dark.svg" onerror="this.src=this.src.replace('.svg','.png')" height="128px">
+      <h1>
+        <strong>B</strong><span>ootable</span>
+        <strong>E</strong><span>lectron</span>
+        <strong>N</strong><span>ode</span>
+        <strong>J</strong><span>S</span>
+        <strong>A</strong><span>pplication</span>
+      </h1>
+      <h2>
+        An <abbr title="HardWare">HW</abbr> Accelerated <abbr title="Internet of Things">IoT</abbr> oriented Web <a href="https://en.wikipedia.org/wiki/Kiosk_software">Kiosk</a> for Makers
+      </h2>
+    </header>
+    <main>
+      <div id="carousel">
+        <div class="board no-us" data-name="rpi2">
+          <strong>Raspberry Pi 2, 3 &amp; 4</strong>
+          <p>
+            Fully HW Accelerated, the Raspberry Pi can manage its I/O via johnny-five and raspi-io directly from an Electron instance.
+            <a class="t-all" href="docs/">(Read Documentation)</a>
+          </p>
+        </div>
+      </div>
+      <section id="simplified-web-kiosk">
+        <h3 class="no-us">A Web Kiosk Bootstrap</h3>
+        <p>
+          B.E.N.J.A. is an installer that makes you focus on what matters: developing amazing projects!<br>
+          You don't need to know much about Linux, it's already prepared for you.<br>
+          You don't need to configure drivers or UI: it's a <quote>Plug &amp; Make</quote> micro SD card.<br>
+          You can edit a project remotely, or directly on your computer and can make it portable simply copying it around.
+        </p>
+      </section>
+      <section id="internet-of-things">
+        <h3 class="no-us">An Inter-Web of Things</h3>
+        <p>
+          Differently from every other platform,
+          B.E.N.J.A. provides a way for makers to create via Web interface.<br>
+          Switch on the light, check humidity, temperature,
+          make the coffee, spy your cat, and show him your face on TV,
+          there's no limit in what you could do through a privileged Web view!
+        </p>
+      </section>
+      <section id="beyond-the-web">
+        <h3 class="no-us">Beyond the Web</h3>
+        <p>
+          The B.E.N.J.A. environment doesn't have usual Web constrains:
+          you have full Hardware access as well as all Operating System features!<br>
+          It's NodeJS on top of Linux, delivered through an Electron instance
+          that runs on ab hardware accelerated Xorg.
+        </p>
+      </section>
+    </main>
+    <div id="powered-by">
+      <h4>POWERED BY</h4>
+      <ul class="no-us">
+        <li><img alt="Arch Linux" src="img/archlinux.svg" onerror="this.src=this.src.replace('.svg','.png')"></li>
+        <li><img alt="Node JS" src="img/nodejs.svg" onerror="this.src=this.src.replace('.svg','.png')"></li>
+        <li><img alt="Electron" src="img/electron.svg" onerror="this.src=this.src.replace('.svg','.png')"></li>
+      </ul>
+      <div class="description">
+        <p>
+          Open Source centric and community driven, <a href="https://www.archlinux.org/">Arch Linux</a> is one of the most
+          popular and well documented Linux distributions out there.
+          <br>
+          Simple, lightweight, and always up-to-date,
+          its <a href="https://archlinuxarm.org/">ARM</a> counterpart
+          has been working on hacker-friendly boards long time before others and
+          it can bootstrap in just a few seconds.
+        </p>
+        <p>
+          Based on <a href="https://developers.google.com/v8/">Chrome's V8 JavaScript engine</a>,
+          <a href="https://nodejs.org/">NodeJS</a> is the powerful JavaScript runtime used by backend developers as well as system administrators.
+          <br>
+          Thanks to <a href="https://www.npmjs.com/">npm</a> modules such <a href="https://www.npmjs.com/package/serialport">serialport</a>
+          or <a href="https://www.npmjs.com/package/johnny-five">johnny-five</a>,
+          NodeJS can be used to drive Arduino, Raspberry Pi, and many other <abbr title="Internet of Things">IoT</abbr> oriented boards.
+        </p>
+        <p>
+          Electron is an <a href="https://github.com/electron/electron">open source project maintained by GitHub</a> with an active community of contributors.
+          <br>
+          It uses Chromium and NodeJS, providing the ability to build any kind of app using the HTML, CSS and JavaScript Web stack.
+          <br>
+          B.E.N.J.A. uses it to create a restrictions-free Web full of potentials.
+        </p>
+      </div>
+    </div>
+    <footer>
+      <h6>&copy; 2016 - 2019 <a href="https://twitter.com/WebReflection">@WebReflection</a> - <a href="https://github.com/WebReflection/archibold.io/tree/gh-pages/benja">Benja on GitHub</a></h6>
+    </footer>
+  </body>
 </html>
