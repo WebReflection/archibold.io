@@ -95,8 +95,18 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 "
 echo '#!/usr/bin/env bash
 
-echo "BENJA setup starting in 5 seconds"
-sleep 5
+echo "BENJA setup starting in 3 seconds"
+sleep 3
+
+if ! curl --output /dev/null --silent --fail -r 0-0 "http://archibold.io/"; then
+  ./wifi-setup
+fi
+
+if ! curl --output /dev/null --silent --fail -r 0-0 "http://archibold.io/"; then
+  echo "Unable to reach the internet."
+  echo "Try ./wifi-setup or attach a network cable."
+  exit 1
+fi
 
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
@@ -106,6 +116,9 @@ fi
 ' > bootstrap
 curl -s "https://archibold.io/benja/setup/${BENJA_SETUP}" >> bootstrap
 chmod a+x bootstrap
+
+curl -s "https://archibold.io/benja/setup/benja_wifi" > wifi-setup
+chmod a+x wifi-setup
 cd -
 
 clear
