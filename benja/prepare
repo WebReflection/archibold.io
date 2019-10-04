@@ -81,6 +81,7 @@ mkdir -p ~/tmp-mounting-point
 cd ~/tmp-mounting-point
 installOS "$BENJA_ARCHIVE_PATH" "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
 cd -
+sync
 cd ~/tmp-mounting-point/root/home/alarm
 
 clear
@@ -92,7 +93,6 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   Downloading bootstrap, wifi-setup, and aur
 "
-sync
 echo '#!/usr/bin/env bash
 
 echo ""
