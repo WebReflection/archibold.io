@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 while ! sudo pacman -S --needed --noconfirm \
-  xorg-server xorg-xinit xorg-xset xorg-xrandr xorg-server-xwayland \
+  xorg-server xorg-xhost xorg-xinit xorg-xrandr xorg-xset xorg-server-xwayland \
   xterm unclutter
 do
   :

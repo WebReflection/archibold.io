@@ -30,7 +30,7 @@ while ! sudo pacman -Su --needed --noconfirm \
   ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \
-  gnome-themes-standard adwaita-icon-theme \
+  gnome-themes-extra adwaita-icon-theme \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
   libva-vdpau-driver libva-mesa-driver \
   gconf nss pulseaudio pulseaudio-alsa gperf libexif \
@@ -58,15 +58,12 @@ if [ "$BENJA_LOGO" = "" ]; then
   sleep 1
 fi
 
-
 # automatic login
-echo "[Service]
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo sh -c "echo '[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty -nia ${USER} %I
-">override.conf
-
-sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
-sudo mv override.conf /etc/systemd/system/getty@tty1.service.d/
+'>/etc/systemd/system/getty@tty1.service.d/override.conf"
 
 # setup app folder
 if [ ! -f /etc/systemd/system/app-disk.service ]; then
