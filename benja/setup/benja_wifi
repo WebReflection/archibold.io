@@ -12,7 +12,11 @@ trying to configure the wifi automatically
 WLAN=$(netctl list)
 if [ "$WLAN" != "" ]; then
   echo root | su -c "netctl enable ${WLAN:2}"
+  echo root | su -c "systemctl enable dhcpcd"
   echo "wifi ${WLAN:2} enabled"
+  echo "please wait until reboot and login again"
+  sleep 3
+  echo root | su -c "reboot"
 else
   echo "unable to configure the wifi"
 fi
