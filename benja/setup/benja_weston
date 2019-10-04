@@ -48,3 +48,6 @@ Alias=display-manager.service
 '>/etc/systemd/system/weston.service"
 
 sudo systemctl enable weston.service
+
+sudo groupadd weston-launch
+sudo usermod -aG weston-launch ${USER}

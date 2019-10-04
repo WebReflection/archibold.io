@@ -60,8 +60,8 @@ fi
 
 if [ "$GTK_THEME" = "" ]; then
   echo "using Adwaita:dark theme"
-  echo 'GTK_THEME="Adwaita:dark"'>>.bashrc
   export GTK_THEME="Adwaita:dark"
+  echo "GTK_THEME='${GTK_THEME}'">>.bashrc
   sleep 1
 fi
 
