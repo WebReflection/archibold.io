@@ -18,14 +18,14 @@ echo 'alarm' | sudo -S usermod -a -G wheel,storage,power,video ${USER}
 
 cd ~/
 
+# avoid initial message
+touch .hushlogin
+
 # basic bashrc configuration
 echo '
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
 shopt -s histappend                      # append to historyinstead of overwriting it
 ' >> ~/.bashrc
-
-# avoid initial message
-touch .hushlogin
 
 # ArchLinux initialization + update
 sudo pacman -Sy

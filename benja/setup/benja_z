@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ ! -f ~/app/package.json ]; then
-  echo ' installing electron app'
+  echo ' installing app'
   cd ~/app
   curl -LOs "https://archibold.io/benja/app/index.js"
   curl -LOs "https://archibold.io/benja/app/index.html"
