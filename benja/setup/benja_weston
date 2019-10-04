@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+mkdir -p ~/.config
+
+if [ ! -f ~/.config/weston.ini ]; then
+  echo "[core]
+idle-time=0
+require-input=false
+xwayland=true
+
+[shell]
+client=${HOME}/.xinitrc
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+">~/.config/weston.ini
+fi
+
+sudo sh -c "echo '
+GTK_THEME=\"${GTK_THEME}\"
+PATH=\"${PATH}\"
+NODE_PATH=\"${NODE_PATH}\"
+XDG_CONFIG_HOME=${HOME}/.config
+XDG_RUNTIME_DIR=/tmp
+'>>/etc/environment"
+
+sudo sh -c "echo '[Unit]
+Description=Weston Compositor
+Conflicts=getty@tty1.service
+After=getty@tty1.service systemd-user-sessions.service
+
+[Service]
+User=${USER}
+Restart=always
+RestartSec=2
+TimeoutSec=2
+EnvironmentFile=/etc/environment
+ExecStart=/usr/bin/weston-launch
+IgnoreSIGPIPE=no
+StandardOutput=syslog
+StandardError=inherit
+StandardInput=tty
+TTYPath=/dev/tty1
+
+[Install]
+Alias=display-manager.service
+'>/etc/systemd/system/weston.service"
+
+sudo systemctl enable weston.service

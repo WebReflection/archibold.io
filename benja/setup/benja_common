@@ -50,11 +50,18 @@ sudo sh -c "localectl set-locale LANG=en_US.UTF-8"
 sudo locale-gen
 sudo sh -c 'locale > /etc/locale.conf'
 
-# add logo to .bashrc
+# terminal welcome logo
 if [ "$BENJA_LOGO" = "" ]; then
-  echo "adding logo"
+  echo "adding terminal welcome logo"
   curl -LOs https://archibold.io/benja/logo
   mv logo .logo
+  sleep 1
+fi
+
+if [ "$GTK_THEME" = "" ]; then
+  echo "using Adwaita:dark theme"
+  echo 'GTK_THEME="Adwaita:dark"'>>.bashrc
+  export GTK_THEME="Adwaita:dark"
   sleep 1
 fi
 
