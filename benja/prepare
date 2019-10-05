@@ -107,7 +107,8 @@ echo '#!/usr/bin/env bash
 
 pickAPass() {
   local pass=
-  echo -e "In order to make B.E.N.J.A. more secure
+  echo -e "
+In order to make B.E.N.J.A. more secure
 Please chose a \x1B[1mhard to guess password\x1B[22m
 to locally or remotely login with \x1B[1malarm\x1B[22m user
 and eventually execute sudo too
