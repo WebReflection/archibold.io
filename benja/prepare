@@ -120,10 +120,10 @@ if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
 fi
 
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
-  export TMP_TIME_UPDATED=true
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
   echo root | su -c "ntpdate pool.ntp.org
 timedatectl set-local-rtc 1"
+  export TMP_TIME_UPDATED=true
 fi
 ' > bootstrap
 curl -s "https://archibold.io/benja/setup/${BENJA_SETUP}" >> bootstrap

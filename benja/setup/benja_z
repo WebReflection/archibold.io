@@ -31,6 +31,15 @@ sudo systemctl enable dhcpcd
 
 rm -f ~/bootstrap
 
+if [ "${BENJA_PASSWORD}" != "" ]; then
+  echo "changing ${USER} password"
+  sudo sh -c "echo -e ${BENJA_PASSWORD}
+${BENJA_PASSWORD} | passwd ${USER}"
+  echo "deleting root password"
+  sudo passwd -d root
+  sync && sleep 1
+fi
+
 rm -f ~/.bash_history
 touch ~/.bash_history
 
