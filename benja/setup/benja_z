@@ -15,11 +15,6 @@ if [ ! -f ~/app/package.json ]; then
   sleep 1
 fi
 
-# cleanup and optimize
-echo "clean up and optimize"
-sudo pacman -Sc --noconfirm
-sudo pacman-optimize
-
 echo "boost CPU performance"
 sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
 sudo systemctl enable cpupower.service
@@ -39,6 +34,11 @@ ${BENJA_PASSWORD}" | sudo passwd ${USER}
   sudo passwd -d root
   sync
 fi
+
+# cleanup and optimize
+echo "clean up and optimize"
+sudo pacman -Sc --noconfirm
+sudo pacman-optimize
 
 rm -f ~/.bash_history
 touch ~/.bash_history

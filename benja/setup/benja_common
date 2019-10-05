@@ -34,6 +34,7 @@ do
   :
 done
 
+sudo pacman -Sc --noconfirm
 while ! sudo pacman -Su --needed --noconfirm \
   dhcpcd ntp openssh cpupower \
   ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
@@ -50,6 +51,7 @@ do
   :
 done
 
+sudo pacman -Sc --noconfirm
 if [ "$TMP_TIME_UPDATED" != "true" ]; then
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
   echo root | su -c "ntpdate pool.ntp.org

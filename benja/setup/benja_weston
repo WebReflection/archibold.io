@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+while ! sudo pacman -S --needed --noconfirm weston
+do
+  :
+done
+
+sudo pacman -Sc --noconfirm
+
 mkdir -p ~/.config
 
 if [ ! -f ~/.config/weston.ini ]; then

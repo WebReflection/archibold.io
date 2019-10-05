@@ -27,7 +27,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 "
 BENJA_SD_SIZE=$(sudo fdisk -s $BENJA_DISK)
 BENJA_ROOT_SIZE="6800000"
-if [ $BENJA_ROOT_SIZE \> $BENJA_SD_SIZE ]; then
+if [ "$BENJA_ROOT_SIZE" -gt "$BENJA_SD_SIZE" ]; then
   BENJA_ROOT_SIZE="3800M"
 else
   BENJA_ROOT_SIZE="6800M"
