@@ -9,7 +9,11 @@ if [ -f /boot/cmdline.txt ] && [ ! -f ./cmdline.txt.bck ]; then
 fi
 
 cd ~/
-git clone https://github.com/waveshare/LCD-show.git
+
+if [ ! -d LCD-show ]; then
+  git clone https://github.com/waveshare/LCD-show.git
+fi
+
 cd LCD-show/
 chmod +x LCD35-show
 ./LCD35-show
