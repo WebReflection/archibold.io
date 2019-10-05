@@ -29,7 +29,11 @@ shopt -s histappend                      # append to historyinstead of overwriti
 ' >> ~/.bashrc
 
 # ArchLinux initialization + update
-sudo pacman -Sy
+while ! sudo pacman -Sy
+do
+  :
+done
+
 while ! sudo pacman -Su --needed --noconfirm \
   dhcpcd openssh cpupower \
   ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
