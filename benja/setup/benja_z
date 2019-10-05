@@ -43,4 +43,4 @@ fi
 rm -f ~/.bash_history
 touch ~/.bash_history
 
-reboot
+sudo reboot
