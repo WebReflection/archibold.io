@@ -23,7 +23,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   * partitioning
   * formatting
-  * copy files over
+  * copying files over
 "
 BENJA_SD_SIZE=$(sudo fdisk -s $BENJA_DISK)
 BENJA_ROOT_SIZE="6800000"
@@ -73,7 +73,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   * partitioning ✔
   * formatting ✔
-  * copy files over
+  * copying files over
 
   This operation might take a while, please wait
 "
@@ -86,7 +86,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   * partitioning ✔
   * formatting ✔
-  * copy files over ✔
+  * copying files over ✔
 
    .... synchronizing ....
   (it might take long time)
@@ -98,7 +98,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   * partitioning ✔
   * formatting ✔
-  * copy files over ✔
+  * copying files over ✔
 
   Downloading bootstrap, wifi-setup, and aur
 "
