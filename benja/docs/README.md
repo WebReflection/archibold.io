@@ -119,3 +119,9 @@ sudo pacman -Syu
 # update Electron and global modules to the latest
 npm update -g
 ```
+
+### Known Issues
+
+For some reason Electron starts leaving 1 pixel width and height off.
+
+If you have any idea how to fix that, please share, thanks.
