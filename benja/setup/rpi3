@@ -49,7 +49,7 @@ if [ -f /boot/boot.txt ]; then
   done
   sudo sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/" /boot/boot.txt
   # sed -i "s/rootwait/rootwait cma=384MB@128MB/" /boot/boot.txt
-  sudo mkimage -T script -C none -n "RPi3 VC4" -d /boot/boot.txt /boot/boot.scr
+  sudo mkimage -T script -C none -n "Raspberry Pi" -d /boot/boot.txt /boot/boot.scr
 fi
 
 if [ -f /boot/cmdline.txt ]; then
