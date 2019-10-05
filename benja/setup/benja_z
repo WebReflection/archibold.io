@@ -37,7 +37,7 @@ if [ "${BENJA_PASSWORD}" != "" ]; then
 ${BENJA_PASSWORD} | passwd ${USER}"
   echo "deleting root password"
   sudo passwd -d root
-  sync && sleep 1
+  sync
 fi
 
 rm -f ~/.bash_history
