@@ -35,7 +35,7 @@ do
 done
 
 while ! sudo pacman -Su --needed --noconfirm \
-  dhcpcd openssh cpupower \
+  dhcpcd ntp openssh cpupower \
   ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \
