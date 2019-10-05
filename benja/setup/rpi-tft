@@ -16,6 +16,8 @@ fi
 
 cd LCD-show/
 chmod +x LCD35-show
+
+sudo mkdir -p /boot/overlays
 ./LCD35-show
 
 # echo 'Section "Device"
