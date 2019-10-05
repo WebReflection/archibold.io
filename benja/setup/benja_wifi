@@ -19,4 +19,5 @@ if [ "$WLAN" != "" ]; then
   echo root | su -c "reboot"
 else
   echo "unable to configure the wifi"
+  exit 1
 fi

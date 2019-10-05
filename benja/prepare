@@ -105,19 +105,34 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 cd ~/tmp-mounting-point/root/home/alarm
 echo '#!/usr/bin/env bash
 
+pickAPass() {
+  local pass=
+  clear
+  echo -e "In order to make B.E.N.J.A. more secure
+Please chose a \x1B[1mhard to guess password\x1B[22m
+to locally or remotely login with \x1B[1malarm\x1B[22m user
+and eventually execute sudo too
+"
+  read pass
+
+  if [ "${pass}" = "" ]; then
+    echo -e "  \x1B[1mNope\x1B[22m, one more time ... "
+    sleep 2
+    pickAPass
+  fi
+
+  export BENJA_PASSWORD="${pass}"
+}
+
 echo ""
 echo -e "\x1B[1mBENJA setup\x1B[22m starting in 3 seconds"
 sleep 3
 
 if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
   ./wifi-setup
-  sleep 3
-  if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
-    echo "Unable to reach the internet."
-    echo "Try ./wifi-setup or connect to a network."
-    exit 1
-  fi
 fi
+
+pickAPass
 
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."

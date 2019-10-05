@@ -19,26 +19,6 @@ echo 'alarm' | sudo -S usermod -a -G wheel,storage,power,video ${USER}
 
 cd ~/
 
-pickAPass() {
-  local pass=
-  clear
-  echo -e "In order to make B.E.N.J.A. more secure
-Please chose a \x1B[1mhard to guess password\x1B[22m
-to locally or remotely login with the user \x1B[1malarm\x1B[22m
-"
-  read pass
-
-  if [ "${pass}" = "" ]; then
-    echo -e "  \x1B[1mNope\x1B[22m, let's try again ... "
-    sleep 2
-    pickAPass
-  fi
-
-  export BENJA_PASSWORD="${pass}"
-}
-
-pickAPass
-
 # avoid initial message
 touch .hushlogin
 
