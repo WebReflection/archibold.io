@@ -35,6 +35,8 @@ aur() {
     echo ""
     echo "$(tput dim)Use $(tput sgr0)--no-pgp$(tput dim) to ignore PGP keys $(tput sgr0)at your own risk"
     echo ""
+    echo "$(tput dim)Use $(tput sgr0)AUR_NO_SUDO=1(tput dim) to force-use su instead"
+    echo ""
   elif [ "$USER" = "root" ]; then
     echo ""
     echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
@@ -43,7 +45,11 @@ aur() {
     if [ ! -f ~/.archibold-aur ]; then
       date > ~/.archibold-aur
       echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
-      su -c 'pacman -S --needed --noconfirm base-devel git'
+      if [ "$AUR_NO_SUDO" != "" ] || [ "$(which sudo 2> /dev/null)" = "" ]; then
+        su -c 'pacman -S --needed --noconfirm base-devel git'
+      else
+        sudo pacman -S --needed --noconfirm base-devel git
+      fi
     fi
     rm -rf ~/tmp-${pkg}
     mkdir -p ~/tmp-${pkg}
@@ -55,7 +61,11 @@ aur() {
     if [ "$?" = "0" ] && [ "$(ls ${pkg}*.pkg.tar.xz 2> /dev/null)" != "" ]; then
       echo "$(tput bold)Created$(tput sgr0): ~/tmp-${pkg}/${pkg}/$(ls ${pkg}*.pkg.tar.xz)"
       sleep 1
-      su -c "pacman -U --noconfirm $(ls ${pkg}*.pkg.tar.xz)"
+      if [ "$AUR_NO_SUDO" != "" ] || [ "$(which sudo 2> /dev/null)" = "" ]; then
+        su -c "pacman -U --noconfirm $(ls ${pkg}*.pkg.tar.xz)"
+      else
+        sudo pacman -U --noconfirm $(ls ${pkg}*.pkg.tar.xz)
+      fi
     else
       echo "$(tput bold)Error$(tput sgr0) $?: ${pkg}*.tar.xz not found"
     fi
