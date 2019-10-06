@@ -2,6 +2,7 @@
 
 bash <(curl -s https://archibold.io/benja/setup/benja_common)
 bash <(curl -s https://archibold.io/benja/setup/benja_autologin)
+bash <(curl -s https://archibold.io/benja/setup/rpi_quiet)
 
 echo '
 if [ -f app/package.json ]; then

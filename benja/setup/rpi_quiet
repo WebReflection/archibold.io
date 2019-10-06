@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+if [ -f /boot/boot.txt ]; then
+  # modify boot.scr to reserve cma memory and make the boot silent
+  while ! sudo pacman -S --needed --noconfirm uboot-tools
+  do
+    :
+  done
+  sudo sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/" /boot/boot.txt
+  sudo mkimage -T script -C none -n "Raspberry Pi" -d /boot/boot.txt /boot/boot.scr
+fi
+
+if [ -f /boot/cmdline.txt ]; then
+  # modify cmdline.txt mostly to make the boot silent (cma might be ignored)
+  sudo sed -i "s/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/" /boot/cmdline.txt
+fi
