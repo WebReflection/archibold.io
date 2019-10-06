@@ -60,7 +60,7 @@ fi
 # raspi-io
 echo -e "root
 root" | aur python-pigpio-git
-npm i -g -f raspi-io
+npm i -g raspi-io
 sudo ln -s /usr/local/lib/libpigpio*.so /usr/lib/
 
 bash <(curl -s https://archibold.io/benja/setup/benja_z)
