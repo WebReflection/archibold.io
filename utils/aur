@@ -77,4 +77,9 @@ aur() {
   fi
 }
 
+if [ "$AUR_NO_SUDO" = "" ] && [ "$(which sudo 2> /dev/null)" != "" ]; then
+  echo "Checking $(tput bold)sudo$(tput sgr0) privileges"
+  sudo ls > /dev/null
+fi
+
 aur "${1}" "${2}" "${3}"
