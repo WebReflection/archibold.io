@@ -63,4 +63,5 @@ root" | aur python-pigpio-git
 npm i -g raspi-io
 sudo ln -s /usr/local/lib/libpigpio*.so /usr/lib/
 
+bash <(curl -s https://archibold.io/benja/setup/benja_app)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

@@ -1,20 +1,5 @@
 #!/usr/bin/env bash
 
-if [ ! -f ~/app/package.json ]; then
-  echo ' installing app'
-  cd ~/app
-  curl -LOs "https://archibold.io/benja/app/index.js"
-  curl -LOs "https://archibold.io/benja/app/index.html"
-  curl -LOs "https://archibold.io/benja/app/package.json"
-  curl -LOs "https://archibold.io/benja/app/logo-dark.svg"
-  curl -LOs "https://archibold.io/benja/app/logo-light.svg"
-  touch reload
-  mkdir -p node_modules
-  npm install --production --no-bin-links
-  cd -
-  sleep 1
-fi
-
 echo "boost CPU performance"
 sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
 sudo systemctl enable cpupower.service

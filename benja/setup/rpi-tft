@@ -14,7 +14,51 @@ fi
 
 
 # sudo sh -c 'echo "
-# dtoverlay=ads7846,penirq=25,speed=10000,penirq_pull=2,xohms=150
+# dtoverlay=ads7846,penirq=25,speed=1000000,penirq_pull=2,xohms=150
+# ">>/boot/config.txt'
+# echo 'Section "InputClass"
+#   Identifier "calibration"
+#   MatchProduct "ADS7846 Touchscreen"
+#   Option "Calibration" "3932 300 294 3801"
+#   Option "SwapAxes" "1"
+# EndSection' > ./99-calibration.conf
+# sudo mv ./99-calibration.conf /etc/X11/xorg.conf.d/99-calibration.conf
+
+
+sudo pacman -S --needed --noconfirm wget cmake xorg-xinput xf86-input-evdev
+if [ "$(which dpkg 2> /dev/null)" = "" ]; then
+  aur dpkg
+  aur xinput_calibrator
+fi
+sudo mkdir -p /boot/overlays
+sudo mkdir -p /usr/share/X11/xorg.conf.d
+sudo touch /usr/share/X11/xorg.conf.d/10-evdev.conf
+sudo mkdir -p /home/pi
+sudo chown ${USER}:${USER} /home/pi
+cd /home/pi
+if [ ! -d LCD-show ]; then
+  git clone https://github.com/waveshare/LCD-show.git
+fi
+cd LCD-show/
+./LCD35B-show
+
+#!/usr/bin/env bash
+
+if [ -f /boot/config.txt ] && [ ! -f ./config.txt.bck ]; then
+  cp /boot/config.txt ./config.txt.bck
+fi
+if [ -f /boot/boot.txt ] && [ ! -f ./boot.txt.bck ]; then
+  cp /boot/boot.txt ./boot.txt.bck
+fi
+if [ -f /boot/cmdline.txt ] && [ ! -f ./cmdline.txt.bck ]; then
+  cp /boot/cmdline.txt ./cmdline.txt.bck
+fi
+
+
+
+
+# sudo sh -c 'echo "
+# dtoverlay=ads7846,penirq=25,speed=1000000,penirq_pull=2,xohms=150
 # ">>/boot/config.txt'
 # echo 'Section "InputClass"
 #   Identifier "calibration"
@@ -39,34 +83,36 @@ fi
 
 
 
-# echo 'Section "Device"
-#   Identifier "Benja IO SPI FBDEV"
-#   Driver "fbdev"
-#   Option "fbdev" "/dev/fb1"
-#   Option "SwapbuffersWait" "true"
-# EndSection' > ./99-fbdev.conf
-# sudo mv ./99-fbdev.conf /usr/share/X11/xorg.conf.d/99-fbdev.conf
-# echo 'Section "InputClass"
-#   Identifier "calibration"
-#   MatchProduct "ADS7846 Touchscreen"
-#   Option "Calibration" "3932 300 294 3801"
-#   Option "SwapAxes" "1"
-# EndSection' > ./99-calibration.conf
-# sudo mv ./99-calibration.conf /etc/X11/xorg.conf.d/99-calibration.conf
-# if [ ! -f /boot/overlays/waveshare35a.dtbo ]; then
-#   curl -LO https://archibold.io/benja/bin/waveshare35a.dtbo
-#   sudo mkdir -p /boot/overlays
-#   sudo mv waveshare35a.dtbo /boot/overlays/waveshare35a.dtbo
-# fi
-# sudo sh -c 'echo "
-# dtoverlay=ads7846,penirq=25,penirq_pull=2,xohms=150,swapxy=1,xmin=300,ymin=700,xmax=3800,ymax=3400,pmax=255
-# dtoverlay=waveshare35a
-# ">>/boot/config.txt'
-# if [ -f /boot/boot.txt ]; then
-#   sudo sed -i "s/rootwait/dwc_otg.lpm_enable=0 rootwait fbcon=map:10 fbcon=font:ProFont6x11 logo.nologo/" /boot/boot.txt
-#   sudo mkimage -T script -C none -n "Raspberry Pi" -d /boot/boot.txt /boot/boot.scr
-# fi
-# if [ -f /boot/cmdline.txt ]; then
-#   echo "dwc_otg.lpm_enable=0 $(cat /boot/cmdline.txt) fbcon=map:10 fbcon=font:ProFont6x11 logo.nologo" > ./cmdline.txt
-#   sudo mv ./cmdline.txt /boot/cmdline.txt
-# fi
+echo 'Section "Device"
+  Identifier "Benja IO SPI FBDEV"
+  Driver "fbdev"
+  Option "fbdev" "/dev/fb1"
+EndSection' > ./99-fbdev.conf
+sudo mv ./99-fbdev.conf /usr/share/X11/xorg.conf.d/99-fbdev.conf
+
+sudo sed -i "s/dtoverlay=vc4-fkms-v3d/#dtoverlay=vc4-fkms-v3d/" /boot/config.txt
+sudo sh -c 'echo "
+#dtoverlay=ads7846,penirq=25,penirq_pull=2,xohms=150,swapxy=1,xmin=300,ymin=700,xmax=3800,ymax=3400,pmax=255
+#dtoverlay=ads7846,penirq=25,speed=1000000,penirq_pull=2,xohms=150
+dtoverlay=waveshare35a
+">>/boot/config.txt'
+
+if [ ! -f /boot/overlays/waveshare35a.dtbo ]; then
+  curl -LO https://archibold.io/benja/bin/waveshare35a.dtbo
+  if [ -d /boot/dtbs ]; then
+    sudo mkdir -p /boot/dtbs/overlays
+    sudo mv waveshare35a.dtbo /boot/dts/overlays 2> /dev/null
+  else
+    sudo mkdir -p /boot/overlays
+    sudo mv waveshare35a.dtbo /boot/overlays/waveshare35a.dtbo 2> /dev/null
+  fi
+fi
+
+if [ -f /boot/boot.txt ]; then
+  sudo sed -i "s/rootwait/dwc_otg.lpm_enable=0 rootwait fbcon=map:10 fbcon=font:ProFont6x11 logo.nologo/" /boot/boot.txt
+  sudo mkimage -T script -C none -n "Raspberry Pi" -d /boot/boot.txt /boot/boot.scr
+fi
+if [ -f /boot/cmdline.txt ]; then
+  echo "dwc_otg.lpm_enable=0 $(cat /boot/cmdline.txt) fbcon=map:10 fbcon=font:ProFont6x11 logo.nologo" > ./cmdline.txt
+  sudo mv ./cmdline.txt /boot/cmdline.txt 2> /dev/null
+fi
