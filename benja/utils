@@ -69,14 +69,18 @@ targetPlatform() {
   read -n1 -s choice
 
   if [ "$choice" = "1" ]; then
+    BENJA_SETUP="rpi1"
+    BENJA_SBC="Raspberry Pi 0/1"
+    BENJA_ARCHIVE="ArchLinuxARM-rpi-latest.tar.gz"
+  elif [ "$choice" = "2" ]; then
     BENJA_SETUP="rpi2"
     BENJA_SBC="Raspberry Pi 2"
     BENJA_ARCHIVE="ArchLinuxARM-rpi-2-latest.tar.gz"
-  elif [ "$choice" = "2" ]; then
+  elif [ "$choice" = "3" ]; then
     BENJA_SETUP="rpi3"
     BENJA_SBC="Raspberry Pi 3"
     BENJA_ARCHIVE="ArchLinuxARM-rpi-3-latest.tar.gz"
-  elif [ "$choice" = "3" ]; then
+  elif [ "$choice" = "4" ]; then
     BENJA_SETUP="rpi4"
     BENJA_SBC="Raspberry Pi 4"
     BENJA_ARCHIVE="ArchLinuxARM-rpi-4-latest.tar.gz"
