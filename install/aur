@@ -5,6 +5,10 @@
 cd /tmp
 curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
-su -c 'mv aur /usr/bin'
+if [ "$AUR_NO_SUDO" != "" ] || [ "$(which sudo 2> /dev/null)" = "" ]; then
+  su -c 'mv aur /usr/bin'
+else
+  sudo mv aur /usr/bin
+fi
 
 /usr/bin/aur
