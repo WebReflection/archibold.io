@@ -62,15 +62,17 @@ targetPlatform() {
   echoWithLogo '# Target Platform
   Please select the SBC you would like to use.
 
-  *1* Raspberry Pi 2
-  *2* Raspberry Pi 3
-  *3* Raspberry Pi 4
+  *0* Raspberry Pi 0 (no electron)
+  *1* Raspberry Pi 1 (no electron)
+  *2* Raspberry Pi 2
+  *3* Raspberry Pi 3
+  *4* Raspberry Pi 4
 '
   read -n1 -s choice
 
-  if [ "$choice" = "1" ]; then
+  if [ "$choice" = "0" ] || [ "$choice" = "1" ]; then
     BENJA_SETUP="rpi1"
-    BENJA_SBC="Raspberry Pi 0/1 (no electron)"
+    BENJA_SBC="Raspberry Pi 0/1"
     BENJA_ARCHIVE="ArchLinuxARM-rpi-latest.tar.gz"
   elif [ "$choice" = "2" ]; then
     BENJA_SETUP="rpi2"
