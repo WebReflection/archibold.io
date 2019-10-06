@@ -37,16 +37,17 @@ done
 sudo pacman -Sc --noconfirm
 while ! sudo pacman -Su --needed --noconfirm \
   dhcpcd ntp openssh cpupower \
-  ttf-dejavu noto-fonts noto-fonts-emoji noto-fonts-extra \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \
+  geoip geoip-database-extra geoclue \
+  gconf nss gperf libexif \
+  ttf-dejavu \
+  noto-fonts noto-fonts-emoji noto-fonts-extra \
   gnome-themes-extra adwaita-icon-theme \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
   libva-vdpau-driver libva-mesa-driver \
-  gconf nss pulseaudio pulseaudio-alsa gperf libexif \
   alsa-utils libcanberra-gstreamer libcanberra-pulse \
-  gstreamer-vaapi \
-  geoip geoip-database-extra geoclue
+  gstreamer-vaapi pulseaudio pulseaudio-alsa 
 do
   :
 done
