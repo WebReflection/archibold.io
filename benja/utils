@@ -70,7 +70,7 @@ targetPlatform() {
 
   if [ "$choice" = "1" ]; then
     BENJA_SETUP="rpi1"
-    BENJA_SBC="Raspberry Pi 0/1"
+    BENJA_SBC="Raspberry Pi 0/1 (no electron)"
     BENJA_ARCHIVE="ArchLinuxARM-rpi-latest.tar.gz"
   elif [ "$choice" = "2" ]; then
     BENJA_SETUP="rpi2"
