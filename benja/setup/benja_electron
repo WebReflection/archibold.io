@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+bash <(curl -s https://archibold.io/benja/setup/benja_npm)
+
+while ! sudo pacman -S --needed --noconfirm \
+  noto-fonts noto-fonts-emoji noto-fonts-extra \
+  gnome-themes-extra adwaita-icon-theme \
+  gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
+  libva-vdpau-driver libva-mesa-driver \
+  alsa-utils libcanberra-gstreamer libcanberra-pulse \
+  gstreamer-vaapi pulseaudio pulseaudio-alsa \
+  c-ares ffmpeg gtk3 http-parser libevent libnghttp2 libxslt libxss minizip nss re2 snappy
+do
+  :
+done
+
+npm i -g electron johnny-five

@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 bash <(curl -s https://archibold.io/benja/setup/benja_common)
-bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 
 # install specific GPU / Xorg driver
 while ! sudo pacman -S --needed --noconfirm \
@@ -10,10 +9,11 @@ do
   :
 done
 
-# use startx to autologin and start the session
 bash <(curl -s https://archibold.io/benja/setup/benja_xorg)
 bash <(curl -s https://archibold.io/benja/setup/benja_autologin)
 bash <(curl -s https://archibold.io/benja/setup/rpi_quiet)
+bash <(curl -s https://archibold.io/benja/setup/benja_electron)
+
 echo '
 # startx on login
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then

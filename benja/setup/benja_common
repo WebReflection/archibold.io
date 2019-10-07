@@ -41,18 +41,18 @@ while ! sudo pacman -Su --needed --noconfirm \
   base-devel git diffstat chrpath wget cpio pv \
   geoip geoip-database-extra geoclue \
   gconf nss gperf libexif \
-  ttf-dejavu \
-  noto-fonts noto-fonts-emoji noto-fonts-extra \
-  gnome-themes-extra adwaita-icon-theme \
-  gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
-  libva-vdpau-driver libva-mesa-driver \
-  alsa-utils libcanberra-gstreamer libcanberra-pulse \
-  gstreamer-vaapi pulseaudio pulseaudio-alsa 
+  ttf-dejavu
 do
   :
 done
 
+echo "boost CPU performance"
+sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
+sudo systemctl enable cpupower.service
+sudo systemctl start cpupower.service
+
 sudo pacman -Sc --noconfirm
+
 if [ "$TMP_TIME_UPDATED" != "true" ]; then
   echo -e "Updating time, \x1B[1mno password needed\x1B[22m, please wait ..."
   echo root | su -c "ntpdate pool.ntp.org

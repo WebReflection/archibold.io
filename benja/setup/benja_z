@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-echo "boost CPU performance"
-sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
-sudo systemctl enable cpupower.service
-sudo systemctl start cpupower.service
-
 echo "enable common services"
 sudo systemctl enable sshd
 sudo systemctl enable dhcpcd

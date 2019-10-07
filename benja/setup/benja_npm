@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
-while ! sudo pacman -S --needed --noconfirm \
-  npm nodejs \
-  c-ares ffmpeg gtk3 http-parser libevent libnghttp2 libxslt libxss minizip nss re2 snappy
+while ! sudo pacman -S --needed --noconfirm npm nodejs
 do
   :
 done
@@ -28,5 +26,3 @@ echo "
 export PATH=\"$PATH\"
 export NODE_PATH=\"$NODE_PATH\"
 " >> ~/.bashrc
-
-npm i -g electron johnny-five
