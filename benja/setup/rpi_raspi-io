@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-aur python-pigpio-git
 cd ~/
+aur python-pigpio-git
 if [ ! -f package.json ]; then
   echo '{"private":true}' > package.json
 fi
