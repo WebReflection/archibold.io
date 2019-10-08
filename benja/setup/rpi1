@@ -20,4 +20,5 @@ else
 fi
 '>>.bashrc
 
+bash <(curl -s https://archibold.io/benja/setup/rpi_raspi-io)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)
