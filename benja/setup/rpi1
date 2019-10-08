@@ -6,7 +6,7 @@ bash <(curl -s https://archibold.io/benja/setup/rpi_quiet)
 bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 
 echo '
-if [ -f app/package.json ]; then
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ -f app/package.json ]; then
   cd app
   sudo npm start
 else
