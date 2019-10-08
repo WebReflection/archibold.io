@@ -34,8 +34,14 @@ do
   :
 done
 
+while ! sudo pacman -Su
+do
+  :
+done
+
 sudo pacman -Sc --noconfirm
-while ! sudo pacman -Su --needed --noconfirm \
+
+while ! sudo pacman -S --needed --noconfirm \
   dhcpcd ntp openssh cpupower \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \

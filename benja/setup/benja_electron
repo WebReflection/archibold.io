@@ -14,4 +14,6 @@ do
   :
 done
 
+sudo pacman -Sc --noconfirm
+
 npm i -g electron johnny-five
