@@ -14,9 +14,11 @@ if [ "$WLAN" != "" ]; then
   echo root | su -c "netctl enable ${WLAN:2}"
   echo root | su -c "systemctl enable dhcpcd"
   echo "wifi ${WLAN:2} enabled"
-  echo "please wait until reboot and login again"
+  echo ""
+  echo "please wait until shutdown"
+  echo "then switch it on again and login"
   sleep 3
-  echo root | su -c "reboot"
+  echo root | su -c "shutdown -h now"
 else
   echo "unable to configure the wifi"
   exit 1
