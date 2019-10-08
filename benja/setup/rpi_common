@@ -44,11 +44,6 @@ boot_delay=0
 
 sudo mv config.txt /boot/ 2> /dev/null
 
-# raspi-io
-echo -e "root
-root" | aur python-pigpio-git
-npm i -g raspi-io
-sudo ln -s /usr/local/lib/libpigpio*.so /usr/lib/
-
+bash <(curl -s https://archibold.io/benja/setup/rpi_pigpio)
 bash <(curl -s https://archibold.io/benja/setup/benja_app)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

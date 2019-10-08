@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+aur python-pigpio-git
+npm i -g raspi-io
+sudo ln -s /usr/local/lib/libpigpio*.so /usr/lib/
