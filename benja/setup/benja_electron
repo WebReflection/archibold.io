@@ -16,4 +16,4 @@ done
 
 sudo pacman -Sc --noconfirm
 
-npm i -g electron johnny-five
+npm i -g electron
