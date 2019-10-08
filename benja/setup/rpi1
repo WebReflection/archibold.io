@@ -8,6 +8,10 @@ bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 echo '
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ -f app/package.json ]; then
   cd app
+  if [ ! -d node_modules ]; then
+    mkdir -p node_modules
+    npm install --production --no-bin-links
+  fi
   sudo npm start
 else
   source .logo
