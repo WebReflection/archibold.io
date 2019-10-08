@@ -15,6 +15,7 @@ if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ -f app/package.json ]; then
   sudo npm start
 else
   source .logo
+  clear
   echomd "$BENJA_LOGO"
 fi
 '>>.bashrc
