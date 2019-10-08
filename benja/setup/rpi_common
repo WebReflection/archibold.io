@@ -44,6 +44,6 @@ boot_delay=0
 
 sudo mv config.txt /boot/ 2> /dev/null
 
-bash <(curl -s https://archibold.io/benja/setup/rpi_pigpio)
+bash <(curl -s https://archibold.io/benja/setup/rpi_raspi-io)
 bash <(curl -s https://archibold.io/benja/setup/benja_app)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)
