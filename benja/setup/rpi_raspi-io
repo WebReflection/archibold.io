@@ -2,7 +2,10 @@
 
 aur python-pigpio-git
 cd ~/
+if [ ! -f package.json ]; then
+  echo '{"private":true}' > package.json
+fi
 mkdir -p node_modules
-npm i raspi-io johnny-five
+npm i --save raspi-io johnny-five
 cd -
 sudo ln -s /usr/local/lib/libpigpio* /usr/lib/
