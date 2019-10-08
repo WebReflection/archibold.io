@@ -29,12 +29,12 @@ shopt -s histappend                      # append to historyinstead of overwriti
 ' >> ~/.bashrc
 
 # ArchLinux initialization + update
-while ! sudo pacman -Sy
+while ! sudo pacman -Sy --noconfirm
 do
   :
 done
 
-while ! sudo pacman -Su
+while ! sudo pacman -Su  --noconfirm
 do
   :
 done
