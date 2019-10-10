@@ -4,6 +4,14 @@ Please note that every supported board might have slightly different setup,
 hardware acceleration capabilities, or setup.
 
 
+### Debian / Ubuntu users
+
+Please install the following before proceeding with the installation:
+
+```sh
+sudo apt install curl libarchive-tools
+```
+
 
 ### How to create the B.E.N.J.A. environment
 All you need to do, is type the following in your ArchLinux terminal, and follow the instructions:
