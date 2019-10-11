@@ -28,7 +28,7 @@ findTheDisk() {
   done
 
   echo ''
-  read -n2 -s choice
+  read -n2 choice
 
   if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
     i=0
@@ -68,7 +68,7 @@ targetPlatform() {
   *3* Raspberry Pi 3
   *4* Raspberry Pi 4
 '
-  read -n1 -s choice
+  read -n1 choice
 
   if [ "$choice" = "0" ] || [ "$choice" = "1" ]; then
     BENJA_SETUP="rpi1"
