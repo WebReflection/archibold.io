@@ -12,6 +12,11 @@ Please install the following before proceeding with the installation:
 sudo apt install curl libarchive-tools
 ```
 
+### Other distro/OS dependencies
+
+This is the list of command line utilities used by the installer: `bsdtar`, `curl`, `fdisk`, `lsbklk`, `mkfs`, `parted`, and `sudo`.
+If your environment has these utilities and a `bash` terminal, you should be able to prepare an SD card.
+
 
 ### How to create the B.E.N.J.A. environment
 All you need to do, is type the following in your ArchLinux terminal, and follow the instructions:
@@ -26,15 +31,13 @@ Creating applications is as easy as writing the following from the `APP` disk fo
 ```sh
 $ npm start
 ```
-This is indeed exactly what gets executed once Benja OS starts.
-If your computer works, the target board will work too!
+This is indeed what gets executed once Benja OS starts, except it'll have `sudo` privileges to be able to use GPIO.
 
-But how about editing remotely so you don't have to keep removing and putting back the SD card?
+If you'd like to develop remotely, write the following in console, substituting `x` with your values (to know which IP address your card has, type `ip addr` in its terminal once connected):
 
-As simple as writing:
 ```sh
-$ ssh alarm@192.168.1.X
-password: alarm
+$ ssh alarm@192.168.1.x
+password: xxxxxxxx
 ```
 
 At this point you can use `nano ~/app/index.js` to edit that file or, if your IDE supports it, you can use [rmate](https://github.com/textmate/rmate#rmate) which is already available in Benja OS.
@@ -71,11 +74,12 @@ Bear in mind you could even `spawn` a `reboot` via _bash_ or shell, or even invo
 
 ### How to load the app remotely
 By default, BenjaOS redirects to port `8080` all calls to port `80`, making it simple to use from your browser the same `index.html`.
-Write `http://192.168.1.X` on your browser, being sure the it is the one assigned to your board, and verify everything is OK.
+Write `http://192.168.1.x` on your browser, being sure the it is the one assigned to your board, and verify everything is OK.
 
 However, if you plug the SD card into your laptop, you can simply run `npm start` on *BENJA-APP* folder and develop directly in there.
 `Ctrl + Shift + I` to eventually bring up the console and debug like any other HTML page.
 
+Remember, _Electron_ runs with super powers only via the board, not when its site is reached remotely.
 
 
 ### How to not boot the App
@@ -89,12 +93,13 @@ This will inform Benja OS that it should just boot in the first available termin
 
 
 ### How to install App dependencies
-If you remove the folder `~/app/node_modules`, Benja will install production dependencies automatically next time it starts.
+If you remove the folder `~/app/node_modules`, Benja will install production only dependencies, without binaries links, automatically next time it starts.
 
-This is handy if you have one project that might have dependencies that might conflict with those your computer architecture might encounter.
+The reason bin-links are not allowed, is that carrying the SD card around would not find those, but it's handy to have all dependencies that don't require bin links or build steps into the _APP_ folder.
 
-In general though, it is strongly suggested to use dependencies that are cross platform friendly,
-and install those requiring builds and node-gyp as global module (also due the fact exacutables are not installed through a runtime mounted folder).
+Every dependency that might need bin links or build steps should be saved into the user home `~/` folder, in your _SBC_, and eventually globally in your development machine.
+
+As example, `raspi-io` or `johnny-five` are already installed in `~/node_modules`, so you don't need to worry about building these against your _SBC_.
 
 
 
@@ -115,18 +120,17 @@ In alternative, you need to specify manually paths via:
 ```
 
 
-
 ### How to Update Benja OS
-Bening simply a specially configured Arch Linux OS,
+Being simply a specially configured [Arch Linux ARM](https://archlinuxarm.org/) OS,
 all you need to update the system is the following:
 
 ```sh
 # updates ArchLinux to the latest
 sudo pacman -Syu
-
-# update Electron and global modules to the latest
-npm update -g
 ```
+
+You can use `npm update` too, if needed, in the `~/` or `~/app` folder.
+
 
 ### Known Issues
 

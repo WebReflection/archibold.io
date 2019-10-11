@@ -34,16 +34,17 @@ Please note that every supported board might have slightly different setup,
 hardware acceleration capabilities, or setup.</p>
 <h3 id="debian--ubuntu-users">Debian / Ubuntu users</h3>
 <p>Please install the following before proceeding with the installation:</p>
-<pre><code class="lang-sh hljs sh"><span class="line">sudo apt install curl libarchive-tools</span></code></pre><h3 id="how-to-create-the-b-e-n-j-a-environment">How to create the B.E.N.J.A. environment</h3>
+<pre><code class="lang-sh hljs sh"><span class="line">sudo apt install curl libarchive-tools</span></code></pre><h3 id="other-distroos-dependencies">Other distro/OS dependencies</h3>
+<p>This is the list of command line utilities used by the installer: <code>bsdtar</code>, <code>curl</code>, <code>fdisk</code>, <code>lsbklk</code>, <code>mkfs</code>, <code>parted</code>, and <code>sudo</code>.
+If your environment has these utilities and a <code>bash</code> terminal, you should be able to prepare an SD card.</p>
+<h3 id="how-to-create-the-b-e-n-j-a-environment">How to create the B.E.N.J.A. environment</h3>
 <p>All you need to do, is type the following in your ArchLinux terminal, and follow the instructions:</p>
 <pre><code class="lang-sh hljs sh"><span class="line">bash &lt;(curl -s https://archibold.io/benja/prepare)</span></code></pre><h3 id="how-to-develop">How to Develop</h3>
 <p>Creating applications is as easy as writing the following from the <code>APP</code> disk folder:</p>
-<pre><code class="lang-sh hljs sh"><span class="line">$ npm start</span></code></pre><p>This is indeed exactly what gets executed once Benja OS starts.
-If your computer works, the target board will work too!</p>
-<p>But how about editing remotely so you don’t have to keep removing and putting back the SD card?</p>
-<p>As simple as writing:</p>
-<pre><code class="lang-sh hljs sh"><span class="line">$ ssh alarm@192.168.1.X</span>
-<span class="line">password: alarm</span></code></pre><p>At this point you can use <code>nano ~/app/index.js</code> to edit that file or, if your IDE supports it, you can use <a href="https://github.com/textmate/rmate#rmate">rmate</a> which is already available in Benja OS.</p>
+<pre><code class="lang-sh hljs sh"><span class="line">$ npm start</span></code></pre><p>This is indeed what gets executed once Benja OS starts, except it’ll have <code>sudo</code> privileges to be able to use GPIO.</p>
+<p>If you’d like to develop remotely, write the following in console, substituting <code>x</code> with your values (to know which IP address your card has, type <code>ip addr</code> in its terminal once connected):</p>
+<pre><code class="lang-sh hljs sh"><span class="line">$ ssh alarm@192.168.1.x</span>
+<span class="line">password: xxxxxxxx</span></code></pre><p>At this point you can use <code>nano ~/app/index.js</code> to edit that file or, if your IDE supports it, you can use <a href="https://github.com/textmate/rmate#rmate">rmate</a> which is already available in Benja OS.</p>
 <p>This gives you the ability to also test directly GPIO related operations through the board.</p>
 <h3 id="how-to-reload-the-app">How to reload the App</h3>
 <p>There are at least a couple of ways to do it: remotely and directly through the app.
@@ -60,9 +61,10 @@ Alternatively you could put a simple script on the page such:</p>
 Bear in mind you could even <code>spawn</code> a <code>reboot</code> via <em>bash</em> or shell, or even invoke a <code>shutdown -h now</code>: you have full control.</p>
 <h3 id="how-to-load-the-app-remotely">How to load the app remotely</h3>
 <p>By default, BenjaOS redirects to port <code>8080</code> all calls to port <code>80</code>, making it simple to use from your browser the same <code>index.html</code>.
-Write <code>http://192.168.1.X</code> on your browser, being sure the it is the one assigned to your board, and verify everything is OK.</p>
+Write <code>http://192.168.1.x</code> on your browser, being sure the it is the one assigned to your board, and verify everything is OK.</p>
 <p>However, if you plug the SD card into your laptop, you can simply run <code>npm start</code> on <em>BENJA-APP</em> folder and develop directly in there.
 <code>Ctrl + Shift + I</code> to eventually bring up the console and debug like any other HTML page.</p>
+<p>Remember, <em>Electron</em> runs with super powers only via the board, not when its site is reached remotely.</p>
 <h3 id="how-to-not-boot-the-app">How to not boot the App</h3>
 <p>If you’d like to play around with Arch Linux instead
 of booting the app, you can either rename <code>~/app/package.json</code>
@@ -70,10 +72,10 @@ into <code>~/app/package.jsno</code> or <code>~/app/package.jsoff</code>,
 or you could remove it or rename it differently, like <code>~/app/package.nope</code>.</p>
 <p>This will inform Benja OS that it should just boot in the first available terminal, either on Weston or X11. </p>
 <h3 id="how-to-install-app-dependencies">How to install App dependencies</h3>
-<p>If you remove the folder <code>~/app/node_modules</code>, Benja will install production dependencies automatically next time it starts.</p>
-<p>This is handy if you have one project that might have dependencies that might conflict with those your computer architecture might encounter.</p>
-<p>In general though, it is strongly suggested to use dependencies that are cross platform friendly,
-and install those requiring builds and node-gyp as global module (also due the fact exacutables are not installed through a runtime mounted folder).</p>
+<p>If you remove the folder <code>~/app/node_modules</code>, Benja will install production only dependencies, without binaries links, automatically next time it starts.</p>
+<p>The reason bin-links are not allowed, is that carrying the SD card around would not find those, but it’s handy to have all dependencies that don’t require bin links or build steps into the <em>APP</em> folder.</p>
+<p>Every dependency that might need bin links or build steps should be saved into the user home <code>~/</code> folder, in your <em>SBC</em>, and eventually globally in your development machine.</p>
+<p>As example, <code>raspi-io</code> or <code>johnny-five</code> are already installed in <code>~/node_modules</code>, so you don’t need to worry about building these against your <em>SBC</em>.</p>
 <h3 id="how-to-include-node-modules">How to include node modules</h3>
 <p>Due some limitation with current Electron paths, your application might need to include the <a href="https://www.npmjs.com/package/benja">benja module</a> on top.</p>
 <pre><code class="lang-js hljs js"><span class="line"><span class="hljs-comment">// on top of index.js or index.html</span></span>
@@ -84,13 +86,11 @@ and install those requiring builds and node-gyp as global module (also due the f
 <span class="line"><i> </i><i> </i>[process.cwd() + <span class="hljs-string">'/node_modules'</span>]</span>
 <span class="line"><i> </i><i> </i>.concat(process.env.NODE_PATH.split(<span class="hljs-string">':'</span>).filter(<span class="hljs-function"><span class="hljs-params">p</span> =&gt;</span> <span class="hljs-number">0</span> &lt; p.length))</span>
 <span class="line">);</span></code></pre><h3 id="how-to-update-b-e-n-j-a-os">How to Update Benja OS</h3>
-<p>Bening simply a specially configured Arch Linux OS,
+<p>Being simply a specially configured <a href="https://archlinuxarm.org/">Arch Linux ARM</a> OS,
 all you need to update the system is the following:</p>
 <pre><code class="lang-sh hljs sh"><span class="line"><span class="hljs-comment"># updates ArchLinux to the latest</span></span>
-<span class="line">sudo pacman -Syu</span>
-<span class="line"></span>
-<span class="line"><span class="hljs-comment"># update Electron and global modules to the latest</span></span>
-<span class="line">npm update -g</span></code></pre><h3 id="known-issues">Known Issues</h3>
+<span class="line">sudo pacman -Syu</span></code></pre><p>You can use <code>npm update</code> too, if needed, in the <code>~/</code> or <code>~/app</code> folder.</p>
+<h3 id="known-issues">Known Issues</h3>
 <p>For some reason Electron starts leaving 1 pixel width and height off.</p>
 <p>If you have any idea how to fix that, please share, thanks.</p>
 </section></main>
