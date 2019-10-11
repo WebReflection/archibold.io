@@ -28,7 +28,7 @@ findTheDisk() {
   done
 
   echo ''
-  read -n1 -s choice
+  read -n2 -s choice
 
   if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
     i=0
