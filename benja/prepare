@@ -1,5 +1,18 @@
 #!/usr/bin/env bash
 
+if [ "$(uname)" = "Darwin" ] && [ "$(which ext4fuse 2> /dev/null)" = "" ]; then
+  clear
+  echo 'Support for ext4 partitions not found.'
+  echo "Please install $(tput bold)osxfuse$(tput sgr0) and $(tput bold)ext4fuse$(tput sgr0):"
+  echo ''
+  echo '  brew cask install osxfuse'
+  echo '  brew install ext4fuse'
+  echo ''
+  echo 'then try again this installer, thanks.'
+  echo ''
+  exit 1
+fi
+
 source <(curl -s https://archibold.io/benja/utils)
 
 clear
@@ -25,7 +38,8 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
   * formatting
   * copying files over
 "
-BENJA_SD_SIZE=$(sudo fdisk -s $BENJA_DISK)
+
+BENJA_SD_SIZE=$(diskSize $BENJA_DISK)
 BENJA_ROOT_SIZE="6800000"
 if [ "$BENJA_ROOT_SIZE" -gt "$BENJA_SD_SIZE" ]; then
   BENJA_ROOT_SIZE="3800M"
@@ -56,7 +70,8 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   * partitioning
 "
-sudo umount $BENJA_DISK* 2> /dev/null
+
+unmount $BENJA_DISK
 createPartitions "${BENJA_DISK}" "$BENJA_ROOT_SIZE"
 
 clear
@@ -159,7 +174,7 @@ chmod a+x wifi-setup
 curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 sudo mv aur ~/tmp-mounting-point/root/usr/bin/
-sleep 2
+sync
 cd -
 
 clear
@@ -171,7 +186,8 @@ echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
 
   Thank you for using B.E.N.J.A.
 "
-sync
-sudo umount $BENJA_DISK* 2> /dev/null
+
+unmount $BENJA_DISK
+
 sleep 1
 rm -rf ~/tmp-mounting-point

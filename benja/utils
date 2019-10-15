@@ -5,6 +5,59 @@ source <(curl -s https://archibold.io/require)
 
 require echomd
 
+# TODO: Works on ArchLinux, Debian, Ubuntu, but no macOS 
+
+createPartitions() {
+  local DISK=$1
+  local ROOT_SIZE=$2
+  if [ "$(uname)" = "Darwin" ]; then
+    echo 'This platform does not fully work yet'
+    exit 1
+  else
+    sudo parted --script $DISK mklabel msdos
+    sudo parted --script --align optimal $DISK mkpart primary fat32 2048s 200M
+    sudo parted --script --align optimal $DISK mkpart primary ext4 200M $ROOT_SIZE
+    sudo parted --script --align optimal $DISK mkpart primary fat32 $ROOT_SIZE 100%
+    sudo parted --script $DISK set 1 boot on
+    sudo parted --script $DISK set 2 hidden
+  fi
+}
+
+formatPartitions() {
+  local DISK=$1
+  local BOOT=$2
+  local ROOT=$3
+  local APP=$4
+
+  if [ "$(uname)" = "Darwin" ]; then
+    # TODO
+    echo 'This platform does not fully work yet'
+    exit 1
+  else
+    sudo mkfs.vfat "$BOOT"
+    sudo mkfs.vfat "$APP"
+    sudo dosfslabel "$APP" APP
+    yes | sudo mkfs.ext4 "$ROOT"
+  fi
+}
+
+### Works on ArchLinux, Debian, Ubuntu, macOS
+
+diskSize() {
+  local disk="$1"
+  local bytes=
+  if [ "$(uname)" = "Darwin" ]; then
+    for size in $(/usr/sbin/diskutil info $disk | grep 'Disk Size:' | sed -e 's/^[^(]*(//'); do
+      if [ "$bytes" = "" ]; then
+        ((bytes=$size/1024))
+      fi
+    done
+  else
+    bytes=$(sudo fdisk -s $disk)
+  fi
+  echo $bytes
+}
+
 echoWithLogo() {
   echomd "${BENJA_LOGO}
 $@"
@@ -18,14 +71,25 @@ findTheDisk() {
   echoWithLogo '# Select SD Card
   Please select the disk you would like to use
   to install Arch Linux (pick a number).'
+  echo ''
 
-  for disk in $(lsblk --output NAME); do
-    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
-      ((i=i+1))
-      disks="$disks $disk"
-      printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(grabDiskSize /dev/$disk)
-    fi
-  done
+  if [ "$(uname)" = "Darwin" ]; then
+    for disk in $(/usr/sbin/diskutil list | grep '/dev/'); do
+      if [ "${disk:0:5}" = "/dev/" ]; then
+        ((i=i+1))
+        disks="$disks ${disk:5}"
+        echo "  $(tput bold)$i$(tput sgr0) $disk $(grabDiskSize /dev/$disk)"
+      fi
+    done
+  else
+    for disk in $(lsblk --output NAME); do
+      if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+        ((i=i+1))
+        disks="$disks $disk"
+        printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(grabDiskSize /dev/$disk)
+      fi
+    done
+  fi
 
   echo ''
   if [ "$i" -le "9" ]; then
@@ -48,17 +112,63 @@ findTheDisk() {
   fi
 }
 
+getPartitions() {
+  local DISK=$1
+  local POSSIBLEDISKS=$(ls ${DISK}*)
+  local BOOT=""
+  local ROOT=""
+  local APP=""
+  local CHOICE=""
+  for CHOICE in $POSSIBLEDISKS; do
+    if [ "$CHOICE" != "$DISK" ]; then
+      if [ "$BOOT" = "" ]; then
+        BOOT="$CHOICE"
+      else
+        if [ "$ROOT" = "" ]; then
+          ROOT="$CHOICE"
+        else
+          APP="$CHOICE"
+        fi
+      fi
+    fi
+  done
+  echo "${BOOT} ${ROOT} ${APP}"
+}
+
 grabDiskSize() {
   local found=0
   local size=
-  for size in $(lsblk --output SIZE $1); do
-    if [ "$found" = "0" ]; then
-      found=1
-    else
-      echo $size
-      return
-    fi
-  done
+  if [ "$(uname)" = "Darwin" ]; then
+    /usr/sbin/diskutil info $disk | grep 'Disk Size:' | sed -e 's/Disk Size: *//' | sed -e 's/([^)]*)//' | sed -e 's/([^)]*)//'
+  else
+    for size in $(lsblk --output SIZE $1); do
+      if [ "$found" = "0" ]; then
+        found=1
+      else
+        echo $size
+        return
+      fi
+    done
+  fi
+}
+
+installOS() {
+  local ARCHIVE="$1"
+  local DISK=$2
+  local BOOT=$3
+  local ROOT=$4
+
+  mkdir -p boot
+  mkdir -p root
+  if [ "$(uname)" = "Darwin" ]; then
+    sudo /usr/sbin/diskutil mount -mountPoint ./boot "$BOOT"
+    sudo ext4fuse "$ROOT" ./root -o allow_other
+  else
+    sudo mount "$BOOT" boot
+    sudo mount "$ROOT" root
+  fi
+  sudo bsdtar -xvpf "$ARCHIVE" -C root
+  sudo mv root/boot/* boot
 }
 
 targetPlatform() {
@@ -96,62 +206,11 @@ targetPlatform() {
   fi
 }
 
-createPartitions() {
-  local DISK=$1
-  local ROOT_SIZE=$2
-  sudo parted --script $DISK mklabel msdos
-  sudo parted --script --align optimal $DISK mkpart primary fat32 2048s 200M
-  sudo parted --script --align optimal $DISK mkpart primary ext4 200M $ROOT_SIZE
-  sudo parted --script --align optimal $DISK mkpart primary fat32 $ROOT_SIZE 100%
-  sudo parted --script $DISK set 1 boot on
-  sudo parted --script $DISK set 2 hidden
-}
-
-getPartitions() {
-  local DISK=$1
-  local POSSIBLEDISKS=$(ls ${DISK}*)
-  local BOOT=""
-  local ROOT=""
-  local APP=""
-  local CHOICE=""
-  for CHOICE in $POSSIBLEDISKS; do
-    if [ "$CHOICE" != "$DISK" ]; then
-      if [ "$BOOT" = "" ]; then
-        BOOT="$CHOICE"
-      else
-        if [ "$ROOT" = "" ]; then
-          ROOT="$CHOICE"
-        else
-          APP="$CHOICE"
-        fi
-      fi
-    fi
-  done
-  echo "${BOOT} ${ROOT} ${APP}"
-}
-
-formatPartitions() {
-  local DISK=$1
-  local BOOT=$2
-  local ROOT=$3
-  local APP=$4
-
-  sudo mkfs.vfat "$BOOT"
-  sudo mkfs.vfat "$APP"
-  sudo dosfslabel "$APP" APP
-  yes | sudo mkfs.ext4 "$ROOT"
-}
-
-installOS() {
-  local ARCHIVE="$1"
-  local DISK=$2
-  local BOOT=$3
-  local ROOT=$4
-
-  mkdir -p boot
-  mkdir -p root
-  sudo mount "$BOOT" boot
-  sudo mount "$ROOT" root
-  sudo bsdtar -xvpf "$ARCHIVE" -C root
-  sudo mv root/boot/* boot
+unmount() {
+  local disk="$1"
+  if [ "$(uname)" = "Darwin" ]; then
+    sudo /usr/sbin/diskutil unmountDisk $disk* 2> /dev/null
+  else
+    sudo umount $disk* 2> /dev/null
+  fi
 }
