@@ -1,14 +1,11 @@
 #!/usr/bin/env bash
 
-if [ "$(uname)" = "Darwin" ] && [ "$(which ext4fuse 2> /dev/null)" = "" ]; then
+if [ "$(uname)" = "Darwin" ] && [ ! -f /opt/gnu/sbin/mkfs.ext4 ]; then
   clear
-  echo 'Support for ext4 partitions not found.'
-  echo "Please install $(tput bold)osxfuse$(tput sgr0) and $(tput bold)ext4fuse$(tput sgr0):"
   echo ''
-  echo '  brew cask install osxfuse'
-  echo '  brew install ext4fuse'
-  echo ''
-  echo 'then try again this installer, thanks.'
+  echo "  You need $(tput bold)fuse-ext2$(tput sgr0) to use this installer."
+  echo '  Please install it following these instrauctions:'
+  echo '  https://github.com/alperakcan/fuse-ext2#macos'
   echo ''
   exit 1
 fi
@@ -92,10 +89,10 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   This operation might take a while, please wait
 "
+sleep 2
 mkdir -p ~/tmp-mounting-point
 cd ~/tmp-mounting-point
 installOS "$BENJA_ARCHIVE_PATH" "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
-cd -
 clear
 echoWithLogo "# Preparing ${BENJA_SBC} Card
 
@@ -106,6 +103,12 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
    .... synchronizing ....
   (it might take long time)
 "
+# this one would be better inside the installOS function
+# but macOS might take forever to copy files over
+# so that it's easy to miss the need to put another time
+# the password for sudo privileges
+sudo mv root/boot/* boot
+cd -
 sync
 
 clear
@@ -161,6 +164,7 @@ fi
 ' > bootstrap
 curl -s "https://archibold.io/benja/setup/${BENJA_SETUP}" >> bootstrap
 chmod a+x bootstrap
+sync
 
 echo '
 if [ -f bootstrap ]; then
@@ -170,11 +174,13 @@ fi
 
 curl -s "https://archibold.io/benja/setup/benja_wifi" > wifi-setup
 chmod a+x wifi-setup
+sync
 
 curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 sudo mv aur ~/tmp-mounting-point/root/usr/bin/
 sync
+
 cd -
 
 clear
@@ -189,5 +195,6 @@ echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
 
 unmount $BENJA_DISK
 
-sleep 1
+sync
+sleep 2
 rm -rf ~/tmp-mounting-point
