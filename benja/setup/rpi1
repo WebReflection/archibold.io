@@ -20,6 +20,10 @@ fi
 '>>.bashrc
 
 sudo sed -i "s/rootwait/rootwait quiet loglevel=0/" /boot/cmdline.txt
+sudo sed -i "s/gpu_mem=64/gpu_mem=32/" /boot/config.txt
+
+sudo sh -c 'echo "
+dtparam=spi=on">>/boot/config.txt'
 
 bash <(curl -s https://archibold.io/benja/setup/rpi_raspi-io)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

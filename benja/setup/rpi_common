@@ -35,6 +35,8 @@ gpu_mem_1024=384
 
 dtparam=audio=on
 dtparam=spi=on
+dtparam=i2c_arm=on
+dtparam=i2c=on
 
 [all]
 avoid_warnings=1

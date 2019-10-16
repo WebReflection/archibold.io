@@ -134,6 +134,5 @@ You can use `npm update` too, if needed, in the `~/` or `~/app` folder.
 
 ### Known Issues
 
-For some reason Electron starts leaving 1 pixel width and height off.
-
-If you have any idea how to fix that, please share, thanks.
+  * **electron**: for some reason Electron starts leaving 1 pixel width and height off. If you have any idea how to fix that, please share, thanks.
+  * **wifi**: in some case, Raspberry Pi Zero W might let you configure the WiFi properly, but then it'll ask again to configure it. If that's the case, unplug the Raspberry, wait a minute, then switch it on again, as I haven't found yet the culprit of this issue. However, once BENJA has been setup, the WiFi connection on boot seems to be stable.

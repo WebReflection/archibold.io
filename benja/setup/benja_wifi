@@ -25,5 +25,10 @@ if [ "$WLAN" != "" ]; then
   echo root | su -c "shutdown -h now"
 else
   echo "unable to configure the wifi"
-  exit 1
+  echo ""
+  echo "please wait until shutdown"
+  echo "then switch it on again and login"
+  echo ""
+  sleep 3
+  echo root | su -c "shutdown -h now"
 fi
