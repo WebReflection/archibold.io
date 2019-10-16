@@ -39,7 +39,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 BENJA_SD_SIZE=$(diskSize $BENJA_DISK)
 BENJA_ROOT_SIZE="6800000"
 if [ "$BENJA_ROOT_SIZE" -gt "$BENJA_SD_SIZE" ]; then
-  BENJA_ROOT_SIZE="3800M"
+  BENJA_ROOT_SIZE="3700M"
 else
   BENJA_ROOT_SIZE="6800M"
 fi
@@ -80,6 +80,8 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 BENJA_SDCARD_PARTITIONS=($(getPartitions $BENJA_DISK))
 formatPartitions "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
 
+mkdir -p ~/tmp-mounting-point
+cd ~/tmp-mounting-point
 clear
 echoWithLogo "# Preparing ${BENJA_SBC} Card
 
@@ -90,8 +92,6 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
   This operation might take a while, please wait
 "
 sleep 2
-mkdir -p ~/tmp-mounting-point
-cd ~/tmp-mounting-point
 installOS "$BENJA_ARCHIVE_PATH" "$BENJA_DISK" ${BENJA_SDCARD_PARTITIONS[*]}
 clear
 echoWithLogo "# Preparing ${BENJA_SBC} Card
@@ -108,9 +108,10 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 # so that it's easy to miss the need to put another time
 # the password for sudo privileges
 sudo mv root/boot/* boot
-cd -
 sync
+cd -
 
+cd ~/tmp-mounting-point/root/home/alarm
 clear
 echoWithLogo "# Preparing ${BENJA_SBC} Card
 
@@ -120,7 +121,7 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
 
   Downloading bootstrap, wifi-setup, and aur
 "
-cd ~/tmp-mounting-point/root/home/alarm
+
 echo '#!/usr/bin/env bash
 
 pickAPass() {
@@ -182,7 +183,6 @@ sudo mv aur ~/tmp-mounting-point/root/usr/bin/
 sync
 
 cd -
-
 clear
 echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
 
@@ -194,7 +194,7 @@ echoWithLogo "# ${BENJA_SBC} Card Ready 🎉
 "
 
 unmount $BENJA_DISK
-
 sync
+
+sudo rm -rf ~/tmp-mounting-point
 sleep 2
-rm -rf ~/tmp-mounting-point
