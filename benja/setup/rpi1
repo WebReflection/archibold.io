@@ -2,7 +2,6 @@
 
 bash <(curl -s https://archibold.io/benja/setup/benja_common)
 bash <(curl -s https://archibold.io/benja/setup/benja_autologin)
-bash <(curl -s https://archibold.io/benja/setup/rpi_quiet)
 bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 
 echo '
@@ -19,6 +18,8 @@ else
   echomd "$BENJA_LOGO"
 fi
 '>>.bashrc
+
+sudo sed -i "s/rootwait/rootwait quiet loglevel=0/" /boot/cmdline.txt
 
 bash <(curl -s https://archibold.io/benja/setup/rpi_raspi-io)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)

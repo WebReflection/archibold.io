@@ -102,13 +102,12 @@ echoWithLogo "# Preparing ${BENJA_SBC} Card
   * copying files over ✔
 
    .... synchronizing ....
+  (it might take long time)
 "
 # this one would be better inside the installOS function
 # but macOS might take forever to copy files over
 # so that it's easy to miss the need to put another time
 # the password for sudo privileges
-sudo mv root/boot/* boot
-echo '  (it might take long time)'
 sync
 cd -
 
