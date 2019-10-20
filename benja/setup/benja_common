@@ -34,6 +34,11 @@ do
   :
 done
 
+echo "boost CPU performance"
+sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
+sudo systemctl enable cpupower.service
+sudo systemctl start cpupower.service
+
 while ! sudo pacman -Su  --noconfirm
 do
   :
@@ -51,11 +56,6 @@ while ! sudo pacman -S --needed --noconfirm \
 do
   :
 done
-
-echo "boost CPU performance"
-sudo sh -c "echo 'governor=\"performance\"'>>/etc/default/cpupower"
-sudo systemctl enable cpupower.service
-sudo systemctl start cpupower.service
 
 sudo pacman -Sc --noconfirm
 

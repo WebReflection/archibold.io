@@ -11,8 +11,8 @@ done
 
 sudo pacman -Sc --noconfirm
 
-bash <(curl -s https://archibold.io/benja/setup/benja_xorg)
 bash <(curl -s https://archibold.io/benja/setup/benja_autologin)
+bash <(curl -s https://archibold.io/benja/setup/benja_xorg)
 bash <(curl -s https://archibold.io/benja/setup/rpi_quiet)
 bash <(curl -s https://archibold.io/benja/setup/benja_electron)
 
