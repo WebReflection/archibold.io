@@ -6,3 +6,5 @@ while ! sudo pacman -Sy --needed --noconfirm \
 do
   :
 done
+
+sudo pip install inotify_simple
