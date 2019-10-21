@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+sudo pacman -Sy --needed --noconfirm python-pip python-numpy python-pillow wiringpi inotify-tools
+sudo pip install RPi.GPIO spidev font-fredoka-one inotify_simple
