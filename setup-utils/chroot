@@ -38,6 +38,11 @@ mv /etc/locale.tmp /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 
+echo -e "
+  installing $(tput bold)mkinitcpio$(tput sgr0)
+"
+pacman -S --needed --noconfirm mkinitcpio
+
 # Hardware basic needs
 echo -e "
   installing $(tput bold)wifi tools$(tput sgr0)
