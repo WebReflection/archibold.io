@@ -145,9 +145,7 @@ echo "
   read -n1 -s INSTALL_GNOME
 
 if [ "$INSTALL_GNOME" = "y" ] || [ "$INSTALL_GNOME" = "Y" ]; then
-  cp /usr/bin/so /usr/bin/sudo
-  bash <(curl -s https://archibold.io/install/gnome)
-  rm /usr/bin/sudo
+  su $USER -c 'bash <(curl -s https://archibold.io/install/gnome)'
 fi
 
 exit
