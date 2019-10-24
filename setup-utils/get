@@ -135,6 +135,7 @@ echo -e "
   installing $(tput bold)mkinitcpio$(tput sgr0)
 "
 pacman -S --needed --noconfirm mkinitcpio
+sync
 mkinitcpio -p linux
 
 echo "
