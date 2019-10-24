@@ -134,7 +134,7 @@ mv so /usr/bin
 echo -e "
   installing $(tput bold)mkinitcpio$(tput sgr0)
 "
-pacman -S --needed --noconfirm mkinitcpio
+pacman -S --needed --noconfirm linux linux-firmware mkinitcpio
 sync
 mkinitcpio -p linux
 
