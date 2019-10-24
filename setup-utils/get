@@ -134,9 +134,9 @@ mv so /usr/bin
 echo -e "
   installing $(tput bold)mkinitcpio$(tput sgr0)
 "
-pacman -S --needed --noconfirm linux linux-firmware mkinitcpio
+pacman -S --needed --noconfirm mkinitcpio linux linux-firmware
 sync
-mkinitcpio -p linux
+# mkinitcpio -p linux
 
 echo "
  Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
