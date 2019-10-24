@@ -417,8 +417,7 @@ fi
 
 clear
 echoWithHeader "
-  Bootstrapping *Arch Linux* via
-  pacstrap archibold.env arch-install-scripts base gptfdisk
+  Bootstrapping *Arch Linux* via pacstrap
 "
 sleep 1
 sudo pacstrap archibold.env arch-install-scripts base gptfdisk
