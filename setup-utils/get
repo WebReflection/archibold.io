@@ -127,6 +127,16 @@ curl -LOs https://archibold.io/utils/so
 chmod a+x so
 mv so /usr/bin
 
+curl -LOs https://archibold.io/utils/aur
+chmod a+x aur
+mv so /usr/bin
+
+echo -e "
+  installing $(tput bold)mkinitcpio$(tput sgr0)
+"
+pacman -S --needed --noconfirm mkinitcpio
+mkinitcpio -p linux
+
 echo "
  Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
 "
