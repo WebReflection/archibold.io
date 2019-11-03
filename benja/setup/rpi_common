@@ -33,6 +33,8 @@ gpu_mem_256=128
 gpu_mem_512=196
 gpu_mem_1024=384
 
+initramfs initramfs-linux.img followkernel
+
 dtparam=audio=on
 dtparam=spi=on
 dtparam=i2c_arm=on
