@@ -139,13 +139,16 @@ curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 mv aur /usr/bin
 
-echo "
- Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
-"
-  read -n1 -s INSTALL_GNOME
-
-if [ "$INSTALL_GNOME" = "y" ] || [ "$INSTALL_GNOME" = "Y" ]; then
-  su $USER -c 'bash <(curl -s https://archibold.io/install/gnome)'
-fi
+# Installing GNOME via chroot is a no-go
+# find eventually a way to simplify last WiFi connection, if any
+#
+#echo "
+# Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
+#"
+#  read -n1 -s INSTALL_GNOME
+#
+#if [ "$INSTALL_GNOME" = "y" ] || [ "$INSTALL_GNOME" = "Y" ]; then
+#  su $USER -c 'bash <(curl -s https://archibold.io/install/gnome)'
+#fi
 
 exit
