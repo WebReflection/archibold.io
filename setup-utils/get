@@ -137,7 +137,7 @@ mv so /usr/bin
 
 curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
-mv so /usr/bin
+mv aur /usr/bin
 
 echo "
  Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
