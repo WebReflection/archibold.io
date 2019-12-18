@@ -87,6 +87,20 @@ findTheDisk() {
   fi
 }
 
+askAboutEncryption() {
+  local choice=
+  echoWithHeader "
+  Would you like to use *encryption* ? [y/N]"
+  read -n1 -s choice
+
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    ENCRYPTION=yes
+  else
+    ENCRYPTION=no
+  fi
+
+}
+
 askAboutUEFI() {
   local choice=
   echoWithHeader "
@@ -179,11 +193,11 @@ createPartitions() {
     sudo parted --script $DISK mklabel gpt > /dev/null 2>&1
   fi
   if [ "$UEFI" != "no" ]; then
-    echomd '  with 192MiB *boot* partition'
+    echomd '  with 128MiB *boot* partition'
     echo ''
-    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 192MiB > /dev/null 2>&1
+    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 128MiB > /dev/null 2>&1
     sudo parted $DISK set 1 boot on
-    start=192MiB
+    start=128MiB
   fi
   if [ "$SWAP" = "0" ]; then
     echomd '  *without swap* partition'
@@ -240,7 +254,11 @@ createPartitions() {
     echo "  swap: $SWAP"
   fi
   if [ "$ROOT" != "" ]; then
-    echo "  root: $ROOT"
+    if [ "$ENCRYPTION" = "yes" ]; then
+      echo "  root: $ROOT (encrypted)"
+    else
+      echo "  root: $ROOT"
+    fi
   fi
   sleep 3
   if [ "$BOOT" != "" ]; then
@@ -252,27 +270,38 @@ createPartitions() {
     else
       sudo bash -c "mkfs.vfat $BOOT"
     fi
-    sleep 1
+    sleep 2
   fi
   if [ "$SWAP" != "0" ]; then
     clear
     echoWithHeader "
   creating *swap* partition"
     sudo bash -c "yes y | mkswap $SWAP"
-    sleep 1
+    sleep 2
   fi
   clear
     echoWithHeader "
   creating *root* partition"
   if [ "$BOOT" = "" ] && [ "$(uname -m)" = "x86_64" ]; then
-    echomd '  *disabling* pure *64bit* mode
-'
+    echomd '  *disabling* pure *64bit* mode'
+    if [ "$ENCRYPTION" = "yes" ]; then
+      echomd '  *warning* encryption not supported without /boot'
+      sleep 2
+    fi
+    echo ''
     sudo bash -c "mkfs.ext4 -F -O ^64bit $ROOT"
+    partid create $ROOT
   else
     sudo bash -c "mkfs.ext4 -F $ROOT"
+    partid create $ROOT
+    UUID=$(partid $ROOT)
+    if [ "$ENCRYPTION" = "yes" ]; then
+      echo -e "$PASSWORD" | cryptsetup -v --uuid=$UUID luksFormat $ROOT
+      echo -e "$PASSWORD" | cryptsetup open $ROOT cryptroot
+      mkfs.ext4 -F /dev/mapper/cryptroot
+    fi
   fi
-  partid create $ROOT
-  sleep 1
+  sleep 2
 }
 
 askAboutQUIET() {
@@ -327,8 +356,15 @@ askForPassword() {
   Which *password* would you like to use ?
   Write one and press enter.
 
-  Please note it will be used as *both* *root* and *${USER}* password.
-  You can change it at any time via _passwd_ command."
+  Please note it will be used as *both* *root* and *${USER}* password,
+  and you can change it at any time via _passwd_ command."
+  if [ "$ENCRYPTION" = "yes" ]; then
+    echo ''
+    echomd "  *Encryption Warning*"
+    echomd "   * the same password will also be used to *unlock* the disk"
+    echomd "   * it is *not possible to change* the disk password later on"
+  fi
+  echo ''
   read choice
   if [ "$choice" = "" ]; then
     PASSWORD="Passw0rd!"
@@ -348,6 +384,9 @@ if [ "$INTEL" = "" ] && [ "$(lscpu | grep GenuineIntel)" != "" ]; then
   INTEL="yes"
 fi
 
+if [ "$ENCRYPTION" = "" ]; then
+  clear && askAboutEncryption
+fi
 if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]//g')" != "" ]; then
   clear && askForUser
 fi
@@ -409,7 +448,11 @@ if [ -d archibold.env ]; then
   sudo rm -rf archibold.env
 fi
 mkdir archibold.env
-sudo mount $ROOT archibold.env
+if [ "$ENCRYPTION" = "yes" ]; then
+  sudo mount /dev/mapper/cryptroot archibold.env
+else
+  sudo mount $ROOT archibold.env
+fi
 if [ "$BOOT" != "" ]; then
   sudo mkdir -p archibold.env/boot
   sudo mount $BOOT archibold.env/boot
@@ -441,6 +484,7 @@ PASSWORD='$PASSWORD'
 AUTOLOGIN=$AUTOLOGIN
 EDD='$EDD'
 QUIET='$QUIET'
+ENCRYPTION='$ENCRYPTION'
 
 " > /tmp/install
 curl -Ls -o /tmp/install-chroot https://archibold.io/setup-utils/get

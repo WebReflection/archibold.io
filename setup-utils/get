@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #########################
 # archibold.io (C) 2016 #
 #########################
@@ -16,6 +18,7 @@
 # AUTOLOGIN
 # EDD
 # QUIET
+# ENCRYPTION
 #
 
 source <(curl -s https://archibold.io/utils/partid)
@@ -32,25 +35,31 @@ cleanEfibootmgr() {
 }
 
 # Locale
-cat /etc/locale.gen | sed -r "s/^#(${LANGUAGE}_.* UTF-8)/\1/" > /etc/locale.tmp
-echo 'en_US.UTF-8 UTF-8' >> /etc/locale.tmp
-mv /etc/locale.tmp /etc/locale.gen
+if [ "$LANGUAGE" != "en" ]; then
+  sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
+fi
+sed -i -r "s/^#(${LANGUAGE}_.*? UTF-8)/\1/" /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 
 echo -e "
   installing $(tput bold)linux$(tput sgr0)
 "
-pacman -S --needed --noconfirm mkinitcpio linux linux-firmware
+pacman-key --init
+pacman-key --populate archlinux
+pacman -S --needed --noconfirm linux linux-firmware mkinitcpio
 sync
-# mkinitcpio -p linux
-
+if [ "$ENCRYPTION" = "yes" ]; then
+  # apparently consolefont was useless
+  sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+  mkinitcpio -p linux
+fi
 
 # Hardware basic needs
 echo -e "
-  installing $(tput bold)wifi tools$(tput sgr0)
+  installing $(tput bold)wifi/net tools$(tput sgr0)
 "
-pacman -S --needed --noconfirm dialog wpa_supplicant iw > /dev/null 2>&1
+pacman -S --needed --noconfirm dialog wpa_supplicant iw netctl wireless-regdb dhcpcd > /dev/null 2>&1
 
 UCODE=''
 UCODE_STRING=''
@@ -88,14 +97,24 @@ if [ "$SWAP" != "0" ]; then
   sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
 fi
 sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
-cat /etc/fstab | sed -r 's/^(# )?(\/etc|efivarfs).*//' > /etc/fstab.tmp
-mv /etc/fstab.tmp /etc/fstab
+sync
+sed -i -r 's/^(# )?(\/etc|efivarfs).*//' /etc/fstab
+sync
 
-PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
-APPEND="options root=PARTUUID=${PARTUUID} rw"
-if [ "$BOOT_LOUDLY" = "" ]; then
-  APPEND="$APPEND quiet splash loglevel=0 console=tty2"
+if [ "$ENCRYPTION" = "yes" ]; then
+  UUID="$(partid $ROOT)"
+  APPEND="options cryptdevice=UUID=${UUID}:cryptroot root=/dev/mapper/cryptroot rw"
+  if [ "$BOOT_LOUDLY" = "" ]; then
+    APPEND="$APPEND quiet loglevel=0"
+  fi
+else
+  # PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+  APPEND="options root=UUID=${UUID} rw"
+  if [ "$BOOT_LOUDLY" = "" ]; then
+    APPEND="$APPEND quiet splash loglevel=0 console=tty2"
+  fi
 fi
+
 if [ "$EDD" != "" ]; then
   APPEND="$APPEND edd=$EDD"
 fi
@@ -120,7 +139,7 @@ sleep 1
 echo -e "$PASSWORD
 $PASSWORD" | passwd
 
-useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+useradd -m -g users -G wheel,games,power,optical,storage,scanner,lp,audio,video -s /bin/bash $USER
 echo -e "$PASSWORD
 $PASSWORD" | passwd $USER
 
@@ -139,16 +158,8 @@ curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 mv aur /usr/bin
 
-# Installing GNOME via chroot is a no-go
-# find eventually a way to simplify last WiFi connection, if any
-#
-#echo "
-# Would you like to install $(tput bold)GNOME$(tput sgr0) ? [y/N]
-#"
-#  read -n1 -s INSTALL_GNOME
-#
-#if [ "$INSTALL_GNOME" = "y" ] || [ "$INSTALL_GNOME" = "Y" ]; then
-#  su $USER -c 'bash <(curl -s https://archibold.io/install/gnome)'
-#fi
+if [ "$(which hwclock 2> /dev/null)" != "" ]; then
+  hwclock --systohc --utc
+fi
 
 exit
