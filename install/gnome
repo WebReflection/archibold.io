@@ -2,8 +2,11 @@
 # archibold.io (C) 2016 #
 #########################
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/sudo)
+if [ "$(whoami)" = "root" ]; then
+  echo "
+  Unable to install GNOME as root
+"
+  exit
 fi
 
 if [ "$DISABLE_WAYLAND" = "" ]; then
@@ -25,6 +28,10 @@ You can always use discover or pamac instead.
   read -n1 -s USE_GNOME_SOFTWARE
 fi
 
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/sudo)
+fi
+
 echo "please wait for the GPU setup ..."
 
 source <(curl -s https://archibold.io/install/gpu)
@@ -41,8 +48,11 @@ for pkg in $(sudo pacman -Sg gnome); do
   fi
 done
 
+# TODO: figure out if alsa-utils and pulseaudio are needed at all
+# sudo pacman -S --needed --noconfirm alsa-utils pulseaudio
+
 sudo pacman -S --needed --noconfirm \
-  alsa-utils pulseaudio \
+  flatpak \
   xf86-input-libinput xsel \
   cups system-config-printer simple-scan \
   bluez bluez-utils \
@@ -50,7 +60,7 @@ sudo pacman -S --needed --noconfirm \
 
 if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
   sudo pacman -S --needed --noconfirm \
-    gnome-software gnome-packagekit gnome-software-packagekit-plugin flatpak
+    gnome-software gnome-packagekit gnome-software-packagekit-plugin
 fi
 
 if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
