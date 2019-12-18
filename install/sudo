@@ -6,7 +6,7 @@ addGroup() {
   local g
   for g in $(groups); do
     if [ "$g" = "wheel" ]; then
-      exit 0
+      return
     fi
   done
   sudo gpasswd -a $USER wheel

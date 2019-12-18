@@ -268,7 +268,7 @@ createPartitions() {
     if [ "$UEFI" = "yes" ]; then
       sudo bash -c "mkfs.ext2 -F $BOOT"
     else
-      sudo bash -c "mkfs.vfat $BOOT"
+      sudo bash -c "mkfs.fat -F32 $BOOT"
     fi
     sleep 2
   fi
