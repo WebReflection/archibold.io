@@ -297,8 +297,8 @@ createPartitions() {
     UUID=$(partid $ROOT)
     if [ "$ENCRYPTION" = "yes" ]; then
       echo -e "$PASSWORD" | cryptsetup -v --uuid=$UUID luksFormat $ROOT
-      echo -e "$PASSWORD" | cryptsetup open $ROOT cryptroot
-      mkfs.ext4 -F /dev/mapper/cryptroot
+      echo -e "$PASSWORD" | cryptsetup open $ROOT root
+      mkfs.ext4 -F /dev/mapper/root
     fi
   fi
   sleep 2
@@ -449,7 +449,7 @@ if [ -d archibold.env ]; then
 fi
 mkdir archibold.env
 if [ "$ENCRYPTION" = "yes" ]; then
-  sudo mount /dev/mapper/cryptroot archibold.env
+  sudo mount /dev/mapper/root archibold.env
 else
   sudo mount $ROOT archibold.env
 fi

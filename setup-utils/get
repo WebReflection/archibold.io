@@ -106,7 +106,7 @@ sync
 
 if [ "$ENCRYPTION" = "yes" ]; then
   UUID="$(partid $ROOT)"
-  APPEND="options cryptdevice=UUID=${UUID}:cryptroot root=/dev/mapper/cryptroot rw"
+  APPEND="options cryptdevice=UUID=${UUID}:root root=/dev/mapper/root rw"
   if [ "$BOOT_LOUDLY" = "" ]; then
     APPEND="$APPEND quiet loglevel=0"
   fi
