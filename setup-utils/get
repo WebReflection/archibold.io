@@ -59,7 +59,10 @@ fi
 echo -e "
   installing $(tput bold)wifi/net tools$(tput sgr0)
 "
-pacman -S --needed --noconfirm dialog wpa_supplicant iw netctl wireless-regdb dhcpcd > /dev/null 2>&1
+
+# TODO: I am not sure wireless-regdb is useful at all ...
+pacman -S --needed --noconfirm wireless-regdb
+pacman -S --needed --noconfirm dialog wpa_supplicant iw netctl dhcpcd > /dev/null 2>&1
 
 UCODE=''
 UCODE_STRING=''

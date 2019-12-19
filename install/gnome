@@ -23,7 +23,7 @@ if [ "$USE_GNOME_SOFTWARE" = "" ]; then
   echo "
   Would you like to use GNOME Software ? [y/N]
 
-You can always use discover or pamac instead.
+  The wonderful pamac-aur would be used otherwise.
 "
   read -n1 -s USE_GNOME_SOFTWARE
 fi
@@ -59,13 +59,26 @@ sudo pacman -S --needed --noconfirm \
   gnome-tweaks chrome-gnome-shell $GNOME
 
 if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
+  echoWithHeader "
+  Installing GNOME Software
+"
   sudo pacman -S --needed --noconfirm \
     gnome-software gnome-packagekit gnome-software-packagekit-plugin
+else
+  echoWithHeader "
+  Installing pamac-aur
+"
+  if [ "$(which aur 2> /dev/null)" = "" ]; then
+    source <(curl -s https://archibold.io/utils/aur)
+  fi
+  aur pamac-aur
 fi
 
 if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
   sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
 fi
+
+sleep 2
 
 echoWithHeader "
   Enabling NetworkManager and GDM
@@ -86,6 +99,12 @@ echoWithHeader "
 
 bash <(curl -s https://archibold.io/install/fsutils)
 
+# automatic date and time
+if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+  sudo timedatectl set-ntp 1
+  timedatectl set-ntp 1
+fi
+
 echoWithHeader "
   Setting up some glorious GNOME feature
 "
@@ -102,8 +121,13 @@ gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,m
 sudo gsettings set org.gnome.mutter center-new-windows true
 gsettings set org.gnome.mutter center-new-windows true
 
-# automatic date and time
-if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
-  sudo timedatectl set-ntp 1
-  timedatectl set-ntp 1
+# enable location and automatic time zone
+sudo gsettings set org.gnome.system.location enabled true
+gsettings set org.gnome.system.location enabled true
+sudo gsettings set org.gnome.desktop.datetime automatic-timezone true
+gsettings set org.gnome.desktop.datetime automatic-timezone true
+
+if [ "$(which pamac 2> /dev/null)" != "" ]; then
+  # enable pamac icon
+  gnome-extensions enable pamac-updates@manjaro.org
 fi
