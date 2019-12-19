@@ -176,6 +176,14 @@ askAboutAUTOLOGIN() {
   fi
 }
 
+encryptPartition() {
+  local partition="$1"
+  local name="$2"
+  local uuid=$(partid $partition)
+  echo "$PASSWORD" | cryptsetup -v --uuid=$uuid luksFormat $partition
+  echo "$PASSWORD" | cryptsetup open $partition $name
+}
+
 createPartitions() {
   local start=2048s
   local part=
@@ -251,7 +259,11 @@ createPartitions() {
     echo "  boot: $BOOT"
   fi
   if [ "$SWAP" != "0" ]; then
-    echo "  swap: $SWAP"
+    if [ "$ENCRYPTION" = "yes" ]; then
+      echo "  swap: $SWAP (encrypted)"
+    else
+      echo "  swap: $SWAP"
+    fi
   fi
   if [ "$ROOT" != "" ]; then
     if [ "$ENCRYPTION" = "yes" ]; then
@@ -276,7 +288,14 @@ createPartitions() {
     clear
     echoWithHeader "
   creating *swap* partition"
-    sudo bash -c "yes y | mkswap $SWAP"
+    sudo bash -c "mkfs.ext4 -F $SWAP"
+    partid create $SWAP
+    if [ "$ENCRYPTION" = "yes" ]; then
+      encryptPartition $SWAP swap
+      mkswap /dev/mapper/swap
+    else
+      sudo bash -c "yes y | mkswap $SWAP"
+    fi
     sleep 2
   fi
   clear
@@ -294,10 +313,8 @@ createPartitions() {
   else
     sudo bash -c "mkfs.ext4 -F $ROOT"
     partid create $ROOT
-    UUID=$(partid $ROOT)
     if [ "$ENCRYPTION" = "yes" ]; then
-      echo -e "$PASSWORD" | cryptsetup -v --uuid=$UUID luksFormat $ROOT
-      echo -e "$PASSWORD" | cryptsetup open $ROOT root
+      encryptPartition $ROOT root
       mkfs.ext4 -F /dev/mapper/root
     fi
   fi
@@ -346,7 +363,7 @@ askForUser() {
     echomd "  #red(*Nope*), $choice is not valid, let's try again ... "
     sleep 2 && clear && askForUser
   else
-    USER=$choice
+    USER="$choice"
   fi
 }
 
@@ -365,14 +382,14 @@ askForPassword() {
     echomd "   * it is *not possible to change* the disk password later on"
   fi
   echo ''
-  read choice
+  read -r choice
   if [ "$choice" = "" ]; then
     PASSWORD="Passw0rd!"
     echomd "
     Password set automatically as *${PASSWORD}*"
     sleep 3
   else
-    PASSWORD=$choice
+    PASSWORD="$choice"
   fi
 }
 
@@ -479,7 +496,7 @@ BOOT=$BOOT
 SWAP=$SWAP
 ROOT=$ROOT
 UEFI=$UEFI
-USER=$USER
+USER='$USER'
 PASSWORD='$PASSWORD'
 AUTOLOGIN=$AUTOLOGIN
 EDD='$EDD'

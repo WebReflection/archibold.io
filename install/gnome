@@ -36,6 +36,26 @@ echo "please wait for the GPU setup ..."
 
 source <(curl -s https://archibold.io/install/gpu)
 
+sleep 3
+
+if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
+  echoWithHeader "
+  Installing GNOME Software Manager
+"
+  sudo pacman -S --needed --noconfirm \
+    gnome-software gnome-packagekit gnome-software-packagekit-plugin
+else
+  echoWithHeader "
+  Installing pamac-aur Software Manager
+"
+  if [ "$(which aur 2> /dev/null)" = "" ]; then
+    source <(curl -s https://archibold.io/utils/aur)
+  fi
+  aur pamac-aur
+fi
+
+sleep 3
+
 echoWithHeader "
   Installing GNOME with GPU drivers:
   $GPU_DRIVERS
@@ -48,9 +68,6 @@ for pkg in $(sudo pacman -Sg gnome); do
   fi
 done
 
-# TODO: figure out if alsa-utils and pulseaudio are needed at all
-# sudo pacman -S --needed --noconfirm alsa-utils pulseaudio
-
 sudo pacman -S --needed --noconfirm \
   flatpak \
   xf86-input-libinput xsel \
@@ -58,27 +75,11 @@ sudo pacman -S --needed --noconfirm \
   bluez bluez-utils \
   gnome-tweaks chrome-gnome-shell $GNOME
 
-if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
-  echoWithHeader "
-  Installing GNOME Software
-"
-  sudo pacman -S --needed --noconfirm \
-    gnome-software gnome-packagekit gnome-software-packagekit-plugin
-else
-  echoWithHeader "
-  Installing pamac-aur
-"
-  if [ "$(which aur 2> /dev/null)" = "" ]; then
-    source <(curl -s https://archibold.io/utils/aur)
-  fi
-  aur pamac-aur
-fi
-
 if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
   sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
 fi
 
-sleep 2
+sleep 3
 
 echoWithHeader "
   Enabling NetworkManager and GDM
@@ -86,18 +87,6 @@ echoWithHeader "
 
 sudo systemctl enable NetworkManager
 sudo systemctl enable gdm
-
-echoWithHeader "
-  Installing common fonts
-"
-
-bash <(curl -s https://archibold.io/install/fonts)
-
-echoWithHeader "
-  Installing common filesystem utilities (read/write)
-"
-
-bash <(curl -s https://archibold.io/install/fsutils)
 
 # automatic date and time
 if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
@@ -107,27 +96,39 @@ fi
 
 echoWithHeader "
   Setting up some glorious GNOME feature
+
+    * dark theme
+    * windows buttons layout
+    * centered windows
+    * location service (for maps and automatic timezone)
+    * automatic timezone and time
 "
 
-# switch on dark mode, it's absolutely worth it
-sudo gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-
-# see min/max buttons on every widget
-sudo gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
-
-# center new windows
-sudo gsettings set org.gnome.mutter center-new-windows true
 gsettings set org.gnome.mutter center-new-windows true
-
-# enable location and automatic time zone
-sudo gsettings set org.gnome.system.location enabled true
 gsettings set org.gnome.system.location enabled true
-sudo gsettings set org.gnome.desktop.datetime automatic-timezone true
 gsettings set org.gnome.desktop.datetime automatic-timezone true
 
 if [ "$(which pamac 2> /dev/null)" != "" ]; then
   # enable pamac icon
   gnome-extensions enable pamac-updates@manjaro.org
 fi
+
+sleep 3
+
+echoWithHeader "
+  Installing common fonts
+"
+
+bash <(curl -s https://archibold.io/install/fonts)
+
+sleep 3
+
+echoWithHeader "
+  Installing common filesystem utilities (read/write)
+"
+
+bash <(curl -s https://archibold.io/install/fsutils)
+
+sleep 3

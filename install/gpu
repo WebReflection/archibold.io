@@ -93,6 +93,4 @@ echoWithHeader "
   Installing GPU drivers:
   $GPU_DRIVERS
 "
-sudo pacman -S --needed --noconfirm $GPU_DRIVERS
-
-sudo pacman -S --needed --noconfirm libva-mesa-driver libva-vdpau-driver mesa-vdpau
+sudo pacman -S --needed --noconfirm $GPU_DRIVERS libva-mesa-driver libva-vdpau-driver mesa-vdpau

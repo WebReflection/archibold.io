@@ -7,5 +7,5 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
 fi
 
 sudo pacman -S --needed --noconfirm \
-  ttf-dejavu ttf-liberation \
-  ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra
+  ttf-dejavu ttf-liberation ttf-opensans \
+  noto-fonts noto-fonts-emoji noto-fonts-extra

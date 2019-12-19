@@ -47,11 +47,36 @@ echo -e "
 "
 pacman-key --init
 pacman-key --populate archlinux
-pacman -S --needed --noconfirm linux linux-firmware mkinitcpio
+pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio
 sync
 if [ "$ENCRYPTION" = "yes" ]; then
+  echo "build ()
+{
+  add_runscript
+}
+help ()
+{
+cat<<HELPEOF
+  This asks for the encryption password once and then opens root and swap
+HELPEOF
+}" > /etc/initcpio/install/archibold
+
+  UUID="$(partid $ROOT)"
+  echo "run_hook ()
+{
+  mkdir -p /run/cryptsetup
+  local password=
+  echo -e \"\033[1mencryption\033[0m password:\"
+  read -s -r password
+  echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid $UUID) root'" > /etc/initcpio/hooks/archibold
+  if [ "$SWAP" != "0" ]; then
+    UUID="$(partid $SWAP)"
+    echo "  echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid $UUID) swap'" >> /etc/initcpio/hooks/archibold
+  fi
+echo "  password=''
+}" >> /etc/initcpio/hooks/archibold
   # apparently consolefont was useless
-  sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+  sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt resume filesystems fsck)/' /etc/mkinitcpio.conf
   mkinitcpio -p linux
 fi
 
@@ -85,28 +110,36 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   installing $(tput bold)UEFI$(tput sgr0) tools
 "
   pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
-  # TODO: is it needed ?
 fi
 
 # Create clean fstab
 if [ "$SWAP" != "0" ]; then
-  swapon $SWAP
+  if [ "$ENCRYPTION" = "yes" ]; then
+    swapon /dev/mapper/swap
+  else
+    swapon $SWAP
+  fi
 fi
 genfstab -U -p / > /etc/fstab
-if [ "$BOOT" != "" ]; then
-  sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
-fi
-if [ "$SWAP" != "0" ]; then
-  sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
-fi
-sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
+
+# TODO: this seemed overly useless
+# if [ "$BOOT" != "" ]; then
+#   sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
+# fi
+# if [ "$SWAP" != "0" ]; then
+#   sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
+# fi
+# sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
+
 sync
 sed -i -r 's/^(# )?(\/etc|efivarfs).*//' /etc/fstab
 sync
 
 if [ "$ENCRYPTION" = "yes" ]; then
-  UUID="$(partid $ROOT)"
-  APPEND="options cryptdevice=UUID=${UUID}:root root=/dev/mapper/root rw"
+  APPEND="options root=/dev/mapper/root rw"
+  if [ "$SWAP" != "0" ]; then
+    APPEND="$APPEND resume=/dev/mapper/swap rw"
+  fi
   if [ "$BOOT_LOUDLY" = "" ]; then
     APPEND="$APPEND quiet loglevel=0"
   fi
@@ -138,13 +171,17 @@ ${UCODE_STRING}initrd  /initramfs-linux.img
 ${APPEND}" > /boot/loader/entries/arch.conf
 sleep 1
 
-# Users
-echo -e "$PASSWORD
-$PASSWORD" | passwd
+# Root and User Password
+
+if [ "$(which yes 2> /dev/null)" = "" ]; then
+  pacman -S --needed --noconfirm yes
+fi
+
+yes "$PASSWORD" | passwd
 
 useradd -m -g users -G wheel,games,power,optical,storage,scanner,lp,audio,video -s /bin/bash $USER
-echo -e "$PASSWORD
-$PASSWORD" | passwd $USER
+yes "$PASSWORD" | passwd $USER
+
 
 # Automatic login
 if [ "$AUTOLOGIN" = "yes" ]; then
