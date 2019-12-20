@@ -1,134 +1,147 @@
-#########################
-# archibold.io (C) 2016 #
-#########################
+#!/usr/bin/env bash
 
-if [ "$(whoami)" = "root" ]; then
-  echo "
-  Unable to install GNOME as root
-"
-  exit
+##############################
+# archibold.io (C) 2016-2020 #
+##############################
+
+if [ "$USER" = "" ]; then
+  USER="$(whoami)"
 fi
 
-if [ "$DISABLE_WAYLAND" = "" ]; then
-  echo "
-  Would you like to disable Wayland ? [y/N]
-
-Only if your drivers work best in legacy Xorg,
-or you are installing on Virtual Box, type y
-"
-  read -n1 -s DISABLE_WAYLAND
+if [ "$USER" = "root" ]; then
+  echo "$(tput bold)Warning$(tput sgr0): you must login as regular user"
+  exit 1
 fi
 
-if [ "$USE_GNOME_SOFTWARE" = "" ]; then
-  echo "
-  Would you like to use GNOME Software ? [y/N]
-
-  The wonderful pamac-aur would be used otherwise.
-"
-  read -n1 -s USE_GNOME_SOFTWARE
+if [ "$(curl -s curl -s https://archibold.io/)" = "" ]; then
+  echo "$(tput bold)Warning$(tput sgr0): you need an internet connection"
+  exit 1
 fi
 
-if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/sudo)
-fi
+write() {
+  echo ''
+  echo "$(tput smso)$1$(tput sgr0)"
+  echo ''
+  sleep 1
+}
 
-echo "please wait for the GPU setup ..."
-
-source <(curl -s https://archibold.io/install/gpu)
-
-sleep 3
-
-if [ "$USE_GNOME_SOFTWARE" = "y" ] || [ "$USE_GNOME_SOFTWARE" = "Y" ]; then
-  echoWithHeader "
-  Installing GNOME Software Manager
-"
-  sudo pacman -S --needed --noconfirm \
-    gnome-software gnome-packagekit gnome-software-packagekit-plugin
-else
-  echoWithHeader "
-  Installing pamac-aur Software Manager
-"
-  if [ "$(which aur 2> /dev/null)" = "" ]; then
-    source <(curl -s https://archibold.io/utils/aur)
+findGPU() {
+  local GPU_DRIVERS=
+  if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -k | grep -A 2 -E "(VGA|3D)" | grep NVIDIA)" != "" ]; then
+    GPU_DRIVERS="nvidia"
   fi
-  aur pamac-aur
-fi
-
-sleep 3
-
-echoWithHeader "
-  Installing GNOME with GPU drivers:
-  $GPU_DRIVERS
-"
-
-GNOME=""
-for pkg in $(sudo pacman -Sg gnome); do
-  if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
-    GNOME="${GNOME} ${pkg}"
+  if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -k | grep -A 2 -E "(VGA|3D)" | grep AMD)" != "" ]; then
+    GPU_DRIVERS="xf86-video-amdgpu vulkan-radeon"
   fi
-done
+  if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -k | grep -A 2 -E "(VGA|3D)" | grep Intel)" != "" ]; then
+    GPU_DRIVERS="xf86-video-intel vulkan-intel"
+  fi
+  if [ "$GPU_DRIVERS" = "" ]; then
+    GPU_DRIVERS="xf86-video-fbdev xf86-video-vesa"
+  fi
+  echo "$GPU_DRIVERS"
+}
 
-sudo pacman -S --needed --noconfirm \
-  flatpak \
-  xf86-input-libinput xsel \
-  cups system-config-printer simple-scan \
-  bluez bluez-utils \
-  gnome-tweaks chrome-gnome-shell $GNOME
+installGNOME() {
+  local GPU_DRIVERS="$1"
+  write "Please enter the root password"
+  local PASSWORD="$(systemd-ask-password)"
+  if [ "$(echo "$PASSWORD" | su -c "ls /home/$USER/.bashrc")" != "/home/$USER/.bashrc" ]; then
+    echo "$(tput bold)Warning$(tput sgr0): invalid password"
+    exit 1
+  fi
 
-if [ "$DISABLE_WAYLAND" = "y" ] || [ "$DISABLE_WAYLAND" = "Y" ]; then
-  sudo sed -ie 's/#WaylandEnable=false/WaylandEnable=false/' /etc/gdm/custom.conf
+  write "Updating pacman and installing sudo"
+  echo "$PASSWORD" | su -c "pacman -Sy --needed --noconfirm sudo"
+
+  if [ "$(groups | grep wheel)" = "" ]; then
+    echo "$PASSWORD" | su -c "gpasswd -a $USER wheel"
+  fi
+
+  echo "$PASSWORD" | su -c '
+if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
+  echo "
+## [archibold.io] enabled wheel group
+%wheel ALL=(ALL) ALL
+" >> /etc/sudoers
 fi
 
-sleep 3
+if [[ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]]; then
+  echo "
+## [archibold.io] never expiring sudo password
+Defaults env_reset, timestamp_timeout=-1
+" >> /etc/sudoers
+fi'
 
-echoWithHeader "
-  Enabling NetworkManager and GDM
-"
+  write "Please enter the user $USER password"
+  sudo ls > /dev/null
 
-sudo systemctl enable NetworkManager
-sudo systemctl enable gdm
+  write "Installing base-devel and git"
+  echo "$PASSWORD" | su -c "pacman -S --needed --noconfirm base-devel git"
 
-# automatic date and time
-if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
-  sudo timedatectl set-ntp 1
+  if [ "$GPU_DRIVERS" = "" ]; then
+    GPU_DRIVERS="$(findGPU)"
+  fi
+  write "Installing GNOME with $GPU_DRIVERS"
+  local GNOME=""
+  for pkg in $(pacman -Sg gnome); do
+    if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
+      GNOME="${GNOME} ${pkg}"
+    fi
+  done
+  echo "$PASSWORD" | su -c "
+pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_US vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell
+
+systemctl enable NetworkManager
+systemctl enable gdm
+
+if [ \"\$(which timedatectl 2> /dev/null)\" != \"\" ]; then
+  timedatectl set-ntp 1
   timedatectl set-ntp 1
 fi
-
-echoWithHeader "
-  Setting up some glorious GNOME feature
-
-    * dark theme
-    * windows buttons layout
-    * centered windows
-    * location service (for maps and automatic timezone)
-    * automatic timezone and time
 "
 
-gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
-gsettings set org.gnome.mutter center-new-windows true
-gsettings set org.gnome.system.location enabled true
-gsettings set org.gnome.desktop.datetime automatic-timezone true
+  if [ "$(which pamac 2> /dev/null)" = "" ]; then
+    write "Installing pamac-aur"
+    rm -rf /tmp/pamac-aur
+    cd /tmp
+    git clone https://aur.archlinux.org/pamac-aur.git
+    cd -
+    cd /tmp/pamac-aur
+    makepkg -Asfc --needed --noconfirm
+    if [ "$?" = "0" ] && [ "$(ls pamac-aur*.pkg.tar.xz 2> /dev/null)" != "" ]; then
+      echo "$PASSWORD" | su -c "pacman -U --noconfirm $(ls pamac-aur*.pkg.tar.xz)"
+      cd -
+      rm -rf /tmp/pamac-aur
+      gnome-extensions enable pamac-updates@manjaro.org
+    fi
+  fi
 
-if [ "$(which pamac 2> /dev/null)" != "" ]; then
-  # enable pamac icon
-  gnome-extensions enable pamac-updates@manjaro.org
-fi
+  write "Configuring GNOME"
+  gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+  gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+  gsettings set org.gnome.mutter center-new-windows true
+  gsettings set org.gnome.system.location enabled true
+  gsettings set org.gnome.desktop.datetime automatic-timezone true
+  gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+  xdg-settings set default-web-browser firefox.desktop
+  gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
 
-sleep 3
+  if [ "$(cat ~/.bashrc | grep '[archibold.io] bash extras')" = "" ]; then
+    write "Improving Bash"
+    echo '
+# [archibold.io] bash extras
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # many commands in ongoing session memory
+export HISTFILESIZE=100000               # many lines in .bash_history
+shopt -s histappend                      # append to historyinstead of overwriting it
+alias open=xdg-open                      # macOS open like function
+. /etc/profile.d/vte.sh                  # new terminal tabs in the same folder
+' >> ~/.bashrc
+  fi
 
-echoWithHeader "
-  Installing common fonts
-"
+  write "GNOME is ready, please reboot"
+}
 
-bash <(curl -s https://archibold.io/install/fonts)
-
-sleep 3
-
-echoWithHeader "
-  Installing common filesystem utilities (read/write)
-"
-
-bash <(curl -s https://archibold.io/install/fsutils)
-
-sleep 3
+clear
+installGNOME "$GPU_DRIVERS"
