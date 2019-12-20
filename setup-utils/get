@@ -49,6 +49,11 @@ pacman-key --init
 pacman-key --populate archlinux
 pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio
 sync
+
+echo -e "
+  verifying  $(tput bold)encryption$(tput sgr0)
+"
+
 if [ "$ENCRYPTION" = "yes" ]; then
   echo "build ()
 {
@@ -80,14 +85,15 @@ echo "  password=''
   mkinitcpio -p linux
 fi
 
+sleep 3
+
 # Hardware basic needs
 echo -e "
   installing $(tput bold)wifi/net tools$(tput sgr0)
 "
 
 # TODO: I am not sure wireless-regdb is useful at all ...
-pacman -S --needed --noconfirm wireless-regdb
-pacman -S --needed --noconfirm dialog wpa_supplicant iw netctl dhcpcd > /dev/null 2>&1
+pacman -S --needed --noconfirm dialog wpa_supplicant iw netctl dhcpcd wireless-regdb
 
 UCODE=''
 UCODE_STRING=''
@@ -102,17 +108,21 @@ if [ "$UCODE" != "" ]; then
   echo -e "
   installing $(tput bold)${UCODE}$(tput sgr0)
 "
-  pacman -S --needed --noconfirm $UCODE > /dev/null 2>&1
+  pacman -S --needed --noconfirm $UCODE
 fi
+
+sleep 3
 
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   echo -e "
   installing $(tput bold)UEFI$(tput sgr0) tools
 "
-  pacman -S --needed --noconfirm efibootmgr efitools > /dev/null 2>&1
+  pacman -S --needed --noconfirm efibootmgr efitools
 fi
 
-# Create clean fstab
+echo -e "
+  verifying  $(tput bold)swap$(tput sgr0)
+"
 if [ "$SWAP" != "0" ]; then
   if [ "$ENCRYPTION" = "yes" ]; then
     swapon /dev/mapper/swap
@@ -120,6 +130,13 @@ if [ "$SWAP" != "0" ]; then
     swapon $SWAP
   fi
 fi
+
+sleep 3
+
+echo -e "
+  generating $(tput bold)fstab$(tput sgr0)
+"
+
 genfstab -U -p / > /etc/fstab
 
 # TODO: this seemed overly useless
@@ -133,7 +150,8 @@ genfstab -U -p / > /etc/fstab
 
 sync
 sed -i -r 's/^(# )?(\/etc|efivarfs).*//' /etc/fstab
-sync
+sleep 3
+
 
 if [ "$ENCRYPTION" = "yes" ]; then
   APPEND="options root=/dev/mapper/root rw"
@@ -156,12 +174,18 @@ if [ "$EDD" != "" ]; then
 fi
 
 # UEFI
-echo ''
-sleep 1
+echo -e "
+  cleaning $(tput bold)efi$(tput sgr0) variables, if any
+"
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   cleanEfibootmgr "$LABEL"
 fi
-sleep 1
+
+sleep 3
+
+echo -e "
+  preparing $(tput bold)bootctl$(tput sgr0)
+"
 
 bootctl --path=/boot install
 
@@ -169,7 +193,8 @@ echo "title   ${LABEL}
 linux   /vmlinuz-linux
 ${UCODE_STRING}initrd  /initramfs-linux.img
 ${APPEND}" > /boot/loader/entries/arch.conf
-sleep 1
+
+sleep 3
 
 # Root and User Password
 
@@ -177,11 +202,16 @@ if [ "$(which yes 2> /dev/null)" = "" ]; then
   pacman -S --needed --noconfirm yes
 fi
 
+echo -e "
+  assigning $(tput bold)passwords$(tput sgr0)
+"
+
 yes "$PASSWORD" | passwd
 
 useradd -m -g users -G wheel,games,power,optical,storage,scanner,lp,audio,video -s /bin/bash $USER
 yes "$PASSWORD" | passwd $USER
 
+sleep 3
 
 # Automatic login
 if [ "$AUTOLOGIN" = "yes" ]; then
@@ -189,6 +219,10 @@ if [ "$AUTOLOGIN" = "yes" ]; then
   touch /home/$USER/.hushlogin
   chown -R $USER:users /home/$USER/.hushlogin
 fi
+
+echo -e "
+  installing $(tput bold)helpers$(tput sgr0): so, aur
+"
 
 curl -LOs https://archibold.io/utils/so
 chmod a+x so
@@ -198,8 +232,16 @@ curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 mv aur /usr/bin
 
+sleep 3
+
+echo -e "
+  updating $(tput bold)time$(tput sgr0)
+"
+
 if [ "$(which hwclock 2> /dev/null)" != "" ]; then
   hwclock --systohc --utc
 fi
+
+sleep 3
 
 exit

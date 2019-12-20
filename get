@@ -510,11 +510,14 @@ rm /tmp/install-chroot
 sudo chmod a+x /tmp/install
 sudo mv /tmp/install archibold.env/archibold.install
 echo "going to arch-chroot into archibold folder"
-sleep 5
+sleep 3
 sudo arch-chroot archibold.env /archibold.install
+sync
 rm -rf archibold.env/archibold.install
+sync
+sleep 3
 sudo umount ${DISK}* 2> /dev/null
-sleep 5
+sleep 3
 clear
 echoWithHeader "
   Congratulations. Arch Linux is ready.
