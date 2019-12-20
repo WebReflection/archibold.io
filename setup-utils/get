@@ -34,7 +34,10 @@ cleanEfibootmgr() {
   done
 }
 
-# Locale
+echo -e "
+  generating $(tput bold)locale$(tput sgr0)
+"
+
 if [ "$LANGUAGE" != "en" ]; then
   sed -i 's/#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen
 fi
@@ -45,6 +48,7 @@ locale > /etc/locale.conf
 echo -e "
   installing $(tput bold)linux$(tput sgr0)
 "
+
 pacman-key --init
 pacman-key --populate archlinux
 pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio
@@ -85,9 +89,6 @@ echo "  password=''
   mkinitcpio -p linux
 fi
 
-sleep 3
-
-# Hardware basic needs
 echo -e "
   installing $(tput bold)wifi/net tools$(tput sgr0)
 "
@@ -111,8 +112,6 @@ if [ "$UCODE" != "" ]; then
   pacman -S --needed --noconfirm $UCODE
 fi
 
-sleep 3
-
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   echo -e "
   installing $(tput bold)UEFI$(tput sgr0) tools
@@ -120,10 +119,10 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   pacman -S --needed --noconfirm efibootmgr efitools
 fi
 
-echo -e "
-  verifying  $(tput bold)swap$(tput sgr0)
-"
 if [ "$SWAP" != "0" ]; then
+  echo -e "
+  creating  $(tput bold)swap$(tput sgr0)
+"
   if [ "$ENCRYPTION" = "yes" ]; then
     swapon /dev/mapper/swap
   else
@@ -131,27 +130,14 @@ if [ "$SWAP" != "0" ]; then
   fi
 fi
 
-sleep 3
-
 echo -e "
   generating $(tput bold)fstab$(tput sgr0)
 "
 
 genfstab -U -p / > /etc/fstab
 
-# TODO: this seemed overly useless
-# if [ "$BOOT" != "" ]; then
-#   sed -ie "s#$BOOT#UUID=$(partid $BOOT)#" /etc/fstab
-# fi
-# if [ "$SWAP" != "0" ]; then
-#   sed -ie "s#$SWAP#UUID=$(partid $SWAP)#" /etc/fstab
-# fi
-# sed -ie "s#$ROOT#UUID=$(partid $ROOT)#" /etc/fstab
-
 sync
 sed -i -r 's/^(# )?(\/etc|efivarfs).*//' /etc/fstab
-sleep 3
-
 
 if [ "$ENCRYPTION" = "yes" ]; then
   APPEND="options root=/dev/mapper/root rw"
@@ -162,7 +148,7 @@ if [ "$ENCRYPTION" = "yes" ]; then
     APPEND="$APPEND quiet loglevel=0"
   fi
 else
-  # PARTUUID="$(blkid -s PARTUUID -o value ${ROOT})"
+  UUID="$(partid $ROOT)"
   APPEND="options root=UUID=${UUID} rw"
   if [ "$BOOT_LOUDLY" = "" ]; then
     APPEND="$APPEND quiet splash loglevel=0 console=tty2"
@@ -173,15 +159,12 @@ if [ "$EDD" != "" ]; then
   APPEND="$APPEND edd=$EDD"
 fi
 
-# UEFI
-echo -e "
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  echo -e "
   cleaning $(tput bold)efi$(tput sgr0) variables, if any
 "
-if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   cleanEfibootmgr "$LABEL"
 fi
-
-sleep 3
 
 echo -e "
   preparing $(tput bold)bootctl$(tput sgr0)
@@ -194,53 +177,65 @@ linux   /vmlinuz-linux
 ${UCODE_STRING}initrd  /initramfs-linux.img
 ${APPEND}" > /boot/loader/entries/arch.conf
 
-sleep 3
-
-# Root and User Password
 
 if [ "$(which yes 2> /dev/null)" = "" ]; then
   pacman -S --needed --noconfirm yes
 fi
 
 echo -e "
-  assigning $(tput bold)passwords$(tput sgr0)
+  assigning $(tput bold)root$(tput sgr0) passwords
 "
 
 yes "$PASSWORD" | passwd
 
+echo -e "
+  creating user $(tput bold)$USER$(tput sgr0)
+"
+
 useradd -m -g users -G wheel,games,power,optical,storage,scanner,lp,audio,video -s /bin/bash $USER
+
+echo -e "
+  assigning $(tput bold)$USER$(tput sgr0) passwords
+"
+
 yes "$PASSWORD" | passwd $USER
 
-sleep 3
-
-# Automatic login
 if [ "$AUTOLOGIN" = "yes" ]; then
+  echo -e "
+  automatic $(tput bold)$USER$(tput sgr0) login
+"
   sed -ie "s#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#" /etc/systemd/system/getty.target.wants/getty@tty1.service
   touch /home/$USER/.hushlogin
   chown -R $USER:users /home/$USER/.hushlogin
 fi
 
 echo -e "
-  installing $(tput bold)helpers$(tput sgr0): so, aur
+  installing $(tput bold)so$(tput sgr0) helper
 "
 
 curl -LOs https://archibold.io/utils/so
 chmod a+x so
 mv so /usr/bin
 
+echo -e "
+  installing $(tput bold)aur$(tput sgr0) helper
+"
+
 curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 mv aur /usr/bin
 
-sleep 3
-
-echo -e "
+if [ "$(which hwclock 2> /dev/null)" != "" ]; then
+  echo -e "
   updating $(tput bold)time$(tput sgr0)
 "
-
-if [ "$(which hwclock 2> /dev/null)" != "" ]; then
   hwclock --systohc --utc
 fi
+
+echo -e "
+  executing $(tput bold)sync$(tput sgr0)
+"
+sync
 
 sleep 3
 
