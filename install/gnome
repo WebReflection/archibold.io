@@ -13,8 +13,10 @@ if [ "$USER" = "root" ]; then
   exit 1
 fi
 
-if [ "$(curl -s curl -s https://archibold.io/)" = "" ]; then
+if [ "$(curl -s https://archibold.io/ 2> /dev/null)" = "" ]; then
   echo "$(tput bold)Warning$(tput sgr0): you need an internet connection"
+  echo '  * if you are wired, try typing: dhcpcd'
+  echo '  * if you have WiFi, try typing: wifi-menu'
   exit 1
 fi
 
@@ -22,7 +24,6 @@ write() {
   echo ''
   echo "$(tput smso)$1$(tput sgr0)"
   echo ''
-  sleep 1
 }
 
 findGPU() {
@@ -44,21 +45,48 @@ findGPU() {
 
 installGNOME() {
   local GPU_DRIVERS="$1"
-  write "Please enter the root password"
-  local PASSWORD="$(systemd-ask-password)"
-  if [ "$(echo "$PASSWORD" | su -c "ls /home/$USER/.bashrc")" != "/home/$USER/.bashrc" ]; then
-    echo "$(tput bold)Warning$(tput sgr0): invalid password"
+  local PASSWORD="$2"
+  local BASHRC=~/.bashrc
+  local SHELL_AVAILABLE="$(which sudo 2> /dev/null)"
+  local pkg=
+
+  if [ ! -f "$BASHRC" ]; then
+    echo "$(tput bold)Warning$(tput sgr0): something very wrong with this environment"
     exit 1
   fi
 
-  write "Updating pacman and installing sudo"
-  echo "$PASSWORD" | su -c "pacman -Sy --needed --noconfirm sudo"
-
-  if [ "$(groups | grep wheel)" = "" ]; then
-    echo "$PASSWORD" | su -c "gpasswd -a $USER wheel"
+  if [ "$PASSWORD" = "" ]; then
+    write "Please enter the root password"
+    PASSWORD="$(systemd-ask-password)"
   fi
 
-  echo "$PASSWORD" | su -c '
+  if [ "$(echo "$PASSWORD" | su -c "ls $BASHRC" 2> /dev/null)" != "$BASHRC" ]; then
+    echo "$(tput bold)Warning$(tput sgr0): invalid root password"
+    exit 1
+  fi
+
+  if [ "$(cat $BASHRC | grep '[archibold.io] bash extras')" = "" ]; then
+    write "Improving Bash"
+    echo '
+# [archibold.io] bash extras
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # many commands in ongoing session memory
+export HISTFILESIZE=100000               # many lines in .bash_history
+shopt -s histappend                      # append to historyinstead of overwriting it
+alias open=xdg-open                      # macOS open like function
+. /etc/profile.d/vte.sh                  # new terminal tabs in the same folder
+' >> $BASHRC
+  fi
+
+  if [ "$(which sudo 2> /dev/null)" = "" ]; then
+    write "Updating pacman and installing sudo"
+    echo "$PASSWORD" | su -c "pacman -Sy --needed --noconfirm sudo"
+
+    if [ "$(groups | grep wheel)" = "" ]; then
+      echo "$PASSWORD" | su -c "gpasswd -a $USER wheel"
+    fi
+
+    echo "$PASSWORD" | su -c '
 if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
   echo "
 ## [archibold.io] enabled wheel group
@@ -72,49 +100,74 @@ if [[ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]]; then
 Defaults env_reset, timestamp_timeout=-1
 " >> /etc/sudoers
 fi'
+  else
+    write "Updating pacman"
+    echo "$PASSWORD" | su -c "pacman -Sy --needed --noconfirm"
+  fi
 
-  write "Please enter the user $USER password"
-  sudo ls > /dev/null
+  write "Verifying sudo"
+  pkg=""
+  while [ "$pkg" != "$BASHRC" ]; do
+    pkg="$(echo "$PASSWORD" | sudo -S ls $BASHRC 2> /dev/null)"
+    if [ "$pkg" != "$BASHRC" ]; then
+      write "Please enter the user $USER password"
+      PASSWORD="$(systemd-ask-password)"
+    fi
+  done
+
+  if [ "$pkg" != "$BASHRC" ]; then
+    echo "$(tput bold)Warning$(tput sgr0): invalid sudo password for user $USER"
+    exit 1
+  fi
 
   write "Installing base-devel and git"
-  echo "$PASSWORD" | su -c "pacman -S --needed --noconfirm base-devel git"
+  echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm base-devel git
 
+  write "Installing GNOME with $GPU_DRIVERS"
   if [ "$GPU_DRIVERS" = "" ]; then
     GPU_DRIVERS="$(findGPU)"
   fi
-  write "Installing GNOME with $GPU_DRIVERS"
   local GNOME=""
   for pkg in $(pacman -Sg gnome); do
     if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
       GNOME="${GNOME} ${pkg}"
     fi
   done
-  echo "$PASSWORD" | su -c "
-pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_US vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell
 
-systemctl enable NetworkManager
-systemctl enable gdm
+  echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_US vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell
 
-if [ \"\$(which timedatectl 2> /dev/null)\" != \"\" ]; then
-  timedatectl set-ntp 1
-  timedatectl set-ntp 1
-fi
-"
+  if [ "$SHELL_AVAILABLE" = "" ]; then
+    echo "$PASSWORD" | sudo -S systemctl enable NetworkManager
+    echo "$PASSWORD" | sudo -S systemctl enable gdm
+  fi
+
+  if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+    echo "$PASSWORD" | sudo -S timedatectl set-ntp 1
+    echo "$PASSWORD" | sudo -S timedatectl set-ntp 1
+  fi
 
   if [ "$(which pamac 2> /dev/null)" = "" ]; then
     write "Installing pamac-aur"
+
+    # TODO somehow this wasn't part of the dependencies, see if it's needed in the future
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm xorgproto
+
     rm -rf /tmp/pamac-aur
     cd /tmp
     git clone https://aur.archlinux.org/pamac-aur.git
     cd -
     cd /tmp/pamac-aur
     makepkg -Asfc --needed --noconfirm
-    if [ "$?" = "0" ] && [ "$(ls pamac-aur*.pkg.tar.xz 2> /dev/null)" != "" ]; then
-      echo "$PASSWORD" | su -c "pacman -U --noconfirm $(ls pamac-aur*.pkg.tar.xz)"
-      cd -
-      rm -rf /tmp/pamac-aur
+    pkg="$(ls pamac-aur*.pkg.tar.xz 2> /dev/null)"
+    if [ "$?" = "0" ] && [ "$pkg" != "" ]; then
+      echo "$PASSWORD" | sudo -S pacman -U --noconfirm $pkg
       gnome-extensions enable pamac-updates@manjaro.org
+    else
+      write "WARNING - pamac-aur could not be installed"
+      sleep 3
     fi
+    cd -
+    rm -rf /tmp/pamac-aur
   fi
 
   write "Configuring GNOME"
@@ -124,24 +177,16 @@ fi
   gsettings set org.gnome.system.location enabled true
   gsettings set org.gnome.desktop.datetime automatic-timezone true
   gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+
+  write "Configuring Firefox"
   xdg-settings set default-web-browser firefox.desktop
   gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
 
-  if [ "$(cat ~/.bashrc | grep '[archibold.io] bash extras')" = "" ]; then
-    write "Improving Bash"
-    echo '
-# [archibold.io] bash extras
-export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-export HISTSIZE=100000                   # many commands in ongoing session memory
-export HISTFILESIZE=100000               # many lines in .bash_history
-shopt -s histappend                      # append to historyinstead of overwriting it
-alias open=xdg-open                      # macOS open like function
-. /etc/profile.d/vte.sh                  # new terminal tabs in the same folder
-' >> ~/.bashrc
-  fi
+  write "GNOME is ready! Reboot to login."
 
-  write "GNOME is ready, please reboot"
+  # The following is to disable the root user
+  # echo "$PASSWORD" | sudo -S passwd -d root
 }
 
 clear
-installGNOME "$GPU_DRIVERS"
+installGNOME "$GPU_DRIVERS" "$SUDO_PASSWORD"

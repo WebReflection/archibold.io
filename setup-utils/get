@@ -50,7 +50,7 @@ echo -e "
 
 pacman-key --init
 pacman-key --populate archlinux
-pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio
+pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio vi
 sync
 
 if [ "$ENCRYPTION" = "yes" ]; then
@@ -223,6 +223,12 @@ if [ "$(which hwclock 2> /dev/null)" != "" ]; then
 fi
 
 echo -e "
+  executing $(tput bold)sync$(tput sgr0)
+"
+
+sync
+
+echo -e "
   dropping $(tput bold)swap$(tput sgr0)
 "
 
@@ -231,11 +237,5 @@ if [ "$ENCRYPTION" = "yes" ]; then
 else
   swapoff $SWAP
 fi
-
-echo -e "
-  executing $(tput bold)sync$(tput sgr0)
-"
-
-sync
 
 exit

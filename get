@@ -492,7 +492,6 @@ sudo chmod a+x /tmp/install
 sudo mv /tmp/install archibold.env/archibold.install
 sudo arch-chroot archibold.env /archibold.install
 rm -rf archibold.env/archibold.install
-sync
 sudo umount archibold.env/boot
 sudo umount archibold.env
 echoWithHeader "
