@@ -1,0 +1,16 @@
+if [ "$USER" = "root" ]; then
+echo -e "
+  $(tput bold)Warning$(tput sgr0): root automatic login is not supported
+"
+  exit 1
+fi
+
+echo -e "
+  automatic $(tput bold)$USER$(tput sgr0) login
+"
+
+su -c "
+sed -ie 's#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#' /etc/systemd/system/getty.target.wants/getty@tty1.service
+touch /home/$USER/.hushlogin
+chown -R $USER:users /home/$USER/.hushlogin
+"

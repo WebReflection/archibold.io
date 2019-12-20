@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-#########################
-# archibold.io (C) 2016 #
-#########################
+##############################
+# archibold.io (C) 2016-2020 #
+##############################
 
 # first ting: update the time or HTTPS won't work
 if [ "$(which ntpdate 2> /dev/null)" != "" ]; then
@@ -90,13 +90,13 @@ findTheDisk() {
 askAboutEncryption() {
   local choice=
   echoWithHeader "
-  Would you like to use *encryption* ? [y/N]"
+  Would you like to use *encryption* ? [Y/n]"
   read -n1 -s choice
 
-  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-    ENCRYPTION=yes
-  else
+  if [ "$choice" = "n" ] || [ "$choice" = "N" ]; then
     ENCRYPTION=no
+  else
+    ENCRYPTION=yes
   fi
 
 }
@@ -105,13 +105,13 @@ askAboutUEFI() {
   local choice=
   echoWithHeader "
   Is *${DISK}* installed for a system
-  compatible with *UEFI* ? [y/n]
+  compatible with *UEFI* ? [Y/n]
 "
   read -n1 -s choice
-  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-    UEFI="64"
-  else
+  if [ "$choice" = "n" ] || [ "$choice" = "N" ]; then
     UEFI="no"
+  else
+    UEFI="64"
   fi
 
 }
@@ -120,10 +120,10 @@ askAboutUEFILike() {
   local choice=
   echoWithHeader "
   Would you like regardless an *UEFI* like
-  partition *boot structure* ? [y/n]"
+  partition *boot structure* ? [Y/n]"
   read -n1 -s choice
 
-  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+  if [ "$choice" != "n" ] && [ "$choice" != "N" ]; then
     UEFI=yes
   fi
 
@@ -132,13 +132,13 @@ askAboutUEFILike() {
 askAboutEDD() {
   local choice=
   echoWithHeader "
-  Would you like to *disable EDD* ? [y/n]
+  Can this system use standard *EDD* settings ? [Y/n]
 "
   echomd "  BIOS Enhanced Disk Drive Services
   is usually available in modern systems."
   read -n1 -s choice
 
-  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+  if [ "$choice" = "n" ] || [ "$choice" = "N" ]; then
     EDD=" edd=off"
   fi
 }
@@ -162,20 +162,6 @@ askAboutSWAP() {
 
 }
 
-askAboutAUTOLOGIN() {
-  local choice=
-  echoWithHeader "
-  Would you like $USER to *automatic login* ? [y/n]
-
-  If you are planning to install a Desktop environment later on,
-  the suggested choice is *n*"
-  read -n1 -s choice
-
-  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-    AUTOLOGIN="yes"
-  fi
-}
-
 encryptPartition() {
   local partition="$1"
   local name="$2"
@@ -190,7 +176,7 @@ createPartitions() {
   echoWithHeader "
   Preparing *$DISK*"
   sudo dd if=/dev/zero of=$DISK bs=1 count=2048 > /dev/null 2>&1
-  sleep 1
+  sync
   if [ "$UEFI" = "no" ] || [ "$UEFI" = "yes" ]; then
     echomd '  with an *msdos* label'
     echo ''
@@ -219,7 +205,7 @@ createPartitions() {
     sudo parted --script --align optimal $DISK mkpart primary linux-swap $start $SWAP > /dev/null 2>&1
     sudo parted --script --align optimal $DISK mkpart primary ext4 $SWAP 100% > /dev/null 2>&1
   fi
-  sleep 1
+  sleep 2
   clear
   echoWithHeader "
   The *$DISK* will be partitioned as such:
@@ -272,7 +258,7 @@ createPartitions() {
       echo "  root: $ROOT"
     fi
   fi
-  sleep 3
+  sleep 2
   if [ "$BOOT" != "" ]; then
     clear
     echoWithHeader "
@@ -394,8 +380,8 @@ askForPassword() {
 }
 
 # The Archibold Installer
-clear && welcomeMessage && sleep 1
-clear && updatePacman && sleep 1
+clear && welcomeMessage && sleep 2
+clear && updatePacman && sleep 2
 
 if [ "$INTEL" = "" ] && [ "$(lscpu | grep GenuineIntel)" != "" ]; then
   INTEL="yes"
@@ -451,10 +437,6 @@ else
   QUIET=""
 fi
 
-if [ "$AUTOLOGIN" = "" ]; then
-  clear && askAboutAUTOLOGIN
-fi
-
 if [ "$LANGUAGE" = "" ]; then
   clear && askAboutLANGUAGE
 fi
@@ -479,14 +461,14 @@ clear
 echoWithHeader "
   Bootstrapping *Arch Linux* via pacstrap
 "
-sleep 1
+
 sudo pacstrap archibold.env arch-install-scripts base gptfdisk
 
 clear
 echoWithHeader "
   Creating basic installation via *arch-chroot*
 "
-sleep 1
+
 echo "#!/usr/bin/env bash
 
 LABEL=archibold
@@ -498,7 +480,6 @@ ROOT=$ROOT
 UEFI=$UEFI
 USER='$USER'
 PASSWORD='$PASSWORD'
-AUTOLOGIN=$AUTOLOGIN
 EDD='$EDD'
 QUIET='$QUIET'
 ENCRYPTION='$ENCRYPTION'

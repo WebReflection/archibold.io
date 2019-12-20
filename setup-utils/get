@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-#########################
-# archibold.io (C) 2016 #
-#########################
+##############################
+# archibold.io (C) 2016-2020 #
+##############################
 #
 # arch-chroot env
 #
@@ -15,7 +15,6 @@
 # UEFI
 # USER
 # PASSWORD
-# AUTOLOGIN
 # EDD
 # QUIET
 # ENCRYPTION
@@ -54,11 +53,11 @@ pacman-key --populate archlinux
 pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio
 sync
 
-echo -e "
-  verifying  $(tput bold)encryption$(tput sgr0)
+if [ "$ENCRYPTION" = "yes" ]; then
+  echo -e "
+  preparing  $(tput bold)encryption$(tput sgr0)
 "
 
-if [ "$ENCRYPTION" = "yes" ]; then
   echo "build ()
 {
   add_runscript
@@ -200,15 +199,6 @@ echo -e "
 
 yes "$PASSWORD" | passwd $USER
 
-if [ "$AUTOLOGIN" = "yes" ]; then
-  echo -e "
-  automatic $(tput bold)$USER$(tput sgr0) login
-"
-  sed -ie "s#ExecStart=-/sbin/agetty.*#ExecStart=-/sbin/agetty -nia $USER %I \$TERM#" /etc/systemd/system/getty.target.wants/getty@tty1.service
-  touch /home/$USER/.hushlogin
-  chown -R $USER:users /home/$USER/.hushlogin
-fi
-
 echo -e "
   installing $(tput bold)so$(tput sgr0) helper
 "
@@ -233,10 +223,19 @@ if [ "$(which hwclock 2> /dev/null)" != "" ]; then
 fi
 
 echo -e "
+  dropping $(tput bold)swap$(tput sgr0)
+"
+
+if [ "$ENCRYPTION" = "yes" ]; then
+  swapoff /dev/mapper/swap
+else
+  swapoff $SWAP
+fi
+
+echo -e "
   executing $(tput bold)sync$(tput sgr0)
 "
-sync
 
-sleep 3
+sync
 
 exit
