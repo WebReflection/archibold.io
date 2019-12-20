@@ -29,7 +29,7 @@ welcomeMessage() {
 
 updatePacman() {
   echoWithHeader '
-  The pacman manager, known as *pacman*,
+  The packages manager, known as *pacman*,
   might need some update too.'
 
   sudo pacman -Sy
@@ -310,12 +310,12 @@ createPartitions() {
 askAboutQUIET() {
   local choice=
   echoWithHeader "
-  Would you like a *quiet boot* ? [y/N]"
+  Would you like a *quiet boot* ? [Y/n]"
   read -n1 -s choice
-  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
-    QUIET=yes
-  else
+  if [ "$choice" = "n" ] || [ "$choice" = "N" ]; then
     QUIET=no
+  else
+    QUIET=yes
   fi
 }
 
@@ -324,7 +324,7 @@ askAboutLANGUAGE() {
   echoWithHeader "
   Which *language* do you need ?
 
-  Pleas specify just 2 chars like: en, de, it ...
+  Pleas specify just 2 chars like: en, or de, or it ...
 "
   read choice
   if [[ "$choice" =~ ^([a-z][a-z])$ ]]; then
