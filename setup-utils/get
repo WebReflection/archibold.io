@@ -18,6 +18,7 @@
 # EDD
 # QUIET
 # ENCRYPTION
+# GNOME
 #
 
 source <(curl -s https://archibold.io/utils/partid)
@@ -227,6 +228,20 @@ echo -e "
 "
 
 sync
+
+if [ "$GNOME" = "yes" ]; then
+  echo -e "
+  installing $(tput bold)GNOME$(tput sgr0)
+"
+  runuser -l $USER -c "
+export SUDO_PASSWORD='$PASSWORD'
+bash <(curl -s https://archibold.io/install/gnome)
+"
+
+  # The following is to disable the root user
+  # echo "$PASSWORD" | sudo -S passwd -d root
+
+fi
 
 echo -e "
   dropping $(tput bold)swap$(tput sgr0)

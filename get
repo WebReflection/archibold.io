@@ -101,6 +101,20 @@ askAboutEncryption() {
 
 }
 
+askAboutGNOME() {
+  local choice=
+  echoWithHeader "
+  Would you like to also install *GNOME* ? [Y/n]"
+  read -n1 -s choice
+
+  if [ "$choice" = "n" ] || [ "$choice" = "N" ]; then
+    GNOME=no
+  else
+    GNOME=yes
+  fi
+
+}
+
 askAboutUEFI() {
   local choice=
   echoWithHeader "
@@ -396,6 +410,9 @@ fi
 if [ "$PASSWORD" = "" ]; then
   clear && askForPassword
 fi
+if [ "$GNOME" = "" ]; then
+  clear && askAboutGNOME
+fi
 if [ "$DISK" = "" ]; then
   clear && findTheDisk
 fi
@@ -483,6 +500,7 @@ PASSWORD='$PASSWORD'
 EDD='$EDD'
 QUIET='$QUIET'
 ENCRYPTION='$ENCRYPTION'
+GNOME='$GNOME'
 
 " > /tmp/install
 curl -Ls -o /tmp/install-chroot https://archibold.io/setup-utils/get

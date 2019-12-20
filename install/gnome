@@ -120,9 +120,6 @@ fi'
     exit 1
   fi
 
-  write "Installing base-devel and git"
-  echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm base-devel git
-
   write "Installing GNOME with $GPU_DRIVERS"
   if [ "$GPU_DRIVERS" = "" ]; then
     GPU_DRIVERS="$(findGPU)"
@@ -147,8 +144,10 @@ fi'
   fi
 
   if [ "$(which pamac 2> /dev/null)" = "" ]; then
-    write "Installing pamac-aur"
+    write "Installing base-devel and git"
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm base-devel git
 
+    write "Installing pamac-aur"
     # TODO somehow this wasn't part of the dependencies, see if it's needed in the future
     echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm xorgproto
 
@@ -183,9 +182,6 @@ fi'
   gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
 
   write "GNOME is ready! Reboot to login."
-
-  # The following is to disable the root user
-  # echo "$PASSWORD" | sudo -S passwd -d root
 }
 
 clear
