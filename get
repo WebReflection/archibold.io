@@ -29,8 +29,7 @@ welcomeMessage() {
 
 updatePacman() {
   echoWithHeader '
-  The packages manager, known as *pacman*,
-  might need some update too.'
+  Updating *pacman*, the default ArchLinux package manager'
 
   sudo pacman -Sy
   sudo pacman-db-upgrade
