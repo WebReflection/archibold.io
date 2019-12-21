@@ -515,10 +515,13 @@ sudo umount archibold.env
 echoWithHeader "
   Congratulations. Arch Linux is ready.
 
-  Configured users: passwords are
+  These are your user/pass credentials:
 
-    *root*: *${PASSWORD}*
     *$USER*: *${PASSWORD}*
+
+  If you installed GNOME, pleaase open the terminal
+  once you are connected to the internet, to complete
+  the setup (it's a one/off operation)
 
   Please type #green(shutdown -h now) and
   remove the media after.

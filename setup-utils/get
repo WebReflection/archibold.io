@@ -73,16 +73,29 @@ HELPEOF
   UUID="$(partid $ROOT)"
   echo "run_hook ()
 {
+  echo -e \"Please enter your \033[1mencryption\033[0m password:\"
   mkdir -p /run/cryptsetup
   local password=
-  echo -e \"\033[1mencryption\033[0m password:\"
-  read -s -r password
-  echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid $UUID) root'" > /etc/initcpio/hooks/archibold
+  local i=0
+  while [ \$i -lt 3 ]; do
+    i=\$((i+1))
+    read -s -r password
+    echo \"\$password\" | sh -c 'cryptsetup open $(blkid --uuid $UUID) root'
+    if [[ \$? -eq 0 ]]; then
+      i=3
+      echo -e \"password \033[1mverified\033[0m\"" > /etc/initcpio/hooks/archibold
   if [ "$SWAP" != "0" ]; then
     UUID="$(partid $SWAP)"
-    echo "  echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid $UUID) swap'" >> /etc/initcpio/hooks/archibold
+    echo "      echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid $UUID) swap'" >> /etc/initcpio/hooks/archibold
   fi
-echo "  password=''
+  echo "    else
+      if [ \$i -eq 3 ]; then
+        echo -e \"\033[1mtoo many wrong passwords\033[0m\"
+      else
+        echo -e \"\033[1mwrong\033[0m password, please try again:\"
+      fi
+    fi
+  done
 }" >> /etc/initcpio/hooks/archibold
   # apparently consolefont was useless
   sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt resume filesystems fsck)/' /etc/mkinitcpio.conf
@@ -238,8 +251,9 @@ export SUDO_PASSWORD='$PASSWORD'
 bash <(curl -s https://archibold.io/install/gnome)
 "
 
-  # The following is to disable the root user
-  # echo "$PASSWORD" | sudo -S passwd -d root
+  # TODO: I'd love to get rid of the root user password but it cannot be done
+  #       at this point, otherwise GNOME cannot be installed on boot.
+  # passwd -d root
 
 fi
 

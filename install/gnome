@@ -48,6 +48,7 @@ installGNOME() {
   local PASSWORD="$2"
   local BASHRC=~/.bashrc
   local SHELL_AVAILABLE="$(which sudo 2> /dev/null)"
+  local FROM_ARCHIBOLD=nope
   local pkg=
 
   if [ ! -f "$BASHRC" ]; then
@@ -58,6 +59,8 @@ installGNOME() {
   if [ "$PASSWORD" = "" ]; then
     write "Please enter the root password"
     PASSWORD="$(systemd-ask-password)"
+  else
+    FROM_ARCHIBOLD=yep
   fi
 
   if [ "$(echo "$PASSWORD" | su -c "ls $BASHRC" 2> /dev/null)" != "$BASHRC" ]; then
@@ -143,43 +146,62 @@ fi'
     echo "$PASSWORD" | sudo -S timedatectl set-ntp 1
   fi
 
-  if [ "$(which pamac 2> /dev/null)" = "" ]; then
+  if [ "$FROM_ARCHIBOLD" = "nope" ]; then
+    if [ "$(which pamac 2> /dev/null)" = "" ]; then
+      write "Installing base-devel and git"
+      echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm base-devel git
+      write "Installing pamac-aur"
+
+      # TODO somehow this wasn't part of the dependencies, see if it's needed in the future
+      echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm xorgproto
+
+      rm -rf /tmp/pamac-aur
+      cd /tmp
+      git clone https://aur.archlinux.org/pamac-aur.git
+      cd -
+      cd /tmp/pamac-aur
+      makepkg -Asfc --needed --noconfirm
+      pkg="$(ls pamac-aur*.pkg.tar.xz 2> /dev/null)"
+      if [ "$?" = "0" ] && [ "$pkg" != "" ]; then
+        echo "$PASSWORD" | sudo -S pacman -U --noconfirm $pkg
+        gnome-extensions enable pamac-updates@manjaro.org
+      else
+        write "WARNING - pamac-aur could not be installed"
+        sleep 3
+      fi
+      cd -
+      rm -rf /tmp/pamac-aur
+    fi
+
+    write "Configuring GNOME"
+    gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+    gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+    gsettings set org.gnome.mutter center-new-windows true
+    gsettings set org.gnome.system.location enabled true
+    gsettings set org.gnome.desktop.datetime automatic-timezone true
+    gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+    gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
+    gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
+    gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
+    gsettings set org.gnome.nautilus.list-view use-tree-view true
+    # TODO: missing configurations
+    # set folders before files
+
+    write "Configuring Firefox"
+    xdg-settings set default-web-browser firefox.desktop
+    gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
+  else
     write "Installing base-devel and git"
     echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm base-devel git
 
-    write "Installing pamac-aur"
-    # TODO somehow this wasn't part of the dependencies, see if it's needed in the future
-    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm xorgproto
-
-    rm -rf /tmp/pamac-aur
-    cd /tmp
-    git clone https://aur.archlinux.org/pamac-aur.git
-    cd -
-    cd /tmp/pamac-aur
-    makepkg -Asfc --needed --noconfirm
-    pkg="$(ls pamac-aur*.pkg.tar.xz 2> /dev/null)"
-    if [ "$?" = "0" ] && [ "$pkg" != "" ]; then
-      echo "$PASSWORD" | sudo -S pacman -U --noconfirm $pkg
-      gnome-extensions enable pamac-updates@manjaro.org
-    else
-      write "WARNING - pamac-aur could not be installed"
-      sleep 3
-    fi
-    cd -
-    rm -rf /tmp/pamac-aur
+    write "Finalizing pamac install on terminal"
+    echo '
+# [archibold.io] GNOME installer, remaining parts
+if [ "$(which pamac 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/gnome)
+fi
+' >> $BASHRC
   fi
-
-  write "Configuring GNOME"
-  gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
-  gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
-  gsettings set org.gnome.mutter center-new-windows true
-  gsettings set org.gnome.system.location enabled true
-  gsettings set org.gnome.desktop.datetime automatic-timezone true
-  gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
-
-  write "Configuring Firefox"
-  xdg-settings set default-web-browser firefox.desktop
-  gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
 
   write "GNOME is ready! Reboot to login."
 }
