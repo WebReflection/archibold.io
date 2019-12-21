@@ -47,7 +47,7 @@ installGNOME() {
   local GPU_DRIVERS="$1"
   local PASSWORD="$2"
   local BASHRC=~/.bashrc
-  local SHELL_AVAILABLE="$(which sudo 2> /dev/null)"
+  local SHELL_AVAILABLE="$(which gnome-shell 2> /dev/null)"
   local FROM_ARCHIBOLD=nope
   local pkg=
 
@@ -68,7 +68,7 @@ installGNOME() {
     exit 1
   fi
 
-  if [ "$(cat $BASHRC | grep '[archibold.io] bash extras')" = "" ]; then
+  if [ "$(cat $BASHRC | grep '[archibold.io]')" = "" ]; then
     write "Improving Bash"
     echo '
 # [archibold.io] bash extras
@@ -123,20 +123,20 @@ fi'
     exit 1
   fi
 
-  write "Installing GNOME with $GPU_DRIVERS"
-  if [ "$GPU_DRIVERS" = "" ]; then
-    GPU_DRIVERS="$(findGPU)"
-  fi
-  local GNOME=""
-  for pkg in $(pacman -Sg gnome); do
-    if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
-      GNOME="${GNOME} ${pkg}"
-    fi
-  done
-
-  echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_US vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell
-
   if [ "$SHELL_AVAILABLE" = "" ]; then
+    write "Installing GNOME with $GPU_DRIVERS"
+    if [ "$GPU_DRIVERS" = "" ]; then
+      GPU_DRIVERS="$(findGPU)"
+    fi
+    local GNOME=""
+    for pkg in $(pacman -Sg gnome); do
+      if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
+        GNOME="${GNOME} ${pkg}"
+      fi
+    done
+
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_US vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell
+
     echo "$PASSWORD" | sudo -S systemctl enable NetworkManager
     echo "$PASSWORD" | sudo -S systemctl enable gdm
   fi
