@@ -61,6 +61,10 @@ if [ "$ENCRYPTION" = "yes" ]; then
 
   echo "build ()
 {
+  add_binary blkid
+  add_binary cryptsetup
+  add_binary echo
+  add_binary mkdir
   add_runscript
 }
 help ()
@@ -80,13 +84,13 @@ HELPEOF
   while [ \$i -lt 3 ]; do
     i=\$((i+1))
     read -s -r password
-    echo \"\$password\" | sh -c 'cryptsetup open $(blkid --uuid $UUID) root'
+    echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") root'
     if [[ \$? -eq 0 ]]; then
       i=3
       echo -e \"password \033[1mverified\033[0m\"" > /etc/initcpio/hooks/archibold
   if [ "$SWAP" != "0" ]; then
     UUID="$(partid $SWAP)"
-    echo "      echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid $UUID) swap'" >> /etc/initcpio/hooks/archibold
+    echo "      echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") swap'" >> /etc/initcpio/hooks/archibold
   fi
   echo "    else
       if [ \$i -eq 3 ]; then
@@ -98,8 +102,17 @@ HELPEOF
   done
 }" >> /etc/initcpio/hooks/archibold
   # apparently consolefont was useless
-  sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt resume filesystems fsck)/' /etc/mkinitcpio.conf
+  if [ "$SWAP" != "0" ]; then
+    sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt resume filesystems fsck)/' /etc/mkinitcpio.conf
+  else
+    sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt filesystems fsck)/' /etc/mkinitcpio.conf
+  fi
   mkinitcpio -p linux
+else
+  if [ "$SWAP" != "0" ]; then
+    sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect modconf block resume filesystems keyboard fsck)/' /etc/mkinitcpio.conf
+    mkinitcpio -p linux
+  fi
 fi
 
 echo -e "
@@ -163,8 +176,12 @@ if [ "$ENCRYPTION" = "yes" ]; then
 else
   UUID="$(partid $ROOT)"
   APPEND="options root=UUID=${UUID} rw"
+  if [ "$SWAP" != "0" ]; then
+    UUID="$(partid $SWAP)"
+    APPEND="$APPEND resume=UUID=${UUID} rw"
+  fi
   if [ "$BOOT_LOUDLY" = "" ]; then
-    APPEND="$APPEND quiet splash loglevel=0 console=tty2"
+    APPEND="$APPEND quiet splash loglevel=0"
   fi
 fi
 

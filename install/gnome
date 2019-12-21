@@ -203,7 +203,7 @@ fi
 ' >> $BASHRC
   fi
 
-  write "GNOME is ready! Reboot to login."
+  write "GNOME has been successfully installed"
 }
 
 clear
