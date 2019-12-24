@@ -16,4 +16,8 @@ done
 
 sudo pacman -Sc --noconfirm
 
-npm i -g electron
+if [ "$(uname -m)" = "aarch64" ]; then
+  npm i -g electron
+else
+  npm i -g --arch=armv7l electron
+fi
