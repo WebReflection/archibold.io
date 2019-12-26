@@ -66,7 +66,7 @@ findTheDisk() {
       fi
     done
   else
-    for disk in $(lsblk --output NAME); do
+    for disk in $(lsblk --output NAME | grep -v '^loop'); do
       if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
         ((i=i+1))
         disks="$disks $disk"
