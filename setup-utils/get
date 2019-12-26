@@ -207,11 +207,6 @@ linux   /vmlinuz-linux
 ${UCODE_STRING}initrd  /initramfs-linux.img
 ${APPEND}" > /boot/loader/entries/arch.conf
 
-
-if [ "$(which yes 2> /dev/null)" = "" ]; then
-  pacman -S --needed --noconfirm yes
-fi
-
 echo -e "
   assigning $(tput bold)root$(tput sgr0) passwords
 "
