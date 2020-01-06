@@ -91,6 +91,7 @@ HELPEOF
   while [ \$i -lt 3 ]; do
     i=\$((i+1))
     read -s -r password
+    echo 'verifying password'
     echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") root'
     if [[ \$? -eq 0 ]]; then
       i=3
