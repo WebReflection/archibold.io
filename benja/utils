@@ -76,13 +76,13 @@ findTheDisk() {
   fi
 
   echo ''
-  if [ "$i" -le "9" ]; then
+  if [ $i -le 9 ]; then
     read -n1 choice
   else
     read -n2 choice
   fi
 
-  if [ "$choice" -gt "0" ] && [ "$choice" -le "$i" ]; then
+  if [ $choice -gt 0 ] && [ $choice -le $i ]; then
     i=0
     for disk in $disks; do
       ((i=i+1))

@@ -1,5 +1,7 @@
+#!/usr/bin/env bash
+
 #########################
-# archibold.io (C) 2016 #
+# archibold.io (C) 2019 #
 #########################
 
 require() {
@@ -7,6 +9,8 @@ require() {
   local tmp=$(type -t $pkg)
   if [ "$tmp" != "function" ] && [ "$tmp" != "file" ]; then
     if curl --output /dev/null --silent --head --fail "https://archibold.io/utils/$pkg"; then
+      # TODO: wouldn't this be enough?
+      # source <(curl -s "https://archibold.io/utils/$pkg")
       tmp=$(mktemp /tmp/archibold.XXXXXXXX)
       curl -Lso $tmp https://archibold.io/utils/$pkg
       if [[ "$(cat $tmp | grep -sn '^#!/usr/bin/env ')" =~ ^1:#* ]]; then

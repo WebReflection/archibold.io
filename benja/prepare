@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
 
+if [ ${BASH_VERSION:0:1} -lt 4 ]; then
+  clear
+  echo ''
+  echo "  You need $(tput bold)bash 4$(tput sgr0) or greater."
+  echo '  Try typing `brew install bash`'
+  echo ''
+  exit 1
+fi
+
 if [ "$(uname)" = "Darwin" ] && [ ! -f /opt/gnu/sbin/mkfs.ext4 ]; then
   clear
   echo ''
   echo "  You need $(tput bold)fuse-ext2$(tput sgr0) to use this installer."
-  echo '  Please install it following these instrauctions:'
+  echo '  Please install it following these instructions:'
   echo '  https://github.com/alperakcan/fuse-ext2#macos'
   echo ''
   exit 1
@@ -132,7 +141,7 @@ Please chose a \x1B[1mhard to guess password\x1B[22m
 to locally or remotely login with \x1B[1malarm\x1B[22m user
 and eventually execute sudo too
 "
-  read pass
+  read -r pass
 
   if [ "${pass}" = "" ]; then
     echo -e "  \x1B[1mNope\x1B[22m, one more time ... "

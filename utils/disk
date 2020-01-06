@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+
+disk_list() {
+  local i=0
+  local choice=
+  local disks=
+  local disk=
+  if [ "$(uname)" = "Darwin" ]; then
+    for disk in $(/usr/sbin/diskutil list | grep '/dev/'); do
+      if [ "${disk:0:5}" = "/dev/" ]; then
+        ((i=i+1))
+        disks="$disks ${disk:5}"
+        if [ "$1" = "show" ]; then
+          echo "  $(tput bold)$i$(tput sgr0) $disk $(disk_size /dev/$disk)"
+        fi
+      fi
+    done
+  else
+    for disk in $(lsblk --output NAME | grep -v '^loop'); do
+      if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+        ((i=i+1))
+        disks="$disks $disk"
+        if [ "$1" = "show" ]; then
+          printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(disk_size /dev/$disk)
+        fi
+      fi
+    done
+  fi
+
+  if [ "$1" = "pick" ]; then
+    if [ $i -le 9 ]; then
+      read -n1 choice
+    else
+      read -n2 choice
+    fi
+    if [ $choice -gt 0 ] && [ $choice -le $i ]; then
+      i=0
+      for disk in $disks; do
+        ((i=i+1))
+        if [ "$i" = "$choice" ]; then
+          echo "/dev/$disk"
+          return
+        fi
+      done
+    fi
+  fi
+}
+
+disk_size() {
+  local found=0
+  local size=
+  if [ "$(uname)" = "Darwin" ]; then
+    /usr/sbin/diskutil info $disk | grep 'Disk Size:' | sed -e 's/Disk Size: *//' | sed -e 's/([^)]*)//' | sed -e 's/([^)]*)//'
+  else
+    for size in $(lsblk --output SIZE $1); do
+      if [ $found -eq 0 ]; then
+        found=1
+      else
+        echo $size
+        return
+      fi
+    done
+  fi
+}
