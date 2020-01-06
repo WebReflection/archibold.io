@@ -23,6 +23,13 @@
 
 source <(curl -s https://archibold.io/utils/partid)
 
+install_pkg() {
+  while ! pacman -S --needed --noconfirm "$@"
+  do
+    :
+  done
+}
+
 cleanEfibootmgr() {
   local which="$1"
   local prev=
@@ -51,7 +58,7 @@ echo -e "
 
 pacman-key --init
 pacman-key --populate archlinux
-pacman -S --needed --noconfirm pacman-mirrorlist linux linux-headers linux-firmware mkinitcpio vi
+install_pkg linux linux-headers linux-firmware pacman-mirrorlist mkinitcpio vi
 sync
 
 if [ "$ENCRYPTION" = "yes" ]; then
@@ -120,7 +127,7 @@ echo -e "
 "
 
 # TODO: I am not sure wireless-regdb is useful at all ...
-pacman -S --needed --noconfirm dialog wpa_supplicant iw netctl dhcpcd wireless-regdb
+install_pkg dialog wpa_supplicant iw netctl dhcpcd wireless-regdb
 
 UCODE=''
 UCODE_STRING=''
@@ -135,14 +142,14 @@ if [ "$UCODE" != "" ]; then
   echo -e "
   installing $(tput bold)${UCODE}$(tput sgr0)
 "
-  pacman -S --needed --noconfirm $UCODE
+  install_pkg $UCODE
 fi
 
 if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   echo -e "
   installing $(tput bold)UEFI$(tput sgr0) tools
 "
-  pacman -S --needed --noconfirm efibootmgr efitools
+  install_pkg efibootmgr efitools
 fi
 
 if [ "$SWAP" != "0" ]; then
