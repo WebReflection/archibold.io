@@ -51,7 +51,7 @@ echo -e "
 
 pacman-key --init
 pacman-key --populate archlinux
-pacman -S --needed --noconfirm pacman-mirrorlist linux linux-firmware mkinitcpio vi
+pacman -S --needed --noconfirm pacman-mirrorlist linux linux-headers linux-firmware mkinitcpio vi
 sync
 
 if [ "$ENCRYPTION" = "yes" ]; then
