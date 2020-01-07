@@ -262,6 +262,16 @@ echo -e "
 
 sync
 
+runuser -l $USER -c "echo '
+# for a better bash experience
+export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
+export HISTSIZE=100000                   # many commands in ongoing session memory
+export HISTFILESIZE=100000               # many lines in .bash_history
+shopt -s histappend                      # append to historyinstead of overwriting it
+alias open=xdg-open                      # macOS open like function
+. /etc/profile.d/vte.sh                  # new terminal tabs in the same folder
+' >> /home/$USER/.bashrc"
+
 if [ "$GNOME" = "yes" ]; then
   echo -e "
   installing $(tput bold)GNOME$(tput sgr0)
