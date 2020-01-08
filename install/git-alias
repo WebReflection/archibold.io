@@ -1,0 +1,5 @@
+[alias]
+        cb = !sh -c \"git branch | grep \\* | cut -d ' ' -f2\"
+        pf = !sh -c \"git commit --amend --no-edit && git push --force origin $(git branch | grep \\* | cut -d ' ' -f2)\"
+        pr = !sh -c \"git pull --rebase origin $(git branch | grep \\* | cut -d ' ' -f2)\"
+        publish = !sh -c \"git push && git push --tags && npm publish\"
