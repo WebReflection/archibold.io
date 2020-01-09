@@ -106,7 +106,7 @@ formatPartitions() {
     yes | sudo /opt/gnu/sbin/mkfs.ext4 "$ROOT"
   else
     sudo mkfs.vfat "$BOOT"
-    sudo mkfs.vfat "$APP"
+    sudo mkfs.fat -F32 "$APP"
     sudo dosfslabel "$APP" APP
     yes | sudo mkfs.ext4 "$ROOT"
   fi

@@ -15,7 +15,7 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   clear
 fi
 
-echo 'alarm' | sudo -S usermod -a -G wheel,storage,power,video ${USER}
+echo 'alarm' | sudo -S usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video ${USER}
 
 cd ~/
 
@@ -92,13 +92,17 @@ fi
 if [ ! -f /etc/systemd/system/app-disk.service ]; then
   echo "setting ~/app folder"
   mkdir -p ${HOME}/app
+  APP_DISK=$(ls -l /dev/disk/by-label | grep APP | sed -e 's#^.*/##' 2> /dev/null)
+  if [ "$APP_DISK" = "" ]; then
+    APP_DISK=mmcblk0p3
+  fi
   echo "[Unit]
 Description=app ${HOME}/app disk
 
 [Service]
 User=root
 Type=simple
-ExecStart=/usr/bin/mount /dev/mmcblk0p3 ${HOME}/app -o uid=${USER},gid=users,umask=0022
+ExecStart=/usr/bin/mount /dev/${APP_DISK} ${HOME}/app -o uid=${USER},gid=users,umask=0022
 
 [Install]
 WantedBy=multi-user.target
