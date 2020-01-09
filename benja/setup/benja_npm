@@ -6,7 +6,7 @@ do
   :
 done
 
-if [ "$(which npm 2> /dev/null)" != "" ]; then
+if [ "$(which npm 2> /dev/null)" = "" ]; then
   while ! sudo pacman -S --needed --noconfirm npm
   do
     :
