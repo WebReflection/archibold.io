@@ -49,13 +49,15 @@ sudo pacman -Sc --noconfirm
 while ! sudo pacman -S --needed --noconfirm \
   dhcpcd ntp openssh \
   iptables dialog wpa_supplicant openssh libnotify \
-  base-devel git diffstat chrpath wget cpio pv \
+  base-devel python git diffstat chrpath wget cpio pv \
   geoip geoip-database-extra geoclue \
   nss gperf libexif \
   ttf-dejavu
 do
   :
 done
+
+sudo pacman -S --needed --noconfirm python2
 
 sudo pacman -Sc --noconfirm
 
