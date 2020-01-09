@@ -51,7 +51,7 @@ while ! sudo pacman -S --needed --noconfirm \
   iptables dialog wpa_supplicant openssh libnotify \
   base-devel git diffstat chrpath wget cpio pv \
   geoip geoip-database-extra geoclue \
-  gconf nss gperf libexif \
+  nss gperf libexif \
   ttf-dejavu
 do
   :
