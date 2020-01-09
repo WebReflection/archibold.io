@@ -1,10 +1,22 @@
 #!/usr/bin/env bash
 
 # TODO: drop nodejs-lts-erbium and use nodejs once raspi-io works in there
-while ! sudo pacman -S --needed --noconfirm npm nodejs-lts-erbium
+while ! sudo pacman -S --needed --noconfirm nodejs-lts-erbium
 do
   :
 done
+
+if [ "$(which npm 2> /dev/null)" != "" ]; then
+  while ! sudo pacman -S --needed --noconfirm npm
+  do
+    :
+  done
+fi
+
+# monkey patching the infamous v6.0.1
+if [ "$(node-gyp --version)" = "v6.0.1" ]; then
+  sudo sed -i 's/= semver.Range/= new semver.Range/' /usr/lib/node_modules/node-gyp/lib/find-python.js
+fi
 
 sudo pacman -Sc --noconfirm
 
@@ -20,11 +32,13 @@ ${USER} ALL=NOPASSWD: /usr/bin/npm
 '>>/etc/sudoers"
 fi
 
-export PATH="${PATH}:${HOME}/.npm-packages/bin"
-export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
+if [ "$(echo $PATH | grep "${HOME}/.npm-packages/bin")" = "" ]; then
+  export PATH="${PATH}:${HOME}/.npm-packages/bin"
+  export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
 
-echo "
-# npm and nodejs global modules
-export PATH=\"$PATH\"
-export NODE_PATH=\"$NODE_PATH\"
-" >> ~/.bashrc
+  echo "
+  # npm and nodejs global modules
+  export PATH=\"$PATH\"
+  export NODE_PATH=\"$NODE_PATH\"
+  " >> ~/.bashrc
+fi
