@@ -90,11 +90,13 @@ fi
 
 # setup app folder
 if [ ! -f /etc/systemd/system/app-disk.service ]; then
-  echo "setting ~/app folder"
   mkdir -p ${HOME}/app
   APP_DISK=$(ls -l /dev/disk/by-label | grep APP | sed -e 's#^.*/##' 2> /dev/null)
   if [ "$APP_DISK" = "" ]; then
     APP_DISK=mmcblk0p3
+    echo "forcing ~/app folder as /dev/${APP_DISK}"
+  else
+    echo "setting ~/app folder as /dev/${APP_DISK}"
   fi
   echo "[Unit]
 Description=app ${HOME}/app disk
