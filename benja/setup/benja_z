@@ -23,4 +23,6 @@ sudo pacman-optimize
 rm -f ~/.bash_history
 touch ~/.bash_history
 
+echo "rebooting ..."
+sleep 5
 sudo reboot
