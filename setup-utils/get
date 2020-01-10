@@ -96,7 +96,7 @@ run_hook() {
     echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") root'
     if [[ \$? -eq 0 ]]; then
       i=3
-      echo -e \"password \033[1mOK\033[0m\"" >> /etc/initcpio/hooks/archibold
+      echo -e \"password \033[1mOK\033[0m, please wait ...\"" >> /etc/initcpio/hooks/archibold
   if [ "$SWAP" != "0" ]; then
     UUID="$(partid $SWAP)"
     echo "      echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") swap'" >> /etc/initcpio/hooks/archibold
