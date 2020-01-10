@@ -170,8 +170,7 @@ installOS() {
   # this might take forever in macOS
   sudo bsdtar -xvpf "$ARCHIVE" -C root 2>&1 | while read -r line; do echo -ne "$line\033[K\r"; done
   echo -ne "\033[K\r"
-  echo ''
-  echo '... moving boot files ...'
+  echo '   .. moving boot files ..'
   sudo mv root/boot/* boot
 }
 
