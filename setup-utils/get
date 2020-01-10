@@ -82,20 +82,21 @@ HELPEOF
 }" > /etc/initcpio/install/archibold
 
   UUID="$(partid $ROOT)"
-  echo "run_hook ()
-{
-  echo -e \"Please enter your \033[1mencryption\033[0m password:\"
-  mkdir -p /run/cryptsetup
+  curl -LO https://archibold.io/utils/ask-password
+  mv ask-password /etc/initcpio/hooks/archibold
+  echo "
+run_hook() {
   local password=
   local i=0
+  mkdir -p /run/cryptsetup
   while [ \$i -lt 3 ]; do
     i=\$((i+1))
-    read -s -r password
+    password=\$(askPassword \"Please enter your \033[1mencryption\033[0m password:\")
     echo 'verifying password'
     echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") root'
     if [[ \$? -eq 0 ]]; then
       i=3
-      echo -e \"password \033[1mOK\033[0m\"" > /etc/initcpio/hooks/archibold
+      echo -e \"password \033[1mOK\033[0m\"" >> /etc/initcpio/hooks/archibold
   if [ "$SWAP" != "0" ]; then
     UUID="$(partid $SWAP)"
     echo "      echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") swap'" >> /etc/initcpio/hooks/archibold
@@ -108,7 +109,8 @@ HELPEOF
       fi
     fi
   done
-}" >> /etc/initcpio/hooks/archibold
+}
+" >> /etc/initcpio/hooks/archibold
   # apparently consolefont was useless
   if [ "$SWAP" != "0" ]; then
     sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt resume filesystems fsck)/' /etc/mkinitcpio.conf
