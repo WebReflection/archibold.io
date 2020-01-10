@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+replace() {
+  local js='
+  const {length} = ARGV;
+  const [input, output, file] = ARGV;
+  const {byteArray, gi} = imports;
+  const {GLib} = gi;
+  if (length !== 0) {
+    if (!/^\/[\S\s]+?\/[gimuy]*$/.test(input))
+      throw new Error(`unexpected input ${input}`);
+    const closing = input.lastIndexOf("/");
+    const re = new RegExp(input.slice(1, closing), input.slice(closing + 1));
+    const [ok, stdin] = GLib.file_get_contents(file || "/dev/stdin");
+    if (!ok)
+      throw new Error(`unable to read ${file || "/dev/stdin"}`);
+    print(byteArray.toString(stdin).replace(re, output));
+  }
+  else {
+    print("")
+    print("\x1b[1mGJS based replace utility\x1b[0m");
+    print("  replace \x27/any-RegExp/g\x27 \x27$1-$2\x27 file.txt");
+    print("  echo 123 | replace \x27/any-RegExp/g\x27 \x27$1-$2\x27");
+    print("")
+  }
+  '
+  if [ "$2" != "" ]; then
+    gjs -c "$js" "$1" "$2" "$3"
+  else
+    gjs -c "$js"
+  fi
+}
