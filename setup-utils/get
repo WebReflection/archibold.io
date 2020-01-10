@@ -66,18 +66,18 @@ if [ "$ENCRYPTION" = "yes" ]; then
   preparing  $(tput bold)encryption$(tput sgr0)
 "
 
-  echo "build ()
-{
+  echo "build() {
   add_binary blkid
   add_binary cryptsetup
   add_binary echo
   add_binary mkdir
+  add_binary printf
   add_runscript
 }
-help ()
-{
+
+help() {
 cat<<HELPEOF
-  This asks for the encryption password once and then opens root and swap
+  Asks for the encryption password once and then opens root and swap
 HELPEOF
 }" > /etc/initcpio/install/archibold
 
