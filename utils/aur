@@ -8,6 +8,10 @@ aur() {
   local pkg=""
   local preserve=""
   local skippgp=""
+  local HAS_SUDO=0
+  if [ "$(which sudo 2> /dev/null)" != "" ]; then
+    HAS_SUDO=1
+  fi
   if [ "${3}" = "--no-pgp" ] || [ "${2}" = "--no-pgp" ] || [ "${1}" = "--no-pgp" ]; then
     skippgp="--skippgpcheck"
   fi
@@ -42,11 +46,18 @@ aur() {
     echo "You $(tput bold)cannot be root$(tput sgr0) to run $(tput bold)aur$(tput sgr0)"
     echo ""
   else
+    if [ "${AUR_NO_SUDO}${HAS_SUDO}" = "1" ]; then
+      echo "Checking $(tput bold)sudo$(tput sgr0) privileges"
+      sudo ls > /dev/null
+    fi
     if [ ! -f ~/.archibold-aur ]; then
       date > ~/.archibold-aur
       echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
-      if [ "$AUR_NO_SUDO" != "" ] || [ "$(which sudo 2> /dev/null)" = "" ]; then
+      if [ "$AUR_NO_SUDO" != "" ] || [ "$HAS_SUDO" = "0" ]; then
         su -c 'pacman -S --needed --noconfirm base-devel git'
+        if [ "$HAS_SUDO" = "0" ]; then
+          su -c 'pacman -R --noconfirm sudo'
+        fi
       else
         sudo pacman -S --needed --noconfirm base-devel git
       fi
@@ -76,10 +87,5 @@ aur() {
     echo ""
   fi
 }
-
-if [ "$AUR_NO_SUDO" = "" ] && [ "$(which sudo 2> /dev/null)" != "" ]; then
-  echo "Checking $(tput bold)sudo$(tput sgr0) privileges"
-  sudo ls > /dev/null
-fi
 
 aur "${1}" "${2}" "${3}"
