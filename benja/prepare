@@ -180,6 +180,11 @@ sync
 curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 sudo mv aur $TMP_DIR/root/usr/bin/
+
+curl -LOs https://archibold.io/utils/so
+chmod a+x so
+sudo mv so $TMP_DIR/root/usr/bin/
+
 sync
 
 cd -

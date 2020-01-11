@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+if [ "$(which sudo 2> /dev/null)" = "" ] && [ "$(alias | grep sudo)" = "" ] && [ "$(which so 2> /dev/null)" != "" ]; then
+  alias sudo=so
+fi
+
 # automatic login
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
 sudo sh -c "echo '[Service]
