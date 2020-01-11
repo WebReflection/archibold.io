@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/utils/sudo)
+  source <(curl -s https://archibold.io/utils/sudo)
 fi
 
 echo "dtoverlay=vc4-fkms-v3d,cma-384
