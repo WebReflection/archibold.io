@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ "$(which sudo 2> /dev/null)" = "" ] && [ "$(alias | grep sudo)" = "" ]; then
+  if [ "$(which so 2> /dev/null)" = "" ]; then
+    source <(curl -s https://archibold.io/utils/so)
+  fi
+  alias sudo=so
+fi

@@ -4,6 +4,15 @@
 # (c) archibold.io 2018 #
 #########################
 
+so() {
+  local arg=""
+  local args=""
+  for arg in "${@:2}"; do
+    args="${args} \"$(echo "${arg}" | sed 's/[`$"\\]/\\\0/g')\""
+  done
+  su -c "${1}${args}"
+}
+
 if [ "${1}" = "" ]; then
   echo ""
   echo "The $(tput bold)so$(tput sgr0) utility, by https://archibold.io"
@@ -12,9 +21,5 @@ if [ "${1}" = "" ]; then
   echo "  so echo 'an echo test as root'"
   echo ""
 else
-  args=""
-  for arg in "${@:2}"; do
-    args="${args} \"$(echo "${arg}" | sed 's/[`$"\\]/\\\0/g')\""
-  done
-  su -c "${1}${args}"
+  so "$@"
 fi

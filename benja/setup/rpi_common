@@ -26,28 +26,7 @@ else
 fi
 '>>.bashrc
 
-echo "dtoverlay=vc4-fkms-v3d,cma-384
-
-gpu_mem=128
-gpu_mem_256=128
-gpu_mem_512=196
-gpu_mem_1024=384
-
-initramfs initramfs-linux.img followkernel
-
-dtparam=audio=on
-dtparam=spi=on
-dtparam=i2c_arm=on
-dtparam=i2c=on
-
-[all]
-avoid_warnings=1
-disable_splash=1
-boot_delay=0
-">config.txt
-
-sudo mv config.txt /boot/ 2> /dev/null
-
+bash <(curl -s https://archibold.io/benja/setup/rpi_config)
 bash <(curl -s https://archibold.io/benja/setup/rpi_raspi-io)
 bash <(curl -s https://archibold.io/benja/setup/benja_app)
 bash <(curl -s https://archibold.io/benja/setup/benja_z)
