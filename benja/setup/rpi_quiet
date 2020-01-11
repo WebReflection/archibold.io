@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-if [ "$(which sudo 2> /dev/null)" = "" ] && [ "$(alias | grep sudo)" = "" ] && [ "$(which so 2> /dev/null)" != "" ]; then
-  alias sudo=so
-fi
-
 if [ -f /boot/boot.txt ]; then
   # modify boot.scr to reserve cma memory and make the boot silent
   while ! sudo pacman -S --needed --noconfirm uboot-tools
