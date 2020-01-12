@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+
+if [ "$(whoami)" = "root" ] || [ "$USER" = "root" ]; then
+  echo 'You need to be a regular user to run this script'
+  exit 1
+fi
+
+if [ "$USER" = "" ]; then
+  USER="$(whoami)"
+fi
+
+kiosk() {
+  local wl=""
+  yes "$1" | su -c "
+
+pacman-key --init
+pacman-key --populate archlinuxarm
+
+mkdir -p /etc/systemd/system/getty@tty1.service.d
+echo '[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia ${USER} %I
+'>/etc/systemd/system/getty@tty1.service.d/override.conf
+
+echo 'dtoverlay=vc4-fkms-v3d,cma-384
+
+gpu_mem=128
+gpu_mem_256=128
+gpu_mem_512=196
+gpu_mem_1024=384
+
+initramfs initramfs-linux.img followkernel
+
+dtparam=audio=on
+dtparam=spi=on
+dtparam=i2c_arm=on
+dtparam=i2c=on
+
+[all]
+avoid_warnings=1
+disable_splash=1
+boot_delay=0
+'>/boot/config.txt
+
+groupadd weston-launch
+usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
+
+if [ -f /boot/boot.txt ]; then
+  pacman -S --needed --noconfirm uboot-tools
+  sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/boot.txt
+  mkimage -T script -C none -n 'Raspberry Pi' -d /boot/boot.txt /boot/boot.scr
+fi
+
+if [ -f /boot/cmdline.txt ]; then
+  sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/cmdline.txt
+fi
+
+pacman -Syu --needed --noconfirm weston ttf-dejavu
+"
+
+  wl="$(which weston-launch 2> /dev/null)"
+  if [ "$wl" = "" ]; then
+    echo 'unable to complete weston kiosk installation'
+    exit 1
+  else
+    touch ~/.hushlogin
+    echo '
+export HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then
+  weston-launch 2> /dev/null
+fi
+'>>~/.bashrc
+
+    echo '#!/usr/bin/env sh
+weston-terminal --fullscreen'>~/.kiosk
+    chmod a+x .kiosk
+
+    mkdir -p ~/.config
+    echo "[core]
+idle-time=0
+require-input=false
+
+[shell]
+client=${HOME}/.kiosk
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+">~/.config/weston.ini
+    yes "$1" | su -c reboot
+  fi
+}
+
+source <(curl -s https://archibold.io/utils/ask-password)
+kiosk "$(askPassword 'root password:')"

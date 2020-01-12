@@ -25,7 +25,7 @@ touch .hushlogin
 # basic bashrc configuration
 echo '
 export HISTCONTROL=ignoredups:erasedups  # no duplicate entries
-shopt -s histappend                      # append to historyinstead of overwriting it
+shopt -s histappend                      # append to history instead of overwriting it
 ' >> ~/.bashrc
 
 # ArchLinux initialization + update
