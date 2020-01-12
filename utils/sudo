@@ -1,0 +1,76 @@
+#!/usr/bin/env bash
+
+# if sudo is installed, get gracefully out
+if [ "$(which sudo 2> /dev/null)" != "" ]; then
+  echo 'sudo already installed'
+  exit 0
+fi
+
+# if the user is root, get out with error code
+if [ "$(whoami)" = "root" ] || [ "$USER" = "root" ]; then
+  echo 'you cannot be root to use this script'
+  exit 1
+fi
+
+# if the user is unknown ...
+if [ "$USER" = "" ]; then
+  # grab it via whoami
+  USER="$(whoami)"
+  # and if it's still unknown, get out with error code
+  if [ "$USER" = "" ]; then
+    echo 'unable to identify the current user'
+    exit 1
+  fi
+fi
+
+# use the awesome askPassword
+source <(curl -s https://archibold.io/utils/ask-password)
+
+if [ "$(declare -F | grep askPassword)" = "" ]; then
+  echo 'unable to reach https://archibold.io site'
+  exit 1
+fi
+
+addGroup() {
+  local g=""
+  for g in $(groups); do
+    if [ "$g" = "wheel" ]; then
+      return
+    fi
+  done
+  yes "$PASSWORD" | su -c "gpasswd -a $USER wheel"
+}
+
+setup_sudo() {
+  local PASSWORD="$1"
+
+  if [ "$(yes "$PASSWORD" | su -c 'ls /' 2> /dev/null)" = "" ]; then
+    echo -e "invalid \033[1mroot\033[0m password, please try again"
+    setup_sudo "$(askPassword)"
+    return
+  fi
+
+  addGroup "$PASSWORD"
+  yes "$PASSWORD" | su -c "passwd $USER"
+  yes "$PASSWORD" | su -c 'pacman -Sy --needed --noconfirm sudo'
+
+  if [ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
+    yes "$PASSWORD" | su -c 'echo "
+## [archibold.io] enabled wheel group
+%wheel ALL=(ALL) ALL
+" >> /etc/sudoers'
+  fi
+
+  if [ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]; then
+    yes "$PASSWORD" | su -c 'echo "
+## [archibold.io] never expiring sudo password
+Defaults env_reset, timestamp_timeout=-1
+" >> /etc/sudoers'
+  fi
+
+  yes "$PASSWORD" | sudo -S ls 2> /dev/null
+  echo 'sudo installed correctly, your password changed to the root one'
+  echo 'if you would like to change it, please type `passwd`'
+}
+
+setup_sudo "$(askPassword)"

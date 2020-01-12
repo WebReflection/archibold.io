@@ -67,9 +67,6 @@ pacman -Syu --needed --noconfirm weston ttf-dejavu
     echo '
 export HISTCONTROL=ignoredups:erasedups
 shopt -s histappend
-if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]]; then
-  weston-launch 2> /dev/null
-fi
 '>>~/.bashrc
 
     echo '#!/usr/bin/env sh
