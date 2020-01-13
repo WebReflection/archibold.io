@@ -38,23 +38,37 @@ addGroup() {
       return
     fi
   done
-  yes "$PASSWORD" | su -c "gpasswd -a $USER wheel"
+  yes "$1" | su -c "gpasswd -a $USER wheel"
 }
 
 setup_sudo() {
   local PASSWORD="$1"
+  local NEW_PASSWORD=""
 
   if [ "$(yes "$PASSWORD" | su -c 'ls /' 2> /dev/null)" = "" ]; then
-    echo -e "invalid \033[1mroot\033[0m password, please try again"
+    echo -e "Invalid \033[1mroot\033[0m password, please try again"
     setup_sudo "$(askPassword)"
     return
   fi
+
+  NEW_PASSWORD="$PASSWORD"
+  while true
+  do
+    if [ "$NEW_PASSWORD" = "root" ] || [ "$NEW_PASSWORD" = "" ]; then
+      echo -e "The default \033[1mroot\033[0m password is not safe!"
+      echo -e "Please type a \033[1mnew password\033[0m to use with root and $USER"
+      NEW_PASSWORD="$(askPassword)"
+    else
+      break
+    fi
+  done
 
   addGroup "$PASSWORD"
   yes "$PASSWORD" | su -c "passwd $USER"
   yes "$PASSWORD" | su -c 'pacman -Sy --needed --noconfirm sudo'
 
   if [ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
+    echo "enabling wheel group"
     yes "$PASSWORD" | su -c 'echo "
 ## [archibold.io] enabled wheel group
 %wheel ALL=(ALL) ALL
@@ -62,15 +76,27 @@ setup_sudo() {
   fi
 
   if [ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]; then
+    echo "setting a never expiring sudo password"
     yes "$PASSWORD" | su -c 'echo "
 ## [archibold.io] never expiring sudo password
 Defaults env_reset, timestamp_timeout=-1
 " >> /etc/sudoers'
   fi
 
-  yes "$PASSWORD" | sudo -S ls 2> /dev/null
-  echo 'sudo installed correctly, your password changed to the root one'
-  echo 'if you would like to change it, please type `passwd`'
+  yes "$PASSWORD" | sudo -S ls > /dev/null 2>&1
+
+  echo ''
+  if [ "$PASSWORD" != "$NEW_PASSWORD" ]; then
+    echo "changing root and $USER password"
+    yes "$PASSWORD" | su -c "yes '$NEW_PASSWORD' | passwd $USER"
+    yes "$PASSWORD" | su -c "yes '$NEW_PASSWORD' | passwd"
+    echo ''
+    echo "sudo installed correctly: root and $USER now have a new password"
+  else
+    echo "sudo installed correctly: user $USER now has the same root password"
+  fi
+  echo "feel free to change it via 'sudo passwd' or 'sudo passwd $USER'"
+  echo ''
 }
 
 setup_sudo "$(askPassword)"
