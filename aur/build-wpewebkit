@@ -28,7 +28,8 @@ cd ~/aur/wpewebkit
 if [ ! -f wpewebkit-${pkgver}.tar.xz ]; then
     curl -LO https://wpewebkit.org/releases/wpewebkit-${pkgver}.tar.xz
     tar -xf wpewebkit-${pkgver}.tar.xz
-    sed -i 's/UErrorCode error = U_ZERO_ERROR;/;UErrorCode error = U_ZERO_ERROR;/' wpewebkit-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
+    sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
+    sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WebCore/dom/Document.cpp
 fi
 
 if [ ! -d wpewebkit-${pkgver} ]; then

@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/utils/sudo)
+else
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinuxarm
+  sudo pacman -Sy
+fi
+
+sudo groupadd weston-launch
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
+
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo sh -c "echo '[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia ${USER} %I
+'>/etc/systemd/system/getty@tty1.service.d/override.conf"
+
+if [ "$(cat ~/.bashrc | grep '[archibold.io] weston start')" = "" ]; then
+  echo '
+# [archibold.io] weston start
+if [[ -z $WAYLAND_DISPLAY && $XDG_VTNR -eq 1 ]]; then
+  weston --socket=wpe > /dev/null 2>&1
+fi
+'>>~/.bashrc
+fi
+
+source <(curl -s https://archibold.io/utils/aur)
+
+aur --no-pgp cairo-glesv2-$(uname -m)
+aur --no-pgp wpewebkit-gl-$(uname -m)
+
+sudo pacman -Su --needed --noconfirm \
+  gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
+  gstreamer-vaapi gst-libav \
+  geoip geoclue \
+  weston ttf-dejavu \
+  wpebackend-fdo wayland-protocols \
+  gtk3
+
+aur --no-pgp cog-wpe-gl
+
+if [ ! -f ~/wpe ]; then
+  echo '#!/usr/bin/env sh
+export WPE_PAGE="https://akirodic.com/p/jellyfish/"
+export WAYLAND_DISPLAY=wpe
+export COG_PLATFORM_FDO_VIEW_FULLSCREEN=1
+cog -P fdo $WPE_PAGE
+'>~/wpe
+  chmod a+x ~/wpe
+fi
+
+if [ ! -f ~/.config/weston.ini ]; then
+  mkdir -p ~/.config
+  echo "[core]
+idle-time=0
+require-input=false
+
+[shell]
+client=${HOME}/wpe
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+">~/.config/weston.ini
+fi

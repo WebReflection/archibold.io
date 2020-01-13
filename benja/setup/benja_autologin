@@ -6,34 +6,3 @@ sudo sh -c "echo '[Service]
 ExecStart=
 ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 '>/etc/systemd/system/getty@tty1.service.d/override.conf"
-
-# echo "[Unit]
-# Description=Getty on %I
-# After=systemd-user-sessions.service plymouth-quit-wait.service
-# After=rc-local.service
-# Before=getty.target
-# IgnoreOnIsolate=yes
-# ConditionPathExists=/dev/tty0
-
-# [Service]
-# ExecStart=-/usr/sbin/agetty --autologin ${USER} --noclear %I \$TERM
-# Type=idle
-# Restart=always
-# RestartSec=0
-# UtmpIdentifier=%I
-# TTYPath=/dev/%I
-# TTYReset=yes
-# TTYVHangup=yes
-# TTYVTDisallocate=yes
-# KillMode=process
-# IgnoreSIGPIPE=no
-# SendSIGHUP=yes
-# Environment=LANG= LANGUAGE= LC_CTYPE= LC_NUMERIC= LC_TIME= LC_COLLATE= LC_MONETARY= LC_MESSAGES= LC_PAPER= LC_NAME= LC_ADDRESS= LC_TELEPHONE= LC_MEASUREMENT= LC_IDENTIFICATION=
-
-# [Install]
-# WantedBy=getty.target
-# DefaultInstance=tty1
-# ">${USER}-autologin.service
-
-# sudo mv ${USER}-autologin.service /etc/systemd/system/
-# sudo systemctl enable ${USER}-autologin.service

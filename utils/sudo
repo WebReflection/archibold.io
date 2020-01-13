@@ -63,9 +63,15 @@ setup_sudo() {
     fi
   done
 
-  addGroup "$PASSWORD"
-  yes "$PASSWORD" | su -c "passwd $USER"
+  yes "$PASSWORD" | su -c 'pacman-key --init'
+  if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "i686" ]; then
+    yes "$PASSWORD" | su -c 'pacman-key --populate archlinux'
+  else
+    yes "$PASSWORD" | su -c 'pacman-key --populate archlinuxarm'
+  fi
   yes "$PASSWORD" | su -c 'pacman -Sy --needed --noconfirm sudo'
+  yes "$PASSWORD" | su -c "passwd $USER"
+  addGroup "$PASSWORD"
 
   if [ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
     echo "enabling wheel group"
