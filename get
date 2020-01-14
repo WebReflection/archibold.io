@@ -287,13 +287,12 @@ createPartitions() {
     clear
     echoWithHeader "
   creating *swap* partition"
-    sudo bash -c "mkfs.ext4 -F $SWAP"
+    sudo bash -c "mkfs.ext2 -F $SWAP"
     partid create $SWAP
+    sudo bash -c "yes y | mkswap $SWAP"
     if [ "$ENCRYPTION" = "yes" ]; then
       encryptPartition $SWAP swap
-      mkswap /dev/mapper/swap
-    else
-      sudo bash -c "yes y | mkswap $SWAP"
+      sudo bash -c "yes y | mkswap /dev/mapper/swap"
     fi
     sleep 2
   fi
