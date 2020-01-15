@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # TODO: drop nodejs-lts-erbium and use nodejs once raspi-io works in there
-while ! sudo pacman -S --needed --noconfirm nodejs-lts-erbium
+# while ! sudo pacman -S --needed --noconfirm nodejs-lts-erbium
+while ! sudo pacman -S --needed --noconfirm nodejs
 do
   :
 done
