@@ -50,14 +50,10 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/install/sudo)
 fi
 
-if [ "$(which xsel 2> /dev/null)" = "" ]; then
-  sudo pacman -S --needed xsel
-fi
-
 clear
 echoWithHeader '
   Installing dependencies'
-sudo pacman -S --needed --noconfirm git gjs openssh python > /dev/null 2>&1
+sudo pacman -S --needed --noconfirm git openssh xsel > /dev/null 2>&1
 
 if [ "$GIT_USER" = "" ]; then
   clear
@@ -86,6 +82,6 @@ echoWithHeader '
    * the key can be pasted via Ctrl+v
 '
 
-cat ~/.ssh/id_rsa.pub | xsel --clipboard --input
-
 cat ~/.ssh/id_rsa.pub
+
+cat ~/.ssh/id_rsa.pub | xsel --clipboard --input

@@ -7,10 +7,10 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
-# dependencies
-sudo pacman -S --needed --noconfirm cairo libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
+# dependencies (less cairo)
+sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
          harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
-		 geoclue at-spi2-atk 'libwpe>=1.4.0'
+		 geoclue at-spi2-atk libwpe
 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc
