@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 
-pkgver='2.26.2'
-
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
 fi
+
+cd /tmp
+git clone ssh://aur@aur.archlinux.org/wpewebkit.git
+source wpewebkit/PKGBUILD
+rm -rf wpewebkit
+
+if [ "$pkgver" = "" ]; then
+    echo 'unable to retrieve the version'
+    exit 1
+fi
+
+echo "Building wpewebkit $pkgver"
+sleep 2
+
+sudo pacman -Sy
 
 # dependencies (less cairo)
 sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \

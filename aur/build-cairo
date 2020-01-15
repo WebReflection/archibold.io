@@ -5,6 +5,8 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
+sudo pacman -Sy
+
 # dependencies
 sudo pacman -S --needed --noconfirm libpng libxrender libxext fontconfig pixman glib2 lzo
 
