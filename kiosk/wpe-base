@@ -29,16 +29,10 @@ sudo pacman -Su --needed --noconfirm \
   weston mesa ttf-dejavu \
   wpebackend-fdo wayland-protocols \
   nodejs npm \
+  unzip \
   gtk3
 
 aur --no-pgp cog-wpe-gl
-
-if [ ! -f ~/.kiosk ]; then
-  echo '#!/usr/bin/env sh
-COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://akirodic.com/p/jellyfish/
-'>~/.kiosk
-  chmod a+x ~/.kiosk
-fi
 
 mkdir -p ~/.config
 if [ ! -f ~/.config/weston.ini ]; then
@@ -61,6 +55,8 @@ fi
 
 # Bash variables and bootstrap
 if [ "$(cat ~/.bashrc | grep -F '[archibold.io] npm')" = "" ]; then
+  mkdir -p ~/.npm-packages/bin
+  npm config set prefix '~/.npm-packages'
   echo '
 # [archibold.io] npm
 export PATH="${PATH}:${HOME}/.npm-packages/bin"
@@ -73,6 +69,10 @@ fi
 if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
   echo '
 # [archibold.io] weston
+export KIOSK_WIDTH=1280
+export KIOSK_HEIGHT=720
+export GTK_THEME="Adwaita:dark"
+
 setWestonMode() {
   local MODE="$1"
   local NAME="$(ls /sys/class/drm | grep HDMI)"
@@ -80,8 +80,40 @@ setWestonMode() {
 }
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
-  setWestonMode "1280x720"
-  weston-launch > /dev/null 2>&1
+  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
+  if [ "$(which http-server)" = "" ]; then
+    weston-launch
+  else
+    http-server ~/www/jellyfish & weston-launch
+  fi
 fi
 '>>~/.bashrc
+fi
+
+if [ ! -d ~/www ]; then
+  mkdir -p ~/www
+  cd www
+  curl -LO https://archibold.io/demo/jellyfish.zip
+  unzip jellyfish
+  rm jellyfish.zip
+fi
+
+if [ ! -f ~/.kiosk ]; then
+  npm i -g http-server
+  echo '#!/usr/bin/env bash
+
+HOST="127.0.0.1"
+PAGE="http://${HOST}:8080/index.html"
+
+# wait for http-server to be available
+while true; do
+  if [ "$(curl -s $PAGE)" != "" ]; then
+    break
+  else
+    sleep 1
+  fi
+done
+
+COG_PLATFORM_FDO_VIEW_WIDTH=$KIOSK_WIDTH COG_PLATFORM_FDO_VIEW_HEIGHT=$KIOSK_HEIGHT cog -P fdo $PAGE
+'>~/.kiosk
 fi

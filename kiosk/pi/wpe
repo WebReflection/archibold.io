@@ -2,6 +2,11 @@
 
 bash <(curl -s https://archibold.io/kiosk/wpe-base)
 
+WPE_KIOSK=1
+if [[ $? -eq 0 ]]; then
+  WPE_KIOSK=0
+fi
+
 if [ -f /boot/boot.txt ] && [ "$(cat /boot/boot.txt | grep 'rootwait quiet')" = "" ]; then
   sudo pacman -S --needed --noconfirm uboot-tools
   sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/boot.txt
@@ -13,7 +18,6 @@ if [ -f /boot/cmdline.txt ] && [ "$(cat /boot/cmdline.txt | grep 'rootwait quiet
 fi
 
 echo 'dtoverlay=vc4-fkms-v3d,cma-384
-disable_overscan=1
 
 gpu_mem=128
 gpu_mem_256=128
@@ -27,10 +31,14 @@ dtparam=spi=on
 dtparam=i2c_arm=on
 dtparam=i2c=on
 
-[all]
 avoid_warnings=1
 disable_splash=1
+disable_overscan=1
 boot_delay=0
 '>config.txt
 
 sudo mv config.txt /boot/
+
+if [ "$WPE_KIOSK" = "1" ]; then
+  sudo reboot
+fi
