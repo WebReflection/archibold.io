@@ -17,11 +17,11 @@ ExecStart=
 ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 '>/etc/systemd/system/getty@tty1.service.d/override.conf"
 
-if [ "$(cat ~/.bashrc | grep '[archibold.io] weston start')" = "" ]; then
+if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
   echo '
-# [archibold.io] weston start
-if [[ -z $WAYLAND_DISPLAY && $XDG_VTNR -eq 1 ]]; then
-  weston --socket=wpe > /dev/null 2>&1
+# [archibold.io] weston
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
+  weston-launch > /dev/null 2>&1
 fi
 '>>~/.bashrc
 fi
@@ -35,30 +35,27 @@ sudo pacman -Su --needed --noconfirm \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
-  weston ttf-dejavu \
+  weston mesa ttf-dejavu \
   wpebackend-fdo wayland-protocols \
   gtk3
 
 aur --no-pgp cog-wpe-gl
 
-if [ ! -f ~/wpe ]; then
+if [ ! -f ~/.kiosk ]; then
   echo '#!/usr/bin/env sh
-export WPE_PAGE="https://akirodic.com/p/jellyfish/"
-export WAYLAND_DISPLAY=wpe
-export COG_PLATFORM_FDO_VIEW_FULLSCREEN=1
-cog -P fdo $WPE_PAGE
-'>~/wpe
-  chmod a+x ~/wpe
+COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://akirodic.com/p/jellyfish/
+'>~/.kiosk
+  chmod a+x ~/.kiosk
 fi
 
+mkdir -p ~/.config
 if [ ! -f ~/.config/weston.ini ]; then
-  mkdir -p ~/.config
   echo "[core]
 idle-time=0
 require-input=false
 
 [shell]
-client=${HOME}/wpe
+client=${HOME}/.kiosk
 animation=none
 close-animation=none
 startup-animation=none
