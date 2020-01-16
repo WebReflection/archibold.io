@@ -66,7 +66,7 @@ if [ "$NODE_PATH" = "" ]; then
   Adding PATH and NODE_PATH information'
   if [ ! -d ~/.nvm ]; then
     echo '
-# npm and nodejs global modules
+# [archibold.io] npm
 export PATH="$PATH:$HOME/.npm-packages/bin"
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
@@ -74,7 +74,7 @@ export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
     export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules
   else
     echo '
-# npm and nodejs global modules
+# [archibold.io] npm
 export NPM_CONFIG_PREFIX="$NVM_DIR/versions/node/system"
 export PATH="$PATH:$NPM_CONFIG_PREFIX/bin"
 export NODE_PATH="$NODE_PATH:$NPM_CONFIG_PREFIX/lib/node_modules"
