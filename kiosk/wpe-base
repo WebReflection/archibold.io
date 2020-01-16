@@ -20,7 +20,14 @@ ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
   echo '
 # [archibold.io] weston
+setWestonMode() {
+  local MODE="$1"
+  local NAME="$(ls /sys/class/drm | grep HDMI)"
+  sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
+}
+
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
+  setWestonMode "1280x720"
   weston-launch > /dev/null 2>&1
 fi
 '>>~/.bashrc
@@ -60,5 +67,9 @@ animation=none
 close-animation=none
 startup-animation=none
 locking=false
+
+[output]
+name=
+mode=
 ">~/.config/weston.ini
 fi
