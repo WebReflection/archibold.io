@@ -13,6 +13,7 @@ if [ -f /boot/cmdline.txt ] && [ "$(cat /boot/cmdline.txt | grep 'rootwait quiet
 fi
 
 echo 'dtoverlay=vc4-fkms-v3d,cma-384
+disable_overscan=1
 
 gpu_mem=128
 gpu_mem_256=128
