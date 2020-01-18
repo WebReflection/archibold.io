@@ -22,7 +22,7 @@ source <(curl -s https://archibold.io/utils/aur)
 aur --no-pgp cairo-glesv2-$(uname -m)
 aur --no-pgp wpewebkit-gl-$(uname -m)
 
-sudo pacman -Su --needed --noconfirm \
+yes y | sudo pacman -Su --needed \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
@@ -76,7 +76,9 @@ export GTK_THEME="Adwaita:dark"
 setWestonMode() {
   local MODE="$1"
   local NAME="$(ls /sys/class/drm | grep HDMI)"
-  sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
+  if [ "$NAME" != "" ]; then
+    sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
+  fi
 }
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
@@ -92,7 +94,7 @@ fi
 
 if [ ! -d ~/www ]; then
   mkdir -p ~/www
-  cd www
+  cd ~/www
   curl -LO https://archibold.io/demo/jellyfish.zip
   unzip jellyfish
   rm jellyfish.zip
@@ -116,4 +118,5 @@ done
 
 COG_PLATFORM_FDO_VIEW_WIDTH=$KIOSK_WIDTH COG_PLATFORM_FDO_VIEW_HEIGHT=$KIOSK_HEIGHT cog -P fdo $PAGE
 '>~/.kiosk
+  chmod a+x ~/.kiosk
 fi
