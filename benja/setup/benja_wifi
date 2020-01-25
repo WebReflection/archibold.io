@@ -5,24 +5,51 @@ Please choose your wifi and write its password when/if asked.
 Please ignore possible info coming up during this process.
 "
 sleep 3
-echo root | su -c "wifi-menu"
+
+BENJA_DEFAULT_ROOT=1
+echo "verifying default admin privileges (do not enter any password)"
+if [ "$(yes root | su -c 'ls /' 2> /dev/null)" = "" ]; then
+  BENJA_DEFAULT_ROOT=0
+  echo "this script will try to use sudo instead"
+  echo "if required, please do enter your sudo password"
+  sleep 3
+fi
+
+if [ "$BENJA_DEFAULT_ROOT" = "1" ]; then
+  yes root | su -c "wifi-menu"
+else
+  sudo wifi-menu
+fi
+
 echo "
 trying to configure the wifi automatically
 "
 WLAN=$(netctl list)
 if [ "$WLAN" != "" ]; then
-  echo root | su -c "netctl enable ${WLAN:2}"
+  if [ "$BENJA_DEFAULT_ROOT" = "1" ]; then
+    yes root | su -c "netctl enable ${WLAN:2}"
+  else
+    sudo netctl enable "${WLAN:2}"
+  fi
   echo "wifi ${WLAN:2} enabled"
   echo ""
   echo "please wait until shutdown"
   echo "then switch it on again and login"
   echo ""
   sleep 3
-  echo root | su -c "systemctl enable dhcpcd"
-  echo root | su -c "systemctl restart dhcpcd"
-  echo root | su -c "systemctl daemon-reload"
-  echo root | su -c 'echo "static domain_name_servers=208.67.222.222 208.67.220.220">>/etc/resolvconf.conf'
-  echo root | su -c "shutdown -h now"
+  if [ "$BENJA_DEFAULT_ROOT" = "1" ]; then
+    yes root | su -c "systemctl enable dhcpcd"
+    yes root | su -c "systemctl restart dhcpcd"
+    yes root | su -c "systemctl daemon-reload"
+    yes root | su -c 'echo "static domain_name_servers=208.67.222.222 208.67.220.220">>/etc/resolvconf.conf'
+    yes root | su -c "shutdown -h now"
+  else
+    sudo systemctl enable dhcpcd
+    sudo systemctl restart dhcpcd
+    sudo systemctl daemon-reload
+    sudo sh -c 'echo "static domain_name_servers=208.67.222.222 208.67.220.220">>/etc/resolvconf.conf'
+    sudo shutdown -h now
+  fi
 else
   echo "unable to configure the wifi"
   echo ""
@@ -30,5 +57,11 @@ else
   echo "then switch it on again and login"
   echo ""
   sleep 3
-  echo root | su -c "shutdown -h now"
+  if [ "$BENJA_DEFAULT_ROOT" = "1" ]; then
+    yes root | su -c "shutdown -h now"
+  else
+    sudo shutdown -h now
+  fi
 fi
+
+unset BENJA_DEFAULT_ROOT
