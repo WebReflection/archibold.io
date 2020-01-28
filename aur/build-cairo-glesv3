@@ -8,7 +8,7 @@ fi
 sudo pacman -Sy
 
 # dependencies
-sudo pacman -S --needed --noconfirm libpng libxrender libxext fontconfig pixman glib2 lzo
+sudo pacman -S --needed --noconfirm libpng libxrender libxext fontconfig pixman glib2 lzo mesa
 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel librsvg poppler-glib libspectre valgrind git
@@ -39,7 +39,7 @@ NOCONFIGURE=1 ./autogen.sh
         --localstatedir=/var \
         --disable-static \
         --disable-gl \
-        --enable-glesv2 \
+        --enable-glesv3 \
         --enable-xlib-xcb \
         --enable-tee \
         --enable-svg \
@@ -65,7 +65,7 @@ if [[ ! $? -eq 0 ]]; then
 fi
 
 arch="$(uname -m)"
-pkgname="cairo-glesv2-$arch"
+pkgname="cairo-glesv3-$arch"
 pkgver="$(git describe --tags | sed 's/-.*//g')"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
@@ -99,7 +99,7 @@ pkgname=$pkgname
 pkgver=$pkgver
 arch=($arch)
 pkgrel=1
-pkgdesc='Cairo vector graphics library (glesv2 version)'
+pkgdesc='Cairo vector graphics library (glesv3 version)'
 url='http://cairographics.org/'
 license=('LGPL' 'MPL')
 provides=('cairo=$pkgver' 'cairo-gl=$pkgver' 'cairo-xcb=$pkgver')
