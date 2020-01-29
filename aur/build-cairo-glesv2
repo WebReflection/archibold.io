@@ -39,6 +39,7 @@ NOCONFIGURE=1 ./autogen.sh
         --localstatedir=/var \
         --disable-static \
         --disable-gl \
+        --enable-egl \
         --enable-glesv2 \
         --enable-xlib-xcb \
         --enable-tee \
