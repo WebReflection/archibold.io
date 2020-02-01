@@ -41,8 +41,8 @@ cd ~/aur/wpewebkit
 if [ ! -f wpewebkit-${pkgver}.tar.xz ]; then
     curl -LO https://wpewebkit.org/releases/wpewebkit-${pkgver}.tar.xz
     tar -xf wpewebkit-${pkgver}.tar.xz
-    sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
-    sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WebCore/dom/Document.cpp
+    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
+    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WebCore/dom/Document.cpp
 fi
 
 if [ ! -d wpewebkit-${pkgver} ]; then
@@ -109,7 +109,8 @@ groups=(wpe)
 provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
 depends=(cairo libxslt gst-plugins-base-libs libepoxy libsoup libwebp
-         harfbuzz-icu woff2 'libwpe>=1.0.0')
+         harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy
+		 geoclue at-spi2-atk 'libwpe>=1.4.0')
 source=('https://webreflection.github.io/aur/$pkgtar')
 md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
 sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
