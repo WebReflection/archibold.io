@@ -5,6 +5,11 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
+if [ "$(pacman -Qs cairo-gles)" = "" ]; then
+    echo "Please install cairo-glesv2-$(uname -m) via aur"
+    exit 1
+fi
+
 cd /tmp
 git clone ssh://aur@aur.archlinux.org/wpewebkit.git
 source wpewebkit/PKGBUILD
@@ -26,7 +31,7 @@ sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libso
 		 geoclue at-spi2-atk libwpe
 
 # make dependencies
-sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc
+sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc file
 
 getHash() {
     for hash in $("${1}sum" $2); do
