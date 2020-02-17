@@ -115,7 +115,7 @@ provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
 depends=(cairo libxslt gst-plugins-base-libs libepoxy libsoup libwebp
          harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy
-		 geoclue at-spi2-atk 'libwpe>=1.4.0')
+		 geoclue at-spi2-atk libwpe)
 source=('https://webreflection.github.io/aur/$pkgtar')
 md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
 sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
