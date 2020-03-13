@@ -8,6 +8,14 @@ if [ "$(uname)" = "Darwin" ] && [ ! -f /opt/gnu/sbin/mkfs.ext4 ]; then
   echo '  https://github.com/alperakcan/fuse-ext2#macos'
   echo ''
   exit 1
+elif [ "$(uname)" != "Darwin" ] && [ "$(which parted 2> /dev/null)" = "" ]; then
+  clear
+  echo ''
+  echo "  You need $(tput bold)dosfstools$(tput sgr0) and $(tput bold)parted$(tput sgr0) to use this installer."
+  echo ""
+  echo "  sudo pacman -S --needed parted dosfstools base-devel"
+  echo ''
+  exit 1
 fi
 
 source <(curl -s https://archibold.io/benja/utils)
