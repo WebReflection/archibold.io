@@ -26,7 +26,7 @@ aur() {
       pkg="${3}"
     fi
   fi
-  if [ "${pkg}" = "" ]; then
+  if [ "${pkg}" = "" ] || [ "${pkg}" = "--help" ]; then
     echo ""
     echo "The $(tput bold)aur$(tput sgr0) utility, from https://archibold.io"
     echo "$(tput dim)A minimalistic AUR installer alternative.$(tput sgr0)"
@@ -34,6 +34,7 @@ aur() {
     echo "  aur pamac-aur"
     echo "  aur --preserve wpewebkit"
     echo "  aur --no-pgp expressvpn"
+    echo "  $(tput dim)aur --help this message$(tput sgr0)"
     echo ""
     echo "  yes \$ROOT_PASSWORD | aur any-package # when no sudo is present"
     echo ""
@@ -66,6 +67,7 @@ aur() {
       fi
     fi
     rm -rf ~/tmp-${pkg}
+    echo "Creating ~/tmp-${pkg}"
     mkdir -p ~/tmp-${pkg}
     cd ~/tmp-${pkg}
     git clone https://aur.archlinux.org/${pkg}.git
