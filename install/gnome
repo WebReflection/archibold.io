@@ -139,6 +139,7 @@ fi'
 
     echo "$PASSWORD" | sudo -S systemctl enable NetworkManager
     echo "$PASSWORD" | sudo -S systemctl enable gdm
+    echo "$PASSWORD" | sudo -S systemctl enable bluetooth
   fi
 
   if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
