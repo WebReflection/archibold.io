@@ -251,6 +251,14 @@ curl -LOs https://archibold.io/utils/aur
 chmod a+x aur
 mv aur /usr/bin
 
+echo -e "
+  installing $(tput bold)gdm-login-bg$(tput sgr0) helper
+"
+
+curl -LOs https://archibold.io/utils/gdm-login-bg
+chmod a+x gdm-login-bg
+mv gdm-login-bg /usr/bin
+
 if [ "$(which hwclock 2> /dev/null)" != "" ]; then
   echo -e "
   updating $(tput bold)time$(tput sgr0)
