@@ -1,0 +1,14 @@
+#########################
+# (c) archibold.io 2020 #
+#########################
+
+cd /tmp
+curl -LOs https://archibold.io/utils/gdm-login-bg
+chmod a+x gdm-login-bg
+if [ "$AUR_NO_SUDO" != "" ] || [ "$(which sudo 2> /dev/null)" = "" ]; then
+  su -c 'mv gdm-login-bg /usr/bin'
+else
+  sudo mv gdm-login-bg /usr/bin
+fi
+
+/usr/bin/gdm-login-bg

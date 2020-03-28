@@ -1,0 +1,67 @@
+#!/usr/bin/env sh
+
+#########################
+# (c) archibold.io 2020 #
+#########################
+
+if [ "$1" = "" ] || [ ! -f "$1" ]; then
+	echo " $(tput bold)usage:$(tput sgr0) $(basename "$0") ~/Pictures/login-background-image.jpg"
+	exit 0
+fi
+
+gst=/usr/share/gnome-shell/gnome-shell-theme.gresource
+workdir="${HOME}/shell-theme"
+xml="${workdir}/theme/gnome-shell-theme.gresource.xml"
+image=$(basename "$1")
+same=0
+
+echo '<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+	<gresource prefix="/org/gnome/shell/theme">' >"${xml}"
+
+for source in `gresource list $gst`; do
+	dest=${source#\/org\/gnome\/shell/}
+	if [ ! -d "${workdir}/${dest%/*}" ]; then
+		mkdir -p "${workdir}/${dest%/*}"
+	fi
+	gresource extract $gst $source >"${workdir}/${dest}"
+	echo "		<file>${dest:6}</file>" >>"${xml}"
+	if [ "${dest:6}" = "${image}" ]; then
+		same=1
+	fi
+done
+
+if [ "$same" = "0" ]; then
+	echo "		<file>${image}</file>" >>"${xml}"
+fi
+
+echo '	</gresource>
+</gresources>' >>"${xml}"
+
+cd "${workdir}/theme/"
+
+if [ -f gnome-shell.css ]; then
+	cp "$1" "${workdir}/theme"
+	sed -i '/#lockDialogGroup {/{:a;N;/}\n/!ba};/}\n/d' gnome-shell.css
+	echo "
+#lockDialogGroup {
+  background-image: url(resource:///org/gnome/shell/theme/${image});
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+" >>gnome-shell.css
+
+	glib-compile-resources $(basename "${xml}")
+
+	if [ "$?" = "0" ]; then
+		sudo mv $gst $gst.bck
+		sudo mv $(basename $gst) $gst
+		if [ "$?" = "0" ]; then
+			echo " $(tput bold)done:$(tput sgr0) ${image} set as login background"
+			exit 0
+		fi
+	fi
+fi
+
+echo " $(tput bold)warning:$(tput sgr0) unable to operate in ${workdir}/theme/"
+exit 1
