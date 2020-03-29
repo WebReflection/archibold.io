@@ -4,15 +4,38 @@
 # (c) archibold.io 2020 #
 #########################
 
-if [ "$1" = "" ] || [ ! -f "$1" ]; then
-	echo " $(tput bold)usage:$(tput sgr0) $(basename "$0") ~/Pictures/login-background-image.jpg"
-	exit 0
+# usage:
+#		gdm-login-bg						# use current desktop background as login screen bg
+#		gdm-login-bg ~/file.jpg	# make ~/file.jpg login screen bg
+
+bg="$1"
+if [ "${bg}" = "" ]; then
+	bg="$(gsettings get org.gnome.desktop.background picture-uri | sed "s/file:\/\///; s/^'//; s/'$//")"
+fi
+
+if [ ! -f "${bg}" ]; then
+	echo " $(tput bold)error:$(tput sgr0) ${bg} not found"
+	exit 1
 fi
 
 gst=/usr/share/gnome-shell/gnome-shell-theme.gresource
+
+if [ ! -f $gst ]; then
+	echo " $(tput bold)error:$(tput sgr0) $gst not found"
+	exit 1
+fi
+
 workdir="${HOME}/shell-theme"
+
+cleanup=0
+if [ ! -d "${workdir}" ]; then
+	cleanup=1
+fi
+
+mkdir -p "${workdir}/theme"
+
 xml="${workdir}/theme/gnome-shell-theme.gresource.xml"
-image=$(basename "$1")
+image=$(basename "${bg}")
 same=0
 
 echo '<?xml version="1.0" encoding="UTF-8"?>
@@ -31,7 +54,7 @@ for source in `gresource list $gst`; do
 	fi
 done
 
-if [ "$same" = "0" ]; then
+if [[ $same = 0 ]]; then
 	echo "		<file>${image}</file>" >>"${xml}"
 fi
 
@@ -41,7 +64,13 @@ echo '	</gresource>
 cd "${workdir}/theme/"
 
 if [ -f gnome-shell.css ]; then
-	cp "$1" "${workdir}/theme"
+	if [ "$(which convert 2> /dev/null)" = "" ]; then
+		echo " $(tput bold)warning:$(tput sgr0) imagemagick not found, copying ${image} as is"
+		cp "${bg}" "${workdir}/theme"
+	else
+		echo " $(tput bold)converting$(tput sgr0) ${image} via imagemagick"
+		convert "${bg}" -blur 0x64 -modulate 60,90 "${workdir}/theme/${image}"
+	fi
 	sed -i '/#lockDialogGroup {/{:a;N;/}\n/!ba};/}\n/d' gnome-shell.css
 	echo "
 #lockDialogGroup {
@@ -57,6 +86,9 @@ if [ -f gnome-shell.css ]; then
 		sudo mv $gst $gst.bck
 		sudo mv $(basename $gst) $gst
 		if [ "$?" = "0" ]; then
+			if [[ $cleanup = 1 ]]; then
+				rm -rf "${workdir}"
+			fi
 			echo " $(tput bold)done:$(tput sgr0) ${image} set as login background"
 			exit 0
 		fi
