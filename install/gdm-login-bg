@@ -11,4 +11,12 @@ else
   sudo mv gdm-login-bg /usr/bin
 fi
 
-/usr/bin/gdm-login-bg
+echo "
+ $(tput bold)Usage$(tput sgr0)
+
+  gdm-login-bg              $(tput dim)# to use current desktop image$(tput sgr0) 
+  gdm-login-bg ~/file.jpg   $(tput dim)# to use ~/file.jpg$(tput sgr0)
+
+ If imagemagick is present, the image will be blurred automatically.
+ $(tput dim)by Andrea Giammarchi - @webreflection - https://archibold.io$(tput sgr0)
+"
