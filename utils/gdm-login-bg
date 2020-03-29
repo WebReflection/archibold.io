@@ -26,22 +26,20 @@ if [ ! -f $gst ]; then
 fi
 
 workdir="${HOME}/shell-theme"
+xml="${workdir}/theme/gnome-shell-theme.gresource.xml"
+image=$(basename "${bg}")
 
 cleanup=0
 if [ ! -d "${workdir}" ]; then
 	cleanup=1
 fi
 
-mkdir -p "${workdir}/theme"
-
-xml="${workdir}/theme/gnome-shell-theme.gresource.xml"
-image=$(basename "${bg}")
-same=0
-
+mkdir -p "$(dirname "${xml}")"
 echo '<?xml version="1.0" encoding="UTF-8"?>
 <gresources>
 	<gresource prefix="/org/gnome/shell/theme">' >"${xml}"
 
+same=0
 for source in `gresource list $gst`; do
 	dest=${source#\/org\/gnome\/shell/}
 	if [ ! -d "${workdir}/${dest%/*}" ]; then
