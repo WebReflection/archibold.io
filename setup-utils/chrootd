@@ -111,7 +111,7 @@ sleep 1
 echo -e "root
 root" | passwd
 
-useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+useradd -m -g users -G audio,games,input,lp,optical,power,scanner,storage,video,wheel -s /bin/bash $USER
 echo -e "$USER
 $USER" | passwd $USER
 
