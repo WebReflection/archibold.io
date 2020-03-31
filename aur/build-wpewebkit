@@ -11,7 +11,7 @@ if [ "$(pacman -Qs cairo-gles)" = "" ]; then
 fi
 
 cd /tmp
-git clone ssh://aur@aur.archlinux.org/wpewebkit.git
+yes yes | git clone https://aur.archlinux.org/wpewebkit.git
 source wpewebkit/PKGBUILD
 rm -rf wpewebkit
 
