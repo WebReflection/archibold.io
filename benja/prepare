@@ -160,6 +160,17 @@ sleep 3
 
 if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
   ./wifi-setup
+  echo ""
+  echo "testing wifi ..."
+  sleep 3
+  if [ "$(curl -Ls http://archibold.io/OK)" != "OK" ]; then
+    echo "wifi not working: masking systemd-resolved"
+    yes root | su -c "systemctl stop systemd-resolved"
+    yes root | su -c "systemctl mask systemd-resolved"
+    echo "reboot in 3 seconds"
+    sleep 3
+    yes root | su -c "reboot"
+  fi
 fi
 
 pickAPass
