@@ -59,15 +59,15 @@ arch="$(uname -m)"
 pkgname="wpewebkit-gl-$arch"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
-cmake -H"wpewebkit-${pkgver}" -Bbuild \
-        -DCMAKE_BUILD_TYPE=Release \
-        -DCMAKE_INSTALL_PREFIX=/usr \
-        -DCMAKE_INSTALL_LIBDIR=/usr/lib \
-        -DCMAKE_SKIP_RPATH=ON \
+cmake -H"wpewebkit-${pkgver}" -Bbuild       \
+        -DCMAKE_BUILD_TYPE=Release          \
+        -DCMAKE_INSTALL_PREFIX=/usr         \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib     \
+        -DCMAKE_SKIP_RPATH=ON               \
         -DPYTHON_EXECUTABLE=/usr/bin/python \
-        -DENABLE_GTKDOC=ON \
-        -DENABLE_ACCELERATED_2D_CANVAS=ON \
-        -DPORT=WPE \
+        -DENABLE_GTKDOC=ON                  \
+        -DENABLE_ACCELERATED_2D_CANVAS=ON   \
+        -DPORT=WPE                          \
         -GNinja
 
 cmake --build build

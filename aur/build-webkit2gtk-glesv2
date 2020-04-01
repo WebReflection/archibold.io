@@ -1,0 +1,149 @@
+#!/usr/bin/env bash
+
+if [ "$(whoami)" = "root" ]; then
+    echo 'you cannot be root to make a package'
+    exit 1
+fi
+
+for info in $(pacman -Ss webkit2gtk | sed -E 's/^.*webkit2gtk ([^ ]*).*/\1/'); do
+    pkgver=$(echo $info | sed -E 's/^([^-]*).*$/\1/')
+    pkgrel=$(echo $info | sed -E 's/^[^-]*-(.*)$/\1/')
+    break
+done
+
+if [ "$pkgver" = "" ] || [ "$pkgrel" = "" ]; then
+    pacman -Ss webkit2gtk
+    echo 'unable to retrieve the version'
+    exit 1
+fi
+
+echo "Building webkit2gtk $pkgver"
+sleep 2
+
+sudo pacman -Sy
+
+# dependencies
+sudo pacman -S --needed --noconfirm libxt libxslt enchant gst-plugins-base-libs libsecret libwebp openjpeg2 \
+                                    harfbuzz-icu gtk3 libnotify hyphen woff2 libwpe wpebackend-fdo bubblewrap \
+                                    xdg-dbus-proxy
+
+# make dependencies
+sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc \
+                                    gperf gobject-introspection ruby gtk-doc cmake python geoclue gst-plugins-bad
+
+getHash() {
+    for hash in $("${1}sum" $2); do
+        echo $hash
+        return
+    done
+}
+
+mkdir -p ~/aur/webkit2gtk
+cd ~/aur/webkit2gtk
+
+if [ ! -f webkitgtk-${pkgver}.tar.xz ]; then
+    curl -LO https://webkitgtk.org/releases/webkitgtk-${pkgver}.tar.xz
+    tar -xf webkitgtk-${pkgver}.tar.xz
+    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' webkitgtk-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
+    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' webkitgtk-${pkgver}/Source/WebCore/dom/Document.cpp
+fi
+
+if [ ! -d webkitgtk-${pkgver} ]; then
+    echo 'unable to find the directory'
+    exit 1
+fi
+
+arch="$(uname -m)"
+pkgname="webkit2gtk-glesv2-$arch"
+pkgtar="$pkgname-$pkgver.tar.gz"
+
+cmake -H"webkitgtk-${pkgver}" -Bbuild       \
+        -DENABLE_GLES2=ON                   \
+        -DCMAKE_BUILD_TYPE=Release          \
+        -DCMAKE_INSTALL_PREFIX=/usr         \
+        -DCMAKE_SKIP_RPATH=ON               \
+        -DPORT=GTK                          \
+        -DLIB_INSTALL_DIR=/usr/lib          \
+        -DUSE_LIBHYPHEN=OFF                 \
+        -DENABLE_MINIBROWSER=ON             \
+        -DUSE_WOFF2=ON                      \
+        -DUSE_WPE_RENDERER=ON               \
+        -DENABLE_BUBBLEWRAP_SANDBOX=OFF     \
+        -DPYTHON_EXECUTABLE=/usr/bin/python \
+        -DENABLE_GTKDOC=ON                  \
+        -GNinja
+
+ninja
+
+cmake --build build
+
+if [[ ! $? -eq 0 ]]; then
+    echo 'unable to build'
+    exit $?
+fi
+
+rm -rf ~/aur/builds/$pkgname
+mkdir -p ~/aur/builds/$pkgname
+
+DESTDIR=~/aur/builds/$pkgname cmake --build build --target install
+
+mkdir -p ~/git/
+cd ~/git
+if [ ! -d aur ]; then
+    yes yes | git clone git@github.com:WebReflection/aur.git
+fi
+
+cd ~/git/aur/
+
+git add .
+git reset --hard
+git pull --rebase
+
+rm -rf $pkgtar
+mv ~/aur/builds/$pkgname/usr ./
+tar -czf $pkgtar usr
+rm -rf usr
+
+mkdir -p $pkgname
+cd $pkgname
+
+echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
+pkgname=$pkgname
+pkgver=$pkgver
+arch=($arch)
+pkgrel=1
+pkgdesc='GTK+ Web content engine library (glesv2 version)'
+url='https://webkitgtk.org'
+license=(custom)
+provides=('webkit2gtk' 'webkit2gtk-git')
+conflicts=('webkit2gtk' 'webkit2gtk-git')
+depends=(libxt libxslt enchant gst-plugins-base-libs libsecret libwebp openjpeg2
+         harfbuzz-icu gtk3 libnotify hyphen woff2 libwpe wpebackend-fdo
+         bubblewrap xdg-dbus-proxy)
+makedepends=(gperf gobject-introspection ruby gtk-doc cmake python geoclue
+             gst-plugins-bad)
+optdepends=('geoclue: Geolocation support'
+            'gst-plugins-good: media decoding'
+            'gst-plugins-bad: media decoding'
+            'gst-libav: nonfree media decoding')
+source=('https://webreflection.github.io/aur/$pkgtar')
+md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
+sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
+sha256sums=('$(getHash sha256 ~/git/aur/$pkgtar)')
+sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
+">PKGBUILD
+
+echo 'package () {
+    cp -R "${srcdir}/usr" "${pkgdir}"
+}'>>PKGBUILD
+
+makepkg --printsrcinfo > .SRCINFO
+
+cd ~/git/aur/
+git add .
+git commit -m "Pushing ${pkgname}-${pkgver}"
+git push
+
+echo ""
+echo "$(tput bold)$pkgname$(tput sgr0) successfully uploaded"
+echo ""
