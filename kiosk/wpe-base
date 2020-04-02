@@ -19,8 +19,13 @@ ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 
 source <(curl -s https://archibold.io/utils/aur)
 
-aur --no-pgp cairo-glesv2-$(uname -m)
-aur --no-pgp wpewebkit-gl-$(uname -m)
+if [ "$(uname -m)" = "aarch64" ]; then
+  aur --no-pgp cairo-glesv2-$(uname -m)
+  aur --no-pgp wpewebkit-gl-$(uname -m)
+else
+  aur --no-pgp cairo-glesv2-armv7l
+  aur --no-pgp wpewebkit-gl-armv7l
+fi
 
 yes y | sudo pacman -Su --needed \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
