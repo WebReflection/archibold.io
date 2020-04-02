@@ -55,8 +55,6 @@ fi
 
 # Bash variables and bootstrap
 if [ "$(cat ~/.bashrc | grep -F '[archibold.io] npm')" = "" ]; then
-  mkdir -p ~/.npm-packages/bin
-  npm config set prefix '~/.npm-packages'
   echo '
 # [archibold.io] npm
 export PATH="${PATH}:${HOME}/.npm-packages/bin"
@@ -64,6 +62,8 @@ export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
   export PATH="${PATH}:${HOME}/.npm-packages/bin"
   export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
+  mkdir -p ~/.npm-packages/bin
+  npm config set prefix '~/.npm-packages'
 fi
 
 if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
