@@ -46,6 +46,7 @@ setup_sudo() {
   local NEW_PASSWORD=""
 
   if [ "$(yes "$PASSWORD" | su -c 'ls /' 2> /dev/null)" = "" ]; then
+    echo ""
     echo -e "Invalid \033[1mroot\033[0m password, please try again"
     setup_sudo "$(askPassword)"
     return
@@ -55,8 +56,9 @@ setup_sudo() {
   while true
   do
     if [ "$NEW_PASSWORD" = "root" ] || [ "$NEW_PASSWORD" = "" ]; then
+      echo ""
       echo -e "The default \033[1mroot\033[0m password is not safe!"
-      echo -e "Please type a \033[1mnew password\033[0m to use with root and $USER"
+      echo -e "Please type a \033[1mnew password\033[0m to use with both \033[1mroot\033[0m and \033[1m${USER}\033[0m"
       NEW_PASSWORD="$(askPassword)"
     else
       break
@@ -105,4 +107,5 @@ Defaults env_reset, timestamp_timeout=-1
   echo ''
 }
 
+echo -e "Please enter your current \033[1mroot\033[0m password"
 setup_sudo "$(askPassword)"
