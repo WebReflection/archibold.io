@@ -20,12 +20,17 @@ ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 
 source <(curl -s https://archibold.io/utils/aur)
 
-if [ "$(uname -m)" = "aarch64" ]; then
-  aur --no-pgp cairo-glesv2-$(uname -m)
-  aur --no-pgp wpewebkit-gl-$(uname -m)
-else
-  aur --no-pgp cairo-glesv2-armv7l
-  aur --no-pgp wpewebkit-gl-armv7l
+arch="$(uname -m)"
+if [ "$arch" = "aarch64" ]; then
+  arch="armv7l"
+fi
+
+if [ "$(pacman -Qmq cairo-glesv2-$arch 2> /dev/null)" = "" ]; then
+  aur --no-pgp cairo-glesv2-$arch
+fi
+
+if [ "$(pacman -Qmq wpewebkit-gl-$arch 2> /dev/null)" = "" ]; then
+  aur --no-pgp wpewebkit-gl-$arch
 fi
 
 yes y | sudo pacman -Su --needed \
@@ -39,7 +44,9 @@ yes y | sudo pacman -Su --needed \
   unzip \
   gtk3
 
-aur --no-pgp cog-wpe-gl
+if [ "$(pacman -Qmq cog-wpe-gl 2> /dev/null)" = "" ]; then
+  aur --no-pgp cog-wpe-gl
+fi
 
 mkdir -p ~/.config
 if [ ! -f ~/.config/weston.ini ]; then
@@ -60,21 +67,31 @@ mode=
 ">~/.config/weston.ini
 fi
 
-# Bash variables and bootstrap
-if [ "$(cat ~/.bashrc | grep -F '[archibold.io] npm')" = "" ]; then
-  echo '
+# install jellyfish demo
+if [ "$(which unzip 2> /dev/null)" != "" ] && [ ! -d ~/www ]; then
+  mkdir -p ~/www
+  cd ~/www
+  curl -LO https://archibold.io/demo/jellyfish.zip
+  unzip jellyfish
+  rm jellyfish.zip
+fi
+
+if [ "$(which npm 2> /dev/null)" != "" ]; then
+
+  if [ "$(cat ~/.bashrc | grep -F '[archibold.io] npm')" = "" ]; then
+    echo '
 # [archibold.io] npm
 export PATH="${PATH}:${HOME}/.npm-packages/bin"
 export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
-  export PATH="${PATH}:${HOME}/.npm-packages/bin"
-  export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
-  mkdir -p ~/.npm-packages/bin
-  npm config set prefix '~/.npm-packages'
-fi
+    export PATH="${PATH}:${HOME}/.npm-packages/bin"
+    export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
+    mkdir -p ~/.npm-packages/bin
+    npm config set prefix '~/.npm-packages'
+  fi
 
-if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
-  echo '
+  if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
+    echo '
 # [archibold.io] weston
 export KIOSK_WIDTH=1280
 export KIOSK_HEIGHT=720
@@ -97,19 +114,11 @@ if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" 
   fi
 fi
 '>>~/.bashrc
-fi
+  fi
 
-if [ ! -d ~/www ]; then
-  mkdir -p ~/www
-  cd ~/www
-  curl -LO https://archibold.io/demo/jellyfish.zip
-  unzip jellyfish
-  rm jellyfish.zip
-fi
-
-if [ ! -f ~/.kiosk ]; then
-  npm i -g http-server
-  echo '#!/usr/bin/env bash
+  if [ ! -f ~/.kiosk ]; then
+    npm i -g http-server
+    echo '#!/usr/bin/env bash
 
 HOST="127.0.0.1"
 PAGE="http://${HOST}:8080/index.html"
@@ -125,5 +134,6 @@ done
 
 COG_PLATFORM_FDO_VIEW_WIDTH=$KIOSK_WIDTH COG_PLATFORM_FDO_VIEW_HEIGHT=$KIOSK_HEIGHT cog -P fdo $PAGE
 '>~/.kiosk
-  chmod a+x ~/.kiosk
+    chmod a+x ~/.kiosk
+  fi
 fi
