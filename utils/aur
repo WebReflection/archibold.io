@@ -52,9 +52,14 @@ aur() {
       cd ~/tmp-aur
       curl -Ls https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${var} -o ${var}
       source ./${var}
-      if [ "${pkgname} ${pkgver}-${pkgrel}" != "$(pacman -Qm ${var})" ]; then
-        echo "updating $(tput bold)${pkgname}$(tput sgr0) ${pkgver}-${pkgrel}"
-        aur $skippgp $preserve $var
+      help="$(pacman -Qm ${var})"
+      if [ "${pkgname} ${pkgver}-${pkgrel}" != "${help}" ]; then
+        if [ "$(echo "${help}" | sed "s/[^ ]* //; s/[0-9._-]*//g")" != "" ]; then
+          echo "❌ ignoring $(tput bold)${pkgname}$(tput sgr0)"
+        else
+          echo "updating $(tput bold)${pkgname}$(tput sgr0) ${pkgver}-${pkgrel}"
+          aur $skippgp $preserve $var
+        fi
       else
         echo "✔ $(tput bold)${pkgname}$(tput sgr0) ${pkgver}-${pkgrel} already updated"
       fi
