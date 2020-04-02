@@ -95,6 +95,10 @@ rm -rf usr
 mkdir -p $pkgname
 cd $pkgname
 
+if [ "$arch" != "aarch64" ]; then
+    arch="armv7l armv7h"
+fi
+
 echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
 pkgname=$pkgname
 pkgver=$pkgver
