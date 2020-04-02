@@ -42,6 +42,7 @@ addGroup() {
 }
 
 setup_sudo() {
+  exit 0
   local PASSWORD="$1"
   local NEW_PASSWORD=""
 
@@ -105,4 +106,4 @@ Defaults env_reset, timestamp_timeout=-1
   echo ''
 }
 
-setup_sudo "$(askPassword)"
+setup_sudo "$(askPassword "Enter your \033[1mroot\033[0m password:")"
