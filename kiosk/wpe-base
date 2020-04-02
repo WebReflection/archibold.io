@@ -29,6 +29,7 @@ else
 fi
 
 yes y | sudo pacman -Su --needed \
+  jasck libbluray \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \

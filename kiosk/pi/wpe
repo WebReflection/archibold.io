@@ -17,7 +17,7 @@ if [ -f /boot/cmdline.txt ] && [ "$(cat /boot/cmdline.txt | grep 'rootwait quiet
   sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/cmdline.txt
 fi
 
-echo 'dtoverlay=vc4-fkms-v3d,cma-384
+sudo sh -c "echo 'dtoverlay=vc4-fkms-v3d,cma-384
 
 gpu_mem=128
 gpu_mem_256=128
@@ -35,9 +35,7 @@ avoid_warnings=1
 disable_splash=1
 disable_overscan=1
 boot_delay=0
-'>config.txt
-
-sudo mv config.txt /boot/
+'>/boot/config.txt"
 
 if [ "$WPE_KIOSK" = "1" ]; then
   sudo reboot
