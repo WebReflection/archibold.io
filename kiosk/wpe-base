@@ -34,7 +34,7 @@ if [ "$(pacman -Qmq wpewebkit-gl-$arch 2> /dev/null)" = "" ]; then
 fi
 
 yes y | sudo pacman -Su --needed \
-  jasck libbluray \
+  jack libbluray \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
