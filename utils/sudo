@@ -42,7 +42,6 @@ addGroup() {
 }
 
 setup_sudo() {
-  exit 0
   local PASSWORD="$1"
   local NEW_PASSWORD=""
 
@@ -58,7 +57,7 @@ setup_sudo() {
     if [ "$NEW_PASSWORD" = "root" ] || [ "$NEW_PASSWORD" = "" ]; then
       echo -e "The default \033[1mroot\033[0m password is not safe!"
       echo -e "Please type a \033[1mnew password\033[0m to use with root and $USER"
-      NEW_PASSWORD="$(askPassword "Enter your \033[1mnew\033[0m password:")"
+      NEW_PASSWORD="$(askPassword)"
     else
       break
     fi
@@ -106,4 +105,4 @@ Defaults env_reset, timestamp_timeout=-1
   echo ''
 }
 
-setup_sudo "$(askPassword "Enter your \033[1mroot\033[0m password:")"
+setup_sudo "$(askPassword)"
