@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/utils/sudo)
-else
-  sudo pacman-key --init
-  sudo pacman-key --populate archlinuxarm
-  sudo pacman -Sy
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
+
+sudo pacman-key --init
+sudo pacman-key --populate archlinuxarm
+sudo pacman -Sy
 
 sudo groupadd weston-launch
 sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
@@ -26,7 +26,7 @@ yes y | sudo pacman -Su --needed \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
-  weston mesa ttf-dejavu \
+  weston freerdp mesa ttf-dejavu \
   wpebackend-fdo wayland-protocols \
   nodejs npm \
   unzip \
