@@ -55,7 +55,7 @@ idle-time=0
 require-input=false
 
 [shell]
-client=${HOME}/www/.server
+client=${HOME}/www/index.js
 animation=none
 close-animation=none
 startup-animation=none
@@ -130,8 +130,8 @@ server
     let command = "COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo ";
     exec(command + "http://127.0.0.1:8080/index.html");
   });
-'>.server
-    chmod a+x .server
+'>index.js
+    chmod a+x index.js
     echo '{"private": true}'>package.json
     npm i express compression
     cd -
