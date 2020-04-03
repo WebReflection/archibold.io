@@ -6,8 +6,9 @@ else
   # sudo installs already the 
   sudo pacman-key --init
   sudo pacman-key --populate archlinuxarm
-  sudo pacman -Sy
 fi
+
+yes y | sudo pacman -Syu
 
 sudo groupadd weston-launch
 sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
@@ -33,7 +34,7 @@ if [ "$(pacman -Qmq wpewebkit-gl-$arch 2> /dev/null)" = "" ]; then
   aur --no-pgp wpewebkit-gl-$arch
 fi
 
-yes y | sudo pacman -Su --needed \
+yes y | sudo pacman -S --needed \
   jack libbluray \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
