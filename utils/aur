@@ -46,7 +46,6 @@ aur() {
   elif [ "$update" = "--update" ]; then
     echo ""
     echo "$(tput bold)Updating AUR Packages$(tput sgr0)"
-    echo ""
     mkdir ~/tmp-aur
     for var in $(pacman -Qmq); do
       cd ~/tmp-aur
@@ -65,6 +64,7 @@ aur() {
       fi
     done
     rm -rf  ~/tmp-aur
+    echo ""
   elif [ "${help}" = "--help" ] || [ "${pkg}" = "" ]; then
     echo ""
     echo "The $(tput bold)aur$(tput sgr0) utility from https://archibold.io"

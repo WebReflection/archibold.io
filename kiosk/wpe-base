@@ -132,7 +132,11 @@ while true; do
   fi
 done
 
-COG_PLATFORM_FDO_VIEW_WIDTH=$KIOSK_WIDTH COG_PLATFORM_FDO_VIEW_HEIGHT=$KIOSK_HEIGHT cog -P fdo $PAGE
+# Fullscreen
+COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo $PAGE
+
+## Optional size enforcement
+# COG_PLATFORM_FDO_VIEW_WIDTH=$KIOSK_WIDTH COG_PLATFORM_FDO_VIEW_HEIGHT=$KIOSK_HEIGHT cog -P fdo $PAGE
 '>~/.kiosk
     chmod a+x ~/.kiosk
   fi
