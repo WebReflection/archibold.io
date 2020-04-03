@@ -55,7 +55,7 @@ idle-time=0
 require-input=false
 
 [shell]
-client=${HOME}/.kiosk
+client=${HOME}/www/.server
 animation=none
 close-animation=none
 startup-animation=none
@@ -107,37 +107,33 @@ setWestonMode() {
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
   setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
-  if [ "$(which http-server)" = "" ]; then
-    weston-launch
-  else
-    http-server ~/www/jellyfish & weston-launch
-  fi
+  weston-launch
 fi
 '>>~/.bashrc
   fi
 
-  if [ ! -f ~/.kiosk ]; then
-    npm i -g http-server
-    echo '#!/usr/bin/env bash
+  if [ ! -d ~/www/node_modules ]; then
+    mkdir -p ~/www/node_modules
+    cd ~/www
+    echo '#!/usr/bin/env node
 
-HOST="127.0.0.1"
-PAGE="http://${HOST}:8080/index.html"
+const {exec} = require("child_process");
+const {join} = require("path");
 
-# wait for http-server to be available
-while true; do
-  if [ "$(curl -s $PAGE)" != "" ]; then
-    break
-  else
-    sleep 1
-  fi
-done
-
-# Fullscreen
-COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo $PAGE
-
-## Optional size enforcement
-# COG_PLATFORM_FDO_VIEW_WIDTH=$KIOSK_WIDTH COG_PLATFORM_FDO_VIEW_HEIGHT=$KIOSK_HEIGHT cog -P fdo $PAGE
-'>~/.kiosk
-    chmod a+x ~/.kiosk
+const compression = require("compression");
+const express = require("express");
+const server = express();
+server
+  .use(compression())
+  .use(express.static(join(__dirname, "jellyfish")))
+  .listen(8080, () => {
+    let command = "COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo ";
+    exec(command + "http://127.0.0.1:8080/index.html");
+  });
+'>.server
+    chmod a+x .server
+    echo '{"private": true}'>package.json
+    npm i express compression
+    cd -
   fi
 fi
