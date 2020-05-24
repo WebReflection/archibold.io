@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+#########################
+# (c) archibold.io 2020 #
+#########################
+
+if [ "$(which sudo 2> /dev/null)" != "" ]; then
+    if [ "$(pacman -Qs reflector)" = "" ]; then
+        sudo pacman -S --needed --noconfirm reflector
+    fi
+    sudo reflector --latest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+else
+    su -c 'if [ "$(pacman -Qs reflector)" = "" ]; then
+        pacman -S --needed --noconfirm reflector
+    fi
+    reflector --latest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist'
+fi

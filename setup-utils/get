@@ -53,11 +53,20 @@ locale-gen
 locale > /etc/locale.conf
 
 echo -e "
-  installing $(tput bold)linux$(tput sgr0)
+  initializing $(tput bold)linux$(tput sgr0)
 "
-
 pacman-key --init
 pacman-key --populate archlinux
+
+echo -e "
+  updating $(tput bold)mirrorlist$(tput sgr0)
+"
+install_pkg reflector
+reflector --verbose --latest 5 --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+
+echo -e "
+  installing $(tput bold)linux$(tput sgr0)
+"
 install_pkg linux linux-headers linux-firmware pacman-mirrorlist mkinitcpio vi
 sync
 
@@ -258,6 +267,14 @@ echo -e "
 curl -LOs https://archibold.io/utils/gdm-login-bg
 chmod a+x gdm-login-bg
 mv gdm-login-bg /usr/bin
+
+echo -e "
+  installing $(tput bold)mirrorlist$(tput sgr0) helper
+"
+
+curl -LOs https://archibold.io/utils/mirrorlist
+chmod a+x mirrorlist
+mv mirrorlist /usr/bin
 
 if [ "$(which hwclock 2> /dev/null)" != "" ]; then
   echo -e "
