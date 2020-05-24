@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+curl -s https://whatismycountry.com/ | grep --only-matching --perl-regexp 'Your Country is \K[^<]+'
+
