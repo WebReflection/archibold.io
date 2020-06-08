@@ -1,0 +1,134 @@
+#!/usr/bin/env bash
+
+if [ "$(whoami)" = "root" ]; then
+    echo 'you cannot be root to make a package'
+    exit 1
+fi
+
+if [ "$(pacman -Qs cairo-gles)" = "" ]; then
+    echo "Please install cairo-glesv2-$(uname -m) via aur"
+    exit 1
+fi
+
+cd /tmp
+yes yes | git clone https://aur.archlinux.org/cog.git
+source cog/PKGBUILD
+rm -rf cog
+
+if [ "$pkgver" = "" ]; then
+    echo 'unable to retrieve the version'
+    exit 1
+fi
+
+arch="$(uname -m)"
+aurname="${pkgname}-wpe-gl-$arch"
+
+echo "Building $pkgname $pkgver"
+sleep 2
+
+sudo pacman -Sy
+
+# make dependencies
+sudo pacman -S --needed --noconfirm cmake wayland-protocols
+
+getHash() {
+    for hash in $("${1}sum" $2); do
+        echo $hash
+        return
+    done
+}
+
+mkdir -p ~/aur/$aurname
+cd ~/aur/$aurname
+
+if [ ! -f ${pkgname}-${pkgver}.tar.xz ]; then
+    curl -LO https://wpewebkit.org/releases/${pkgname}-${pkgver}.tar.xz
+    tar -xf ${pkgname}-${pkgver}.tar.xz
+fi
+
+if [ ! -d ${pkgname}-${pkgver} ]; then
+    echo 'unable to find the directory'
+    exit 1
+fi
+
+cmake -H"${pkgname}-${pkgver}" -Bbuild \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+        -DCOG_PLATFORM_FDO=ON \
+        -DCOG_PLATFORM_DRM=ON \
+        -DCOG_BUILD_PROGRAMS=ON \
+        -DINSTALL_MAN_PAGES=ON \
+        -DCOG_WESTON_DIRECT_DISPLAY=OFF  # Needs libweston-9-protocols
+
+cmake --build build
+
+if [[ ! $? -eq 0 ]]; then
+    echo 'unable to build'
+    exit $?
+fi
+
+pkgtar="$aurname-$pkgver.tar.gz"
+
+rm -rf ~/aur/builds/$aurname
+mkdir -p ~/aur/builds/$aurname
+
+DESTDIR=~/aur/builds/$aurname cmake --build build --target install
+
+mkdir -p ~/git/
+cd ~/git
+if [ ! -d aur ]; then
+    yes yes | git clone git@github.com:WebReflection/aur.git
+fi
+
+cd ~/git/aur/
+
+git add .
+git reset --hard
+git pull --rebase
+
+rm -rf $pkgtar
+mv ~/aur/builds/$aurname/usr ./
+tar -czf $pkgtar usr
+rm -rf usr
+
+mkdir -p $aurname
+cd $aurname
+
+if [ "$arch" != "aarch64" ]; then
+    arch="armv7l armv7h"
+fi
+
+echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
+pkgdesc='WPE launcher and webapp container'
+pkgname=$aurname
+pkgver=$pkgver
+arch=($arch)
+pkgrel=1
+url=https://github.com/Igalia/cog
+license=(custom:MIT)
+groups=(wpe)
+provides=(cog cog-git)
+conflicts=(cog cog-git)
+depends=(wpewebkit-gl-$(uname -m) wpebackend-fdo libinput)
+source=('https://webreflection.github.io/aur/$pkgtar')
+md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
+sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
+sha256sums=('$(getHash sha256 ~/git/aur/$pkgtar)')
+sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
+">PKGBUILD
+
+echo 'package () {
+    cp -R "${srcdir}/usr" "${pkgdir}"
+}'>>PKGBUILD
+
+makepkg --printsrcinfo > .SRCINFO
+
+cd ~/git/aur/
+git add .
+git commit -m "Pushing ${aurname}-${pkgver}"
+git push
+
+echo ""
+echo "$(tput bold)$aurname$(tput sgr0) successfully uploaded"
+echo ""
