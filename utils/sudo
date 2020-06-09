@@ -77,7 +77,7 @@ setup_sudo() {
 
   sync
 
-  if [ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
+  if [ "$(yes "$PASSWORD" | su -c 'cat /etc/sudoers' | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
     echo "enabling wheel group"
     yes "$PASSWORD" | su -c 'echo "
 ## [archibold.io] enabled wheel group
@@ -87,7 +87,7 @@ setup_sudo() {
 
   sync
 
-  if [ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]; then
+  if [ "$(yes "$PASSWORD" | su -c 'cat /etc/sudoers' | grep -s "^Defaults env_reset")" = "" ]; then
     echo "setting a never expiring sudo password"
     yes "$PASSWORD" | su -c 'echo "
 ## [archibold.io] never expiring sudo password
