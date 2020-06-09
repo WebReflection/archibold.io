@@ -65,31 +65,30 @@ setup_sudo() {
     fi
   done
 
-  yes "$PASSWORD" | su -c 'pacman-key --init'
-  if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "i686" ]; then
-    yes "$PASSWORD" | su -c 'pacman-key --populate archlinux'
-  else
-    yes "$PASSWORD" | su -c 'pacman-key --populate archlinuxarm'
-  fi
-  yes "$PASSWORD" | su -c 'pacman -Sy --needed --noconfirm sudo'
-  yes "$PASSWORD" | su -c "passwd $USER"
   addGroup "$PASSWORD"
-
-  if [ "$(yes "$PASSWORD" | su -c 'cat /etc/sudoers' | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
-    echo "enabling wheel group"
-    yes "$PASSWORD" | su -c 'echo "
+  yes "$PASSWORD" | su -c '
+pacman-key --init
+if [ "$(uname -m)" = "x86_64" ] || [ "$(uname -m)" = "i686" ]; then
+  pacman-key --populate archlinux
+else
+  pacman-key --populate archlinuxarm
+fi
+pacman -Sy --needed --noconfirm sudo
+sync
+if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
+  echo "
 ## [archibold.io] enabled wheel group
 %wheel ALL=(ALL) ALL
-" >> /etc/sudoers'
-  fi
+" >> /etc/sudoers
+fi
 
-  if [ "$(yes "$PASSWORD" | su -c 'cat /etc/sudoers' | grep -s "^Defaults env_reset")" = "" ]; then
-    echo "setting a never expiring sudo password"
-    yes "$PASSWORD" | su -c 'echo "
+if [[ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]]; then
+  echo "
 ## [archibold.io] never expiring sudo password
 Defaults env_reset, timestamp_timeout=-1
-" >> /etc/sudoers'
-  fi
+" >> /etc/sudoers
+fi
+'
 
   yes "$PASSWORD" | sudo -S ls > /dev/null 2>&1
 
