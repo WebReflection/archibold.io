@@ -20,8 +20,6 @@ else
   su -c '# install sudo
 pacman -Sy --needed --noconfirm sudo
 
-sync
-
 if [[ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]]; then
   echo "
 ## [archibold.io] enabled wheel group
