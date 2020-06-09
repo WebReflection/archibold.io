@@ -22,7 +22,7 @@ ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 source <(curl -s https://archibold.io/utils/aur)
 
 arch="$(uname -m)"
-if [ "$arch" = "aarch64" ]; then
+if [ "$arch" = "armv7h" ]; then
   arch="armv7l"
 fi
 
