@@ -46,7 +46,7 @@ yes y | sudo pacman -S --needed \
   gtk3
 
 if [ "$(pacman -Qmq cog-wpe-gl 2> /dev/null)" = "" ]; then
-  aur --no-pgp cog-wpe-gl
+  aur --no-pgp cog-wpe-gl-$arch
 fi
 
 mkdir -p ~/.config
