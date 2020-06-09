@@ -75,6 +75,8 @@ setup_sudo() {
   yes "$PASSWORD" | su -c "passwd $USER"
   addGroup "$PASSWORD"
 
+  sync
+
   if [ "$(cat /etc/sudoers | grep -s "^%wheel ALL=(ALL) ALL")" = "" ]; then
     echo "enabling wheel group"
     yes "$PASSWORD" | su -c 'echo "
@@ -82,6 +84,8 @@ setup_sudo() {
 %wheel ALL=(ALL) ALL
 " >> /etc/sudoers'
   fi
+
+  sync
 
   if [ "$(cat /etc/sudoers | grep -s "^Defaults env_reset")" = "" ]; then
     echo "setting a never expiring sudo password"
