@@ -84,4 +84,6 @@ COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://open.spotify.com/
 ' > ~/spotipi
 chmod a+x ~/spotipi
 
+bash <(curl -s https://archibold.io/kiosk/pi-gpu)
+
 reboot
