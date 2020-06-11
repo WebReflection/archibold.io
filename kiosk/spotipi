@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/utils/sudo)
+else
+  # sudo installs already the 
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinuxarm
+fi
+
+yes y | sudo pacman -Syu
+
+sudo groupadd weston-launch
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
+
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo sh -c "echo '[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia ${USER} %I
+'>/etc/systemd/system/getty@tty1.service.d/override.conf"
+
+source <(curl -s https://archibold.io/utils/aur)
+
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+  arch="armv7l"
+fi
+
+if [ "$(pacman -Qmq cairo-glesv2-$arch 2> /dev/null)" = "" ]; then
+  aur --no-pgp cairo-glesv2-$arch
+fi
+
+if [ "$(pacman -Qmq wpewebkit-gl-$arch 2> /dev/null)" = "" ]; then
+  aur --no-pgp wpewebkit-gl-$arch
+fi
+
+yes y | sudo pacman -S --needed \
+  jack libbluray \
+  gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
+  gstreamer-vaapi gst-libav \
+  geoip geoclue \
+  weston mesa ttf-dejavu \
+  wpebackend-fdo wayland-protocols \
+  nodejs npm \
+  unzip \
+  gtk3
+
+if [ "$(pacman -Qmq cog-wpe-gl 2> /dev/null)" = "" ]; then
+  aur --no-pgp cog-wpe-gl-$arch
+fi
+
+mkdir -p ~/.config
+if [ ! -f ~/.config/weston.ini ]; then
+  echo "[core]
+idle-time=0
+require-input=false
+
+[shell]
+client=${HOME}/spotipi
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+
+[output]
+name=
+mode=
+">~/.config/weston.ini
+fi
+
+if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
+    echo '
+# [archibold.io] weston
+
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
+  weston-launch
+fi
+' >> ~/.bashrc
+fi
+
+echo '#!/usr/bin/env bash
+
+COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://open.spotify.com/
+' > ~/spotipi
+chmod a+x ~/spotipi
+
+reboot
