@@ -40,10 +40,7 @@ yes y | sudo pacman -S --needed \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
   weston mesa ttf-dejavu \
-  wpebackend-fdo wayland-protocols \
-  nodejs npm \
-  unzip \
-  gtk3
+  wpebackend-fdo wayland-protocols
 
 if [ "$(pacman -Qmq cog-wpe-gl 2> /dev/null)" = "" ]; then
   aur --no-pgp cog-wpe-gl-$arch
@@ -78,10 +75,14 @@ fi
 ' >> ~/.bashrc
 fi
 
-echo '#!/usr/bin/env bash
+echo "#!/usr/bin/env bash
 
-COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://open.spotify.com/
-' > ~/spotipi
+COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog \\
+  --enable-offline-web-application-cache=false \\
+  --enable-media=true --enable-media-stream=true --enable-encrypted-media=true \\
+  --user-agent='Mozilla/5.0 (X11; Linux x86_64; rv:77.0) Gecko/20100101 Firefox/77.0' \\
+  -P fdo https://open.spotify.com/
+" > ~/spotipi
 chmod a+x ~/spotipi
 
 bash <(curl -s https://archibold.io/kiosk/pi-gpu)
