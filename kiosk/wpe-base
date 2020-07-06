@@ -107,7 +107,7 @@ setWestonMode() {
 }
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
-  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
+  # setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
   weston-launch
 fi
 '>>~/.bashrc
