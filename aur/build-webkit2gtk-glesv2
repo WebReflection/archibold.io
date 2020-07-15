@@ -66,6 +66,7 @@ cmake -H"webkitgtk-${pkgver}" -Bbuild       \
         -DLIB_INSTALL_DIR=/usr/lib          \
         -DUSE_LIBHYPHEN=OFF                 \
         -DENABLE_MINIBROWSER=ON             \
+        -DENABLE_ENCRYPTED_MEDIA=ON         \
         -DUSE_WOFF2=ON                      \
         -DUSE_WPE_RENDERER=ON               \
         -DENABLE_BUBBLEWRAP_SANDBOX=OFF     \
