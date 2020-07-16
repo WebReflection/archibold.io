@@ -68,6 +68,7 @@ cmake -H"wpewebkit-${pkgver}" -Bbuild       \
         -DENABLE_GTKDOC=ON                  \
         -DENABLE_ACCELERATED_2D_CANVAS=ON   \
         -DENABLE_ENCRYPTED_MEDIA=ON         \
+        -DENABLE_WPE_QT_API=ON              \
         -DPORT=WPE                          \
         -GNinja
 
