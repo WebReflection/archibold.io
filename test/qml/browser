@@ -2,6 +2,7 @@
 
 import QtQuick 2.12
 import QtQuick.Window 2.12
+# import org.wpewebkit.qtwpe 1.0
 import QtWebEngine 1.8
 
 Window {

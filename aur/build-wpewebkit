@@ -27,8 +27,9 @@ sudo pacman -Sy
 
 # dependencies (less cairo)
 sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
-         harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
-		 geoclue at-spi2-atk libwpe hyphen
+    harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
+    geoclue at-spi2-atk libwpe hyphen \
+    qt5-quickcontrols2
 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc file
