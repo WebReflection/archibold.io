@@ -98,9 +98,10 @@ run_hook() {
   local password=
   local i=0
   mkdir -p /run/cryptsetup
+  echo -e \"Please enter your \033[1mencryption\033[0m password\"
   while [ \$i -lt 3 ]; do
     i=\$((i+1))
-    password=\$(askPassword \"Please enter your \033[1mencryption\033[0m password:\")
+    password=\$(askPassword)
     echo 'verifying password'
     echo \"\$password\" | sh -c 'cryptsetup open \$(blkid --uuid \"$UUID\") root'
     if [[ \$? -eq 0 ]]; then
