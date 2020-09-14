@@ -178,25 +178,13 @@ fi'
         curl -s https://archibold.io/install/git-alias >> ~/.gitconfig
       fi
 
-      write "Installing pamac-aur"
-      # TODO somehow this wasn't part of the dependencies, see if it's needed in the future
-      echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm xorgproto
-      rm -rf /tmp/pamac-aur
-      cd /tmp
-      git clone https://aur.archlinux.org/pamac-aur.git
-      cd -
-      cd /tmp/pamac-aur
-      makepkg -Asfc --needed --noconfirm
-      pkg="$(ls pamac-aur*.pkg.tar.xz 2> /dev/null)"
-      if [ "$?" = "0" ] && [ "$pkg" != "" ]; then
-        echo "$PASSWORD" | sudo -S pacman -U --noconfirm $pkg
-        gnome-extensions enable pamac-updates@manjaro.org
-      else
-        write "WARNING - pamac-aur could not be installed"
-        sleep 3
+      if [ "$(which aur 2> /dev/null)" = "" ]; then
+        write "Installing AUR helper"
+        bash <(curl -s https://archibold.io/install/aur)
       fi
-      cd -
-      rm -rf /tmp/pamac-aur
+
+      write "Installing pamac-aur"
+      aur pamac-aur
     fi
   else
     write "Installing base-devel and git"

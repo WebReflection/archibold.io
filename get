@@ -399,6 +399,7 @@ if [ "$INTEL" = "" ] && [ "$(lscpu | grep GenuineIntel)" != "" ]; then
   INTEL="yes"
 fi
 
+ENCRYPTION=no
 if [ "$ENCRYPTION" = "" ]; then
   clear && askAboutEncryption
 fi
