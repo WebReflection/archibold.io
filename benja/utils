@@ -181,9 +181,9 @@ targetPlatform() {
 
   *0* Raspberry Pi 0 (no electron)
   *1* Raspberry Pi 1 (no electron)
-  *2* Raspberry Pi 2
-  *3* Raspberry Pi 3
-  *4* Raspberry Pi 4
+  *2* Raspberry Pi 2 (32bit / Pi 3 compatible)
+  *3* Raspberry Pi 3 (64bit / Pi 4 compatible)
+  *4* Raspberry Pi 4 (32bit / Pi 4 only)
 '
   read -n1 choice
 
@@ -198,7 +198,7 @@ targetPlatform() {
   elif [ "$choice" = "3" ]; then
     BENJA_SETUP="rpi3"
     BENJA_SBC="Raspberry Pi 3"
-    BENJA_ARCHIVE="ArchLinuxARM-rpi-3-latest.tar.gz"
+    BENJA_ARCHIVE="ArchLinuxARM-rpi-aarch64-latest.tar.gz"
   elif [ "$choice" = "4" ]; then
     BENJA_SETUP="rpi4"
     BENJA_SBC="Raspberry Pi 4"
