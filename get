@@ -62,7 +62,7 @@ findTheDisk() {
   *Please note:* #red(all data) in the chosen disk will be #red(lost).'
 
   for disk in $(lsblk --output NAME); do
-    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ]; then
+    if [ "$(echo $disk | sed -e 's/^[a-z]//')" != "$disk" ] && [ "$(echo $disk | grep loop)" = "" ]; then
       ((i=i+1))
       disks="$disks $disk"
       printf "  $(tput bold)$i$(tput sgr0) %-24s %-6s\n" /dev/$disk $(grabDiskSize /dev/$disk)
@@ -179,6 +179,7 @@ encryptPartition() {
   local partition="$1"
   local name="$2"
   local uuid=$(partid $partition)
+  mkdir -p /run/cryptsetup
   echo "$PASSWORD" | cryptsetup -v --uuid=$uuid luksFormat $partition
   echo "$PASSWORD" | cryptsetup open $partition $name
 }
