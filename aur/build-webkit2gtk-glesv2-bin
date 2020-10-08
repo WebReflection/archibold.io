@@ -58,7 +58,7 @@ if [ ! -d webkitgtk-${pkgver} ]; then
     exit 1
 fi
 
-pkgname="webkit2gtk-glesv2-$required"
+pkgname="webkit2gtk-glesv2-bin-$required"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
 cmake -H"webkitgtk-${pkgver}" -Bbuild       \
