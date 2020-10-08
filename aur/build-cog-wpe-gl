@@ -31,6 +31,11 @@ sudo pacman -Sy
 # make dependencies
 sudo pacman -S --needed --noconfirm cmake wayland-protocols
 
+addLicense() {
+    mkdir -p ~/aur/builds/${aurname}/usr/share/licenses/cog/
+    cp ~/aur/${aurname}/${pkgname}-${pkgver}/COPYING ~/aur/builds/${aurname}/usr/share/licenses/cog/COPYING
+}
+
 getHash() {
     for hash in $("${1}sum" $2); do
         echo $hash
@@ -74,6 +79,8 @@ rm -rf ~/aur/builds/$aurname
 mkdir -p ~/aur/builds/$aurname
 
 DESTDIR=~/aur/builds/$aurname cmake --build build --target install
+
+addLicense
 
 mkdir -p ~/git/
 cd ~/git
