@@ -102,7 +102,7 @@ rm -rf usr
 mkdir -p $aurname
 cd $aurname
 
-if [ "$arch" != "aarch64" ]; then
+if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
     arch="armv7l armv7h"
 fi
 
