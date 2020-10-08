@@ -34,6 +34,15 @@ sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libso
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc file
 
+addLicense() {
+    local _f
+    cd ~/aur/wpewebkit/wpewebkit-${pkgver}
+    mkdir -p ~/aur/builds/$pkgname/usr/share/licenses/${pkgname}/
+    while IFS= read -d $'\0' -r _f ; do
+        echo "### ${_f} ###" ; cat "${_f}" ; echo
+    done < <(find Source -name COPYING -or -name 'LICENSE*' -print0 | sort -zu) > ~/aur/builds/$pkgname/usr/share/licenses/${pkgname}/LICENSE
+}
+
 getHash() {
     for hash in $("${1}sum" $2); do
         echo $hash
@@ -47,8 +56,6 @@ cd ~/aur/wpewebkit
 if [ ! -f wpewebkit-${pkgver}.tar.xz ]; then
     curl -LO https://wpewebkit.org/releases/wpewebkit-${pkgver}.tar.xz
     tar -xf wpewebkit-${pkgver}.tar.xz
-    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
-    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' wpewebkit-${pkgver}/Source/WebCore/dom/Document.cpp
 fi
 
 if [ ! -d wpewebkit-${pkgver} ]; then
@@ -84,6 +91,8 @@ rm -rf ~/aur/builds/$pkgname
 mkdir -p ~/aur/builds/$pkgname
 
 DESTDIR=~/aur/builds/$pkgname cmake --build build --target install
+
+addLicense
 
 mkdir -p ~/git/
 cd ~/git
@@ -132,6 +141,7 @@ sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
 
 echo 'package () {
     cp -R "${srcdir}/usr" "${pkgdir}"
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }'>>PKGBUILD
 
 makepkg --printsrcinfo > .SRCINFO
