@@ -141,7 +141,6 @@ sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
 
 echo 'package () {
     cp -R "${srcdir}/usr" "${pkgdir}"
-    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
 }'>>PKGBUILD
 
 makepkg --printsrcinfo > .SRCINFO
