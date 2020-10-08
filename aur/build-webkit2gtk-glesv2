@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+required="$(uname -m)"
+if [ "$required" = "armv7h" ]; then
+    required="armv7l"
+fi
+
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -53,8 +58,7 @@ if [ ! -d webkitgtk-${pkgver} ]; then
     exit 1
 fi
 
-arch="$(uname -m)"
-pkgname="webkit2gtk-glesv2-$arch"
+pkgname="webkit2gtk-glesv2-$required"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
 cmake -H"webkitgtk-${pkgver}" -Bbuild       \
@@ -108,6 +112,7 @@ rm -rf usr
 mkdir -p $pkgname
 cd $pkgname
 
+arch="$(uname -m)"
 if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
     arch="armv7l armv7h"
 fi

@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
+required="$(uname -m)"
+if [ "$required" = "armv7h" ]; then
+    required="armv7l"
+fi
+
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
 fi
 
 if [ "$(pacman -Qs cairo-gles)" = "" ]; then
-    echo "Please install cairo-glesv2-$(uname -m) via aur"
+    echo "Please install cairo-glesv2-bin-${required} or cairo-glesv3-bin-${required} via aur"
     exit 1
 fi
 
@@ -20,8 +25,7 @@ if [ "$pkgver" = "" ]; then
     exit 1
 fi
 
-arch="$(uname -m)"
-aurname="${pkgname}-wpe-gl-$arch"
+aurname="${pkgname}-wpe-bin-$required"
 
 echo "Building $pkgname $pkgver"
 sleep 2
@@ -102,6 +106,7 @@ rm -rf usr
 mkdir -p $aurname
 cd $aurname
 
+arch="$(uname -m)"
 if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
     arch="armv7l armv7h"
 fi
@@ -117,7 +122,7 @@ license=(custom:MIT)
 groups=(wpe)
 provides=(cog cog-git)
 conflicts=(cog cog-git)
-depends=(wpewebkit-gl-$(uname -m) wpebackend-fdo libinput)
+depends=(wpewebkit-bin-$required wpebackend-fdo libinput)
 source=('https://webreflection.github.io/aur/$pkgtar')
 md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
 sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')

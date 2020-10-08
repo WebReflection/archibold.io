@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+required="$(uname -m)"
+if [ "$required" = "armv7h" ]; then
+    required="armv7l"
+fi
+
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -70,8 +75,7 @@ if [[ ! $? -eq 0 ]]; then
     exit $?
 fi
 
-arch="$(uname -m)"
-pkgname="cairo-glesv3-$arch"
+pkgname="cairo-glesv3-bin-$required"
 pkgver="$(git describe --tags | sed 's/-.*//g')"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
@@ -102,6 +106,7 @@ rm -rf usr
 mkdir -p $pkgname
 cd $pkgname
 
+arch="$(uname -m)"
 if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
     arch="armv7l armv7h"
 fi
