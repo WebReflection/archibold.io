@@ -20,6 +20,11 @@ getHash() {
     done
 }
 
+addLicense() {
+    mkdir -p ~/aur/builds/${pkgname}/usr/share/licenses/cairo/
+    cp ~/git/cairo/COPYING* ~/aur/builds/${pkgname}/usr/share/licenses/cairo/
+}
+
 mkdir -p ~/git
 cd ~/git
 
@@ -74,6 +79,8 @@ rm -rf ~/aur/builds/$pkgname
 mkdir -p ~/aur/builds/$pkgname
 
 make DESTDIR=~/aur/builds/$pkgname install
+
+addLicense
 
 mkdir -p ~/git/
 cd ~/git
