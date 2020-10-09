@@ -10,7 +10,7 @@ rm -rf *
 git clone https://aur.archlinux.org/${pkgbase}
 cd cog
 sed -i 's/Adrian Perez de Castro <aperez@igalia.com>/Andrea Giammarchi <andrea.giammarchi@gmail.com>/' PKGBUILD
-sed -i 's/wpewebkit/wpewebkit-gl-aarch64/' PKGBUILD
+sed -i 's/wpewebkit/wpewebkit-bin/' PKGBUILD
 sed -i "s/pkgname=${pkgbase}/pkgname=${pkgname}/" PKGBUILD
 sed -i "s/\${pkgname}/${pkgbase}/" PKGBUILD
 cd ..

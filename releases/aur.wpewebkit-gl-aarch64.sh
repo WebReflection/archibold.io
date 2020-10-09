@@ -8,7 +8,7 @@ getHash() {
 }
 
 maintainer='Andrea Giammarchi <andrea.giammarchi@gmail.com>'
-pkgbase=wpewebkit-gl
+pkgbase=wpewebkit-bin
 pkgname=${pkgbase}-aarch64
 pkgver=2.22.5
 pkgrel=2
