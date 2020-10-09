@@ -1,17 +1,12 @@
 #!/usr/bin/env bash
 
-required="$(uname -m)"
-if [ "$required" = "armv7h" ]; then
-    required="armv7l"
-fi
-
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
 fi
 
 if [ "$(pacman -Qs cairo-gles)" = "" ]; then
-    echo "Please install cairo-glesv2-bin-${required} or cairo-glesv3-bin-${required} via aur"
+    echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
     exit 1
 fi
 
@@ -68,7 +63,7 @@ if [ ! -d wpewebkit-${pkgver} ]; then
     exit 1
 fi
 
-pkgname="wpewebkit-bin-$required"
+pkgname="wpewebkit-bin"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
 cmake -H"wpewebkit-${pkgver}" -Bbuild       \
@@ -118,15 +113,10 @@ rm -rf usr
 mkdir -p $pkgname
 cd $pkgname
 
-arch="$(uname -m)"
-if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
-    arch="armv7l armv7h"
-fi
-
 echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
 pkgname=$pkgname
 pkgver=$pkgver
-arch=($arch)
+arch=(aarch64 armv7h armv7l x86_64)
 pkgrel=1
 pkgdesc='Web content engine library optimized for embedded devices (gl version)'
 url='https://wpewebkit.org'
@@ -136,19 +126,12 @@ provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
 depends=(cairo libxslt gst-plugins-base-libs libepoxy libsoup libwebp
          harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy
-		 geoclue at-spi2-atk libwpe)
-source=('https://webreflection.github.io/aur/$pkgtar')
-md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
-sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
-sha256sums=('$(getHash sha256 ~/git/aur/$pkgtar)')
-sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
-">PKGBUILD
-
-echo 'package () {
-    cp -R "${srcdir}/usr" "${pkgdir}"
-}'>>PKGBUILD
-
-makepkg --printsrcinfo > .SRCINFO
+         geoclue at-spi2-atk libwpe)
+source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
+source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
+source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
+source_x86_64=('${pkgname}-x86::https://webreflection.github.io/aur/${pkgname}-x86_64-${pkgver}.tar.gz')
+">TEMPLATE
 
 cd ~/git/aur/
 git add .

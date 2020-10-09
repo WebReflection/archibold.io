@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-required="$(uname -m)"
-if [ "$required" = "armv7h" ]; then
-    required="armv7l"
-fi
-
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -75,7 +70,7 @@ if [[ ! $? -eq 0 ]]; then
     exit $?
 fi
 
-pkgname="cairo-glesv2-bin-$required"
+pkgname="cairo-glesv2-bin"
 pkgver="$(git describe --tags | sed 's/-.*//g')"
 pkgtar="$pkgname-$pkgver.tar.gz"
 
@@ -106,15 +101,10 @@ rm -rf usr
 mkdir -p $pkgname
 cd $pkgname
 
-arch="$(uname -m)"
-if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
-    arch="armv7l armv7h"
-fi
-
 echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
 pkgname=$pkgname
 pkgver=$pkgver
-arch=($arch)
+arch=(aarch64 armv7h armv7l x86_64)
 pkgrel=1
 pkgdesc='Cairo vector graphics library (glesv2 version)'
 url='http://cairographics.org/'
@@ -122,18 +112,11 @@ license=('LGPL' 'MPL')
 provides=('cairo=$pkgver' 'cairo-gl=$pkgver' 'cairo-xcb=$pkgver')
 conflicts=('cairo' 'cairo-gl' 'cairo-xcb')
 depends=('libpng' 'libxrender' 'libxext' 'fontconfig' 'pixman>=0.28.0' 'glib2' 'mesa' 'libgl' 'lzo')
-source=('https://webreflection.github.io/aur/$pkgtar')
-md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
-sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
-sha256sums=('$(getHash sha256 ~/git/aur/$pkgtar)')
-sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
-">PKGBUILD
-
-echo 'package () {
-    cp -R "${srcdir}/usr" "${pkgdir}"
-}'>>PKGBUILD
-
-makepkg --printsrcinfo > .SRCINFO
+source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
+source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
+source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
+source_x86_64=('${pkgname}-x86::https://webreflection.github.io/aur/${pkgname}-x86_64-${pkgver}.tar.gz')
+">TEMPLATE
 
 cd ~/git/aur/
 git add .
