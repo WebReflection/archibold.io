@@ -49,8 +49,6 @@ cd ~/aur/webkit2gtk
 if [ ! -f webkitgtk-${pkgver}.tar.xz ]; then
     curl -LO https://webkitgtk.org/releases/webkitgtk-${pkgver}.tar.xz
     tar -xf webkitgtk-${pkgver}.tar.xz
-    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' webkitgtk-${pkgver}/Source/WTF/wtf/URLHelpers.cpp
-    # sed -i -r 's/U16_NEXT(.*)/U16_NEXT\1;/g' webkitgtk-${pkgver}/Source/WebCore/dom/Document.cpp
 fi
 
 if [ ! -d webkitgtk-${pkgver} ]; then
