@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-arch="$(uname -m)"
-if [ "$arch" = "armv7h" ]; then
-    arch="armv7l"
-fi
-
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -73,6 +68,11 @@ make
 if [[ ! $? -eq 0 ]]; then
     echo 'unable to make'
     exit $?
+fi
+
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
 fi
 
 pkgname="cairo-glesv3-bin"

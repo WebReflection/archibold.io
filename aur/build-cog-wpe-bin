@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-arch="$(uname -m)"
-if [ "$arch" = "armv7h" ]; then
-    arch="armv7l"
-fi
-
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -75,6 +70,11 @@ cmake --build build
 if [[ ! $? -eq 0 ]]; then
     echo 'unable to build'
     exit $?
+fi
+
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
 fi
 
 pkgtar="$aurname-$arch-$pkgver.tar.gz"
