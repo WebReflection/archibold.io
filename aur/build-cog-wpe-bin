@@ -42,6 +42,7 @@ getHash() {
     done
 }
 
+rm -rf ~/aur/$aurname
 mkdir -p ~/aur/$aurname
 cd ~/aur/$aurname
 
