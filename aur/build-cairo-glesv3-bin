@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
+fi
+
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -72,7 +77,7 @@ fi
 
 pkgname="cairo-glesv3-bin"
 pkgver="$(git describe --tags | sed 's/-.*//g')"
-pkgtar="$pkgname-$pkgver.tar.gz"
+pkgtar="$pkgname-$arch-$pkgver.tar.gz"
 
 rm -rf ~/aur/builds/$pkgname
 mkdir -p ~/aur/builds/$pkgname

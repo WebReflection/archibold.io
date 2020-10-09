@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
+fi
+
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -64,7 +69,7 @@ if [ ! -d wpewebkit-${pkgver} ]; then
 fi
 
 pkgname="wpewebkit-bin"
-pkgtar="$pkgname-$pkgver.tar.gz"
+pkgtar="$pkgname-$arch-$pkgver.tar.gz"
 
 cmake -H"wpewebkit-${pkgver}" -Bbuild       \
         -DCMAKE_BUILD_TYPE=Release          \

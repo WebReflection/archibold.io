@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
+fi
+
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -72,7 +77,7 @@ if [[ ! $? -eq 0 ]]; then
     exit $?
 fi
 
-pkgtar="$aurname-$pkgver.tar.gz"
+pkgtar="$aurname-$arch-$pkgver.tar.gz"
 
 rm -rf ~/aur/builds/$aurname
 mkdir -p ~/aur/builds/$aurname
@@ -113,10 +118,10 @@ groups=(wpe)
 provides=(cog cog-git)
 conflicts=(cog cog-git)
 depends=(wpewebkit-bin wpebackend-fdo libinput)
-source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
-source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
-source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
-source_x86_64=('${pkgname}-x86::https://webreflection.github.io/aur/${pkgname}-x86_64-${pkgver}.tar.gz')
+source_aarch64=('${aurname}-aarch64::https://webreflection.github.io/aur/${aurname}-aarch64-${pkgver}.tar.gz')
+source_armv7h=('${aurname}-armv7h::https://webreflection.github.io/aur/${aurname}-armv7l-${pkgver}.tar.gz')
+source_armv7l=('${aurname}-armv7l::https://webreflection.github.io/aur/${aurname}-armv7l-${pkgver}.tar.gz')
+source_x86_64=('${aurname}-x86::https://webreflection.github.io/aur/${aurname}-x86_64-${pkgver}.tar.gz')
 ">TEMPLATE
 
 cd ~/git/aur/
