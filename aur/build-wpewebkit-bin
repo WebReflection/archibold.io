@@ -78,7 +78,7 @@ cmake -H"wpewebkit-${pkgver}" -Bbuild       \
         -DCMAKE_SKIP_RPATH=ON               \
         -DPYTHON_EXECUTABLE=/usr/bin/python \
         -DENABLE_GTKDOC=ON                  \
-        -DENABLE_ACCELERATED_2D_CANVAS=OFF  \
+        -DENABLE_ACCELERATED_2D_CANVAS=ON   \
         -DENABLE_ENCRYPTED_MEDIA=ON         \
         -DENABLE_WPE_QT_API=OFF             \
         -DPORT=WPE                          \
