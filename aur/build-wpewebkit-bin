@@ -56,6 +56,12 @@ cd ~/aur/wpewebkit
 if [ ! -f wpewebkit-${pkgver}.tar.xz ]; then
     curl -LO https://wpewebkit.org/releases/wpewebkit-${pkgver}.tar.xz
     tar -xf wpewebkit-${pkgver}.tar.xz
+    if [ "${pkgver}" = "2.30.1" ]; then
+        cd wpewebkit-${pkgver}
+        git init
+        git apply <(curl -Ls http://sprunge.us/Ei4PeM)
+        cd ..
+    fi
 fi
 
 if [ ! -d wpewebkit-${pkgver} ]; then
