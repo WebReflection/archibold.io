@@ -99,12 +99,19 @@ aur() {
       date > ~/.archibold-aur
       echo "Installing $(tput bold)base-devel$(tput sgr0) and $(tput bold)git$(tput sgr0)"
       if [ "$AUR_NO_SUDO" != "" ] || [ "$HAS_SUDO" = "0" ]; then
-        su -c 'pacman -S --needed --noconfirm base-devel git'
+        su -c '
+        while ! pacman -S --needed --noconfirm base-devel git
+        do
+          :
+        done'
         if [ "$HAS_SUDO" = "0" ]; then
           su -c 'pacman -R --noconfirm sudo'
         fi
       else
-        sudo pacman -S --needed --noconfirm base-devel git
+        while ! sudo pacman -S --needed --noconfirm base-devel git
+        do
+          :
+        done
       fi
     fi
     rm -rf ~/tmp-${pkg}

@@ -8,7 +8,10 @@ else
   sudo pacman-key --populate archlinuxarm
 fi
 
-yes y | sudo pacman -Syu
+while ! yes y | sudo pacman -Syu
+do
+  :
+done
 
 sudo groupadd weston-launch
 sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
@@ -26,15 +29,16 @@ if [ "$arch" = "armv7h" ]; then
   arch="armv7l"
 fi
 
-if [ "$(pacman -Qmq cairo-glesv2-bin 2> /dev/null)" = "" ]; then
-  aur --no-pgp cairo-glesv2-bin
-fi
+# this is apparently not needed anymore (not in the Pi 4)
+# if [ "$(pacman -Qmq cairo-glesv2-bin 2> /dev/null)" = "" ]; then
+#   aur --no-pgp cairo-glesv2-bin
+# fi
 
 if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
   aur --no-pgp wpewebkit-bin
 fi
 
-yes y | sudo pacman -S --needed \
+while ! yes y | sudo pacman -S --needed \
   jack libbluray \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
@@ -44,6 +48,9 @@ yes y | sudo pacman -S --needed \
   nodejs npm \
   unzip \
   gtk3
+do
+  :
+done
 
 if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
   aur --no-pgp cog-wpe-bin
