@@ -4,6 +4,12 @@
 
 This repository contains experiments and utilities to install/configure [ArchLinux](https://www.archlinux.org/) or [ArchLinuxARM](https://archlinuxarm.org/).
 
+### 📣 Community Announcement
+
+Please ask questions in the [dedicated forum](https://webreflection.boards.net/) to help the community around this project grow ♥
+
+---
+
 ### Highlights
 
   * **[ArchLinux Installer](https://archibold.io/)** installer, utilities, and documentation
