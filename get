@@ -349,6 +349,18 @@ askAboutLANGUAGE() {
   fi
 }
 
+askAboutLTS() {
+  local choice=
+  echoWithHeader "
+  Would you like an *LTS kernel* ? [y/N]"
+  read -n1 -s choice
+  if [ "$choice" = "y" ] || [ "$choice" = "Y" ]; then
+    LTS=yes
+  else
+    LTS=no
+  fi
+}
+
 askForUser() {
   local choice=
   echoWithHeader "
@@ -408,6 +420,9 @@ if [ "$USER" = "root" ] || [ "$USER" = "" ] || [ "$(echo $USER | sed -e 's/[a-z]
 fi
 if [ "$PASSWORD" = "" ]; then
   clear && askForPassword
+fi
+if [ "$LTS" = "" ]; then
+  clear && askAboutLTS
 fi
 if [ "$GNOME" = "" ]; then
   clear && askAboutGNOME
@@ -489,6 +504,7 @@ echo "#!/usr/bin/env bash
 
 LABEL=archibold
 LANGUAGE=$LANGUAGE
+LTS=$LTS
 DISK=$DISK
 BOOT=$BOOT
 SWAP=$SWAP
@@ -516,12 +532,12 @@ echoWithHeader "
 
   These are your user/pass credentials:
 
-    *$USER*: *${PASSWORD}*
+    *${USER}*: *${PASSWORD}*
 
-  If you installed GNOME, pleaase open the terminal
+  If you installed GNOME, please open the terminal
   once you are connected to the internet, to complete
-  the setup (it's a one/off operation)
+  the setup (it's a one/off operation).
 
   Please type #green(shutdown -h now) and
-  remove the media after.
+  remove the media before rebooting.
 "

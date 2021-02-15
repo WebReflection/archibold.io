@@ -8,6 +8,7 @@
 #
 # LABEL
 # LANGUAGE
+# LTS
 # DISK
 # BOOT
 # SWAP
@@ -52,9 +53,15 @@ sed -i -r "s/^#(${LANGUAGE}_.*? UTF-8)/\1/" /etc/locale.gen
 locale-gen
 locale > /etc/locale.conf
 
+if [ "$LTS" = "yes" ]; then
+echo -e "
+  initializing $(tput bold)linux-lts$(tput sgr0)
+"
+else
 echo -e "
   initializing $(tput bold)linux$(tput sgr0)
 "
+fi
 pacman-key --init
 pacman-key --populate archlinux
 
@@ -67,7 +74,12 @@ reflector --verbose --latest 5 --protocol https --sort rate --save /etc/pacman.d
 echo -e "
   installing $(tput bold)linux$(tput sgr0)
 "
-install_pkg linux linux-headers linux-firmware pacman-mirrorlist mkinitcpio vi
+
+if [ "$LTS" = "yes" ]; then
+  install_pkg linux-lts linux-lts-headers linux-firmware pacman-mirrorlist mkinitcpio vi
+else
+  install_pkg linux linux-headers linux-firmware pacman-mirrorlist mkinitcpio vi
+fi
 sync
 
 if [ "$ENCRYPTION" = "yes" ]; then
@@ -127,11 +139,19 @@ run_hook() {
   else
     sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect keyboard keymap modconf block archibold encrypt filesystems fsck)/' /etc/mkinitcpio.conf
   fi
-  mkinitcpio -p linux
+  if [ "$LTS" = "yes" ]; then
+    mkinitcpio -p linux-lts
+  else
+    mkinitcpio -p linux
+  fi
 else
   if [ "$SWAP" != "0" ]; then
     sed -i -r 's/^(HOOKS=.*)/#\1\nHOOKS=(base udev autodetect modconf block resume filesystems keyboard fsck)/' /etc/mkinitcpio.conf
-    mkinitcpio -p linux
+    if [ "$LTS" = "yes" ]; then
+      mkinitcpio -p linux-lts
+    else
+      mkinitcpio -p linux
+    fi
   fi
 fi
 
@@ -222,10 +242,17 @@ echo -e "
 
 bootctl --path=/boot install
 
-echo "title   ${LABEL}
+if [ "$LTS" = "yes" ]; then
+  echo "title   ${LABEL}
+linux   /vmlinuz-linux-lts
+${UCODE_STRING}initrd  /initramfs-linux-lts.img
+${APPEND}" > /boot/loader/entries/arch.conf
+else
+  echo "title   ${LABEL}
 linux   /vmlinuz-linux
 ${UCODE_STRING}initrd  /initramfs-linux.img
 ${APPEND}" > /boot/loader/entries/arch.conf
+fi
 
 echo -e "
   assigning $(tput bold)root$(tput sgr0) passwords
