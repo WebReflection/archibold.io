@@ -255,6 +255,9 @@ dd if=~/Downloads/archlinux-2015.02.01-dual.iso of=/dev/sdX bs=4194304</code></p
           The preferred connection type is via <strong>network cable</strong>, but we could use WiFi too.<br/>
           However, WiFi initial configuration is a bit more advanced, I can give a hint thought:
         </p>
+        <p>
+          Recent ArchLinux installer does <strong>not</strong> offer <code>wifi-menu</code> but <a href="https://wiki.archlinux.org/index.php/Iwd#iwctl">iwctl</a> instead.
+        </p>
         <pre><code># verify wifi path
 iw dev # or ip addr
 
