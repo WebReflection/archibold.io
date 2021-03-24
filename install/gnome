@@ -135,7 +135,7 @@ fi'
       fi
     done
 
-    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_US vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell imagemagick
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS firefox hunspell-en_us vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell imagemagick
 
     echo "$PASSWORD" | sudo -S systemctl enable NetworkManager
     echo "$PASSWORD" | sudo -S systemctl enable gdm

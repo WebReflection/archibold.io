@@ -517,11 +517,11 @@ if [ '$GNOME' != 'NO' ]; then
     $GPU_DRIVERS \
     libva-mesa-driver mesa-vdpau \
     xf86-input-evdev xf86-input-libinput \
-    xorg-server xorg-xinit xorg-server-xwayland \
+    xorg-server xorg-xinit xorg-xwayland \
     gnome gnome-calendar gnome-tweak-tool \
     gstreamer-vaapi gst-libav \
     alsa-utils xdg-utils \
-    hunspell-en \
+    hunspell-en_us \
     file-roller \
     bluez bluez-utils gnome-bluetooth gnome-user-share \
     ttf-dejavu ttf-liberation ttf-freefont noto-fonts noto-fonts-extra
