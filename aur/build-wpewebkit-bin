@@ -5,22 +5,24 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
-if [ "$(pacman -Qs cairo-gles)" = "" ]; then
+if [ "$(uname -m)" != "x86_64" ] && [ "$(pacman -Qs cairo-gles)" = "" ]; then
     echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
     exit 1
 fi
 
 cd /tmp
-yes yes | git clone https://aur.archlinux.org/wpewebkit.git
-source wpewebkit/PKGBUILD
-rm -rf wpewebkit
+yes yes | git clone --single-branch --branch packages/wpewebkit https://github.com/archlinux/svntogit-packages.git
+source svntogit-packages/trunk/PKGBUILD
+rm -rf svntogit-packages
 
 if [ "$pkgver" = "" ]; then
     echo 'unable to retrieve the version'
     exit 1
 fi
 
-echo "Building wpewebkit $pkgver"
+echo ''
+echo -e "\x1b[7m\x1b[1m Building wpewebkit $pkgver \x1b[0m"
+echo ''
 sleep 2
 
 sudo pacman -Sy
@@ -30,6 +32,8 @@ sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libso
     harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
     geoclue at-spi2-atk libwpe hyphen \
     qt5-quickcontrols2
+
+sudo pacman -S --needed --noconfirm gst-plugin-wpe
 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc file
@@ -54,7 +58,7 @@ mkdir -p ~/aur/wpewebkit
 cd ~/aur/wpewebkit
 
 if [ ! -f wpewebkit-${pkgver}.tar.xz ]; then
-    curl -LO https://wpewebkit.org/releases/wpewebkit-${pkgver}.tar.xz
+    curl -LO $url/releases/$pkgname-$pkgver.tar.xz
     tar -xf wpewebkit-${pkgver}.tar.xz
     if [ "${pkgver}" = "2.30.1" ]; then
         cd wpewebkit-${pkgver}
@@ -129,15 +133,21 @@ pkgname=$pkgname
 pkgver=$pkgver
 arch=(aarch64 armv7h armv7l x86_64)
 pkgrel=1
-pkgdesc='Web content engine library optimized for embedded devices (gl version)'
+pkgdesc='Web content engine library optimized for embedded devices (binary version)'
 url='https://wpewebkit.org'
 license=(custom)
 groups=(wpe)
 provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
-depends=(cairo libxslt gst-plugins-base-libs libepoxy libsoup libwebp
-         harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy
-         geoclue at-spi2-atk libwpe)
+depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg
+         libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe
+         atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
+         libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon
+         wayland wpebackend-fdo)
+optdepends=('geoclue: Geolocation support'
+            'gst-plugins-good: media decoding'
+            'gst-plugins-bad: media decoding'
+            'gst-libav: nonfree media decoding')
 source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
 source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
 source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')

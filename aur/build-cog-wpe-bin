@@ -5,7 +5,7 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
-if [ "$(pacman -Qs cairo-gles)" = "" ]; then
+if [ "$(uname -m)" != "x86_64" ] && [ "$(pacman -Qs cairo-gles)" = "" ]; then
     echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
     exit 1
 fi
