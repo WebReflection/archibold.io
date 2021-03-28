@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+
+#########################
+# archibold.io (C) 2021 #
+#########################
+
+if [ "$USER" = "root" ]; then
+  echo 'Unable to install as root'
+  exit 1
+fi
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/sudo)
+fi
+
+sudo groupadd weston-launch
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch $USER
+
+if [ "$(which aur 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/aur)
+fi
+
+# if [ "$(uname -m)" = "x86_64" ]; then
+#   sudo pacman -S --needed --noconfirm cairo
+# elif [ "$(uname -m)" = "aarch64" ]; then
+#   if [ "$(pacman -Qmq cairo-glesv3-bin 2> /dev/null)" = "" ]; then
+#     aur --no-pgp cairo-glesv3-bin
+#   fi
+# elif [ "$(pacman -Qmq cairo-glesv2-bin 2> /dev/null)" = "" ]; then
+#   aur --no-pgp cairo-glesv2-bin
+# fi
+
+# there are two packages here
+yes 1 | sudo pacman -S --needed --noconfirm jack
+
+while ! yes y | sudo pacman -S --needed --noconfirm \
+  fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu \
+  libjpeg libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe \
+  atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap \
+  libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon wayland wpebackend-fdo \
+  geoclue gst-plugins-good gst-plugins-bad gst-libav \
+  weston
+do
+  :
+done
+
+if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
+  aur --no-pgp wpewebkit-bin
+fi
+
+if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
+  aur --no-pgp cog-wpe-bin
+fi
+
+if [ ! -f ~/wpe ]; then
+  echo '#!/usr/bin/env sh
+COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://archibold.io/demo/jellyfish/' >~/wpe
+  chmod a+x ~/wpe
+fi
+
+if [ ! -f ~/.config/weston.ini ]; then
+  mkdir -p ~/.config
+  echo "[core]
+idle-time=0
+require-input=false
+
+[shell]
+client=${HOME}/wpe
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+
+[output]
+name=
+mode=
+">~/.config/weston.ini
+fi
+
+yes 1 | sudo pacman -S --needed --noconfirm gst-plugin-wpe

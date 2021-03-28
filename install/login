@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [ "$USER" = "root" ]; then
+  echo 'Unable to setup login as root'
+  exit 1
+fi
+
+sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
+sudo sh -c "echo '[Service]
+ExecStart=
+ExecStart=-/usr/sbin/agetty -nia ${USER} %I
+'>/etc/systemd/system/getty@tty1.service.d/override.conf"
