@@ -246,7 +246,7 @@ if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
   install_pkg sbsigntools findutils grep
   mkdir -p /etc/pacman.d/hooks
   cd /etc/pacman.d/hooks/
-  curl -LO https://archibold.io/setup-utils/99-secureboot.hook
+  # curl -LO https://archibold.io/setup-utils/99-secureboot.hook
   curl -LO https://archibold.io/setup-utils/100-systemd-boot.hook
   cd -
 fi
@@ -363,7 +363,7 @@ else
   swapoff $SWAP
 fi
 
-if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+if [ -f /etc/pacman.d/hooks/99-secureboot.hook ]; then
   pacman -S --noconfirm systemd
 fi
 
