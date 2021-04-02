@@ -242,6 +242,15 @@ echo -e "
 
 bootctl --path=/boot install
 
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  install_pkg sbsigntools findutils grep
+  mkdir -p /etc/pacman.d/hooks
+  cd /etc/pacman.d/hooks/
+  curl -LO https://archibold.io/setup-utils/99-secureboot.hook
+  curl -LO https://archibold.io/setup-utils/100-systemd-boot.hook
+  cd -
+fi
+
 if [ "$LTS" = "yes" ]; then
   echo "title   ${LABEL}
 linux   /vmlinuz-linux-lts
@@ -352,6 +361,10 @@ if [ "$ENCRYPTION" = "yes" ]; then
   swapoff /dev/mapper/swap
 else
   swapoff $SWAP
+fi
+
+if [ "$UEFI" = "efi32" ] || [ "$UEFI" = "efi64" ]; then
+  pacman -S --noconfirm systemd
 fi
 
 exit
