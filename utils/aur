@@ -46,7 +46,7 @@ aur() {
   elif [ "$update" = "--update" ]; then
     echo ""
     echo "$(tput bold)Updating AUR Packages$(tput sgr0)"
-    mkdir ~/tmp-aur
+    mkdir -p ~/tmp-aur
     for var in $(pacman -Qmq); do
       cd ~/tmp-aur
       curl -Ls https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=${var} -o ${var}
