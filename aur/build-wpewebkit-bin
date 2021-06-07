@@ -31,7 +31,7 @@ sudo pacman -Sy
 sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
     harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
     geoclue at-spi2-atk libwpe hyphen \
-    qt5-quickcontrols2
+    qt5-quickcontrols2 libmanette
 
 sudo pacman -S --needed --noconfirm gst-plugin-wpe
 
@@ -91,8 +91,7 @@ cmake -H"wpewebkit-${pkgver}" -Bbuild       \
         -DENABLE_ACCELERATED_2D_CANVAS=ON   \
         -DENABLE_ENCRYPTED_MEDIA=ON         \
         -DENABLE_WPE_QT_API=OFF             \
-        -DPORT=WPE                          \
-        -GNinja
+        -DPORT=WPE
 
 cmake --build build
 
