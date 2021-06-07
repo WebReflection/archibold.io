@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-required="$(uname -m)"
-if [ "$required" = "armv7h" ]; then
-    required="armv7l"
-fi
-
 if [ "$(whoami)" = "root" ]; then
     echo 'you cannot be root to make a package'
     exit 1
@@ -36,6 +31,13 @@ sudo pacman -S --needed --noconfirm libxt libxslt enchant gst-plugins-base-libs 
 sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc \
                                     gperf gobject-introspection ruby gtk-doc cmake python geoclue gst-plugins-bad
 
+sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
+    harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
+    geoclue at-spi2-atk libwpe hyphen \
+    qt5-quickcontrols2
+
+sudo pacman -S --needed --noconfirm gst-plugin-wpe
+
 getHash() {
     for hash in $("${1}sum" $2); do
         echo $hash
@@ -43,8 +45,10 @@ getHash() {
     done
 }
 
-mkdir -p ~/aur/webkit2gtk
-cd ~/aur/webkit2gtk
+pkgname="webkit2gtk-wpe-bin"
+
+mkdir -p ~/aur/$pkgname
+cd ~/aur/$pkgname
 
 if [ ! -f webkitgtk-${pkgver}.tar.xz ]; then
     curl -LO https://webkitgtk.org/releases/webkitgtk-${pkgver}.tar.xz
@@ -56,24 +60,29 @@ if [ ! -d webkitgtk-${pkgver} ]; then
     exit 1
 fi
 
-pkgname="webkit2gtk-glesv2-bin-$required"
-pkgtar="$pkgname-$pkgver.tar.gz"
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
+fi
+
+pkgname="webkit2gtk-wpe-bin"
+pkgtar="$pkgname-$arch-$pkgver.tar.gz"
 
 cmake -H"webkitgtk-${pkgver}" -Bbuild       \
-        -DENABLE_GLES2=ON                   \
         -DCMAKE_BUILD_TYPE=Release          \
         -DCMAKE_INSTALL_PREFIX=/usr         \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib     \
         -DCMAKE_SKIP_RPATH=ON               \
+        -DPYTHON_EXECUTABLE=/usr/bin/python \
+        -DENABLE_GTKDOC=ON                  \
+        -DENABLE_ACCELERATED_2D_CANVAS=ON   \
+        -DENABLE_ENCRYPTED_MEDIA=ON         \
+        -DENABLE_WPE_QT_API=OFF             \
         -DPORT=GTK                          \
         -DLIB_INSTALL_DIR=/usr/lib          \
-        -DUSE_LIBHYPHEN=OFF                 \
-        -DENABLE_MINIBROWSER=ON             \
-        -DENABLE_ENCRYPTED_MEDIA=ON         \
         -DUSE_WOFF2=ON                      \
         -DUSE_WPE_RENDERER=ON               \
         -DENABLE_BUBBLEWRAP_SANDBOX=OFF     \
-        -DPYTHON_EXECUTABLE=/usr/bin/python \
-        -DENABLE_GTKDOC=ON                  \
         -GNinja
 
 ninja
@@ -89,6 +98,8 @@ rm -rf ~/aur/builds/$pkgname
 mkdir -p ~/aur/builds/$pkgname
 
 DESTDIR=~/aur/builds/$pkgname cmake --build build --target install
+
+addLicense
 
 mkdir -p ~/git/
 cd ~/git
@@ -110,15 +121,10 @@ rm -rf usr
 mkdir -p $pkgname
 cd $pkgname
 
-arch="$(uname -m)"
-if [ "$arch" = "armv7l" ] || [ "$arch" = "armv7h" ]; then
-    arch="armv7l armv7h"
-fi
-
 echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
 pkgname=$pkgname
 pkgver=$pkgver
-arch=($arch)
+arch=(aarch64 armv7h armv7l x86_64)
 pkgrel=1
 pkgdesc='GTK+ Web content engine library (glesv2 version)'
 url='https://webkitgtk.org'
@@ -134,18 +140,11 @@ optdepends=('geoclue: Geolocation support'
             'gst-plugins-good: media decoding'
             'gst-plugins-bad: media decoding'
             'gst-libav: nonfree media decoding')
-source=('https://webreflection.github.io/aur/$pkgtar')
-md5sums=('$(getHash md5 ~/git/aur/$pkgtar)')
-sha1sums=('$(getHash sha1 ~/git/aur/$pkgtar)')
-sha256sums=('$(getHash sha256 ~/git/aur/$pkgtar)')
-sha512sums=('$(getHash sha512 ~/git/aur/$pkgtar)')
-">PKGBUILD
-
-echo 'package () {
-    cp -R "${srcdir}/usr" "${pkgdir}"
-}'>>PKGBUILD
-
-makepkg --printsrcinfo > .SRCINFO
+source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
+source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
+source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
+source_x86_64=('${pkgname}-x86::https://webreflection.github.io/aur/${pkgname}-x86_64-${pkgver}.tar.gz')
+">TEMPLATE
 
 cd ~/git/aur/
 git add .
