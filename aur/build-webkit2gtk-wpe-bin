@@ -85,8 +85,6 @@ cmake -H"webkitgtk-${pkgver}" -Bbuild       \
         -DENABLE_BUBBLEWRAP_SANDBOX=OFF     \
         -GNinja
 
-ninja
-
 cmake --build build
 
 if [[ ! $? -eq 0 ]]; then
