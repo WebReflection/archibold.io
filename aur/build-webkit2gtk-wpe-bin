@@ -25,7 +25,7 @@ sudo pacman -Sy
 # dependencies
 sudo pacman -S --needed --noconfirm libxt libxslt enchant gst-plugins-base-libs libsecret libwebp openjpeg2 \
                                     harfbuzz-icu gtk3 libnotify hyphen woff2 libwpe wpebackend-fdo bubblewrap \
-                                    xdg-dbus-proxy
+                                    xdg-dbus-proxy libmanette
 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel gperf ruby cmake python ninja gtk-doc \
@@ -129,15 +129,16 @@ url='https://webkitgtk.org'
 license=(custom)
 provides=('webkit2gtk' 'webkit2gtk-git')
 conflicts=('webkit2gtk' 'webkit2gtk-git')
-depends=(libxt libxslt enchant gst-plugins-base-libs libsecret libwebp openjpeg2
+depends=(libxt libxslt enchant gst-plugins-base-libs gst-plugin-wpe libsecret libwebp openjpeg2
          harfbuzz-icu gtk3 libnotify hyphen woff2 libwpe wpebackend-fdo
          bubblewrap xdg-dbus-proxy)
 makedepends=(gperf gobject-introspection ruby gtk-doc cmake python geoclue
-             gst-plugins-bad)
+             gst-plugins-bad gst-plugin-wpe libmanette)
 optdepends=('geoclue: Geolocation support'
             'gst-plugins-good: media decoding'
             'gst-plugins-bad: media decoding'
-            'gst-libav: nonfree media decoding')
+            'gst-libav: nonfree media decoding'
+            'libmanette: Simple GObject game controller library')
 source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
 source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
 source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
