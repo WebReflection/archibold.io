@@ -17,7 +17,32 @@ if [ "$pkgver" = "" ] || [ "$pkgrel" = "" ]; then
     exit 1
 fi
 
-echo "Building webkit2gtk $pkgver"
+pkgname="webkit2gtk-wpe-bin"
+
+arch="$(uname -m)"
+if [ "$arch" = "armv7h" ]; then
+    arch="armv7l"
+fi
+
+pkgtar="$pkgname-$arch-$pkgver.tar.gz"
+
+addLicense() {
+    local _f
+    cd ~/aur/$pkgname/webkitgtk-${pkgver}
+    mkdir -p ~/aur/builds/$pkgname/usr/share/licenses/${pkgname}/
+    while IFS= read -d $'\0' -r _f ; do
+        echo "### ${_f} ###" ; cat "${_f}" ; echo
+    done < <(find Source -name COPYING -or -name 'LICENSE*' -print0 | sort -zu) > ~/aur/builds/$pkgname/usr/share/licenses/${pkgname}/LICENSE
+}
+
+getHash() {
+    for hash in $("${1}sum" $2); do
+        echo $hash
+        return
+    done
+}
+
+echo "Building $pkgname-$arch-$pkgver"
 sleep 2
 
 sudo pacman -Sy
@@ -38,15 +63,6 @@ sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libso
 
 sudo pacman -S --needed --noconfirm gst-plugin-wpe
 
-getHash() {
-    for hash in $("${1}sum" $2); do
-        echo $hash
-        return
-    done
-}
-
-pkgname="webkit2gtk-wpe-bin"
-
 mkdir -p ~/aur/$pkgname
 cd ~/aur/$pkgname
 
@@ -59,14 +75,6 @@ if [ ! -d webkitgtk-${pkgver} ]; then
     echo 'unable to find the directory'
     exit 1
 fi
-
-arch="$(uname -m)"
-if [ "$arch" = "armv7h" ]; then
-    arch="armv7l"
-fi
-
-pkgname="webkit2gtk-wpe-bin"
-pkgtar="$pkgname-$arch-$pkgver.tar.gz"
 
 cmake -H"webkitgtk-${pkgver}" -Bbuild       \
         -DCMAKE_BUILD_TYPE=Release          \
@@ -122,18 +130,19 @@ cd $pkgname
 echo "# Maintainer: Andrea Giammarchi <andrea.giammarchi@gmail.com>
 pkgname=$pkgname
 pkgver=$pkgver
+pkgrel=$pkgrel
 arch=(aarch64 armv7h armv7l x86_64)
-pkgrel=1
-pkgdesc='GTK+ Web content engine library (glesv2 version)'
+pkgdesc='GTK+ Web content engine library (WPE version)'
 url='https://webkitgtk.org'
 license=(custom)
 provides=('webkit2gtk' 'webkit2gtk-git')
 conflicts=('webkit2gtk' 'webkit2gtk-git')
-depends=(libxt libxslt enchant gst-plugins-base-libs gst-plugin-wpe libsecret libwebp openjpeg2
-         harfbuzz-icu gtk3 libnotify hyphen woff2 libwpe wpebackend-fdo
-         bubblewrap xdg-dbus-proxy)
-makedepends=(gperf gobject-introspection ruby gtk-doc cmake python geoclue
-             gst-plugins-bad gst-plugin-wpe libmanette)
+depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg
+         libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe
+         atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
+         libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon
+         wayland wpebackend-fdo hyphen libnotify gtk3 libsecret gst-plugin-wpe
+         enchant libxt libmanette gperf gobject-introspection)
 optdepends=('geoclue: Geolocation support'
             'gst-plugins-good: media decoding'
             'gst-plugins-bad: media decoding'
