@@ -13,13 +13,6 @@ sudo pacman -S --needed --noconfirm libpng libxrender libxext fontconfig pixman 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel librsvg poppler-glib libspectre valgrind git
 
-getHash() {
-    for hash in $("${1}sum" $2); do
-        echo $hash
-        return
-    done
-}
-
 addLicense() {
     mkdir -p ~/aur/builds/${pkgname}/usr/share/licenses/cairo/
     cp ~/git/cairo/COPYING* ~/aur/builds/${pkgname}/usr/share/licenses/cairo/

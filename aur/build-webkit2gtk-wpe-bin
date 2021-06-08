@@ -35,13 +35,6 @@ addLicense() {
     done < <(find Source -name COPYING -or -name 'LICENSE*' -print0 | sort -zu) > ~/aur/builds/$pkgname/usr/share/licenses/${pkgname}/LICENSE
 }
 
-getHash() {
-    for hash in $("${1}sum" $2); do
-        echo $hash
-        return
-    done
-}
-
 echo "Building $pkgname-$arch-$pkgver"
 sleep 2
 
@@ -138,16 +131,16 @@ license=(custom)
 provides=('webkit2gtk' 'webkit2gtk-git')
 conflicts=('webkit2gtk' 'webkit2gtk-git')
 depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg
-         libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe
-         atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
+         libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp
+         atk at-spi2-core openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
+         libegl libgl libgles libwpe libx11 libxext libice libxt
          libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon
          wayland wpebackend-fdo hyphen libnotify gtk3 libsecret gst-plugin-wpe
-         enchant libxt libmanette gperf gobject-introspection)
+         enchant libmanette)
 optdepends=('geoclue: Geolocation support'
             'gst-plugins-good: media decoding'
             'gst-plugins-bad: media decoding'
-            'gst-libav: nonfree media decoding'
-            'libmanette: Simple GObject game controller library')
+            'gst-libav: nonfree media decoding')
 source_aarch64=('${pkgname}-aarch64::https://webreflection.github.io/aur/${pkgname}-aarch64-${pkgver}.tar.gz')
 source_armv7h=('${pkgname}-armv7h::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')
 source_armv7l=('${pkgname}-armv7l::https://webreflection.github.io/aur/${pkgname}-armv7l-${pkgver}.tar.gz')

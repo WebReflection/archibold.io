@@ -47,13 +47,6 @@ addLicense() {
     done < <(find Source -name COPYING -or -name 'LICENSE*' -print0 | sort -zu) > ~/aur/builds/$pkgname/usr/share/licenses/${pkgname}/LICENSE
 }
 
-getHash() {
-    for hash in $("${1}sum" $2); do
-        echo $hash
-        return
-    done
-}
-
 mkdir -p ~/aur/wpewebkit
 cd ~/aur/wpewebkit
 

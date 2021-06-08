@@ -35,13 +35,6 @@ addLicense() {
     cp ~/aur/${aurname}/${pkgname}-${pkgver}/COPYING ~/aur/builds/${aurname}/usr/share/licenses/cog/COPYING
 }
 
-getHash() {
-    for hash in $("${1}sum" $2); do
-        echo $hash
-        return
-    done
-}
-
 rm -rf ~/aur/$aurname
 mkdir -p ~/aur/$aurname
 cd ~/aur/$aurname
