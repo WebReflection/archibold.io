@@ -8,7 +8,7 @@ fi
 sudo pacman -Sy
 
 # dependencies
-sudo pacman -S --needed --noconfirm libpng libxrender libxext fontconfig pixman glib2 lzo mesa
+sudo pacman -S --needed --noconfirm libpng libavif libxrender libxext fontconfig pixman glib2 lzo mesa
 
 # make dependencies
 sudo pacman -S --needed --noconfirm base-devel librsvg poppler-glib libspectre valgrind git

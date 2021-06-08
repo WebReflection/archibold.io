@@ -134,7 +134,7 @@ license=(custom)
 groups=(wpe)
 provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
-depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg
+depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg libavif
          libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe
          atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
          libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon

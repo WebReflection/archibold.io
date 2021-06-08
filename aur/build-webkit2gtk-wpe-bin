@@ -133,7 +133,7 @@ conflicts=('webkit2gtk' 'webkit2gtk-git' 'libjavascriptcoregtk-4.0.so' 'libwebki
 depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg
          libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp
          atk at-spi2-core openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
-         libegl libgl libgles libwpe libx11 libxext libice libxt
+         libegl libgl libgles libwpe libx11 libxext libice libxt libavif
          libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon
          wayland wpebackend-fdo hyphen libnotify gtk3 libsecret gst-plugin-wpe
          enchant libmanette)
