@@ -76,15 +76,15 @@ cmake -H"webkitgtk-${pkgver}" -Bbuild       \
         -DCMAKE_SKIP_RPATH=ON               \
         -DPYTHON_EXECUTABLE=/usr/bin/python \
         -DENABLE_GTKDOC=ON                  \
-        -DENABLE_ACCELERATED_2D_CANVAS=ON   \
         -DENABLE_ENCRYPTED_MEDIA=ON         \
-        -DENABLE_WPE_QT_API=OFF             \
         -DPORT=GTK                          \
         -DLIB_INSTALL_DIR=/usr/lib          \
         -DUSE_WOFF2=ON                      \
         -DUSE_WPE_RENDERER=ON               \
         -DENABLE_BUBBLEWRAP_SANDBOX=OFF     \
         -GNinja
+
+ninja
 
 cmake --build build
 
@@ -125,11 +125,11 @@ pkgname=$pkgname
 pkgver=$pkgver
 pkgrel=$pkgrel
 arch=(aarch64 armv7h armv7l x86_64)
-pkgdesc='GTK+ Web content engine library (WPE version)'
+pkgdesc='Web content engine for GTK (WPE Render)'
 url='https://webkitgtk.org'
 license=(custom)
-provides=('webkit2gtk' 'webkit2gtk-git')
-conflicts=('webkit2gtk' 'webkit2gtk-git')
+provides=('webkit2gtk' 'webkit2gtk-git' 'libjavascriptcoregtk-4.0.so' 'libwebkit2gtk-4.0.so')
+conflicts=('webkit2gtk' 'webkit2gtk-git' 'libjavascriptcoregtk-4.0.so' 'libwebkit2gtk-4.0.so')
 depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg
          libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp
          atk at-spi2-core openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
