@@ -82,8 +82,9 @@ cmake -H"webkitgtk-${pkgver}" -Bbuild       \
         -DUSE_WOFF2=ON                      \
         -DUSE_WPE_RENDERER=ON               \
         -DENABLE_BUBBLEWRAP_SANDBOX=OFF     \
-        -DENABLE_X11_TARGET=OFF             \
+        -DENABLE_X11_TARGET=ON              \
         -DENABLE_GLES2=ON                   \
+        -DUSE_OPENGL_OR_ES=ON               \
         -GNinja
 
 ninja
