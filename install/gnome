@@ -186,8 +186,9 @@ fi'
       write "Installing pamac-aur"
 
       # TODO: this should *not* be needed
-      echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm asciidoc
+      echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm asciidoc archlinux-appstream-data
 
+      aur libpamac-aur
       aur pamac-aur
     fi
   else

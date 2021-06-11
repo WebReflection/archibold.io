@@ -6,4 +6,6 @@ if [ "$(which aur 2> /dev/null)" = "" ]; then
   source <(curl -s https://archibold.io/utils/aur)
 fi
 
+sudo pacman -S --needed archlinux-appstream-data
+aur libpamac-aur
 aur pamac-aur
