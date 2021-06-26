@@ -160,7 +160,7 @@ echo -e "
 "
 
 # TODO: I am not sure wireless-regdb is useful at all ...
-install_pkg dialog wpa_supplicant iw netctl dhcpcd wireless-regdb
+install_pkg dialog wpa_supplicant iw grep sed netctl dhcpcd wireless-regdb
 
 UCODE=''
 UCODE_STRING=''
@@ -366,5 +366,11 @@ fi
 if [ -f /etc/pacman.d/hooks/99-secureboot.hook ]; then
   pacman -S --noconfirm systemd
 fi
+
+# This is likely not useful at all
+# WIFI="$(ip addr | grep ': wl*' | sed 's/.*: \(wl.*\):.*/\1/')"
+# if [ "$WIFI" != "" ]; then
+#   echo "ACTION==\"add\", SUBSYSTEM==\"net\", KERNEL==\"wl*\", RUN+=\"/usr/bin/iw dev $WIFI set power_save off"\" > /etc/udev/rules.d/81-wifi-powersave.rules
+# fi
 
 exit
