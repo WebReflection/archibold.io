@@ -5,17 +5,21 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
-if [ "$(uname -m)" != "x86_64" ] && [ "$(pacman -Qs cairo-gles)" = "" ]; then
-    echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
-    exit 1
-fi
+# if [ "$(uname -m)" != "x86_64" ] && [ "$(pacman -Qs cairo-gles)" = "" ]; then
+#     echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
+#     exit 1
+# fi
 
 cd /tmp
-yes yes | git clone --single-branch --branch packages/wpewebkit https://github.com/archlinux/svntogit-packages.git
-source svntogit-packages/trunk/PKGBUILD
-rm -rf svntogit-packages
+# yes yes | git clone --single-branch --branch packages/wpewebkit https://github.com/archlinux/svntogit-packages.git
+# source svntogit-packages/trunk/PKGBUILD
+# rm -rf svntogit-packages
 
-if [ "$pkgver" = "" ]; then
+pkgver="$1"
+url="https://wpewebkit.org"
+pkgname="wpewebkit"
+
+if [[ ! "$pkgver" =~ ^[2-9]+.[0-9]+.[0-9]+$ ]]; then
     echo 'unable to retrieve the version'
     exit 1
 fi
@@ -81,7 +85,6 @@ cmake -H"wpewebkit-${pkgver}" -Bbuild       \
         -DCMAKE_SKIP_RPATH=ON               \
         -DPYTHON_EXECUTABLE=/usr/bin/python \
         -DENABLE_GTKDOC=ON                  \
-        -DENABLE_ACCELERATED_2D_CANVAS=ON   \
         -DENABLE_ENCRYPTED_MEDIA=ON         \
         -DENABLE_WPE_QT_API=OFF             \
         -DPORT=WPE                          \
@@ -129,7 +132,7 @@ pkgver=$pkgver
 arch=(aarch64 armv7h armv7l x86_64)
 pkgrel=1
 pkgdesc='Web content engine library optimized for embedded devices (binary version)'
-url='https://wpewebkit.org'
+url='$url'
 license=(custom)
 groups=(wpe)
 provides=('wpewebkit' 'wpewebkit-git')
