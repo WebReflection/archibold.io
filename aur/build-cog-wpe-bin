@@ -5,10 +5,10 @@ if [ "$(whoami)" = "root" ]; then
     exit 1
 fi
 
-if [ "$(uname -m)" != "x86_64" ] && [ "$(pacman -Qs cairo-gles)" = "" ]; then
-    echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
-    exit 1
-fi
+# if [ "$(uname -m)" != "x86_64" ] && [ "$(pacman -Qs cairo-gles)" = "" ]; then
+#     echo "Please install cairo-glesv2-bin or cairo-glesv3-bin via aur"
+#     exit 1
+# fi
 
 cd /tmp
 yes yes | git clone https://aur.archlinux.org/cog.git
@@ -28,7 +28,7 @@ sleep 2
 sudo pacman -Sy
 
 # make dependencies
-sudo pacman -S --needed --noconfirm cmake wayland-protocols
+sudo pacman -S --needed --noconfirm cmake wayland-protocols gtk4 xorg-server xorg-xwayland
 
 addLicense() {
     mkdir -p ~/aur/builds/${aurname}/usr/share/licenses/cog/
@@ -55,6 +55,8 @@ cmake -H"${pkgname}-${pkgver}" -Bbuild \
         -DCMAKE_INSTALL_LIBDIR=/usr/lib \
         -DCOG_PLATFORM_FDO=ON \
         -DCOG_PLATFORM_DRM=ON \
+        -DCOG_PLATFORM_X11=ON \
+        -DCOG_PLATFORM_GTK4=ON \
         -DCOG_BUILD_PROGRAMS=ON \
         -DINSTALL_MAN_PAGES=ON \
         -DCOG_WESTON_DIRECT_DISPLAY=OFF  # Needs libweston-9-protocols
