@@ -59,6 +59,7 @@ mkdir -p ~/.config
 if [ ! -f ~/.config/weston.ini ]; then
   echo "[core]
 idle-time=0
+repaint-window=15
 require-input=false
 
 [shell]

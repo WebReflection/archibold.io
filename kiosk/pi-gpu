@@ -5,20 +5,22 @@ if [ -f /boot/boot.txt ] && [ "$(cat /boot/boot.txt | grep 'rootwait quiet')" = 
   do
     :
   done
-  sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=396MB@128MB/' /boot/boot.txt
+  sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/boot.txt
   sudo mkimage -T script -C none -n 'Raspberry Pi' -d /boot/boot.txt /boot/boot.scr
 fi
 
 if [ -f /boot/cmdline.txt ] && [ "$(cat /boot/cmdline.txt | grep 'rootwait quiet')" = "" ]; then
-  sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=396MB@128MB/' /boot/cmdline.txt
+  sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/cmdline.txt
 fi
 
-sudo sh -c "echo 'dtoverlay=vc4-fkms-v3d,cma-396
+sudo sh -c "echo '
+# vc4-fkms-v3d-pi4 is also an option
+dtoverlay=vc4-fkms-v3d,cma-384
 
 gpu_mem=128
 gpu_mem_256=128
 gpu_mem_512=196
-gpu_mem_1024=396
+gpu_mem_1024=384
 
 initramfs initramfs-linux.img followkernel
 
