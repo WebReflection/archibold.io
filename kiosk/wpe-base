@@ -43,11 +43,10 @@ while ! yes y | sudo pacman -S --needed \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
-  weston mesa ttf-dejavu \
+  weston mesa vulkan-mesa-layers ttf-dejavu \
   wpebackend-fdo wayland-protocols \
   nodejs npm \
-  unzip \
-  gtk3
+  unzip
 do
   :
 done
