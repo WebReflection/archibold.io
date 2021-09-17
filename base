@@ -31,6 +31,12 @@ updateSystemTime() {
     sudo ntpdate pool.ntp.org
     sudo timedatectl set-local-rtc 1
   fi
+
+  if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+    sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+  else
+    echo 'WARNING: unable to set /etc/localtime'
+  fi
 }
 
 updatePacman() {

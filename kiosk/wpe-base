@@ -51,6 +51,15 @@ do
   :
 done
 
+if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+  sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+else
+  clear
+  echo 'WARNING: unable to set /etc/localtime'
+  echo '         performance will probably degrade'
+  sleep 10
+fi
+
 if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
   aur --no-pgp cog-wpe-bin
 fi
