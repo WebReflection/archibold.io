@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
+gsettings set org.gnome.mutter center-new-windows true
+gsettings set org.gnome.system.location enabled true
+gsettings set org.gnome.desktop.datetime automatic-timezone true
+gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
+gsettings set org.gnome.nautilus.preferences default-folder-viewer 'list-view'
+gsettings set org.gnome.nautilus.icon-view default-zoom-level 'small'
+gsettings set org.gnome.nautilus.list-view default-zoom-level 'small'
+gsettings set org.gnome.nautilus.list-view use-tree-view true
+gsettings set org.gtk.Settings.FileChooser sort-directories-first true
