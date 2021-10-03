@@ -201,11 +201,11 @@ createPartitions() {
     sudo parted --script $DISK mklabel gpt > /dev/null 2>&1
   fi
   if [ "$UEFI" != "no" ]; then
-    echomd '  with 192MiB *boot* partition'
+    echomd '  with 512MiB *boot* partition'
     echo ''
-    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 192MiB > /dev/null 2>&1
+    sudo parted --script --align optimal $DISK mkpart primary fat16 $start 512MiB > /dev/null 2>&1
     sudo parted $DISK set 1 boot on
-    start=192MiB
+    start=512MiB
   fi
   if [ "$SWAP" = "0" ]; then
     echomd '  *without swap* partition'
@@ -213,7 +213,7 @@ createPartitions() {
     sudo parted --script --align optimal $DISK mkpart primary ext4 $start 100% > /dev/null 2>&1
   else
     echomd "  with *$(numfmt --to=si $SWAP) swap* partition"
-    ((SWAP=SWAP+134217728))
+    ((SWAP=SWAP+$(numfmt --from=auto ${start:0:-1})))
     SWAP=$(numfmt --to=si $SWAP)
     echo ''
     sudo parted --script --align optimal $DISK mkpart primary linux-swap $start $SWAP > /dev/null 2>&1
