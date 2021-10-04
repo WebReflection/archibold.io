@@ -130,10 +130,16 @@ export GTK_THEME="Adwaita:dark"
 
 setWestonMode() {
   local MODE="$1"
-  local NAME="$(ls /sys/class/drm | grep HDMI)"
-  if [ "$NAME" != "" ]; then
-    sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
-  fi
+  local NAME=""
+  sed -i "s/name=.*//;s/mode=.*//;/^$/d;s/\[/\n\[/" ~/.config/weston.ini
+  for NAME in $(ls /sys/class/drm | grep HDMI); do
+    if [ "$NAME" != "" ]; then
+      echo "name=${NAME:6}">>~/.config/weston.ini
+      echo "mode=${MODE}">>~/.config/weston.ini
+      # prefer one output only
+      return
+    fi
+  done
 }
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
