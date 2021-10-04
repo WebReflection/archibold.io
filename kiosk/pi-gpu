@@ -34,5 +34,5 @@ disable_splash=1
 disable_overscan=1
 boot_delay=0
 
-enable_uart=1
+# enable_uart=1
 '>/boot/config.txt"

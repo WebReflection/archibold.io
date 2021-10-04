@@ -22,12 +22,16 @@ ExecStart=
 ExecStart=-/usr/sbin/agetty -nia ${USER} %I
 '>/etc/systemd/system/getty@tty1.service.d/override.conf"
 
-source <(curl -s https://archibold.io/utils/aur)
-
-arch="$(uname -m)"
-if [ "$arch" = "armv7h" ]; then
-  arch="armv7l"
+if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+  sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+else
+  clear
+  echo 'WARNING: unable to set /etc/localtime'
+  echo '         performance will probably degrade'
+  sleep 10
 fi
+
+source <(curl -s https://archibold.io/utils/aur)
 
 # this is apparently not needed anymore (not in the Pi 4)
 # if [ "$(pacman -Qmq cairo-glesv2-bin 2> /dev/null)" = "" ]; then
@@ -50,15 +54,6 @@ while ! yes y | sudo pacman -S --needed \
 do
   :
 done
-
-if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
-  sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
-else
-  clear
-  echo 'WARNING: unable to set /etc/localtime'
-  echo '         performance will probably degrade'
-  sleep 10
-fi
 
 if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
   aur --no-pgp cog-wpe-bin
@@ -94,7 +89,6 @@ if [ "$(which unzip 2> /dev/null)" != "" ] && [ ! -d ~/www ]; then
 fi
 
 if [ "$(which npm 2> /dev/null)" != "" ]; then
-
   if [ "$(cat ~/.bashrc | grep -F '[archibold.io] npm')" = "" ]; then
     echo '
 # [archibold.io] npm
@@ -105,28 +99,6 @@ export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
     export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
     mkdir -p ~/.npm-packages/bin
     npm config set prefix '~/.npm-packages'
-  fi
-
-  if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
-    echo '
-# [archibold.io] weston
-export KIOSK_WIDTH=1280
-export KIOSK_HEIGHT=720
-export GTK_THEME="Adwaita:dark"
-
-setWestonMode() {
-  local MODE="$1"
-  local NAME="$(ls /sys/class/drm | grep HDMI)"
-  if [ "$NAME" != "" ]; then
-    sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
-  fi
-}
-
-if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
-  # setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
-  weston-launch
-fi
-'>>~/.bashrc
   fi
 
   if [ ! -d ~/www/node_modules ]; then
@@ -153,4 +125,26 @@ server
     npm i express compression
     cd -
   fi
+fi
+
+if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
+    echo '
+# [archibold.io] weston
+export KIOSK_WIDTH=1280
+export KIOSK_HEIGHT=720
+export GTK_THEME="Adwaita:dark"
+
+setWestonMode() {
+  local MODE="$1"
+  local NAME="$(ls /sys/class/drm | grep HDMI)"
+  if [ "$NAME" != "" ]; then
+    sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
+  fi
+}
+
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
+  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
+  weston-launch
+fi
+'>>~/.bashrc
 fi
