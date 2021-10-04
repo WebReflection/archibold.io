@@ -8,10 +8,7 @@ else
   sudo pacman-key --populate archlinuxarm
 fi
 
-while ! yes y | sudo pacman -Syu
-do
-  :
-done
+sudo pacman -Syu --noconfirm
 
 sudo groupadd weston-launch
 sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch ${USER}
@@ -42,7 +39,7 @@ if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
   aur --no-pgp wpewebkit-bin
 fi
 
-while ! yes y | sudo pacman -S --needed \
+sudo pacman -S --needed --noconfirm \
   jack libbluray \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
@@ -51,9 +48,6 @@ while ! yes y | sudo pacman -S --needed \
   wpebackend-fdo wayland-protocols \
   nodejs npm \
   unzip
-do
-  :
-done
 
 if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
   aur --no-pgp cog-wpe-bin
