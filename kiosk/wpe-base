@@ -16,7 +16,7 @@ echo ""
 read -n1 -s RPi4
 if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
   yes y | sudo pacman -S linux-raspberrypi4
-  sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' root/etc/fstab"
+  sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
 fi
 
 sudo pacman -Syu --noconfirm

@@ -1,19 +1,47 @@
 #!/usr/bin/env bash
 
+RPi4="N"
+
+if [ "$(pacman -Qs linux-raspberrypi4)" != "" ]; then
+  RPi4="Y"
+fi
+
 if [ -f /boot/boot.txt ] && [ "$(cat /boot/boot.txt | grep 'rootwait quiet')" = "" ]; then
   while ! sudo pacman -S --needed --noconfirm uboot-tools
   do
     :
   done
-  sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/boot.txt
+  if [ "$RPi4" = "Y" ]; then
+    sudo sed -i 's/rootwait/rootwait quiet loglevel=0/' /boot/boot.txt
+  else
+    sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/boot.txt
+  fi
   sudo mkimage -T script -C none -n 'Raspberry Pi' -d /boot/boot.txt /boot/boot.scr
 fi
 
 if [ -f /boot/cmdline.txt ] && [ "$(cat /boot/cmdline.txt | grep 'rootwait quiet')" = "" ]; then
-  sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/cmdline.txt
+  if [ "$RPi4" = "Y" ]; then
+    sudo sed -i 's/rootwait/rootwait quiet loglevel=0/' /boot/cmdline.txt
+  else
+    sudo sed -i 's/rootwait/rootwait quiet loglevel=0 cma=384MB@128MB/' /boot/cmdline.txt
+  fi
 fi
 
-sudo sh -c "echo '
+
+if [ "$RPi4" = "Y" ]; then
+  sudo sh -c "echo '
+dtparam=audio=on
+dtparam=spi=on
+dtparam=i2c_arm=on
+dtparam=i2c=on
+
+avoid_warnings=1
+disable_splash=1
+disable_overscan=1
+boot_delay=0
+'>>/boot/config.txt"
+else
+  sudo sh -c "echo '
 # vc4-fkms-v3d-pi4 is also an option
 dtoverlay=vc4-fkms-v3d,cma-384
 
@@ -35,7 +63,9 @@ disable_overscan=1
 boot_delay=0
 '>/boot/config.txt"
 
-if [ "$(uname -m)" = "aarch64" ]; then
-  sudo sh -c "echo 'enable_uart=1
+  if [ "$(uname -m)" = "aarch64" ]; then
+    sudo sh -c "echo 'enable_uart=1
 '>>/boot/config.txt"
+  fi
+
 fi
