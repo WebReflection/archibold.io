@@ -120,6 +120,20 @@ const server = express();
 server
   .use(compression())
   .use(express.static(join(__dirname, "jellyfish")))
+  .get("/quit", () => process.exit(0))
+  .get("/ips", (_, res) => {
+    const ips = new Set;
+    for (const [_, nets] of Object.entries(require("os").networkInterfaces())) {
+      for (const net of nets) {
+        if (net.family === "IPv4" && !net.internal)
+          ips.add(net.address);
+      }
+    }
+    res.writeHead(200, {
+      "content-type": "application/json"
+    });
+    res.end(JSON.stringify([...ips]));
+  })
   .listen(8080, () => {
     let command = "COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo ";
     exec(command + "http://127.0.0.1:8080/index.html");
