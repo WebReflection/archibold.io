@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+#########################
+# archibold.io (C) 2021 #
+#########################
+
+if [ "$USER" = "root" ]; then
+  echo 'Unable to install as root'
+  exit 1
+fi
+
+if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
+    echo '
+# [archibold.io] weston
+export KIOSK_WIDTH=1280
+export KIOSK_HEIGHT=720
+export GTK_THEME="Adwaita:dark"
+
+setWestonMode() {
+  local MODE="$1"
+  local NAME=""
+  if [ -f ~/.config/weston.ini ]; then
+    sed -i "s/name=.*//;s/mode=.*//;/^$/d;s/\[/\n\[/" ~/.config/weston.ini
+    for NAME in $(ls /sys/class/drm | grep HDMI); do
+      if [ "$NAME" != "" ]; then
+        echo "name=${NAME:6}">>~/.config/weston.ini
+        echo "mode=${MODE}">>~/.config/weston.ini
+        # prefer one output only
+        return
+      fi
+    done
+  fi
+}
+
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
+  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
+  weston-launch
+fi
+'>>~/.bashrc
+fi

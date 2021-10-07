@@ -1,0 +1,53 @@
+#!/usr/bin/env bash
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/utils/sudo)
+else
+  # sudo installs already the 
+  sudo pacman-key --init
+  sudo pacman-key --populate archlinuxarm
+fi
+
+if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-raspberrypi4)" = "" ]; then
+  clear
+  echo ""
+  echo "Would you like to use linux-raspberrypi4 kernel? [y/N]"
+  echo "Use this option if you had GPU issues before"
+  echo ""
+  read -n1 -s RPi4
+  if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
+    yes y | sudo pacman -S linux-raspberrypi4
+    sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
+  fi
+fi
+
+sudo pacman -Syu --noconfirm
+
+sudo groupadd weston-launch
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston-launch ${USER}
+
+if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+  sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+else
+  clear
+  echo 'WARNING: unable to set /etc/localtime'
+  echo '         performance will probably degrade'
+  sleep 10
+fi
+
+bash <(curl -s https://archibold.io/kiosk/pi-gpu)
+
+source <(curl -s https://archibold.io/utils/aur)
+
+aur snapd
+sudo systemctl enable snapd.socket
+sudo systemctl start snapd.socket
+
+sudo ln -s /var/lib/snapd/snap /snap
+
+sudo snap install ubuntu-frame
+sudo snap install wpe-webkit-mir-kiosk
+sudo snap set wpe-webkit-mir-kiosk url=https://archibold.io/demo/jellyfish/
+sudo snap set wpe-webkit-mir-kiosk daemon=true
+sudo snap set ubuntu-frame daemon=true
+sudo reboot

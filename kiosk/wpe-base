@@ -8,15 +8,17 @@ else
   sudo pacman-key --populate archlinuxarm
 fi
 
-clear
-echo ""
-echo "Would you like to use linux-raspberrypi4 kernel? [y/N]"
-echo "Use this option if you had GPU issues before"
-echo ""
-read -n1 -s RPi4
-if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
-  yes y | sudo pacman -S linux-raspberrypi4
-  sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
+if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-raspberrypi4)" = "" ]; then
+  clear
+  echo ""
+  echo "Would you like to use linux-raspberrypi4 kernel? [y/N]"
+  echo "Use this option if you had GPU issues before"
+  echo ""
+  read -n1 -s RPi4
+  if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
+    yes y | sudo pacman -S linux-raspberrypi4
+    sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
+  fi
 fi
 
 sudo pacman -Syu --noconfirm

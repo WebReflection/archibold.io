@@ -13,48 +13,41 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/install/sudo)
 fi
 
-sudo groupadd weston-launch
-sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,weston-launch $USER
-
-if [ "$(which aur 2> /dev/null)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/aur)
+if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
+  sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
+else
+  clear
+  echo 'WARNING: unable to set /etc/localtime'
+  exit 1
 fi
 
-# if [ "$(uname -m)" = "x86_64" ]; then
-#   sudo pacman -S --needed --noconfirm cairo
-# elif [ "$(uname -m)" = "aarch64" ]; then
-#   if [ "$(pacman -Qmq cairo-glesv3-bin 2> /dev/null)" = "" ]; then
-#     aur --no-pgp cairo-glesv3-bin
-#   fi
-# elif [ "$(pacman -Qmq cairo-glesv2-bin 2> /dev/null)" = "" ]; then
-#   aur --no-pgp cairo-glesv2-bin
-# fi
+bash <(curl -s https://archibold.io/install/weston)
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston-launch ${USER}
 
-# there are two packages here
-yes 1 | sudo pacman -S --needed --noconfirm jack
-
-while ! yes y | sudo pacman -S --needed --noconfirm \
-  fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu \
-  libjpeg libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe \
-  atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap \
-  libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon wayland wpebackend-fdo \
-  geoclue gst-plugins-good gst-plugins-bad gst-libav \
-  weston
-do
-  :
-done
-
-if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
+if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then
+  sudo pacman -S --needed --noconfirm wpewebkit
+elif [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
+  if [ "$(which aur 2> /dev/null)" = "" ]; then
+    bash <(curl -s https://archibold.io/install/aur)
+  fi
   aur --no-pgp wpewebkit-bin
 fi
 
-if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
-  aur --no-pgp cog-wpe-bin
+if [ "$(pacman -Ssq cog | grep ^cog$)" != "" ]; then
+  sudo pacman -S --needed --noconfirm cog
+else
+  if [ "$(which aur 2> /dev/null)" = "" ]; then
+    bash <(curl -s https://archibold.io/install/aur)
+  fi
+  aur --no-pgp cog
 fi
 
 if [ ! -f ~/wpe ]; then
   echo '#!/usr/bin/env sh
-COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://archibold.io/demo/jellyfish/' >~/wpe
+
+COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://archibold.io/demo/jellyfish/
+# COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://www.youtube.com/
+' >~/wpe
   chmod a+x ~/wpe
 fi
 
@@ -62,6 +55,7 @@ if [ ! -f ~/.config/weston.ini ]; then
   mkdir -p ~/.config
   echo "[core]
 idle-time=0
+repaint-window=15
 require-input=false
 
 [shell]
@@ -76,5 +70,3 @@ name=
 mode=
 ">~/.config/weston.ini
 fi
-
-yes 1 | sudo pacman -S --needed --noconfirm gst-plugin-wpe

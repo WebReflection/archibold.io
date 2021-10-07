@@ -1,0 +1,38 @@
+#!/usr/bin/env bash
+
+#########################
+# archibold.io (C) 2021 #
+#########################
+
+if [ "$USER" = "root" ]; then
+  echo 'Unable to install as root'
+  exit 1
+fi
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/sudo)
+fi
+
+sudo pacman -S --needed --noconfirm weston
+sudo groupadd weston-launch 2> /dev/null
+sudo usermod -a -G games,audio,video,render,weston-launch ${USER}
+
+if [ ! -f ~/.config/weston.ini ]; then
+  mkdir -p ~/.config
+  echo "[core]
+idle-time=0
+repaint-window=15
+require-input=false
+
+[shell]
+client=${HOME}/wpe
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+
+[output]
+name=
+mode=
+">~/.config/weston.ini
+fi
