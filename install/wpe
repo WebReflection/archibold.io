@@ -21,8 +21,7 @@ else
   exit 1
 fi
 
-bash <(curl -s https://archibold.io/install/weston)
-sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston-launch ${USER}
+sudo pacman -S --needed --noconfirm geoclue gst-libav gst-plugins-bad gst-plugins-good
 
 if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then
   sudo pacman -S --needed --noconfirm wpewebkit
@@ -50,6 +49,9 @@ COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://archibold.io/demo/jellyfis
 ' >~/wpe
   chmod a+x ~/wpe
 fi
+
+bash <(curl -s https://archibold.io/install/weston)
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston-launch ${USER}
 
 if [ ! -f ~/.config/weston.ini ]; then
   mkdir -p ~/.config
