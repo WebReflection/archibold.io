@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
+#########################
+# archibold.io (C) 2021 #
+#########################
+
 if [ "$USER" = "root" ]; then
-  echo 'Unable to setup login as root'
+  echo 'Unable to install as root'
   exit 1
+fi
+
+if [ "$(which sudo 2> /dev/null)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/sudo)
 fi
 
 sudo mkdir -p /etc/systemd/system/getty@tty1.service.d

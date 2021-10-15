@@ -88,6 +88,6 @@ COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog \\
 " > ~/spotipi
 chmod a+x ~/spotipi
 
-bash <(curl -s https://archibold.io/kiosk/pi-gpu)
+bash <(curl -s https://archibold.io/install/pi-config)
 
 reboot

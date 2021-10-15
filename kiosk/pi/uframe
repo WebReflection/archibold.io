@@ -35,7 +35,7 @@ else
   sleep 10
 fi
 
-bash <(curl -s https://archibold.io/kiosk/pi-gpu)
+bash <(curl -s https://archibold.io/install/pi-config)
 
 source <(curl -s https://archibold.io/utils/aur)
 

@@ -23,68 +23,9 @@ fi
 
 sudo pacman -Syu --noconfirm
 
-sudo groupadd weston-launch
-sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston-launch ${USER}
-
-sudo mkdir -p /etc/systemd/system/getty@tty1.service.d
-sudo sh -c "echo '[Service]
-ExecStart=
-ExecStart=-/usr/sbin/agetty -nia ${USER} %I
-'>/etc/systemd/system/getty@tty1.service.d/override.conf"
-
-if [ "$(which timedatectl 2> /dev/null)" != "" ]; then
-  sudo timedatectl set-timezone "$(curl --fail https://ipapi.co/timezone)"
-else
-  clear
-  echo 'WARNING: unable to set /etc/localtime'
-  echo '         performance will probably degrade'
-  sleep 10
-fi
-
-source <(curl -s https://archibold.io/utils/aur)
-
-# this is apparently not needed anymore (not in the Pi 4)
-# if [ "$(pacman -Qmq cairo-glesv2-bin 2> /dev/null)" = "" ]; then
-#   aur --no-pgp cairo-glesv2-bin
-# fi
-
-if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
-  aur --no-pgp wpewebkit-bin
-fi
-
-sudo pacman -S --needed --noconfirm \
-  jack libbluray \
-  gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
-  gstreamer-vaapi gst-libav \
-  geoip geoclue \
-  weston mesa vulkan-mesa-layers ttf-dejavu \
-  wpebackend-fdo wayland-protocols \
-  nodejs npm \
-  unzip
-
-if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
-  aur --no-pgp cog-wpe-bin
-fi
-
-mkdir -p ~/.config
-if [ ! -f ~/.config/weston.ini ]; then
-  echo "[core]
-idle-time=0
-repaint-window=15
-require-input=false
-
-[shell]
-client=${HOME}/www/index.js
-animation=none
-close-animation=none
-startup-animation=none
-locking=false
-
-[output]
-name=
-mode=
-">~/.config/weston.ini
-fi
+bash <(curl -s https://archibold.io/install/login)
+bash <(curl -s https://archibold.io/install/weston)
+bash <(curl -s https://archibold.io/install/wpe)
 
 # install jellyfish demo
 if [ "$(which unzip 2> /dev/null)" != "" ] && [ ! -d ~/www ]; then
@@ -148,30 +89,4 @@ server
   fi
 fi
 
-if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
-    echo '
-# [archibold.io] weston
-export KIOSK_WIDTH=1280
-export KIOSK_HEIGHT=720
-export GTK_THEME="Adwaita:dark"
-
-setWestonMode() {
-  local MODE="$1"
-  local NAME=""
-  sed -i "s/name=.*//;s/mode=.*//;/^$/d;s/\[/\n\[/" ~/.config/weston.ini
-  for NAME in $(ls /sys/class/drm | grep HDMI); do
-    if [ "$NAME" != "" ]; then
-      echo "name=${NAME:6}">>~/.config/weston.ini
-      echo "mode=${MODE}">>~/.config/weston.ini
-      # prefer one output only
-      return
-    fi
-  done
-}
-
-if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
-  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
-  weston-launch
-fi
-'>>~/.bashrc
-fi
+bash <(curl -s https://archibold.io/install/weston-launch)

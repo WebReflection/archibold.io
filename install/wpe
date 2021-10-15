@@ -21,6 +21,10 @@ else
   exit 1
 fi
 
+# imagemagic optional dependencies
+sudo pacman -S --needed --noconfirm djvulibre ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 ocl-icd openexr openjpeg2 pango
+
+# wpe optional dependencies
 sudo pacman -S --needed --noconfirm geoclue gst-libav gst-plugins-bad gst-plugins-good
 
 if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then

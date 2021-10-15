@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 bash <(curl -s https://archibold.io/kiosk/wpe-base)
-bash <(curl -s https://archibold.io/kiosk/pi-gpu)
+bash <(curl -s https://archibold.io/install/pi-config)
 
 echo ""
 echo "Reboot in 3 seconds ..."
