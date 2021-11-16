@@ -3,7 +3,7 @@
 bash <(curl -s https://archibold.io/benja/setup/benja_npm)
 
 while ! sudo pacman -S --needed --noconfirm \
-  noto-fonts noto-fonts-emoji noto-fonts-extra \
+  noto-fonts noto-fonts-emoji noto-fonts-extra ttf-joypixels \
   gnome-themes-extra adwaita-icon-theme \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
   libva-vdpau-driver libva-mesa-driver \

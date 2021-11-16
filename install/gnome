@@ -128,14 +128,24 @@ fi'
     if [ "$GPU_DRIVERS" = "" ]; then
       GPU_DRIVERS="$(findGPU)"
     fi
+
+    local IGNORE=("gnome" "gnome-books" "gnome-boxes" "gnome-contacts" "gnome-music" "gnome-remote-desktop" "gnome-software" "gnome-user-docs")
     local GNOME=""
-    for pkg in $(pacman -Sg gnome); do
-      if [ "${pkg}" != "gnome" ] && [ "${pkg}" != "gnome-software" ] && [ "${pkg}" != "gnome-boxes" ]; then
+    local add=""
+    for pkg in $(pacman -Sqg gnome); do
+      add="yes"
+      for nope in ${IGNORE[@]}; do
+        if [ "${pkg}" = "${nope}" ]; then
+          add="no"
+          break
+        fi
+      done
+      if [ "${add}" = "yes" ]; then
         GNOME="${GNOME} ${pkg}"
       fi
     done
 
-    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS networkmanager firefox hunspell-en_us vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks chrome-gnome-shell imagemagick
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS networkmanager hunspell-en_us vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans ttf-joypixels noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-tweaks imagemagick
 
     echo "$PASSWORD" | sudo -S systemctl enable NetworkManager
     echo "$PASSWORD" | sudo -S systemctl enable gdm
@@ -156,9 +166,9 @@ fi'
     write "Configuring GNOME"
     bash <(curl -s https://archibold.io/install/gnome-settings)
 
-    write "Configuring Firefox"
-    xdg-settings set default-web-browser firefox.desktop
-    gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
+    # write "Configuring Firefox"
+    # xdg-settings set default-web-browser firefox.desktop
+    # gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
 
     if [ "$(which pamac 2> /dev/null)" = "" ]; then
       write "Installing base-devel and git"
@@ -180,6 +190,7 @@ fi'
 
       aur libpamac-aur
       aur pamac-aur
+      aur chrome-gnome-shell
     fi
   else
     write "Installing base-devel and git"
