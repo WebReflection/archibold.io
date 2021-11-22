@@ -48,8 +48,8 @@ sudo pacman -S --needed --noconfirm npm nodejs > /dev/null 2>&1
 clear
 echoWithHeader '
   Node Version Manager'
-askForNVM ''
 
+# askForNVM ''
 
 if [ ! -d ~/.nvm ] && [ ! -d ~/.npm-packages ]; then
   clear

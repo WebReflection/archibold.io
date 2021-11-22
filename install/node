@@ -48,8 +48,8 @@ sudo pacman -S --needed --noconfirm npm nodejs > /dev/null 2>&1
 clear
 echoWithHeader '
   Node Version Manager'
-askForNVM ''
 
+# askForNVM ''
 
 if [ ! -d ~/.nvm ] && [ ! -d ~/.npm-packages ]; then
   clear
@@ -70,8 +70,8 @@ if [ "$NODE_PATH" = "" ]; then
 export PATH="$PATH:$HOME/.npm-packages/bin"
 export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
 ' >> ~/.bashrc
-    export PATH="$PATH:$HOME/.npm-packages/bin
-    export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules
+    export PATH="$PATH:$HOME/.npm-packages/bin"
+    export NODE_PATH="$NODE_PATH:$HOME/.npm-packages/lib/node_modules"
   else
     echo '
 # [archibold.io] npm
