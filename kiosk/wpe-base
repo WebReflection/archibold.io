@@ -8,6 +8,8 @@ else
   sudo pacman-key --populate archlinuxarm
 fi
 
+sudo pacman -Sy --noconfirm
+
 if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-raspberrypi4)" = "" ]; then
   clear
   echo ""
@@ -16,9 +18,18 @@ if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-raspberrypi4)" = "" ];
   echo ""
   read -n1 -s RPi4
   if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
-    yes y | sudo pacman -S linux-raspberrypi4
-    sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
+    bash <(curl -s https://archibold.io/install/linux-raspberrypi)
   fi
+fi
+
+clear
+echo ""
+echo "Would you like to install NodeJS too? [y/N]"
+echo "The jellyfish demo will start from a local instance"
+echo ""
+read -n1 -s RPi4
+if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
+  yes y | sudo pacman -S --needed --noconfirm unzip npm
 fi
 
 sudo pacman -Syu --noconfirm
@@ -87,6 +98,8 @@ server
     npm i express compression
     cd -
   fi
+
+  sed -i 's/\/wpe/\/www\/index.js/g' ~/.config/weston.ini
 fi
 
 bash <(curl -s https://archibold.io/install/weston-launch)

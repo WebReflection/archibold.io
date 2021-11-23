@@ -27,17 +27,26 @@ sudo pacman -S --needed --noconfirm djvulibre ghostscript libheif libjxl libraw 
 # wpe optional dependencies
 sudo pacman -S --needed --noconfirm geoclue gst-libav gst-plugins-bad gst-plugins-good
 
-if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then
-  sudo pacman -S --needed --noconfirm wpewebkit
-elif [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
+# TODO: current wpewebkit doesn't run in Pi Zero 2 W
+# if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then
+#   sudo pacman -S --needed --noconfirm wpewebkit
+# el
+if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
   if [ "$(which aur 2> /dev/null)" = "" ]; then
     bash <(curl -s https://archibold.io/install/aur)
   fi
   aur --no-pgp wpewebkit-bin
 fi
 
-if [ "$(pacman -Ssq cog | grep ^cog$)" != "" ]; then
-  sudo pacman -S --needed --noconfirm cog
+# TODO: current cog fails at building due some depednency
+# if [ "$(pacman -Ssq cog | grep ^cog$)" != "" ]; then
+#   sudo pacman -S --needed --noconfirm cog
+# el
+if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
+  if [ "$(which aur 2> /dev/null)" = "" ]; then
+    bash <(curl -s https://archibold.io/install/aur)
+  fi
+  aur --no-pgp cog-wpe-bin
 else
   if [ "$(which aur 2> /dev/null)" = "" ]; then
     bash <(curl -s https://archibold.io/install/aur)

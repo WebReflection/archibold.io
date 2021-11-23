@@ -36,6 +36,8 @@ fi
 
 if [ "$(cat /boot/config.txt | grep disable_splash)" = "" ]; then
   sudo sh -c "echo '
+[all]
+
 dtparam=audio=on
 dtparam=spi=on
 dtparam=i2c_arm=on
@@ -51,3 +53,5 @@ fi
 if [ "$(pacman -Qs linux-raspberrypi4)" = "" ] && [ "$(uname -m)" = "aarch64" ] && [ "$(cat /boot/config.txt | grep enable_uart)" = "" ]; then
   sudo sh -c "echo 'enable_uart=1'>>/boot/config.txt"
 fi
+
+sudo systemctl enable sshd
