@@ -167,8 +167,9 @@ fi'
     bash <(curl -s https://archibold.io/install/gnome-settings)
 
     # write "Configuring Firefox"
-    # xdg-settings set default-web-browser firefox.desktop
-    # gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm firefox
+    xdg-settings set default-web-browser firefox.desktop
+    gsettings set org.gnome.shell favorite-apps "$(gsettings get org.gnome.shell favorite-apps | sed s/org.gnome.Epiphany.desktop/firefox.desktop/)"
 
     if [ "$(which pamac 2> /dev/null)" = "" ]; then
       write "Installing base-devel and git"
