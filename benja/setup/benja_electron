@@ -7,7 +7,7 @@ while ! sudo pacman -S --needed --noconfirm \
   gnome-themes-extra adwaita-icon-theme \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
   libva-vdpau-driver libva-mesa-driver \
-  alsa-utils libcanberra-gstreamer libcanberra-pulse \
+  alsa-utils libcanberra \
   gstreamer-vaapi pulseaudio pulseaudio-alsa \
   c-ares ffmpeg gtk3 http-parser libevent libnghttp2 libxslt libxss minizip nss re2 snappy
 do

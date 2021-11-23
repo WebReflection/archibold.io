@@ -5,7 +5,7 @@
 while ! pacman -S --needed --noconfirm \
                               weston \
                               xorg-server xorg-xinit xorg-xset xorg-xrandr \
-                              alsa-utils libcanberra-gstreamer libcanberra-pulse \
+                              alsa-utils libcanberra \
                               gst-plugins-base gst-plugins-good \
                               gstreamer-vaapi \
                               gst-libav gst-plugins-ugly gst-plugins-bad \
