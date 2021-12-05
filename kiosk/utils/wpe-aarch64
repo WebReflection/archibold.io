@@ -19,9 +19,9 @@ if [ "$(which yay 2> /dev/null)" = "" ]; then
   aur yay
 fi
 
-yes y | yay -S --needed cairo-glesv2-bin
-yes y | yay -S --needed wpewebkit-bin
-yes y | yay -S --needed cog-wpe-bin
+# yes y | yay -S --needed cairo-glesv2-bin
+yes y | yay -S --needed wpewebkit
+yes y | yay -S --needed cog
 
 if [ "$(basename $0)" = "wpe-install" ] && [ -f $0 ]; then
   echo -e "Please type $(tput bold)exit$(tput sgr0)"

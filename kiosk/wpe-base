@@ -89,8 +89,7 @@ server
     res.end(JSON.stringify([...ips]));
   })
   .listen(8080, () => {
-    let command = "COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo ";
-    exec(command + "http://127.0.0.1:8080/index.html");
+    exec("cog http://127.0.0.1:8080/index.html");
   });
 '>index.js
     chmod a+x index.js

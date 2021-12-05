@@ -22,31 +22,27 @@ else
 fi
 
 # imagemagic optional dependencies
-sudo pacman -S --needed --noconfirm djvulibre ghostscript libheif libjxl libraw librsvg libwebp libwmf libxml2 ocl-icd openexr openjpeg2 pango
+sudo pacman -S --needed --noconfirm djvulibre ghostscript libheif libjpeg libavif libjxl libraw librsvg libwebp libwmf libxml2 ocl-icd openexr openjpeg2 pango
 
 # wpe optional dependencies
 sudo pacman -S --needed --noconfirm geoclue gst-libav gst-plugins-bad gst-plugins-good
 
-# TODO: current wpewebkit doesn't run in Pi Zero 2 W
-# if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then
-#   sudo pacman -S --needed --noconfirm wpewebkit
-# el
-if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
+if [ "$(pacman -Ssq wpewebkit | grep ^wpewebkit$)" != "" ]; then
+  sudo pacman -S --needed --noconfirm wpewebkit
+elif [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
   if [ "$(which aur 2> /dev/null)" = "" ]; then
     bash <(curl -s https://archibold.io/install/aur)
   fi
   aur --no-pgp wpewebkit-bin
 fi
 
-# TODO: current cog fails at building due some depednency
-# if [ "$(pacman -Ssq cog | grep ^cog$)" != "" ]; then
-#   sudo pacman -S --needed --noconfirm cog
-# el
-if [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
-  if [ "$(which aur 2> /dev/null)" = "" ]; then
-    bash <(curl -s https://archibold.io/install/aur)
-  fi
-  aur --no-pgp cog-wpe-bin
+if [ "$(pacman -Ssq cog | grep ^cog$)" != "" ]; then
+  sudo pacman -S --needed --noconfirm cog
+# elif [ "$(pacman -Qmq cog-wpe-bin 2> /dev/null)" = "" ]; then
+#   if [ "$(which aur 2> /dev/null)" = "" ]; then
+#     bash <(curl -s https://archibold.io/install/aur)
+#   fi
+#   aur --no-pgp cog-wpe-bin
 else
   if [ "$(which aur 2> /dev/null)" = "" ]; then
     bash <(curl -s https://archibold.io/install/aur)
@@ -57,8 +53,8 @@ fi
 if [ ! -f ~/wpe ]; then
   echo '#!/usr/bin/env sh
 
-COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://archibold.io/demo/jellyfish/
-# COG_PLATFORM_FDO_VIEW_FULLSCREEN=1 cog -P fdo https://www.youtube.com/
+cog https://archibold.io/demo/jellyfish/
+# cog https://www.youtube.com/
 ' >~/wpe
   chmod a+x ~/wpe
 fi

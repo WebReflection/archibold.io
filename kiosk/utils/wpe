@@ -41,9 +41,9 @@ if [ "$INSPECTOR" = "" ]; then
   INSPECTOR="${WEBKIT_INSPECTOR_SERVER}"
 fi
 if [ "$INSPECTOR" = "" ]; then
-  cog -P fdo $WEB_PAGE
+  cog $WEB_PAGE
 else
-  WEBKIT_INSPECTOR_SERVER="${INSPECTOR}" cog --enable-developer-extras=true -P fdo $WEB_PAGE
+  WEBKIT_INSPECTOR_SERVER="${INSPECTOR}" cog --enable-developer-extras=true $WEB_PAGE
 fi
 
 '>wpe
