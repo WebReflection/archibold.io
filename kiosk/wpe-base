@@ -10,10 +10,10 @@ fi
 
 sudo pacman -Sy --noconfirm
 
-if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-raspberrypi4)" = "" ]; then
+if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-rpi)" = "" ]; then
   clear
   echo ""
-  echo "Would you like to use linux-raspberrypi4 kernel? [y/N]"
+  echo "Would you like to use linux-rpi kernel? [y/N]"
   echo "Use this option if you had GPU issues before"
   echo ""
   read -n1 -s RPi4

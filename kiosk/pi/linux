@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-raspberrypi4)" = "" ]; then
+if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-rpi)" = "" ]; then
   clear
   echo ""
-  echo "Would you like to use linux-raspberrypi4 kernel? [y/N]"
+  echo "Would you like to use linux-rpi kernel? [y/N]"
   echo "Use this option if you had GPU issues before"
   echo ""
   read -n1 -s RPi4
   if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
-    yes y | sudo pacman -S linux-raspberrypi4
+    yes y | sudo pacman -S linux-rpi
     sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
   fi
 fi

@@ -32,7 +32,7 @@ sleep 2
 sudo pacman -Sy
 
 # dependencies (less cairo)
-sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
+sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup3 libwebp \
     harfbuzz-icu woff2 libseccomp bubblewrap xdg-dbus-proxy \
     openjpeg2 libjpeg libavif libjxl \
     geoclue at-spi2-atk libwpe hyphen \
@@ -141,7 +141,7 @@ groups=(wpe)
 provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
 depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg libavif libjxl
-         libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe
+         libepoxy libgcrypt libsoup3 libxml2 zlib libpng sqlite libwebp libwpe
          atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
          libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon
          wayland wpebackend-fdo)
