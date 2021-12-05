@@ -33,7 +33,8 @@ sudo pacman -Sy
 
 # dependencies (less cairo)
 sudo pacman -S --needed --noconfirm libxslt gst-plugins-base-libs libepoxy libsoup libwebp \
-    harfbuzz-icu woff2 openjpeg2 libseccomp bubblewrap xdg-dbus-proxy \
+    harfbuzz-icu woff2 libseccomp bubblewrap xdg-dbus-proxy \
+    openjpeg2 libjpeg libavif libjxl \
     geoclue at-spi2-atk libwpe hyphen \
     qt5-quickcontrols2 libmanette
 
@@ -86,6 +87,8 @@ cmake -H"wpewebkit-${pkgver}" -Bbuild       \
         -DPYTHON_EXECUTABLE=/usr/bin/python \
         -DENABLE_GTKDOC=ON                  \
         -DENABLE_ENCRYPTED_MEDIA=ON         \
+        -DUSE_AVIF=ON                       \
+        -DUSE_JPEGXL=ON                     \
         -DENABLE_WPE_QT_API=OFF             \
         -DPORT=WPE                          \
         -GNinja
@@ -137,7 +140,7 @@ license=(custom)
 groups=(wpe)
 provides=('wpewebkit' 'wpewebkit-git')
 conflicts=('wpewebkit' 'wpewebkit-git')
-depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg libavif
+depends=(cairo fontconfig freetype2 glib2 harfbuzz harfbuzz-icu icu libjpeg libavif libjxl
          libepoxy libgcrypt libsoup libxml2 zlib libpng sqlite libwebp libwpe
          atk at-spi2-atk openjpeg2 woff2 libtasn1 libxslt libsystemd bubblewrap
          libseccomp xdg-dbus-proxy gstreamer gst-plugins-base-libs libxkbcommon
