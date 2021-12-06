@@ -1,19 +1,23 @@
 #!/usr/bin/env bash
 
-if [ "$(uname -m)" = "aarch64" ]; then
-  if [ "$(pacman -Qs linux-rpi)" = "" ]; then
+installPackage() {
+  local package="$1"
+  if [ "$(pacman -Ss $package)" != "" ]; then
     if [ "$USER" = "root" ]; then
-      yes y | pacman -S linux-rpi
-      sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab
+      yes y | pacman -S --needed $package
     else
-      yes y | sudo pacman -S linux-rpi
-      sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
+      yes y | sudo pacman -S --needed $package
     fi
-    echo "Done! Remember to reboot"
-  else
-    echo "Nothing to do"
   fi
-else
-  echo "Wrong architecture: $(uname -m)"
-  exit 1
-fi
+}
+
+installPackage "linux-rpi"
+installPackage "raspberrypi-bootloader-x"
+installPackage "raspberrypi-firmware"
+
+# Note: this is done automatically - not needed
+# if [ "$USER" = "root" ]; then
+#   sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab
+# else
+#   sudo sh -c "sed -i 's/mmcblk1/mmcblk0/g' /etc/fstab"
+# fi

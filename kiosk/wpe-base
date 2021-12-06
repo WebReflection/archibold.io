@@ -8,28 +8,22 @@ else
   sudo pacman-key --populate archlinuxarm
 fi
 
-sudo pacman -Sy --noconfirm
+sudo pacman -Syy --noconfirm
 
-if [ "$(uname -m)" = "aarch64" ] && [ "$(pacman -Qs linux-rpi)" = "" ]; then
-  clear
-  echo ""
-  echo "Would you like to use linux-rpi kernel? [y/N]"
-  echo "Use this option if you had GPU issues before"
-  echo ""
-  read -n1 -s RPi4
-  if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
-    bash <(curl -s https://archibold.io/install/linux-raspberrypi)
-  fi
+if [ "$(pacman -Qs linux-rpi)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/linux-rpi)
+  sleep 2
 fi
 
 clear
 echo ""
-echo "Would you like to install NodeJS too? [y/N]"
+echo "Would you like to install NodeJS? [y/N]"
 echo "The jellyfish demo will start from a local instance"
 echo ""
-read -n1 -s RPi4
-if [ "$RPi4" = "y" ] || [ "$RPi4" = "Y" ]; then
+read -n1 -s TMP_CHOICE
+if [ "$TMP_CHOICE" = "y" ] || [ "$TMP_CHOICE" = "Y" ]; then
   yes y | sudo pacman -S --needed --noconfirm unzip npm
+  sleep 2
 fi
 
 sudo pacman -Syu --noconfirm
@@ -63,35 +57,7 @@ export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
   if [ ! -d ~/www/node_modules ]; then
     mkdir -p ~/www/node_modules
     cd ~/www
-    echo '#!/usr/bin/env node
-
-const {exec} = require("child_process");
-const {join} = require("path");
-
-const compression = require("compression");
-const express = require("express");
-const server = express();
-server
-  .use(compression())
-  .use(express.static(join(__dirname, "jellyfish")))
-  .get("/quit", () => process.exit(0))
-  .get("/ips", (_, res) => {
-    const ips = new Set;
-    for (const [_, nets] of Object.entries(require("os").networkInterfaces())) {
-      for (const net of nets) {
-        if (net.family === "IPv4" && !net.internal)
-          ips.add(net.address);
-      }
-    }
-    res.writeHead(200, {
-      "content-type": "application/json"
-    });
-    res.end(JSON.stringify([...ips]));
-  })
-  .listen(8080, () => {
-    exec("cog http://127.0.0.1:8080/index.html");
-  });
-'>index.js
+    curl -LO https://archibold.io/demo/jellyfish/index.js
     chmod a+x index.js
     echo '{"private": true}'>package.json
     npm i express compression
