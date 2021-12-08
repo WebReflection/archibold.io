@@ -12,7 +12,8 @@ installPackage() {
 }
 
 installPackage "linux-rpi"
-installPackage "raspberrypi-bootloader-x"
+installPackage "linux-rpi-headers"
+installPackage "raspberrypi-bootloader"
 installPackage "raspberrypi-firmware"
 
 # Note: this is done automatically - not needed

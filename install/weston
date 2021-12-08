@@ -14,8 +14,9 @@ if [ "$(which sudo 2> /dev/null)" = "" ]; then
 fi
 
 sudo pacman -S --needed --noconfirm weston
+sudo groupadd weston 2> /dev/null
 sudo groupadd weston-launch 2> /dev/null
-sudo usermod -a -G games,audio,video,render,weston-launch ${USER}
+sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston,weston-launch ${USER}
 
 if [ ! -f ~/.config/weston.ini ]; then
   mkdir -p ~/.config
@@ -25,7 +26,6 @@ repaint-window=15
 require-input=false
 
 [shell]
-client=${HOME}/wpe
 animation=none
 close-animation=none
 startup-animation=none

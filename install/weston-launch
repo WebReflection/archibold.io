@@ -12,8 +12,8 @@ fi
 if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
     echo '
 # [archibold.io] weston
-export COG_PLATFORM_WL_VIEW_WIDTH=1280
-export COG_PLATFORM_WL_VIEW_HEIGHT=720
+export KIOSK_WIDTH=1280
+export KIOSK_HEIGHT=720
 export COG_PLATFORM_WL_VIEW_FULLSCREEN=1
 export GTK_THEME="Adwaita:dark"
 
@@ -34,8 +34,8 @@ setWestonMode() {
 }
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
-  setWestonMode "${COG_PLATFORM_WL_VIEW_WIDTH}x${COG_PLATFORM_WL_VIEW_HEIGHT}"
-  weston-launch
+  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
+  weston
 fi
 '>>~/.bashrc
 fi

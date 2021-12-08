@@ -60,9 +60,8 @@ cog https://archibold.io/demo/jellyfish/
 fi
 
 bash <(curl -s https://archibold.io/install/weston)
-sudo usermod -a -G wheel,games,power,optical,storage,scanner,lp,audio,video,render,weston-launch ${USER}
 
-if [ ! -f ~/.config/weston.ini ]; then
+if [ ! -f ~/.config/weston.ini ] || [ "$(cat ~/.config/weston.ini | grep client=)" = ""]; then
   mkdir -p ~/.config
   echo "[core]
 idle-time=0

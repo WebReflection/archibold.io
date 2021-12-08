@@ -10,11 +10,6 @@ fi
 
 sudo pacman -Syy --noconfirm
 
-if [ "$(pacman -Qs linux-rpi)" = "" ]; then
-  bash <(curl -s https://archibold.io/install/linux-rpi)
-  sleep 2
-fi
-
 clear
 echo ""
 echo "Would you like to install NodeJS? [y/N]"
@@ -26,10 +21,13 @@ if [ "$TMP_CHOICE" = "y" ] || [ "$TMP_CHOICE" = "Y" ]; then
   sleep 2
 fi
 
+if [ "$(pacman -Qs linux-rpi)" = "" ]; then
+  bash <(curl -s https://archibold.io/install/linux-rpi)
+fi
+
 sudo pacman -Syu --noconfirm
 
 bash <(curl -s https://archibold.io/install/login)
-bash <(curl -s https://archibold.io/install/weston)
 bash <(curl -s https://archibold.io/install/wpe)
 
 # install jellyfish demo
@@ -57,7 +55,7 @@ export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
   if [ ! -d ~/www/node_modules ]; then
     mkdir -p ~/www/node_modules
     cd ~/www
-    curl -LO https://archibold.io/demo/index.js
+    curl -L https://archibold.io/demo/jellyfish.js -o index.js
     chmod a+x index.js
     echo '{"private": true}'>package.json
     npm i express compression
