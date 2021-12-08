@@ -14,6 +14,7 @@ if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
 # [archibold.io] weston
 export COG_PLATFORM_WL_VIEW_WIDTH=1280
 export COG_PLATFORM_WL_VIEW_HEIGHT=720
+export COG_PLATFORM_WL_VIEW_FULLSCREEN=1
 export GTK_THEME="Adwaita:dark"
 
 setWestonMode() {
