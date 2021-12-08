@@ -57,7 +57,7 @@ export NODE_PATH="${NODE_PATH}:${HOME}/.npm-packages/lib/node_modules"
   if [ ! -d ~/www/node_modules ]; then
     mkdir -p ~/www/node_modules
     cd ~/www
-    curl -LO https://archibold.io/demo/jellyfish/index.js
+    curl -LO https://archibold.io/demo/index.js
     chmod a+x index.js
     echo '{"private": true}'>package.json
     npm i express compression
