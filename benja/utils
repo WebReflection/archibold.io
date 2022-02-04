@@ -172,6 +172,9 @@ installOS() {
   echo -ne "\033[K\r"
   echo '   .. moving boot files ..'
   sudo mv root/boot/* boot
+  echo -ne "\033[K\r"
+  echo '   .. patching /etc/fstab ..'
+  sudo sed -i 's/mmcblk0/mmcblk1/g' root/etc/fstab
 }
 
 targetPlatform() {
@@ -179,30 +182,28 @@ targetPlatform() {
   echoWithLogo '# Target Platform
   Please select the SBC you would like to use.
 
-  *0* Raspberry Pi 0 (no electron)
-  *1* Raspberry Pi 1 (no electron)
-  *2* Raspberry Pi 2 (32bit / Pi 3 compatible)
-  *3* Raspberry Pi 3 (64bit / Pi 4 compatible)
-  *4* Raspberry Pi 4 (32bit / Pi 4 only)
+  *0* Raspberry Pi Zero V2
+  *3* Raspberry Pi 3
+  *4* Raspberry Pi 4
 '
   read -n1 choice
 
-  if [ "$choice" = "0" ] || [ "$choice" = "1" ]; then
-    BENJA_SETUP="rpi1"
-    BENJA_SBC="Raspberry Pi ${choice}"
-    BENJA_ARCHIVE="ArchLinuxARM-rpi-latest.tar.gz"
-  elif [ "$choice" = "2" ]; then
-    BENJA_SETUP="rpi2"
-    BENJA_SBC="Raspberry Pi 2"
-    BENJA_ARCHIVE="ArchLinuxARM-rpi-2-latest.tar.gz"
-  elif [ "$choice" = "3" ]; then
+  if [ "$choice" = "0" ] || [ "$choice" = "3" ] || [ "$choice" = "4" ]; then
     BENJA_SETUP="rpi3"
-    BENJA_SBC="Raspberry Pi 3"
+    BENJA_SBC="Raspberry Pi ${choice}"
     BENJA_ARCHIVE="ArchLinuxARM-rpi-aarch64-latest.tar.gz"
-  elif [ "$choice" = "4" ]; then
-    BENJA_SETUP="rpi4"
-    BENJA_SBC="Raspberry Pi 4"
-    BENJA_ARCHIVE="ArchLinuxARM-rpi-4-latest.tar.gz"
+    # elif [ "$choice" = "2" ]; then
+    #   BENJA_SETUP="rpi2"
+    #   BENJA_SBC="Raspberry Pi 2"
+    #   BENJA_ARCHIVE="ArchLinuxARM-rpi-2-latest.tar.gz"
+    # elif [ "$choice" = "3" ]; then
+    #   BENJA_SETUP="rpi3"
+    #   BENJA_SBC="Raspberry Pi 3"
+    #   BENJA_ARCHIVE="ArchLinuxARM-rpi-aarch64-latest.tar.gz"
+    # elif [ "$choice" = "4" ]; then
+    #   BENJA_SETUP="rpi4"
+    #   BENJA_SBC="Raspberry Pi 4"
+    #   BENJA_ARCHIVE="ArchLinuxARM-rpi-4-latest.tar.gz"
   else
     echomd "  #red(*Nope*), let's try again ... "
     sleep 2 && clear && targetPlatform
