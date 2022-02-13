@@ -58,7 +58,7 @@ fi
 pacman -Syu --needed --noconfirm weston ttf-dejavu
 "
 
-  wl="$(which weston-launch 2> /dev/null)"
+  wl="$(which weston 2> /dev/null)"
   if [ "$wl" = "" ]; then
     echo 'unable to complete weston kiosk installation'
     exit 1

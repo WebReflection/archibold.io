@@ -70,7 +70,7 @@ if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
 # [archibold.io] weston
 
 if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
-  weston-launch
+  weston
 fi
 ' >> ~/.bashrc
 fi
