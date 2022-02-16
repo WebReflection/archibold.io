@@ -31,7 +31,7 @@ updatePacman() {
   echoWithHeader '
   Updating *pacman*, the default ArchLinux package manager'
 
-  sudo pacman -Sy
+  sudo pacman -Sy --noconfirm archlinux-keyring
   sudo pacman-db-upgrade
   sudo pacman-key --init
   sudo pacman-key --populate archlinux
