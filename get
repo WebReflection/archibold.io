@@ -477,7 +477,11 @@ clear && createPartitions
 if [ -d archibold.env ]; then
   sudo rm -rf archibold.env
 fi
-mkdir archibold.env
+
+mkdir -p archibold.env
+sleep 1
+sync
+
 if [ "$ENCRYPTION" = "yes" ]; then
   sudo mount /dev/mapper/root archibold.env
 else
