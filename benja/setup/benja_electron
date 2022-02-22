@@ -8,7 +8,7 @@ while ! sudo pacman -S --needed --noconfirm \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-libav \
   libva-vdpau-driver libva-mesa-driver \
   alsa-utils libcanberra \
-  gstreamer-vaapi pulseaudio pulseaudio-alsa \
+  gstreamer-vaapi pipewire pulseaudio pulseaudio-alsa \
   c-ares ffmpeg gtk3 http-parser libevent libnghttp2 libxslt libxss minizip nss re2 snappy
 do
   :

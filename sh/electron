@@ -6,7 +6,7 @@ sudo pacman -S --needed --noconfirm \
   xorg-server xorg-xinit xf86-input-synaptics \
   libxrandr libxinerama libxcursor libxtst \
   gnome-themes-standard adwaita-icon-theme gtk-engines \
-  libnotify nss alsa-plugins
+  libnotify nss pipewire alsa-plugins
 
 # configure npm
 if [ ! -d ~/.npm-packages/bin ]; then

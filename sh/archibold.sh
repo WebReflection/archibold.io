@@ -621,7 +621,7 @@ if [ '$GNOME' != 'NO' ]; then
     xorg-server xorg-xinit xorg-xwayland \
     gnome gnome-calendar gnome-tweak-tool \
     gstreamer-vaapi gst-libav \
-    alsa-utils xdg-utils \
+    pipewire alsa-utils xdg-utils \
     hunspell-en_us \
     file-roller \
     bluez bluez-utils gnome-bluetooth gnome-user-share \
