@@ -29,7 +29,7 @@ write() {
 findGPU() {
   local GPU_DRIVERS=
   if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -k | grep -A 2 -E "(VGA|3D)" | grep NVIDIA)" != "" ]; then
-    GPU_DRIVERS="nvidia"
+    GPU_DRIVERS="nvidia nvidia-utils"
   fi
   if [ "$GPU_DRIVERS" = "" ] && [ "$(lspci -k | grep -A 2 -E "(VGA|3D)" | grep AMD)" != "" ]; then
     GPU_DRIVERS="xf86-video-amdgpu vulkan-radeon"
