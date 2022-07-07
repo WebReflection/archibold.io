@@ -1,0 +1,68 @@
+#!/usr/bin/env sh
+
+
+# build zig
+# cmake .. -DCLANG_LIBRARIES=/usr/lib/llvm13/bin/clang -DLLD_LIBRARIES=/usr/lib/llvm13/bin/lld -DCMAKE_PREFIX_PATH=/usr/lib/llvm13/bin/
+
+sudo pacman -S --needed --noconfirm llvm13 lld13
+if [ -d /usr/lib/llvm13/bin/ ]; then
+
+  if [ -f /usr/lib/llvm13/bin/llvm-ar ]; then
+    sudo ln -s /usr/lib/llvm13/bin/llvm-ar /usr/local/bin/llvm-ar-13
+    sudo ln -s /usr/lib/llvm13/bin/llvm-config /usr/local/bin/llvm-config
+  else
+    echo 'Unable to link llvm-ar-13'
+    exit 1
+  fi
+
+  for clang in $(ls /usr/lib/llvm13/bin/clang*); do
+    sudo ln -s $clang /usr/local/bin/$(basename $clang)
+  done
+
+  if [ ! -f /usr/local/bin/clang++-13 ]; then
+    sudo ln -s /usr/lib/llvm13/bin/clang++ /usr/local/bin/clang++-13
+  fi
+
+  if [ ! -f /usr/bin/clang ]; then
+    sudo ln -s /usr/lib/llvm13/bin/clang /usr/bin/clang
+  fi
+
+  # manually
+  # sudo ln -s /usr/lib/llvm13/bin/clang /usr/local/bin/clang
+  # sudo ln -s /usr/lib/llvm13/bin/clang++ /usr/local/bin/clang++
+  # sudo ln -s /usr/lib/llvm13/bin/clang++ /usr/local/bin/clang++-13
+  # sudo ln -s /usr/lib/llvm13/bin/clang-13 /usr/local/bin/clang-13
+  # sudo ln -s /usr/lib/llvm13/bin/clang-cpp /usr/local/bin/clangclang-cpp
+else
+  echo 'Unable to link llvm13 executables'
+  exit 1
+fi
+
+sudo pacman -S --needed --noconfirm base-devel git ruby python go
+
+aur zig-dev-bin
+aur esbuild
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+
+export CMAKE_C_COMPILER="$(which clang)"
+export CMAKE_ASM_COMPILER="$(which clang)"
+export CMAKE_CXX_COMPILER="$(which clang++)"
+
+echo "
+# clang 13 flags
+export CMAKE_C_COMPILER=${CMAKE_C_COMPILER}
+export CMAKE_ASM_COMPILER=${CMAKE_ASM_COMPILER}
+export CMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
+">>~/.bashrc
+
+mkdir -p ~/git
+
+if [ ! -d ~/git/bun ]; then
+  cd ~/git
+  git clone https://github.com/Jarred-Sumner/bun.git
+fi
+
+cd ~/git/bun
+git submodule update --init --recursive --progress # --depth=1
+make vendor jsc identifier-cache dev
