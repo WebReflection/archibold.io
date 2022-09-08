@@ -76,10 +76,11 @@ echo -e "
 "
 
 if [ "$LTS" = "yes" ]; then
-  install_pkg linux-lts linux-lts-headers linux-firmware pacman-mirrorlist mkinitcpio vi
+  install_pkg linux-lts linux-lts-headers linux-firmware
 else
-  install_pkg linux linux-headers linux-firmware pacman-mirrorlist mkinitcpio vi
+  install_pkg linux linux-headers linux-firmware
 fi
+install_pkg pacman-mirrorlist mkinitcpio vi
 sync
 
 if [ "$ENCRYPTION" = "yes" ]; then

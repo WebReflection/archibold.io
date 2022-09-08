@@ -47,7 +47,7 @@ installGNOME() {
   local GPU_DRIVERS="$1"
   local PASSWORD="$2"
   local BASHRC=~/.bashrc
-  local SHELL_AVAILABLE="$(which gnome-shell 2> /dev/null)"
+  local SHELL_AVAILABLE="$(which gnome-browser-connector 2> /dev/null)"
   local FROM_ARCHIBOLD=nope
   local pkg=
 
@@ -191,7 +191,7 @@ fi'
 
       aur libpamac-aur
       aur pamac-aur
-      aur chrome-gnome-shell
+      aur gnome-browser-connector
     fi
   else
     write "Installing base-devel and git"
