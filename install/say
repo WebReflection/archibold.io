@@ -1,0 +1,12 @@
+#########################
+# archibold.io (C) 2019 #
+#########################
+
+sudo pacman -S --needed --noconfirm espeakup
+
+if [ ! -f /usr/local/bin/say ]; then
+  echo '#!/usr/bin/env sh
+spd-say "$@"' > /tmp/say;
+  chmod +x /tmp/say;
+  sudo mv /tmp/say /usr/local/bin/;
+fi
