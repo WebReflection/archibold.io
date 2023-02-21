@@ -467,7 +467,7 @@ echo '###############
 echo -e '$PASSWD
 $PASSWD' | passwd
 
-useradd -m -g users -G wheel,storage,power,video,lp -s /bin/bash $USER
+useradd -m -g users -G wheel,docker,storage,power,video,lp -s /bin/bash $USER
 echo '##################
 ## $USER ##
 ##################'
