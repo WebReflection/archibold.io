@@ -274,7 +274,9 @@ echo -e "
   creating user $(tput bold)$USER$(tput sgr0)
 "
 
-useradd -m -g users -G audio,docker,games,input,lp,optical,power,scanner,storage,video,wheel -s /bin/bash $USER
+useradd -m -g users -G audio,games,input,lp,optical,power,scanner,storage,video,wheel -s /bin/bash $USER
+
+# useradd -m -g users -G audio,docker,games,input,lp,optical,power,scanner,storage,video,wheel -s /bin/bash $USER
 
 echo -e "
   assigning $(tput bold)$USER$(tput sgr0) passwords
