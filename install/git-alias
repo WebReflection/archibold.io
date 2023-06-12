@@ -1,5 +1,8 @@
 [alias]
-        cb = !sh -c \"git branch | grep \\* | cut -d ' ' -f2\"
-        pf = !sh -c \"git commit --amend --no-edit && git push --force origin $(git branch | grep \\* | cut -d ' ' -f2)\"
-        pr = !sh -c \"git pull --rebase origin $(git branch | grep \\* | cut -d ' ' -f2)\"
-        publish = !sh -c \"git push && git push --tags && npm publish\"
+  cb = !sh -c \"git branch | grep \\* | cut -d ' ' -f2\"
+  delete = !sh -c \"git branch -d $1 && git push origin --delete $1\"
+  me = !sh -c \"ssh -T git@gitlab.com\"
+  pf = !sh -c \"git commit --amend --no-edit && git push --force origin $(git branch | grep \\* | cut -d ' ' -f2)\"
+  pr = !sh -c \"git pull --rebase origin $(git branch | grep \\* | cut -d ' ' -f2)\"
+  pur = !sh -c \"git fetch upstream && git pull --rebase upstream $(git branch | grep \\* | cut -d ' ' -f2)\"
+  publish = !sh -c \"git push && git push --tags && npm publish\"

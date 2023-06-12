@@ -370,6 +370,9 @@ if [ -f /etc/pacman.d/hooks/99-secureboot.hook ]; then
   pacman -S --noconfirm systemd
 fi
 
+# avoid error unable to umount /tmp
+systemctl mask tmp.mount
+
 # This is likely not useful at all
 # WIFI="$(ip addr | grep ': wl*' | sed 's/.*: \(wl.*\):.*/\1/')"
 # if [ "$WIFI" != "" ]; then
