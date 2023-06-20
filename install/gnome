@@ -81,6 +81,14 @@ alias open=xdg-open                      # macOS open like function
 ' >> $BASHRC
   fi
 
+  if [ "$(cat $BASHRC | grep 'SharedArrayBuffer')" = "" ]; then
+    write "Improving GNOME Web"
+    echo '
+# enable SharedArrayBuffer in GNOME Web
+export JSC_useSharedArrayBuffer=true;
+' >> $BASHRC
+  fi
+
   if [ "$(which sudo 2> /dev/null)" = "" ]; then
     write "Updating pacman and installing sudo"
     echo "$PASSWORD" | su -c "pacman -Sy --needed --noconfirm sudo"
