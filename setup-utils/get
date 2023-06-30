@@ -212,7 +212,7 @@ if [ "$ENCRYPTION" = "yes" ]; then
     APPEND="$APPEND resume=/dev/mapper/swap rw"
   fi
   if [ "$BOOT_LOUDLY" = "" ]; then
-    APPEND="$APPEND quiet loglevel=0"
+    APPEND="$APPEND quiet loglevel=0 nowatchdog"
   fi
 else
   UUID="$(partid $ROOT)"
@@ -222,7 +222,7 @@ else
     APPEND="$APPEND resume=UUID=${UUID} rw"
   fi
   if [ "$BOOT_LOUDLY" = "" ]; then
-    APPEND="$APPEND quiet splash loglevel=0"
+    APPEND="$APPEND quiet splash loglevel=0 nowatchdog"
   fi
 fi
 
