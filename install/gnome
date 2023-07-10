@@ -13,7 +13,7 @@ if [ "$USER" = "root" ]; then
   exit 1
 fi
 
-if [ "$(curl -s https://archibold.io/ 2> /dev/null)" = "" ]; then
+if [ "$(curl -s https://archibold.io/OK 2> /dev/null)" = "" ]; then
   echo "$(tput bold)Warning$(tput sgr0): you need an internet connection"
   echo '  * if you are wired, try typing: dhcpcd'
   echo '  * if you have WiFi, try typing: wifi-menu'
@@ -202,6 +202,7 @@ fi'
       aur pamac-aur
       aur gnome-browser-connector
       aur gst-plugins-openh264
+      aur gdm-settings
     fi
   else
     write "Installing base-devel and git"
