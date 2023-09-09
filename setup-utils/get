@@ -348,7 +348,7 @@ export SUDO_PASSWORD='$PASSWORD'
 bash <(curl -s https://archibold.io/install/gnome)
 "
 
-  install_pkg neofetch
+  install_pkg neofetch fwupd
 
   # TODO: I'd love to get rid of the root user password but it cannot be done
   #       at this point, otherwise GNOME cannot be installed on boot.
