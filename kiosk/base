@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+
+if [ "$(whoami)" = "root" ] || [ "$USER" = "root" ]; then
+  echo 'You need to be a regular user to run this script'
+  exit 1
+fi
+
+if [ "$USER" = "" ]; then
+  USER="$(whoami)"
+fi
+
+kiosk() {
+  if [ "$(cat ~/.bashrc | grep -F '[archibold.io] weston')" = "" ]; then
+    echo '
+# [archibold.io] weston
+export KIOSK_WIDTH=1280
+export KIOSK_HEIGHT=720
+export KIOSK_OUTPUT=
+export COG_PLATFORM_WL_VIEW_FULLSCREEN=1
+
+setWestonMode() {
+  local MODE="$1"
+  local NAME=""
+  if [ -f ~/.config/weston.ini ]; then
+    sed -i "s/name=.*//;s/mode=.*//;/^$/d;s/\[/\n\[/" ~/.config/weston.ini
+    for NAME in $(ls /sys/class/drm | grep HDMI); do
+      if [ "$NAME" != "" ]; then
+        if [ "$KIOSK_OUTPUT" == "" ] || [ "$KIOSK_OUTPUT" == "${NAME:6}" ]; then
+            echo "name=${NAME:6}">>~/.config/weston.ini
+            echo "mode=${MODE}">>~/.config/weston.ini
+            # one output only
+            return
+        fi
+      fi
+    done
+  fi
+}
+
+if [[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && [ "$(pgrep --list-name weston)" = "" ]; then
+  setWestonMode "${KIOSK_WIDTH}x${KIOSK_HEIGHT}"
+  weston
+fi
+
+export HISTCONTROL=ignoredups:erasedups
+shopt -s histappend
+'>>~/.bashrc
+  fi
+
+  yes "$1" | su -c "
+
+pacman-key --init
+pacman-key --populate archlinuxarm
+pacman -Syu --noconfirm
+pacman -S --needed --noconfirm weston wpewebkit
+
+if [ ! -f /etc/default/cpupower ]; then
+    pacman -S --needed --noconfirm weston cpupower
+    echo 'governor=\"performance\"'>>/etc/default/cpupower
+    systemctl enable cpupower.service
+    systemctl start cpupower.service
+fi
+
+groupadd weston 2> /dev/null
+groupadd seat 2> /dev/null
+usermod -a -G audio,games,lp,optical,power,render,scanner,seat,storage,video,weston,wheel ${USER}
+
+if [ -f /boot/boot.txt ]; then
+  pacman -S --needed --noconfirm uboot-tools
+  sed -i 's/rootwait/rootwait quiet loglevel=0/' /boot/boot.txt
+  mkimage -T script -C none -n 'Raspberry Pi' -d /boot/boot.txt /boot/boot.scr
+fi
+
+if [ -f /boot/cmdline.txt ]; then
+  sed -i 's/rootwait/rootwait quiet loglevel=0/' /boot/cmdline.txt
+fi
+
+systemctl enable seatd
+systemctl start seatd
+"
+
+  if [ "$(which weston 2> /dev/null)" = "" ]; then
+    echo 'unable to complete weston kiosk installation'
+    exit 1
+  else
+    touch ~/.hushlogin
+
+    if [ ! -f ~/.kiosk ]; then
+      echo '#!/usr/bin/env sh
+weston-terminal --fullscreen'>~/.kiosk
+      chmod a+x .kiosk
+    fi
+
+    if [ ! -f ~/.config/weston.ini ]; then
+      mkdir -p ~/.config
+      echo "[core]
+idle-time=0
+repaint-window=15
+require-input=false
+
+[shell]
+client=${HOME}/.kiosk
+animation=none
+close-animation=none
+startup-animation=none
+locking=false
+
+[output]
+name=
+mode=
+">~/.config/weston.ini
+    fi
+    if [ "$(which sudo 2> /dev/null)" = "" ]; then
+      yes "$1" | bash <(curl -s https://archibold.io/install/sudo)
+    fi
+    yes "$1" | su -c reboot
+  fi
+}
+
+source <(curl -s https://archibold.io/utils/ask-password)
+kiosk "$(askPassword 'root password:')"
