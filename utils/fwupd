@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+fwupdmgr refresh
+fwupdmgr get-devices
+fwupdmgr get-updates
+fwupdmgr update
