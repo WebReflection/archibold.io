@@ -1,0 +1,40 @@
+#!/usr/bin/env sh
+
+# RPi3 - RPi4 => boot 512M
+# root: init
+if [ "$USER" = "root" ] || [ "$(whoami)" = "root" ]; then
+    pacman-key --init
+    pacman-key --populate archlinuxarm
+    pacman -Syyu --noconfirm
+
+    # optional RPi arm64 - Enables RPi5 too
+    yes y | pacman -S --needed linux-rpi
+else
+    # alarm
+    if [ "$(which sudo 2> /dev/null)" = "" ]; then
+        bash <(curl -s https://archibold.io/install/sudo)
+    else
+        sudo pacman -Syu --noconfirm
+    fi
+
+    # weston
+    sudo pacman -S --needed --noconfirm libdisplay-info
+    bash <(curl -s https://archibold.io/install/weston)
+    bash <(curl -s https://archibold.io/install/weston-launch)
+
+    # optional cog + wpewebkit dependencies
+    sudo pacman -S --needed --noconfirm \
+        wpewebkit wpebackend-fdo meson wayland-protocols \
+        pipewire-jack libbluray \
+        gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
+        gstreamer-vaapi gst-libav \
+        geoip geoclue \
+        weston mesa ttf-dejavu
+
+    if [ "$(which aur 2> /dev/null)" = "" ]; then
+        bash <(curl -s https://archibold.io/install/aur)
+    fi
+    if [ "$(which cog 2> /dev/null)" = "" ]; then
+        aur --no-pgp cog
+    fi
+fi

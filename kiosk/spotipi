@@ -3,7 +3,7 @@
 if [ "$(which sudo 2> /dev/null)" = "" ]; then
   bash <(curl -s https://archibold.io/utils/sudo)
 else
-  # sudo installs already the 
+  # sudo installs already the
   sudo pacman-key --init
   sudo pacman-key --populate archlinuxarm
 fi
@@ -35,7 +35,7 @@ if [ "$(pacman -Qmq wpewebkit-bin 2> /dev/null)" = "" ]; then
 fi
 
 yes y | sudo pacman -S --needed \
-  jack libbluray \
+  pipewire-jack libbluray \
   gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
   gstreamer-vaapi gst-libav \
   geoip geoclue \
