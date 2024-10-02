@@ -3,12 +3,16 @@
 # RPi3 - RPi4 => boot 512M
 # root: init
 if [ "$USER" = "root" ] || [ "$(whoami)" = "root" ]; then
+    echo 'ParallelDownloads = 4' >> /etc/pacman.conf
     pacman-key --init
     pacman-key --populate archlinuxarm
-    pacman -Syyu --noconfirm
+    while ! pacman -Syyu --noconfirm
+    do
+        :
+    done
 
     # optional RPi arm64 - Enables RPi5 too
-    yes y | pacman -S --needed linux-rpi
+    yes y | pacman -S --needed linux-rpi linux-rpi-headers
 else
     # alarm
     if [ "$(which sudo 2> /dev/null)" = "" ]; then
@@ -22,14 +26,23 @@ else
     bash <(curl -s https://archibold.io/install/weston)
     bash <(curl -s https://archibold.io/install/weston-launch)
 
-    # optional cog + wpewebkit dependencies
-    sudo pacman -S --needed --noconfirm \
-        wpewebkit wpebackend-fdo meson wayland-protocols \
+    # cog dependencies
+    while ! sudo pacman -S --needed --noconfirm wpewebkit wpebackend-fdo meson wayland-protocols
+    do
+        :
+    done
+
+    # wpewebkit dependencies
+    while ! sudo pacman -S --needed --noconfirm \
         pipewire-jack libbluray \
         gst-plugins-base gst-plugins-good gst-plugins-ugly gst-plugins-bad \
         gstreamer-vaapi gst-libav \
         geoip geoclue \
-        weston mesa ttf-dejavu
+        noto-fonts noto-fonts-emoji \
+        ttf-dejavu # without this no cog !?!
+    do
+        :
+    done
 
     if [ "$(which aur 2> /dev/null)" = "" ]; then
         bash <(curl -s https://archibold.io/install/aur)

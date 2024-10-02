@@ -21,12 +21,10 @@ setWestonMode() {
   local MODE="$1"
   local NAME=""
   if [ -f ~/.config/weston.ini ]; then
-    sed -i "s/name=.*//;s/mode=.*//;/^$/d;s/\[/\n\[/" ~/.config/weston.ini
     for NAME in $(ls /sys/class/drm | grep HDMI); do
       if [ "$NAME" != "" ]; then
-        echo "name=${NAME:6}">>~/.config/weston.ini
-        echo "mode=${MODE}">>~/.config/weston.ini
         # prefer one output only
+        sed -i "s/name=.*/name=${NAME:6}/;s/mode=.*/mode=${MODE}/" ~/.config/weston.ini
         return
       fi
     done
