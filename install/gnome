@@ -154,7 +154,8 @@ fi'
     done
 
     # note: wireplumber didn't work well on my Lenovo laptop
-    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS pipewire-media-session pipewire-jack networkmanager hunspell hunspell-en_us vlc transmission-gtk xdg-utils libva-mesa-driver libva-vdpau-driver mesa-vdpau exfat-utils fuse-exfat ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans ttf-joypixels noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-themes-extra gnome-tweaks imagemagick gst-libav gstreamer-vaapi gst-plugin-pipewire
+    # ⚠️ libva-mesa-driver libva-vdpau-driver mesa-vdpau might cause issues
+    echo "$PASSWORD" | sudo -S pacman -S --needed --noconfirm $GNOME $GPU_DRIVERS pipewire-media-session pipewire-jack networkmanager hunspell hunspell-en_us vlc transmission-gtk xdg-utils exfat-utils exfatprogs ntfs-3g dosfstools ttf-dejavu ttf-liberation ttf-opensans ttf-joypixels noto-fonts noto-fonts-emoji noto-fonts-extra flatpak xf86-input-libinput xsel cups system-config-printer simple-scan bluez bluez-utils gnome-themes-extra gnome-tweaks imagemagick gst-libav gstreamer-vaapi gst-plugin-pipewire
 
     echo "$PASSWORD" | sudo -S systemctl enable NetworkManager
     echo "$PASSWORD" | sudo -S systemctl enable gdm
