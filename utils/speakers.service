@@ -1,0 +1,15 @@
+# /home/ag/.config/systemd/user/speakers.service
+# systemctl --user enable speakers
+
+[Unit]
+Description=Force Speakers Audio
+After=pulseaudio.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/pactl set-card-profile alsa_card.pci-0000_bd_00.6 "output:analog-stereo"
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
