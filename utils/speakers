@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# force analog output in MINIS FORUM 395+ AI Max
+
+/usr/bin/pactl set-card-profile alsa_card.pci-0000_bd_00.6 "output:analog-stereo"
